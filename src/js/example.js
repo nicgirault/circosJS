@@ -4,7 +4,7 @@ outerRadius = Math.min(width, height) / 2 - 10,
 innerRadius = outerRadius - 24,
 pi = Math.PI;
 
-var data = [
+var karyotype = [
     {len: 249250621, color: 'rgb(153,102,0)', label: 'chr1'},
     {len: 243199373, color: 'rgb(102,102,0)', label: 'chr2'},
     {len: 198022430, color: 'rgb(153,153,30)', label: 'chr3'},
@@ -36,11 +36,14 @@ var chart = layout()
     .labelPosition('center')
     .labelRadialOffset(25)
     .gap(0.05).gapUnit('rad');
+    // .data(karyotype);
 d3.select('#chart')
     .selectAll('svg')
-    .data([data])
+    .data([karyotype])
     .enter()
     .append('svg')
         .attr("width", width)
         .attr("height", height)
     .call(chart);
+
+

@@ -1,4 +1,4 @@
-function layout() {
+function layout(svg, conf) {
     var innerRadius = 50,
     outerRadius = 80,
     gap = 0.04,
@@ -6,7 +6,8 @@ function layout() {
     labelRadialOffset = 0,
     gapUnit = 'rad',
     dataTotalLength = 0,
-    radialLabels = segmentLabels = [];
+    radialLabels = segmentLabels = [],
+    data = [];
 
     function chart(selection) {
         selection.each(function(data) {
@@ -125,6 +126,12 @@ function layout() {
     chart.gapUnit = function(_) {
         if (!arguments.length) return gapUnit;
         gapUnit = _;
+        return chart;
+    };
+
+    chart.data = function(_) {
+        if (!arguments.length) return data;
+        data = _;
         return chart;
     };
 
