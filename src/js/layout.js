@@ -13,9 +13,9 @@ function layout() {
         selection.each(function(data) {
             var svg = d3.select(this);
 
-            var offset = innerRadius + Math.ceil(data.length / numSegments) * segmentHeight;
+            var offset = outerRadius;
             g = svg.append("g")
-                .classed("circular-heat", true)
+                .classed("circos-layout", true)
                 .attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
 
             var autoDomain = false;
@@ -34,7 +34,7 @@ function layout() {
 
 
             // Unique id so that the text path defs are unique - is there a better way to do this?
-            var id = d3.selectAll(".circular-heat")[0].length;
+            var id = d3.selectAll(".circos-layout")[0].length;
 
             //Radial labels
             var lsa = 0.01; //Label start angle
