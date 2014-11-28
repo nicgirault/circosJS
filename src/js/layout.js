@@ -9,7 +9,7 @@ function layout(svg, conf) {
     radialLabels = segmentLabels = [],
     data = [];
 
-    function chart(selection) {
+    function layoutChart(selection) {
         selection.each(function(data) {
             var svg = d3.select(this);
 
@@ -93,47 +93,47 @@ function layout(svg, conf) {
     }
 
     /* Configuration getters/setters */
-    chart.innerRadius = function(_) {
+    layoutChart.innerRadius = function(_) {
         if (!arguments.length) return innerRadius;
         innerRadius = _;
-        return chart;
+        return layoutChart;
     };
 
-    chart.outerRadius = function(_) {
+    layoutChart.outerRadius = function(_) {
         if (!arguments.length) return outerRadius;
         outerRadius = _;
-        return chart;
+        return layoutChart;
     };
 
-    chart.labelPosition = function(_) {
+    layoutChart.labelPosition = function(_) {
         if (!arguments.length) return labelPosition;
         labelPosition = _;
-        return chart;
+        return layoutChart;
     };
 
-    chart.labelRadialOffset = function(_) {
+    layoutChart.labelRadialOffset = function(_) {
         if (!arguments.length) return labelRadialOffset;
         labelRadialOffset = _;
-        return chart;
+        return layoutChart;
     };
 
-    chart.gap = function(_) {
+    layoutChart.gap = function(_) {
         if (!arguments.length) return gap;
         gap = _;
-        return chart;
+        return layoutChart;
     };
 
-    chart.gapUnit = function(_) {
+    layoutChart.gapUnit = function(_) {
         if (!arguments.length) return gapUnit;
         gapUnit = _;
-        return chart;
+        return layoutChart;
     };
 
-    chart.data = function(_) {
+    layoutChart.data = function(_) {
         if (!arguments.length) return data;
         data = _;
-        return chart;
+        return layoutChart;
     };
 
-    return chart;
+    return layoutChart;
 }

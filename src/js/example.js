@@ -30,7 +30,7 @@ var karyotype = [
     {len: 155270560, color: 'rgb(153,153,153)', label: 'chrX'},
     {len: 59373566, color: 'rgb(204,204,204)', label: 'chrY'},
 ];
-var chart = layout()
+var layoutChart = layout()
     .innerRadius(innerRadius)
     .outerRadius(outerRadius)
     .labelPosition('center')
@@ -44,6 +44,6 @@ d3.select('#chart')
     .append('svg')
         .attr("width", width)
         .attr("height", height)
-    .call(chart);
+    .call(layoutChart);
 
 
