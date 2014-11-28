@@ -29,7 +29,7 @@ function layout() {
 
             g.selectAll("path").data(data)
                 .enter().append("path")
-                .attr("d", d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(sa).endAngle(ea))
+                .attr("d", d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(getDataStartAngle).endAngle(getDataEndAngle))
                 .attr("fill", getDataColor);
 
 
@@ -66,10 +66,10 @@ function layout() {
     }
 
     /* Arc functions */
-    sa = function(d, i) {
+    getDataStartAngle = function(d, i) {
         return d.start;
     }
-    ea = function(d, i) {
+    getDataEndAngle = function(d, i) {
         return d.end;
     }
     getDataColor = function(d, i){
