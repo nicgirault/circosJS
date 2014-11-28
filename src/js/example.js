@@ -13,7 +13,7 @@ var data = [
 var chart = layout()
     .innerRadius(innerRadius)
     .outerRadius(outerRadius)
-    .gap(0.5).gapUnit('rad');
+    .gap(0.05).gapUnit('rad');
 d3.select('#chart')
     .selectAll('svg')
     .data([data])
