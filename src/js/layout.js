@@ -1,6 +1,5 @@
 function layout() {
-    var margin = {top: 20, right: 20, bottom: 20, left: 20},
-    innerRadius = 50,
+    var innerRadius = 50,
     outerRadius = 80,
     segmentHeight = 20,
     domain = null,
