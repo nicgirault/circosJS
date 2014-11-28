@@ -2,7 +2,6 @@ function layout() {
     var margin = {top: 20, right: 20, bottom: 20, left: 20},
     innerRadius = 50,
     outerRadius = 80,
-    numSegments = 24,
     segmentHeight = 20,
     domain = null,
     range = ["white", "red"],
@@ -16,7 +15,7 @@ function layout() {
             var offset = outerRadius;
             g = svg.append("g")
                 .classed("circos-layout", true)
-                .attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
+                .attr("transform", "translate(" + parseInt(offset) + "," + parseInt(offset) + ")");
 
             var autoDomain = false;
             if (domain === null) {
@@ -29,8 +28,12 @@ function layout() {
 
             g.selectAll("path").data(data)
                 .enter().append("path")
-                .attr("d", d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(getDataStartAngle).endAngle(getDataEndAngle))
-                .attr("fill", getDataColor);
+                .attr("d", d3.svg.arc()
+                    .innerRadius(innerRadius)
+                    .outerRadius(outerRadius)
+                    .startAngle(getDataStartAngle)
+                    .endAngle(getDataEndAngle))
+                    .attr("fill", getDataColor);
 
 
             // Unique id so that the text path defs are unique - is there a better way to do this?
@@ -41,7 +44,7 @@ function layout() {
             var labels = svg.append("g")
                 .classed("labels", true)
                 .classed("radial", true)
-                .attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
+                .attr("transform", "translate(" + parseInt(offset) + "," + parseInt(offset) + ")");
 
             labels.selectAll("def")
                 .data(radialLabels).enter()
@@ -77,12 +80,6 @@ function layout() {
     }
 
     /* Configuration getters/setters */
-    chart.margin = function(_) {
-        if (!arguments.length) return margin;
-        margin = _;
-        return chart;
-    };
-
     chart.innerRadius = function(_) {
         if (!arguments.length) return innerRadius;
         innerRadius = _;
@@ -92,12 +89,6 @@ function layout() {
     chart.outerRadius = function(_) {
         if (!arguments.length) return outerRadius;
         outerRadius = _;
-        return chart;
-    };
-
-    chart.numSegments = function(_) {
-        if (!arguments.length) return numSegments;
-        numSegments = _;
         return chart;
     };
 
