@@ -3,7 +3,6 @@ function layout() {
     outerRadius = 80,
     segmentHeight = 20,
     domain = null,
-    range = ["white", "red"],
     accessor = function(d) {return d;},
     radialLabels = segmentLabels = [];
 
@@ -21,7 +20,6 @@ function layout() {
                 domain = d3.extent(data, accessor);
                 autoDomain = true;
             }
-            var color = d3.scale.linear().domain(domain).range(range);
             if(autoDomain)
                 domain = null;
 
@@ -100,12 +98,6 @@ function layout() {
     chart.domain = function(_) {
         if (!arguments.length) return domain;
         domain = _;
-        return chart;
-    };
-
-    chart.range = function(_) {
-        if (!arguments.length) return range;
-        range = _;
         return chart;
     };
 

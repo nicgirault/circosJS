@@ -10,8 +10,7 @@ var data = [
 ];
 var chart = layout()
     .innerRadius(innerRadius)
-    .outerRadius(outerRadius)
-    .range(["white", "red"]);
+    .outerRadius(outerRadius);
 d3.select('#chart')
     .selectAll('svg')
     .data([data])
