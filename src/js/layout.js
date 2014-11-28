@@ -1,8 +1,11 @@
 function layout() {
-    var innerRadius = 50,
-    outerRadius = 180,
+    var margin = {top: 20, right: 20, bottom: 20, left: 20},
+    innerRadius = 50,
+    outerRadius = 80,
+    numSegments = 24,
     segmentHeight = 20,
     domain = null,
+    range = ["white", "red"],
     accessor = function(d) {return d;},
     radialLabels = segmentLabels = [];
 
@@ -10,27 +13,24 @@ function layout() {
         selection.each(function(data) {
             var svg = d3.select(this);
 
-            var offset = outerRadius;
+            var offset = innerRadius + Math.ceil(data.length / numSegments) * segmentHeight;
             g = svg.append("g")
-                .classed("circos-layout", true)
-                .attr("transform", "translate(" + parseInt(offset) + "," + parseInt(offset) + ")");
+                .classed("circular-heat", true)
+                .attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
 
             var autoDomain = false;
             if (domain === null) {
                 domain = d3.extent(data, accessor);
                 autoDomain = true;
             }
+            var color = d3.scale.linear().domain(domain).range(range);
             if(autoDomain)
                 domain = null;
 
             g.selectAll("path").data(data)
                 .enter().append("path")
-                .attr("d", d3.svg.arc()
-                    .innerRadius(innerRadius)
-                    .outerRadius(outerRadius)
-                    .startAngle(getDataStartAngle)
-                    .endAngle(getDataStartAngle))
-                    .attr("fill", getDataColor);
+                .attr("d", d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(sa).endAngle(ea))
+                .attr("fill", getDataColor);
 
 
             // Unique id so that the text path defs are unique - is there a better way to do this?
@@ -41,7 +41,7 @@ function layout() {
             var labels = svg.append("g")
                 .classed("labels", true)
                 .classed("radial", true)
-                .attr("transform", "translate(" + parseInt(offset) + "," + parseInt(offset) + ")");
+                .attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
 
             labels.selectAll("def")
                 .data(radialLabels).enter()
@@ -68,7 +68,7 @@ function layout() {
             labels = svg.append("g")
                 .classed("labels", true)
                 .classed("segment", true)
-                .attr("transform", "translate(" + parseInt(offset) + "," + parseInt(offset) + ")");
+                .attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
 
             labels.append("def")
                 .append("path")
@@ -87,10 +87,10 @@ function layout() {
     }
 
     /* Arc functions */
-    getDataStartAngle = function(d, i) {
+    sa = function(d, i) {
         return d.start;
     }
-    getDataEndAngle = function(d, i) {
+    ea = function(d, i) {
         return d.end;
     }
     getDataColor = function(d, i){
@@ -116,6 +116,12 @@ function layout() {
         return chart;
     };
 
+    chart.numSegments = function(_) {
+        if (!arguments.length) return numSegments;
+        numSegments = _;
+        return chart;
+    };
+
     chart.segmentHeight = function(_) {
         if (!arguments.length) return segmentHeight;
         segmentHeight = _;
@@ -128,6 +134,11 @@ function layout() {
         return chart;
     };
 
+    chart.range = function(_) {
+        if (!arguments.length) return range;
+        range = _;
+        return chart;
+    };
 
     chart.radialLabels = function(_) {
         if (!arguments.length) return radialLabels;

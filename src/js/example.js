@@ -9,13 +9,12 @@ var data = [
     {start: pi/2, end: pi, color: '#666666'},
 ];
 var chart = layout()
-    .innerRadius(innerRadius)
-    .outerRadius(outerRadius);
+    .innerRadius(100)
+    .outerRadius(120)
+    .numSegments(4).range(["white", "red"]);
 d3.select('#chart')
     .selectAll('svg')
     .data([data])
     .enter()
     .append('svg')
-    .attr("width", width)
-    .attr("height", height)
     .call(chart);
