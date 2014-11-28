@@ -2,6 +2,8 @@ function layout() {
     var innerRadius = 50,
     outerRadius = 80,
     gap = 0.04,
+    labelPosition = 'center',
+    labelRadialOffset = 0,
     gapUnit = 'rad',
     dataTotalLength = 0,
     radialLabels = segmentLabels = [];
@@ -36,6 +38,26 @@ function layout() {
             // Unique id so that the text path defs are unique - is there a better way to do this?
             var id = d3.selectAll(".circos-layout")[0].length;
 
+            //labels
+            var r = innerRadius + labelRadialOffset;
+            labels = svg.append("g")
+                .classed("labels", true)
+                .classed("segment", true)
+                .attr("transform", "translate(" + parseInt(offset) + "," + parseInt(offset) + ")");
+
+            labels.append("def")
+                .append("path")
+                .attr("id", "segment-label-path-"+id)
+                .attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
+
+            labels.selectAll("text")
+                .data(data).enter()
+                .append("text")
+                .append("textPath")
+                .attr("xlink:href", "#segment-label-path-"+id)
+                .attr("startOffset", getLabelStartOffset)
+                .text(function(d) {return d.label;});
+
         });
 
     }
@@ -60,6 +82,15 @@ function layout() {
         }
     }
 
+    getLabelStartOffset = function(d, i) {
+        if(labelPosition === 'center'){
+            return (d.start+d.len/3)/dataTotalLength*100 + "%";
+        }
+        else{
+            return d.start/dataTotalLength*100 + "%";
+        }
+    }
+
     /* Configuration getters/setters */
     chart.innerRadius = function(_) {
         if (!arguments.length) return innerRadius;
@@ -70,6 +101,18 @@ function layout() {
     chart.outerRadius = function(_) {
         if (!arguments.length) return outerRadius;
         outerRadius = _;
+        return chart;
+    };
+
+    chart.labelPosition = function(_) {
+        if (!arguments.length) return labelPosition;
+        labelPosition = _;
+        return chart;
+    };
+
+    chart.labelRadialOffset = function(_) {
+        if (!arguments.length) return labelRadialOffset;
+        labelRadialOffset = _;
         return chart;
     };
 
