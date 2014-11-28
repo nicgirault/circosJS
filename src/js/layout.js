@@ -61,27 +61,6 @@ function layout() {
                 .attr("xlink:href", function(d, i) {return "#radial-label-path-"+id+"-"+i;})
                 .style("font-size", 0.6 * segmentHeight + 'px')
                 .text(function(d) {return d;});
-
-            //Segment labels
-            var segmentLabelOffset = 2;
-            var r = innerRadius + Math.ceil(data.length / numSegments) * segmentHeight + segmentLabelOffset;
-            labels = svg.append("g")
-                .classed("labels", true)
-                .classed("segment", true)
-                .attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
-
-            labels.append("def")
-                .append("path")
-                .attr("id", "segment-label-path-"+id)
-                .attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
-
-            labels.selectAll("text")
-                .data(segmentLabels).enter()
-                .append("text")
-                .append("textPath")
-                .attr("xlink:href", "#segment-label-path-"+id)
-                .attr("startOffset", function(d, i) {return i * 100 / numSegments + "%";})
-                .text(function(d) {return d;});
         });
 
     }
