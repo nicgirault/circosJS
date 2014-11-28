@@ -3,8 +3,6 @@ function layout() {
     outerRadius = 80,
     gap = 0.04,
     gapUnit = 'rad',
-    domain = null,
-    accessor = function(d) {return d;},
     dataTotalLength = 0,
     radialLabels = segmentLabels = [];
 
@@ -24,14 +22,6 @@ function layout() {
             g = svg.append("g")
                 .classed("circos-layout", true)
                 .attr("transform", "translate(" + parseInt(offset) + "," + parseInt(offset) + ")");
-
-            var autoDomain = false;
-            if (domain === null) {
-                domain = d3.extent(data, accessor);
-                autoDomain = true;
-            }
-            if(autoDomain)
-                domain = null;
 
             g.selectAll("path").data(data)
                 .enter().append("path")
@@ -92,12 +82,6 @@ function layout() {
     chart.gapUnit = function(_) {
         if (!arguments.length) return gapUnit;
         gapUnit = _;
-        return chart;
-    };
-
-    chart.accessor = function(_) {
-        if (!arguments.length) return accessor;
-        accessor = _;
         return chart;
     };
 
