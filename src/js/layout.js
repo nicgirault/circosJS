@@ -1,6 +1,7 @@
-function circularHeatChart() {
+function layout() {
     var margin = {top: 20, right: 20, bottom: 20, left: 20},
     innerRadius = 50,
+    outerRadius = 80,
     numSegments = 24,
     segmentHeight = 20,
     domain = null,
@@ -28,8 +29,8 @@ function circularHeatChart() {
 
             g.selectAll("path").data(data)
                 .enter().append("path")
-                .attr("d", d3.svg.arc().innerRadius(ir).outerRadius(or).startAngle(sa).endAngle(ea))
-                .attr("fill", function(d) {return color(accessor(d));});
+                .attr("d", d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius).startAngle(sa).endAngle(ea))
+                .attr("fill", getDataColor);
 
 
             // Unique id so that the text path defs are unique - is there a better way to do this?
@@ -86,17 +87,14 @@ function circularHeatChart() {
     }
 
     /* Arc functions */
-    ir = function(d, i) {
-        return innerRadius + Math.floor(i/numSegments) * segmentHeight;
-    }
-    or = function(d, i) {
-        return innerRadius + segmentHeight + Math.floor(i/numSegments) * segmentHeight;
-    }
     sa = function(d, i) {
-        return (i * 2 * Math.PI) / numSegments;
+        return d.start;
     }
     ea = function(d, i) {
-        return ((i + 1) * 2 * Math.PI) / numSegments;
+        return d.end;
+    }
+    getDataColor = function(d, i){
+        return d.color;
     }
 
     /* Configuration getters/setters */
@@ -109,6 +107,12 @@ function circularHeatChart() {
     chart.innerRadius = function(_) {
         if (!arguments.length) return innerRadius;
         innerRadius = _;
+        return chart;
+    };
+
+    chart.outerRadius = function(_) {
+        if (!arguments.length) return outerRadius;
+        outerRadius = _;
         return chart;
     };
 

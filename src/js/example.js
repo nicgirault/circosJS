@@ -1,11 +1,17 @@
 var width = 720,
 height = 720,
 outerRadius = Math.min(width, height) / 2 - 10,
-innerRadius = outerRadius - 24;
- 
+innerRadius = outerRadius - 24,
+pi = Math.PI;
 
-var data = [1, 2, 3, 4, 2, 3, 4, 5, 3, 4, 5, 6, 4, 5, 6, 7];
-var chart = circularHeatChart().innerRadius(100).numSegments(4).range(["white", "red"]);
+var data = [
+    {start: 0, end: pi/3, color: '#cccccc'},
+    {start: pi/2, end: pi, color: '#666666'},
+];
+var chart = layout()
+    .innerRadius(100)
+    .outerRadius(120)
+    .numSegments(4).range(["white", "red"]);
 d3.select('#chart')
     .selectAll('svg')
     .data([data])
