@@ -5,12 +5,15 @@ innerRadius = outerRadius - 24,
 pi = Math.PI;
 
 var data = [
-    {start: 0, end: pi/3, color: '#cccccc'},
-    {start: pi/2, end: pi, color: '#666666'},
+    {len: 2, color: '#cccccc'},
+    {len: 3, color: '#bbbbbb'},
+    {len: 4, color: '#aaaaaa'},
+    {len: 1, color: '#999999'},
 ];
 var chart = layout()
     .innerRadius(innerRadius)
-    .outerRadius(outerRadius);
+    .outerRadius(outerRadius)
+    .gap(0.5).gapUnit('rad');
 d3.select('#chart')
     .selectAll('svg')
     .data([data])

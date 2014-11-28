@@ -1,13 +1,24 @@
 function layout() {
     var innerRadius = 50,
     outerRadius = 80,
+    gap = 0.04,
+    gapUnit = 'rad',
     domain = null,
     accessor = function(d) {return d;},
+    dataTotalLength = 0,
     radialLabels = segmentLabels = [];
 
     function chart(selection) {
         selection.each(function(data) {
             var svg = d3.select(this);
+
+            // Compute data start offset
+            var startOffset = 0
+            for(var i=0;i<data.length;i++){
+                data[i].start = startOffset;
+                startOffset += data[i].len;
+            }
+            dataTotalLength = startOffset;
 
             var offset = outerRadius;
             g = svg.append("g")
@@ -41,13 +52,22 @@ function layout() {
 
     /* Arc functions */
     getDataStartAngle = function(d, i) {
-        return d.start;
+        return d.start/dataTotalLength * 2*Math.PI;
     }
     getDataEndAngle = function(d, i) {
-        return d.end;
+        return (d.start+d.len)/dataTotalLength * 2*Math.PI - getGapInRad(gap, gapUnit);
     }
     getDataColor = function(d, i){
         return d.color;
+    }
+
+    getGapInRad = function(gap, unit){
+        if(unit === 'rad'){
+            return gap;
+        }
+        else{
+            return 0;
+        }
     }
 
     /* Configuration getters/setters */
@@ -63,23 +83,15 @@ function layout() {
         return chart;
     };
 
-    chart.domain = function(_) {
-        if (!arguments.length) return domain;
-        domain = _;
+    chart.gap = function(_) {
+        if (!arguments.length) return gap;
+        gap = _;
         return chart;
     };
 
-    chart.radialLabels = function(_) {
-        if (!arguments.length) return radialLabels;
-        if (_ == null) _ = [];
-        radialLabels = _;
-        return chart;
-    };
-
-    chart.segmentLabels = function(_) {
-        if (!arguments.length) return segmentLabels;
-        if (_ == null) _ = [];
-        segmentLabels = _;
+    chart.gapUnit = function(_) {
+        if (!arguments.length) return gapUnit;
+        gapUnit = _;
         return chart;
     };
 
