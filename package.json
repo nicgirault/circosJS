@@ -1,0 +1,22 @@
+{
+  "name": "circosJS",
+  "version": "0.0.0",
+  "description": "A d3js library to build circos graphs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicgirault/circosJS.git"
+  },
+  "author": "Nicolas Girault",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nicgirault/circosJS/issues"
+  },
+  "homepage": "https://github.com/nicgirault/circosJS",
+  "devDependencies": {
+    "gulp": "^3.8.10"
+  }
+}
