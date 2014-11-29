@@ -1,4 +1,4 @@
-function heatmap(svg, conf) {
+function heatmap() {
     var innerRadius = 50,
     outerRadius = 80,
     dataTotalLength = 0;
@@ -17,7 +17,7 @@ function heatmap(svg, conf) {
 
             var offset = outerRadius;
             g = svg.append("g")
-                .classed("circos-layout", true)
+                .classed("circos-heatmap", true)
                 .attr("transform", "translate(" + parseInt(offset) + "," + parseInt(offset) + ")");
 
             g.selectAll("path").data(data)
@@ -27,21 +27,21 @@ function heatmap(svg, conf) {
                     .outerRadius(outerRadius)
                     .startAngle(getDataStartAngle)
                     .endAngle(getDataEndAngle))
-                    .attr("fill", getDataColor);
+                    .attr("fill", getDataColor)
+                    .attr("id", function(d){return d.id;});
         });
-
-    }
+    };
 
     /* Arc functions */
     getDataStartAngle = function(d, i) {
         return d.start/dataTotalLength * 2*Math.PI;
-    }
+    };
     getDataEndAngle = function(d, i) {
         return (d.start+d.len)/dataTotalLength * 2*Math.PI - getGapInRad(gap, gapUnit);
-    }
+    };
     getDataColor = function(d, i){
         return d.color;
-    }
+    };
 
     /* Configuration getters/setters */
     heatmapChart.innerRadius = function(_) {
@@ -57,4 +57,4 @@ function heatmap(svg, conf) {
     };
 
     return heatmapChart;
-}
+};

@@ -33,7 +33,8 @@ function layout(svg, conf) {
                     .outerRadius(outerRadius)
                     .startAngle(getDataStartAngle)
                     .endAngle(getDataEndAngle))
-                    .attr("fill", getDataColor);
+                    .attr("fill", getDataColor)
+                    .attr("id", function(d){return d.id;});
 
 
             // Unique id so that the text path defs are unique - is there a better way to do this?
@@ -66,13 +67,13 @@ function layout(svg, conf) {
     /* Arc functions */
     getDataStartAngle = function(d, i) {
         return d.start/dataTotalLength * 2*Math.PI;
-    }
+    };
     getDataEndAngle = function(d, i) {
         return (d.start+d.len)/dataTotalLength * 2*Math.PI - getGapInRad(gap, gapUnit);
-    }
+    };
     getDataColor = function(d, i){
         return d.color;
-    }
+    };
 
     getGapInRad = function(gap, unit){
         if(unit === 'rad'){
@@ -81,7 +82,7 @@ function layout(svg, conf) {
         else{
             return 0;
         }
-    }
+    };
 
     getLabelStartOffset = function(d, i) {
         if(labelPosition === 'center'){
@@ -90,7 +91,7 @@ function layout(svg, conf) {
         else{
             return d.start/dataTotalLength*100 + "%";
         }
-    }
+    };
 
     /* Configuration getters/setters */
     layoutChart.innerRadius = function(_) {
