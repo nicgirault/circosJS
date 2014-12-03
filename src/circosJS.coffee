@@ -1,4 +1,4 @@
-circos = do(d3) ->
+circosJS = do(d3) ->
     circos = (conf) ->
         this.width = conf.width
         this.height = conf.height
@@ -47,5 +47,8 @@ circos = do(d3) ->
             .attr('id', (d) -> d.id)
         circos
 
-    circos
+    circosJS = {}
+    circosJS.circos = circos
+
+    circosJS
     
