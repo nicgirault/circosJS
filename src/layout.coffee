@@ -1,4 +1,4 @@
-layout = do(d3) ->
+circosJS = do(d3, circosJS) ->
     layout = (conf, data) ->
         # most of the time, we call blocks by id so let's build a dictonary
         # with block ids as keys
@@ -58,7 +58,8 @@ layout = do(d3) ->
     layout.prototype.getOuterRadius = ->
         this.conf.outerRadius
 
-    layout
+    circosJS.layout = layout
+    circosJS
 
     #             // Unique id so that the text path defs are unique - is there a better way to do this?
     #             var id = d3.selectAll(".circos-layout")[0].length;

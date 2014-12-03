@@ -1,6 +1,7 @@
-var circos;
+var circosJS;
 
-circos = (function(d3) {
+circosJS = (function(d3) {
+  var circos;
   circos = function(conf) {
     this.width = conf.width;
     this.height = conf.height;
@@ -37,14 +38,17 @@ circos = (function(d3) {
     });
     return circos;
   };
-  return circos;
+  circosJS = {};
+  circosJS.circos = circos;
+  return circosJS;
 })(d3);
 
 
 
-var layout;
+var circosJS;
 
-layout = (function(d3) {
+circosJS = (function(d3, circosJS) {
+  var layout;
   layout = function(conf, data) {
     var k, offset, v;
     this.blocks = {};
@@ -113,5 +117,6 @@ layout = (function(d3) {
   layout.prototype.getOuterRadius = function() {
     return this.conf.outerRadius;
   };
-  return layout;
-})(d3);
+  circosJS.layout = layout;
+  return circosJS;
+})(d3, circosJS);

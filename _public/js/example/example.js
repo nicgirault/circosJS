@@ -92,13 +92,13 @@ karyotype = [
 // );
 
 // circosJS.test();
-var c = new circos({
+var c = new circosJS.circos({
     width: 500,
     height: 500,
     container: '#chart'
 });
 
-var l = new layout(
+var l = new circosJS.layout(
     {
         innerRadius: 200,
         outerRadius: 250

@@ -98,7 +98,7 @@ var c = new circosJS.circos({
     container: '#chart'
 });
 
-var l = new layout(
+var l = new circosJS.layout(
     {
         innerRadius: 200,
         outerRadius: 250
