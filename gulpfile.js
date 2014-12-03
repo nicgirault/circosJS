@@ -8,6 +8,7 @@ var less = require('gulp-less');
 var path = require('path');
 var copy = require('gulp-copy');
 var mocha = require('gulp-mocha');
+var watch = require('gulp-watch');
 
 gulp.task('default', function() {
   // place code for your default task here
@@ -52,6 +53,12 @@ gulp.task('copy', function(){
 gulp.task('mocha', function () {
     gulp.src('test/test.js', {read: false})
         .pipe(mocha({reporter: 'nyan'}));
+});
+
+gulp.task('watch', function () {
+    gulp.watch(parameters.app_path + '/**/*.coffee', ['coffee2js']);
+    gulp.watch(parameters.app_path + '/**/*.jade', ['jade2html']);
+    gulp.watch(parameters.app_path + '/**/*.less', ['less2css']);
 });
 
 gulp.task('compile', ['jade2html', 'coffee2js', 'less2css', 'copy']);
