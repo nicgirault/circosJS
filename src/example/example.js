@@ -105,4 +105,4 @@ var l = new layout(
     },
     karyotype
 );
-l.render(c);
+c.layout(l).render();

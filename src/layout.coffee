@@ -51,27 +51,12 @@ layout = do(d3) ->
         else if unit == 'rad' then block*2*Math.PI
         else null
 
-    layout.prototype.render = (circos) ->
-
-        that = this
-        circos.getContainer().append('g')
-            .classed('cs-layout', true)
-            .attr('transform', 'translate(' + parseInt(circos.getWidth()/2) + ',' + parseInt(circos.getHeight()/2) + ')')
-
-            .selectAll('path')
-            .data(this.data)
-            .enter()
-            .append('path')
-            .attr('d',
-                d3.svg.arc()
-                    .innerRadius(this.conf.innerRadius)
-                    .outerRadius(this.conf.outerRadius)
-                    .startAngle((d,i) -> d.start/that.size * 2*Math.PI)
-                    .endAngle((d,i) -> (d.start+d.len)/that.size * 2*Math.PI - that.conf.gap)
-            )
-            .attr('fill', (d) -> d.color)
-            .attr('id', (d) -> d.id)
-        circos
+    layout.prototype.getSize = ->
+        this.size
+    layout.prototype.getInnerRadius = ->
+        this.conf.innerRadius
+    layout.prototype.getOuterRadius = ->
+        this.conf.outerRadius
 
     layout
 

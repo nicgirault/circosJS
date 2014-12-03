@@ -19,6 +19,24 @@ circos = (function(d3) {
   circos.prototype.getHeight = function() {
     return this.height;
   };
+  circos.prototype.layout = function(layout) {
+    this.layout = layout;
+    return this;
+  };
+  circos.prototype.render = function() {
+    var that;
+    that = this;
+    this.getContainer().append('g').classed('cs-layout', true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')').selectAll('path').data(this.layout.data).enter().append('path').attr('d', d3.svg.arc().innerRadius(this.layout.getInnerRadius()).outerRadius(this.layout.getOuterRadius()).startAngle(function(d, i) {
+      return d.start / that.layout.getSize() * 2 * Math.PI;
+    }).endAngle(function(d, i) {
+      return (d.start + d.len) / that.layout.getSize() * 2 * Math.PI - that.layout.getGap('rad');
+    })).attr('fill', function(d) {
+      return d.color;
+    }).attr('id', function(d) {
+      return d.id;
+    });
+    return circos;
+  };
   return circos;
 })(d3);
 
@@ -86,19 +104,14 @@ layout = (function(d3) {
       return null;
     }
   };
-  layout.prototype.render = function(circos) {
-    var that;
-    that = this;
-    circos.getContainer().append('g').classed('cs-layout', true).attr('transform', 'translate(' + parseInt(circos.getWidth() / 2) + ',' + parseInt(circos.getHeight() / 2) + ')').selectAll('path').data(this.data).enter().append('path').attr('d', d3.svg.arc().innerRadius(this.conf.innerRadius).outerRadius(this.conf.outerRadius).startAngle(function(d, i) {
-      return d.start / that.size * 2 * Math.PI;
-    }).endAngle(function(d, i) {
-      return (d.start + d.len) / that.size * 2 * Math.PI - that.conf.gap;
-    })).attr('fill', function(d) {
-      return d.color;
-    }).attr('id', function(d) {
-      return d.id;
-    });
-    return circos;
+  layout.prototype.getSize = function() {
+    return this.size;
+  };
+  layout.prototype.getInnerRadius = function() {
+    return this.conf.innerRadius;
+  };
+  layout.prototype.getOuterRadius = function() {
+    return this.conf.outerRadius;
   };
   return layout;
 })(d3);
