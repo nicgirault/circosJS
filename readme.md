@@ -2,17 +2,19 @@ CircosJS
 ========
 
 With CircosJS you can build fast and interactive circos graphs.
-[Circos](circos.ca) graphs have been created by Martin Krzywinski.
+[Circos](http://circos.ca) graphs have been created by Martin Krzywinski.
 In version 0.1, circosJS handles the layout... Next step is to handle layout labels and heatmap tracks.
 
 Get started
 -----------
 
 In an html page, insert the circosJS library
+...
     <script src='dist/circosJS.full.js'></script>
     <link rel='stylesheet' href='dist/circosJS.full.css'></link>
-
+...
 Then you can create a layout has followed:
+...
     <script>
     karyotype = [
         {len: 249250621, color: 'rgb(153,102,0)', label: '1', id: 'chr1'},
@@ -55,7 +57,7 @@ Then you can create a layout has followed:
     );
     c.layout(l).render();
     </script>
-
+...
 
 Author
 ------
