@@ -15,7 +15,6 @@ In an html page, insert the circosJS library
 ...
 Then you can create a layout has followed:
 ...
-    <script>
     karyotype = [
         {len: 249250621, color: 'rgb(153,102,0)', label: '1', id: 'chr1'},
         {len: 243199373, color: 'rgb(102,102,0)', label: '2', id: 'chr2'},
@@ -56,7 +55,6 @@ Then you can create a layout has followed:
         karyotype
     );
     c.layout(l).render();
-    </script>
 ...
     
 Author
