@@ -10,11 +10,14 @@ Get started
 
 In an html page, insert the circosJS library
 ...
+
     <script src='dist/circosJS.full.js'></script>
     <link rel='stylesheet' href='dist/circosJS.full.css'></link>
+
 ...
 Then you can create a layout has followed:
 ...
+
     karyotype = [
         {len: 249250621, color: 'rgb(153,102,0)', label: '1', id: 'chr1'},
         {len: 243199373, color: 'rgb(102,102,0)', label: '2', id: 'chr2'},
@@ -46,7 +49,6 @@ Then you can create a layout has followed:
         height: 500,
         container: '#chart'
     });
-
     var l = new circosJS.layout(
         {
             innerRadius: 200,
@@ -55,6 +57,7 @@ Then you can create a layout has followed:
         karyotype
     );
     c.layout(l).render();
+
 ...
     
 Author
