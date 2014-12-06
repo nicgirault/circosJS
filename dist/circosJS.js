@@ -25,12 +25,6 @@ circosJS.Core = function(conf) {
   };
 };
 
-circosJS.Core.prototype._conf = {
-  width: 550,
-  height: 550,
-  container: 'circos'
-};
-
 circosJS.Core.prototype.layout = function(conf, data) {
   this._layout = new circosJS.layout(conf, data);
   return this;
@@ -101,14 +95,6 @@ circosJS.layout = function(conf, data) {
   return this;
 };
 
-circosJS.layout.prototype._conf = {
-  innerRadius: 250,
-  outerRadius: 300,
-  gap: 0.04,
-  labelPosition: 'center',
-  labelRadialOffset: 0
-};
-
 circosJS.Core.prototype.histogram = function(id, conf, data) {
   return this;
 };
@@ -125,4 +111,18 @@ circosJS.Core.prototype.render = function(ids) {
   }).attr('id', function(d) {
     return d.id;
   });
+};
+
+circosJS.Core.prototype._conf = {
+  width: 550,
+  height: 550,
+  container: 'circos'
+};
+
+circosJS.layout.prototype._conf = {
+  innerRadius: 250,
+  outerRadius: 300,
+  gap: 0.04,
+  labelPosition: 'center',
+  labelRadialOffset: 0
 };

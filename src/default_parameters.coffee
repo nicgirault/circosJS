@@ -5,7 +5,7 @@ circosJS.Core.prototype._conf =
     container: 'circos'
 
 # Layout
-circosJS.layout.prototype._conf =
+circosJS.Layout.prototype._conf =
     innerRadius: 250
     outerRadius: 300
     gap: 0.04 # in radian

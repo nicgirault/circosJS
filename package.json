@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/nicgirault/circosJS",
   "devDependencies": {
+    "chai": "^1.10.0",
     "coffee-script": "^1.8.0",
     "gulp": "^3.8.10",
     "gulp-coffeeify": "^0.1.2",

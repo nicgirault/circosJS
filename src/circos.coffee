@@ -25,15 +25,9 @@ circosJS.Core = (conf) ->
         this._conf.height
     return
 
-# define default configuration values
-circosJS.Core.prototype._conf =
-    width: 550
-    height: 550
-    container: 'circos'
-
 circosJS.Core.prototype.layout = (conf, data) ->
     # this refers the circos instance
-    this._layout = new circosJS.layout(conf, data)
+    this._layout = new circosJS.Layout(conf, data)
     return this
 
 circosJS.Core.prototype.heatmap = (id, conf, data) ->
@@ -43,3 +37,5 @@ circosJS.Core.prototype.heatmap = (id, conf, data) ->
     else
         # append
         null
+
+module.exports = circosJS

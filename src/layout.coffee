@@ -1,5 +1,5 @@
 # A layout instance
-circosJS.layout = (conf, data) ->
+circosJS.Layout = (conf, data) ->
     # this refers the layout instance
     this._data = data
     this._blocks = {} #data dictonary key=blockId
@@ -43,13 +43,6 @@ circosJS.layout = (conf, data) ->
 
     return this
 
-# define default values for parameters
-circosJS.layout.prototype._conf =
-    innerRadius: 250
-    outerRadius: 300
-    gap: 0.04 # in radian
-    labelPosition: 'center'
-    labelRadialOffset: 0
 
  
 

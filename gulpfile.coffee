@@ -9,19 +9,35 @@ mocha = require("gulp-mocha")
 watch = require("gulp-watch")
 # rjs = require('gulp-requirejs')
 
-
-gulp.task 'coffee2js', ->
+gulp.task 'concat-coffee', ->
     gulp.src [
         'src/circos.coffee'
         'src/layout.coffee'
         'src/heatmap.coffee'
         'src/render.coffee'
+        'src/default_parameters.coffee'
     ]
+    .pipe(concat('circosJS.coffee'))
+    .pipe(gulp.dest('src'))
+    .on 'error', gutil.log
+    return
+
+gulp.task 'coffee2js', ['concat-coffee'], ->
+    gulp.src 'src/circosJS.coffee'
     .pipe(coffee(bare: true))
     .pipe(concat('circosJS.js'))
     .pipe(gulp.dest('dist'))
     .on 'error', gutil.log
     return
+
+gulp.task 'test', ['concat-coffee'], ->
+    setTimeout ->
+        gulp.src 'test/test.coffee', {read: false}
+        .pipe mocha {reporter: 'nyan', compilers: 'coffee:coffee-script'}
+        .on 'error', gutil.log
+        return
+    , 1000
+
 
 # gulp.task 'requirejsBuild', ['coffee2js'], ->
 #     rjs
@@ -53,15 +69,6 @@ gulp.task 'coffee2js', ->
 #     .on 'error', gutil.log
 #     return
 
-# gulp.task 'mocha', ->
-#     gulp.src 'test/test.coffee',
-#         read: false
-#     .pipe coffee
-#         bare: true
-#     .pipe mocha
-#         reporter: 'nyan'
-#         compilers: 'coffee:coffee-script'
-#     return
 
 # gulp.task 'md_test', ->
 #     gulp.src ['./src/md_layout.coffee', './src/md_rendering.coffee','./src/md_circos.coffee']

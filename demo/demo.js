@@ -1,8 +1,3 @@
-// var width = 720,
-// height = 720,
-// outerRadius= Math.min(width, height) / 2 - 10,
-// innerRadius = outerRadius - 24,
-// pi = Math.PI;
 karyotype = [
     {len: 249250621, color: 'rgb(153,102,0)', label: '1', id: 'chr1'},
     {len: 243199373, color: 'rgb(102,102,0)', label: '2', id: 'chr2'},
@@ -59,20 +54,12 @@ var heatmap = [
 ];
     
 
-// //just thinking
-// var circos = new circosJS({
-//     width: 500,
-//     height: 500,
-//     container: '#chart'
-// }).layout({
-    // ...
-// }).heatmap('id', {}, data).heatmap('id2', {}, data2).render(['id', 'id2', 'layout']--default all);
-
 var circos = new circosJS({
     width: 550,
     height: 550,
     container: '#chart'
 });
+
 circos
     .layout(
         {
