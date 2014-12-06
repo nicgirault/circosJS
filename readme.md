@@ -1,9 +1,11 @@
 CircosJS
 ========
 
-With CircosJS you can build fast and interactive circos graphs.
+CircosJS is a javascript library to easily build an interactive circos graphs.
+It is based on d3 library.
+
 [Circos](http://circos.ca) graphs have been created by Martin Krzywinski.
-In version 0.1, circosJS handles the layout... Next step is to handle layout labels and heatmap tracks.
+
 
 Get started
 -----------
@@ -15,7 +17,7 @@ In an html page, insert the circosJS library
 
 Then you can create a layout has followed:
 
-    karyotype = [
+    var karyotype = [
         {len: 249250621, color: 'rgb(153,102,0)', label: '1', id: 'chr1'},
         {len: 243199373, color: 'rgb(102,102,0)', label: '2', id: 'chr2'},
         {len: 198022430, color: 'rgb(153,153,30)', label: '3', id: 'chr3'},
@@ -41,19 +43,63 @@ Then you can create a layout has followed:
         {len: 155270560, color: 'rgb(153,153,153)', label: 'X', id: 'chrX'},
         {len: 59373566, color: 'rgb(204,204,204)', label: 'Y', id: 'chrY'},
     ];
-    var c = new circosJS.circos({
+    var c = new circosJS({
         width: 500,
         height: 500,
         container: '#chart'
     });
     var l = new circosJS.layout(
+        
+    );
+    c.layout(
         {
             innerRadius: 200,
             outerRadius: 250
         },
         karyotype
-    );
-    c.layout(l).render();
+    ).render();
+
+API documentation
+=================
+
+- Create a Circos Instance:
+var circos = new circosJS({
+    width: 500, //px
+    height: 500, //px
+    container: '#chart' //the selector of the empty svg tag in the document
+});
+
+Methods:
+--------
+    - (circos) layout(conf, data)
+        conf: an object with following properties
+            + innerRadius //(default 250)
+            + outerRadius //(default 300)
+            + gap //(default 0.04) in radian
+            + labelPosition //(default 'center'). Possible values: 'none', 'center'
+            + labelRadialOffset //(default 0)
+        data: an array of objects with properties:
+            + len (*)
+            + id (*)
+            + color
+            + label
+            (*) = required
+    - (circos) heatmap(id, conf, data)
+        id: a unique string to identify the heatmap
+        conf:
+            + innerRadius //(default 200)
+            + outerRadius //(default 250)
+            + min //(default 'smart'). Can be a number or the string 'smart' (it will compute the min value of data). Used for color mapping.
+            + max //(default 'smart'). Can be a number or the string 'smart' (it will compute the max value of data). Used for color mapping.
+            + colorPalette //(default 'YlGnBu'). See colorbrewer palettes
+            + colorPaletteSize //(default 9)
+        data: an array of objects with properties:
+            + parent: corresponding to the id of a layout datum
+            + data: an array of objects with the given properties:
+                + start: integer between 1 and the value of the len property of corresponding layout datum
+                + end: integer between 1 and the value of the len property of corresponding layout datum
+                + value: the color mapping will be done according to this value
+
 
 
 Author
