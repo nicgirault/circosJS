@@ -1,5 +1,51 @@
-circosJS.Core.prototype.histogram = (id, conf, data) ->
-    # this refer to the circos instance
+circosJS.Core.prototype.heatmap = (id, conf, data) ->
+    # Check layout is defined
+    unless this._layout?
+        circosJS.log(
+            1,
+            'No layout defined',
+            'Circos cannot add or update a heatmap track without layout',
+            {'heatmap_id': id}
+        )
+        return this
+
+    #check data consistency with layout
+    layout_ids = (d.id for d in this._layout.getData())
+    # for datum in data
+    for datum in data
+        unless datum.parent in layout_ids
+            circosJS.log(
+                2,
+                'No layout block id match',
+                'Heatmap data has a parent property that does not correspond to any layout block id',
+                {'heatmap_id': id, 'block_id': datum.parent}
+            )
+
+
+    if this._heatmaps[id]?
+        # update
+        null
+    else
+        # append
+        this._heatmaps[id] = new circosJS.Heatmap(conf, data)
+    return this
+
+
+# Heatmap instance constructor
+circosJS.Heatmap = (conf, data) ->
+    # this refers the heatmap instance
+    this._data = data
+
+    # conf override the default configuration. Conf not in default conf
+    # object are removed
+    for k,v of this._conf
+        this._conf[k] = if conf[k]? then conf[k] else v
+
+    # getters/setters
+    this.getData = ->
+        this._data
+    this.getConf = ->
+        this._conf
     return this
 
 

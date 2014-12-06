@@ -23,22 +23,22 @@ circosJS.Core = (conf) ->
         this._conf.width
     this.getHeight = ->
         this._conf.height
-    return
+    return this
 
 circosJS.Core.prototype.layout = (conf, data) ->
     # this refers the circos instance
     this._layout = new circosJS.Layout(conf, data)
     return this
 
-circosJS.Core.prototype.heatmap = (id, conf, data) ->
-    if this._heatmaps[id]
-        # update
-        null
-    else
-        # append
-        null
-
 circosJS.log = (level, name, message, data) ->
-    console.log(name, message, data)
+    levels = ['Permanent log', 'Error', 'Warning', 'Info']
+    # 0 - permanent
+    # 1 - error
+    # 2 - warning
+    # 3 - info
+    console.log('CircosJS: ', levels[level]+' ['+name+'] ', message, data)
+    return
 
-module.exports = circosJS
+if module?
+    module.exports = circosJS
+

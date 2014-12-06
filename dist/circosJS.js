@@ -23,22 +23,52 @@ circosJS.Core = function(conf) {
   this.getHeight = function() {
     return this._conf.height;
   };
+  return this;
 };
 
 circosJS.Core.prototype.layout = function(conf, data) {
-  this._layout = new circosJS.layout(conf, data);
+  this._layout = new circosJS.Layout(conf, data);
   return this;
 };
 
 circosJS.Core.prototype.heatmap = function(id, conf, data) {
-  if (this._heatmaps[id]) {
-    return null;
-  } else {
-    return null;
+  var d, layout_ids;
+  if (this._layout == null) {
+    circosJS.log(1, 'No layout defined', 'Circos cannot add or update a heatmap track without layout', {
+      'heatmap_id': id
+    });
+    return this;
   }
+  layout_ids = (function() {
+    var _i, _len, _ref, _results;
+    _ref = this._layout.getData();
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      d = _ref[_i];
+      _results.push(d.id);
+    }
+    return _results;
+  }).call(this);
+  console.log(layout_ids);
+  if (this._heatmaps[id] != null) {
+    null;
+  } else {
+    this._heatmaps[id] = new circosJS.Heatmap(conf, data);
+  }
+  return this;
 };
 
-circosJS.layout = function(conf, data) {
+circosJS.log = function(level, name, message, data) {
+  var levels;
+  levels = ['Permanent log', 'Error', 'Warning', 'Info'];
+  console.log('CircosJS: ', levels[level] + ' [' + name + '] ', message, data);
+};
+
+if (typeof module !== "undefined" && module !== null) {
+  module.exports = circosJS;
+}
+
+circosJS.Layout = function(conf, data) {
   var k, offset, v, _ref, _ref1;
   this._data = data;
   this._blocks = {};
@@ -95,7 +125,20 @@ circosJS.layout = function(conf, data) {
   return this;
 };
 
-circosJS.Core.prototype.histogram = function(id, conf, data) {
+circosJS.Heatmap = function(conf, data) {
+  var k, v, _ref;
+  this._data = data;
+  _ref = this._conf;
+  for (k in _ref) {
+    v = _ref[k];
+    this._conf[k] = conf[k] != null ? conf[k] : v;
+  }
+  this.getData = function() {
+    return this._data;
+  };
+  this.getConf = function() {
+    return this._conf;
+  };
   return this;
 };
 
@@ -119,10 +162,19 @@ circosJS.Core.prototype._conf = {
   container: 'circos'
 };
 
-circosJS.layout.prototype._conf = {
+circosJS.Layout.prototype._conf = {
   innerRadius: 250,
   outerRadius: 300,
   gap: 0.04,
   labelPosition: 'center',
   labelRadialOffset: 0
+};
+
+circosJS.Heatmap.prototype._conf = {
+  innerRadius: 200,
+  outerRadius: 249,
+  min: 'smart',
+  max: 'smart',
+  colorPalette: 'RgYn',
+  colorPaletteSize: 9
 };

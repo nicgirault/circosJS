@@ -67,6 +67,8 @@ circos
             outerRadius: 250
         },
         karyotype
-    ).render();
+    )
+    .heatmap('h1', {}, [{start: 1, end: 5, value: 1}])
+    .render();
 
 

@@ -11,3 +11,12 @@ circosJS.Layout.prototype._conf =
     gap: 0.04 # in radian
     labelPosition: 'center'
     labelRadialOffset: 0
+
+# Heatmap
+circosJS.Heatmap.prototype._conf =
+    innerRadius: 200
+    outerRadius: 249
+    min: 'smart'
+    max: 'smart'
+    colorPalette: 'RgYn'
+    colorPaletteSize: 9

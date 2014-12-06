@@ -1,5 +1,11 @@
 assert = require 'assert'
+chai = require 'chai'
 expect = require('chai').expect
+sinon = require 'sinon'
+sinon_chai = require 'sinon-chai'
+
+chai.use(sinon_chai)
+
 circosJS = require('../src/circosJS.coffee')
 
 describe 'CircosJS', ->
@@ -43,23 +49,44 @@ describe 'Layout', ->
     it 'should return a data', ->
         expect(c._layout.getData()).to.deep.equal([1,2,3])
     
+
+
 describe 'Heatmap', ->
-    c = new circosJS
+    conf = 
+        innerRadius: 10
+        outerRadius: 20
+        min: -2
+        max: 13
+        colorPalette: 'RgYn'
+        colorPaletteSize: 9
+    log = sinon.spy(circosJS, 'log')
+
+    c = new circosJS({})
     h = c
         .layout({}, [{len: 10, color: '#333333', label: '1', id: '1'}])
-        .heatmap('h1', {}, [{start: 1, end: 5, value: 1}])
+        .heatmap('h1', conf, [{parent: '1', data: {start: 1, end: 5, value: 1}}])
 
     it 'should return the circos object', ->
         expect(h).to.equal(c)
 
+    it 'should create an instance of Heatmap', ->
+        expect(c._heatmaps['h1']).to.be.an.instanceOf(circosJS.Heatmap)
+
     it 'should return the expected values', ->
-        return true
+        expect(c._heatmaps['h1'].getConf()).to.deep.equal(conf)
 
-    it 'should throw an exception when adding a heatmap when no layout is defined', ->
-        return true
+    it 'should log an error when adding a heatmap when no layout is defined', ->
+        log.reset()
+        c1 = new circosJS({})
+        c1.heatmap('h1', conf, [{ parent: '1', data: {start: 1, end: 5, value: 1}}])
+        expect(log).to.have.been.calledOnce
+        expect(log).to.have.been.calledWith(1, 'No layout defined')
 
-    it 'should log a message when heatmap data does not fit a layout id', ->
-        return true
+    it 'should log a warning message when heatmap data does not fit a layout id', ->
+        log.reset()
+        c.heatmap('h2', conf, [{ parent: 'xxx', data: {start: 1, end: 5, value: 1}}])
+        expect(log).to.have.been.calledOnce
+        expect(log).to.have.been.calledWith(2, 'No layout block id match')
 
     it 'should log a message when heatmap data does not fit the block size', ->
         return true
@@ -71,6 +98,9 @@ describe 'Heatmap', ->
         return true
 
     it 'should update the good heatmap instance', ->
+        return true
+
+    it 'should return data min/max when conf.min/conf.max value are "smart"', ->
         return true
 
 
