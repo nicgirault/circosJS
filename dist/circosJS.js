@@ -42,7 +42,7 @@ if (typeof module !== "undefined" && module !== null) {
 }
 
 circosJS.Layout = function(conf, data) {
-  var k, offset, v, _ref, _ref1;
+  var block_nb, gap, k, offset, size, v, _ref, _ref1, _ref2;
   this._data = data;
   this._blocks = {};
   this._size = 0;
@@ -54,9 +54,9 @@ circosJS.Layout = function(conf, data) {
       label: v.label,
       len: v.len,
       color: v.color,
-      start: offset
+      offset: offset
     };
-    v.start = offset;
+    v.offset = offset;
     offset += v.len;
   }
   this._size = offset;
@@ -64,6 +64,17 @@ circosJS.Layout = function(conf, data) {
   for (k in _ref1) {
     v = _ref1[k];
     this._conf[k] = conf[k] != null ? conf[k] : v;
+  }
+  gap = this._conf.gap;
+  size = this._size;
+  block_nb = this._data.length;
+  _ref2 = this._data;
+  for (k in _ref2) {
+    v = _ref2[k];
+    this._blocks[v.id].start = v.offset / size * (2 * Math.PI - block_nb * gap) + k * gap;
+    this._blocks[v.id].end = (v.offset + v.len) / size * (2 * Math.PI - block_nb * gap) + k * gap;
+    v.start = v.offset / size * (2 * Math.PI - block_nb * gap) + k * gap;
+    v.end = (v.offset + v.len) / size * (2 * Math.PI - block_nb * gap) + k * gap;
   }
   this.getData = function() {
     return this._data;
@@ -147,7 +158,7 @@ circosJS.Core.prototype.heatmap = function(id, conf, data) {
 };
 
 circosJS.Heatmap = function(conf, data) {
-  var heatmapMax, heatmapMin, k, kc, v, vc, _ref, _ref1, _ref2, _ref3;
+  var datum, heatmapMax, heatmapMin, i, k, kc, v, vc, _ref, _ref1, _ref2, _ref3, _ref4;
   this._data = data;
   this._conf = {
     innerRadius: 200,
@@ -162,14 +173,22 @@ circosJS.Heatmap = function(conf, data) {
     v = _ref[k];
     this._conf[k] = conf[k] != null ? conf[k] : v;
   }
+  for (k in data) {
+    v = data[k];
+    _ref1 = v.data;
+    for (i in _ref1) {
+      datum = _ref1[i];
+      datum.block_id = v.parent;
+    }
+  }
   if (this._conf.min === 'smart' && this._conf.max === 'smart') {
     heatmapMin = 99999999;
     heatmapMax = -99999999;
     for (k in data) {
       v = data[k];
-      _ref1 = v.data;
-      for (kc in _ref1) {
-        vc = _ref1[kc];
+      _ref2 = v.data;
+      for (kc in _ref2) {
+        vc = _ref2[kc];
         if (vc.value > heatmapMax) {
           heatmapMax = vc.value;
         }
@@ -184,9 +203,9 @@ circosJS.Heatmap = function(conf, data) {
     heatmapMin = 99999999;
     for (k in data) {
       v = data[k];
-      _ref2 = v.data;
-      for (kc in _ref2) {
-        vc = _ref2[kc];
+      _ref3 = v.data;
+      for (kc in _ref3) {
+        vc = _ref3[kc];
         if (vc.value < heatmapMin) {
           heatmapMin = vc.value;
         }
@@ -198,9 +217,9 @@ circosJS.Heatmap = function(conf, data) {
     heatmapMax = -99999999;
     for (k in data) {
       v = data[k];
-      _ref3 = v.data;
-      for (kc in _ref3) {
-        vc = _ref3[kc];
+      _ref4 = v.data;
+      for (kc in _ref4) {
+        vc = _ref4[kc];
         if (vc.value < heatmapMax) {
           heatmapMax = vc.value;
         }
@@ -229,19 +248,27 @@ circosJS.Heatmap = function(conf, data) {
 };
 
 circosJS.Core.prototype.render = function(ids) {
-  var block, datum, heatmap, heatmap_name, svg, that, track, _i, _len, _ref, _results;
+  var angle, block, datum, heatmap, heatmap_name, svg, that, track, _i, _len, _ref, _results;
+  angle = function(i, pos) {
+    var angle_no_gap, block, conf, size;
+    conf = this._layout.getConf().gap;
+    size = this._layout.getSize();
+    block = this._layout.getBlock();
+    angle_no_gap = pos / size * 2 * Math.PI;
+    angle = angle_no_gap + i * gap;
+    return angle;
+  };
   that = this;
   svg = d3.select(this.getContainer());
   svg.attr('width', this.getWidth()).attr('height', this.getHeight()).append('g').classed('cs-layout', true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')').selectAll('path').data(this._layout.getData()).enter().append('path').attr('d', d3.svg.arc().innerRadius(this._layout.getConf().innerRadius).outerRadius(this._layout.getConf().outerRadius).startAngle(function(d, i) {
-    return d.start / that._layout.getSize() * 2 * Math.PI;
+    return d.start;
   }).endAngle(function(d, i) {
-    return (d.start + d.len) / that._layout.getSize() * 2 * Math.PI - that._layout.getGap('rad');
+    return d.end;
   })).attr('fill', function(d) {
     return d.color;
   }).attr('id', function(d) {
     return d.id;
   });
-  console.log(this._heatmaps);
   _ref = Object.keys(this._heatmaps);
   _results = [];
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -251,14 +278,16 @@ circosJS.Core.prototype.render = function(ids) {
     block = track.selectAll('g').data(heatmap.getData()).enter().append('g').attr('class', function(d, i) {
       return heatmap_name + '-' + d.parent;
     }, true).attr('transform', function(d) {
-      return 'rotate(' + that._layout.getAngle(d.parent, 'deg') + ')';
+      return 'rotate(' + that._layout.getBlock(d.parent).start * 360 / (2 * Math.PI) + ')';
     });
     _results.push(datum = block.selectAll('path').data(function(d) {
       return d.data;
-    }).enter().append('path').attr('d', d3.svg.arc().innerRadius(heatmap.getConf().innerRadius).outerRadius(heatmap.getConf().outerRadius).startAngle(function(d) {
-      return d.start / that._layout.getSize() * 2 * Math.PI;
-    }).endAngle(function(d) {
-      return d.end / that._layout.getSize() * 2 * Math.PI;
+    }).enter().append('path').attr('d', d3.svg.arc().innerRadius(heatmap.getConf().innerRadius).outerRadius(heatmap.getConf().outerRadius).startAngle(function(d, i) {
+      block = that._layout.getBlock(d.block_id);
+      return d.start / block.len * (block.end - block.start);
+    }).endAngle(function(d, i) {
+      block = that._layout.getBlock(d.block_id);
+      return d.end / block.len * (block.end - block.start);
     })).attr('class', function(d) {
       return 'q' + heatmap.colorScale(d.value, 9, 'linear') + '-' + heatmap.getConf().colorPaletteSize;
     }, true));

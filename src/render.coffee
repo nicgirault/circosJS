@@ -5,6 +5,17 @@ circosJS.Core.prototype.render = (ids) ->
     #     else render only the given tracks
 
 
+    # return the angle of a position according to the block index and the
+    # position in the block
+    angle = (i, pos) ->
+        conf = this._layout.getConf().gap # in radian
+        size = this._layout.getSize()
+        block = this._layout.getBlock()
+
+        angle_no_gap = pos/size *2*Math.PI
+        angle = angle_no_gap + i*gap
+        return angle
+
     ################################
     ## render layout
     ################################
@@ -23,8 +34,8 @@ circosJS.Core.prototype.render = (ids) ->
             d3.svg.arc()
                 .innerRadius(this._layout.getConf().innerRadius)
                 .outerRadius(this._layout.getConf().outerRadius)
-                .startAngle((d,i) -> d.start/that._layout.getSize() * 2*Math.PI)
-                .endAngle((d,i) -> (d.start+d.len)/that._layout.getSize() * 2*Math.PI - that._layout.getGap('rad'))
+                .startAngle((d,i) -> d.start)
+                .endAngle((d,i) -> d.end)
         )
         .attr('fill', (d) -> d.color)
         .attr('id', (d) -> d.id)
@@ -32,8 +43,6 @@ circosJS.Core.prototype.render = (ids) ->
     ################################
     ## render heatmaps
     ################################
-
-    console.log(this._heatmaps)
     for heatmap_name in Object.keys(this._heatmaps)
         heatmap = this._heatmaps[heatmap_name]
 
@@ -48,7 +57,7 @@ circosJS.Core.prototype.render = (ids) ->
             .attr('class', (d,i)-> 
                 heatmap_name+'-'+d.parent
             true)
-            .attr('transform', (d) -> 'rotate(' + that._layout.getAngle(d.parent, 'deg') + ')')
+            .attr('transform', (d) -> 'rotate(' + that._layout.getBlock(d.parent).start*360/(2*Math.PI) + ')')
 
         datum = block.selectAll('path')
             .data((d)->d.data)
@@ -57,8 +66,15 @@ circosJS.Core.prototype.render = (ids) ->
                 d3.svg.arc()
                     .innerRadius(heatmap.getConf().innerRadius)
                     .outerRadius(heatmap.getConf().outerRadius)
-                    .startAngle((d) -> d.start/that._layout.getSize()*2*Math.PI)
-                    .endAngle((d) -> d.end/that._layout.getSize()*2*Math.PI)
+                    .startAngle((d, i) ->
+                        block = that._layout.getBlock(d.block_id)
+                        d.start/block.len * (block.end - block.start)
+                    )
+                    .endAngle((d, i) -> 
+                        block = that._layout.getBlock(d.block_id)
+                        d.end/block.len * (block.end - block.start)
+                    )
+
             )
             .attr('class', (d) -> 
                 'q'+heatmap.colorScale(d.value, 9, 'linear')+'-'+heatmap.getConf().colorPaletteSize

@@ -56,6 +56,11 @@ circosJS.Heatmap = (conf, data) ->
     for k,v of this._conf
         this._conf[k] = if conf[k]? then conf[k] else v
 
+    # add parent is datum. Needed for rendering
+    for k,v of data
+        for i, datum of v.data
+            datum.block_id = v.parent
+
     # compute min and max values
     if this._conf.min == 'smart' and this._conf.max == 'smart'
         heatmapMin = 99999999
