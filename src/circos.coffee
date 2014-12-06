@@ -38,4 +38,7 @@ circosJS.Core.prototype.heatmap = (id, conf, data) ->
         # append
         null
 
+circosJS.log = (level, name, message, data) ->
+    console.log(name, message, data)
+
 module.exports = circosJS
