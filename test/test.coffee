@@ -89,7 +89,10 @@ describe 'Heatmap', ->
         expect(log).to.have.been.calledWith(2, 'No layout block id match')
 
     it 'should log a message when heatmap data does not fit the block size', ->
-        return true
+        log.reset()
+        c.heatmap('h3', conf, [{ parent: '1', data: [{start: 1, end: 11, value: 1}]}])
+        expect(log).to.have.been.calledOnce
+        expect(log).to.have.been.calledWith(2, 'Track data inconsistency')
 
     it 'should create a new heatmap instance when id is unknown', ->
         return true

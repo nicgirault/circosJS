@@ -11,16 +11,28 @@ circosJS.Core.prototype.heatmap = (id, conf, data) ->
 
     #check data consistency with layout
     layout_ids = (d.id for d in this._layout.getData())
+    layout_lengths = {}
+    for d in this._layout.getData()
+        layout_lengths[d.id] = d.len
     # for datum in data
-    for datum in data
-        unless datum.parent in layout_ids
+    for block in data
+        # check match between track and layout block id
+        unless block.parent in layout_ids
             circosJS.log(
                 2,
                 'No layout block id match',
                 'Heatmap data has a parent property that does not correspond to any layout block id',
-                {'heatmap_id': id, 'block_id': datum.parent}
+                {'heatmap_id': id, 'block_id': block.parent}
             )
-
+        # check datum lengths and layout block length
+        for datum in block.data
+            if datum.start < 0 or datum.end > layout_lengths[block.parent]
+                circosJS.log(
+                    2,
+                    'Track data inconsistency',
+                    'Track data has a start < 0 or a end above the block length',
+                    {'track_id': id, 'datum': datum, 'layout block': this._layout.getBlock(block.parent)}
+                )
 
     if this._heatmaps[id]?
         # update
