@@ -36,7 +36,7 @@ circosJS.log = (level, name, message, data) ->
     # 1 - error
     # 2 - warning
     # 3 - info
-    console.log('CircosJS: ', levels[level]+' ['+name+'] ', message, data)
+    # console.log('CircosJS: ', levels[level]+' ['+name+'] ', message, data)
     return
 
 if module?

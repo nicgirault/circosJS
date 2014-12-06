@@ -52,23 +52,440 @@ var heatmap = [
     },
     
 ];
+
+var heatmap = [
+    {
+        parent: "chr1",
+        data: [
+            {start:1, end:10000001, value:0},
+            {start:10000001, end:20000001, value:1},
+            {start:20000001, end:30000001, value:2},
+            {start:30000001, end:40000001, value:3},
+            {start:40000001, end:50000001, value:4},
+            {start:50000001, end:60000001, value:5},
+            {start:60000001, end:70000001, value:6},
+            {start:70000001, end:80000001, value:7},
+            {start:80000001, end:90000001, value:8},
+            {start:90000001, end:100000001, value:9},
+            {start:100000001, end:110000001, value:0},
+            {start:110000001, end:120000001, value:1},
+            {start:120000001, end:130000001, value:2},
+            {start:130000001, end:140000001, value:3},
+            {start:140000001, end:150000001, value:4},
+            {start:150000001, end:160000001, value:5},
+            {start:160000001, end:170000001, value:6},
+            {start:170000001, end:180000001, value:7},
+            {start:180000001, end:190000001, value:8},
+            {start:190000001, end:200000001, value:9},
+            {start:200000001, end:210000001, value:0},
+            {start:210000001, end:220000001, value:1},
+            {start:220000001, end:230000001, value:2},
+            {start:230000001, end:240000001, value:3},
+        ]
+    },
+    {
+        parent: "chr2",
+        data: [
+            {start:1, end:10000001, value:4},
+            {start:10000001, end:20000001, value:5},
+            {start:20000001, end:30000001, value:6},
+            {start:30000001, end:40000001, value:7},
+            {start:40000001, end:50000001, value:8},
+            {start:50000001, end:60000001, value:9},
+            {start:60000001, end:70000001, value:0},
+            {start:70000001, end:80000001, value:1},
+            {start:80000001, end:90000001, value:2},
+            {start:90000001, end:100000001, value:3},
+            {start:100000001, end:110000001, value:4},
+            {start:110000001, end:120000001, value:5},
+            {start:120000001, end:130000001, value:6},
+            {start:130000001, end:140000001, value:7},
+            {start:140000001, end:150000001, value:8},
+            {start:150000001, end:160000001, value:9},
+            {start:160000001, end:170000001, value:0},
+            {start:170000001, end:180000001, value:1},
+            {start:180000001, end:190000001, value:2},
+            {start:190000001, end:200000001, value:3},
+            {start:200000001, end:210000001, value:4},
+            {start:210000001, end:220000001, value:5},
+            {start:220000001, end:230000001, value:6},
+            {start:230000001, end:240000001, value:7},
+        ]
+    },
+    {
+        parent: "chr3",
+        data: [
+            {start:1, end:10000001, value:8},
+            {start:10000001, end:20000001, value:9},
+            {start:20000001, end:30000001, value:0},
+            {start:30000001, end:40000001, value:1},
+            {start:40000001, end:50000001, value:2},
+            {start:50000001, end:60000001, value:3},
+            {start:60000001, end:70000001, value:4},
+            {start:70000001, end:80000001, value:5},
+            {start:80000001, end:90000001, value:6},
+            {start:90000001, end:100000001, value:7},
+            {start:100000001, end:110000001, value:8},
+            {start:110000001, end:120000001, value:9},
+            {start:120000001, end:130000001, value:0},
+            {start:130000001, end:140000001, value:1},
+            {start:140000001, end:150000001, value:2},
+            {start:150000001, end:160000001, value:3},
+            {start:160000001, end:170000001, value:4},
+            {start:170000001, end:180000001, value:5},
+            {start:180000001, end:190000001, value:6},
+        ]
+    },
+    {
+        parent: "chr4",
+        data: [
+            {start:1, end:10000001, value:7},
+            {start:10000001, end:20000001, value:8},
+            {start:20000001, end:30000001, value:9},
+            {start:30000001, end:40000001, value:0},
+            {start:40000001, end:50000001, value:1},
+            {start:50000001, end:60000001, value:2},
+            {start:60000001, end:70000001, value:3},
+            {start:70000001, end:80000001, value:4},
+            {start:80000001, end:90000001, value:5},
+            {start:90000001, end:100000001, value:6},
+            {start:100000001, end:110000001, value:7},
+            {start:110000001, end:120000001, value:8},
+            {start:120000001, end:130000001, value:9},
+            {start:130000001, end:140000001, value:0},
+            {start:140000001, end:150000001, value:1},
+            {start:150000001, end:160000001, value:2},
+            {start:160000001, end:170000001, value:3},
+            {start:170000001, end:180000001, value:4},
+            {start:180000001, end:190000001, value:5},
+        ]
+    },
+    {
+        parent: "chr5",
+        data: [
+            {start:1, end:10000001, value:6},
+            {start:10000001, end:20000001, value:7},
+            {start:20000001, end:30000001, value:8},
+            {start:30000001, end:40000001, value:9},
+            {start:40000001, end:50000001, value:0},
+            {start:50000001, end:60000001, value:1},
+            {start:60000001, end:70000001, value:2},
+            {start:70000001, end:80000001, value:3},
+            {start:80000001, end:90000001, value:4},
+            {start:90000001, end:100000001, value:5},
+            {start:100000001, end:110000001, value:6},
+            {start:110000001, end:120000001, value:7},
+            {start:120000001, end:130000001, value:8},
+            {start:130000001, end:140000001, value:9},
+            {start:140000001, end:150000001, value:0},
+            {start:150000001, end:160000001, value:1},
+            {start:160000001, end:170000001, value:2},
+            {start:170000001, end:180000001, value:3},
+        ]
+    },
+    {
+        parent: "chr6",
+        data: [
+            {start:1, end:10000001, value:4},
+            {start:10000001, end:20000001, value:5},
+            {start:20000001, end:30000001, value:6},
+            {start:30000001, end:40000001, value:7},
+            {start:40000001, end:50000001, value:8},
+            {start:50000001, end:60000001, value:9},
+            {start:60000001, end:70000001, value:0},
+            {start:70000001, end:80000001, value:1},
+            {start:80000001, end:90000001, value:2},
+            {start:90000001, end:100000001, value:3},
+            {start:100000001, end:110000001, value:4},
+            {start:110000001, end:120000001, value:5},
+            {start:120000001, end:130000001, value:6},
+            {start:130000001, end:140000001, value:7},
+            {start:140000001, end:150000001, value:8},
+            {start:150000001, end:160000001, value:9},
+            {start:160000001, end:170000001, value:0},
+        ]
+    },
+    {
+        parent: "chr7",
+        data: [
+            {start:1, end:10000001, value:1},
+            {start:10000001, end:20000001, value:2},
+            {start:20000001, end:30000001, value:3},
+            {start:30000001, end:40000001, value:4},
+            {start:40000001, end:50000001, value:5},
+            {start:50000001, end:60000001, value:6},
+            {start:60000001, end:70000001, value:7},
+            {start:70000001, end:80000001, value:8},
+            {start:80000001, end:90000001, value:9},
+            {start:90000001, end:100000001, value:0},
+            {start:100000001, end:110000001, value:1},
+            {start:110000001, end:120000001, value:2},
+            {start:120000001, end:130000001, value:3},
+            {start:130000001, end:140000001, value:4},
+            {start:140000001, end:150000001, value:5},
+        ]
+    },
+    {
+        parent: "chr8",
+        data: [
+            {start:1, end:10000001, value:6},
+            {start:10000001, end:20000001, value:7},
+            {start:20000001, end:30000001, value:8},
+            {start:30000001, end:40000001, value:9},
+            {start:40000001, end:50000001, value:0},
+            {start:50000001, end:60000001, value:1},
+            {start:60000001, end:70000001, value:2},
+            {start:70000001, end:80000001, value:3},
+            {start:80000001, end:90000001, value:4},
+            {start:90000001, end:100000001, value:5},
+            {start:100000001, end:110000001, value:6},
+            {start:110000001, end:120000001, value:7},
+            {start:120000001, end:130000001, value:8},
+            {start:130000001, end:140000001, value:9},
+        ]
+    },
+    {
+        parent: "chr9",
+        data: [
+            {start:1, end:10000001, value:0},
+            {start:10000001, end:20000001, value:1},
+            {start:20000001, end:30000001, value:2},
+            {start:30000001, end:40000001, value:3},
+            {start:40000001, end:50000001, value:4},
+            {start:50000001, end:60000001, value:5},
+            {start:60000001, end:70000001, value:6},
+            {start:70000001, end:80000001, value:7},
+            {start:80000001, end:90000001, value:8},
+            {start:90000001, end:100000001, value:9},
+            {start:100000001, end:110000001, value:0},
+            {start:110000001, end:120000001, value:1},
+            {start:120000001, end:130000001, value:2},
+            {start:130000001, end:140000001, value:3},
+        ]
+    },
+    {
+        parent: "chr10",
+        data: [
+            {start:1, end:10000001, value:4},
+            {start:10000001, end:20000001, value:5},
+            {start:20000001, end:30000001, value:6},
+            {start:30000001, end:40000001, value:7},
+            {start:40000001, end:50000001, value:8},
+            {start:50000001, end:60000001, value:9},
+            {start:60000001, end:70000001, value:0},
+            {start:70000001, end:80000001, value:1},
+            {start:80000001, end:90000001, value:2},
+            {start:90000001, end:100000001, value:3},
+            {start:100000001, end:110000001, value:4},
+            {start:110000001, end:120000001, value:5},
+            {start:120000001, end:130000001, value:6},
+        ]
+    },
+    {
+        parent: "chr11",
+        data: [
+            {start:1, end:10000001, value:7},
+            {start:10000001, end:20000001, value:8},
+            {start:20000001, end:30000001, value:9},
+            {start:30000001, end:40000001, value:0},
+            {start:40000001, end:50000001, value:1},
+            {start:50000001, end:60000001, value:2},
+            {start:60000001, end:70000001, value:3},
+            {start:70000001, end:80000001, value:4},
+            {start:80000001, end:90000001, value:5},
+            {start:90000001, end:100000001, value:6},
+            {start:100000001, end:110000001, value:7},
+            {start:110000001, end:120000001, value:8},
+            {start:120000001, end:130000001, value:9},
+        ]
+    },
+    {
+        parent: "chr12",
+        data: [
+            {start:1, end:10000001, value:0},
+            {start:10000001, end:20000001, value:1},
+            {start:20000001, end:30000001, value:2},
+            {start:30000001, end:40000001, value:3},
+            {start:40000001, end:50000001, value:4},
+            {start:50000001, end:60000001, value:5},
+            {start:60000001, end:70000001, value:6},
+            {start:70000001, end:80000001, value:7},
+            {start:80000001, end:90000001, value:8},
+            {start:90000001, end:100000001, value:9},
+            {start:100000001, end:110000001, value:0},
+            {start:110000001, end:120000001, value:1},
+            {start:120000001, end:130000001, value:2},
+        ]
+    },
+    {
+        parent: "chr13",
+        data: [
+            {start:1, end:10000001, value:3},
+            {start:10000001, end:20000001, value:4},
+            {start:20000001, end:30000001, value:5},
+            {start:30000001, end:40000001, value:6},
+            {start:40000001, end:50000001, value:7},
+            {start:50000001, end:60000001, value:8},
+            {start:60000001, end:70000001, value:9},
+            {start:70000001, end:80000001, value:0},
+            {start:80000001, end:90000001, value:1},
+            {start:90000001, end:100000001, value:2},
+            {start:100000001, end:110000001, value:3},
+        ]
+    },
+    {
+        parent: "chr14",
+        data: [
+            {start:1, end:10000001, value:4},
+            {start:10000001, end:20000001, value:5},
+            {start:20000001, end:30000001, value:6},
+            {start:30000001, end:40000001, value:7},
+            {start:40000001, end:50000001, value:8},
+            {start:50000001, end:60000001, value:9},
+            {start:60000001, end:70000001, value:0},
+            {start:70000001, end:80000001, value:1},
+            {start:80000001, end:90000001, value:2},
+            {start:90000001, end:100000001, value:3},
+        ]
+    },
+    {
+        parent: "chr15",
+        data: [
+            {start:1, end:10000001, value:4},
+            {start:10000001, end:20000001, value:5},
+            {start:20000001, end:30000001, value:6},
+            {start:30000001, end:40000001, value:7},
+            {start:40000001, end:50000001, value:8},
+            {start:50000001, end:60000001, value:9},
+            {start:60000001, end:70000001, value:0},
+            {start:70000001, end:80000001, value:1},
+            {start:80000001, end:90000001, value:2},
+            {start:90000001, end:100000001, value:3},
+        ]
+    },
+    {
+        parent: "chr16",
+        data: [
+            {start:1, end:10000001, value:4},
+            {start:10000001, end:20000001, value:5},
+            {start:20000001, end:30000001, value:6},
+            {start:30000001, end:40000001, value:7},
+            {start:40000001, end:50000001, value:8},
+            {start:50000001, end:60000001, value:9},
+            {start:60000001, end:70000001, value:0},
+            {start:70000001, end:80000001, value:1},
+            {start:80000001, end:90000001, value:2},
+        ]
+    },
+    {
+        parent: "chr17",
+        data: [
+            {start:1, end:10000001, value:3},
+            {start:10000001, end:20000001, value:4},
+            {start:20000001, end:30000001, value:5},
+            {start:30000001, end:40000001, value:6},
+            {start:40000001, end:50000001, value:7},
+            {start:50000001, end:60000001, value:8},
+            {start:60000001, end:70000001, value:9},
+            {start:70000001, end:80000001, value:0},
+        ]
+    },
+    {
+        parent: "chr18",
+        data: [
+            {start:1, end:10000001, value:1},
+            {start:10000001, end:20000001, value:2},
+            {start:20000001, end:30000001, value:3},
+            {start:30000001, end:40000001, value:4},
+            {start:40000001, end:50000001, value:5},
+            {start:50000001, end:60000001, value:6},
+            {start:60000001, end:70000001, value:7},
+        ]
+    },
+    {
+        parent: "chr19",
+        data: [
+            {start:1, end:10000001, value:8},
+            {start:10000001, end:20000001, value:9},
+            {start:20000001, end:30000001, value:0},
+            {start:30000001, end:40000001, value:1},
+            {start:40000001, end:50000001, value:2},
+        ]
+    },
+    {
+        parent: "chr20",
+        data: [
+            {start:1, end:10000001, value:3},
+            {start:10000001, end:20000001, value:4},
+            {start:20000001, end:30000001, value:5},
+            {start:30000001, end:40000001, value:6},
+            {start:40000001, end:50000001, value:7},
+            {start:50000001, end:60000001, value:8},
+        ]
+    },
+    {
+        parent: "chr21",
+        data: [
+            {start:1, end:10000001, value:9},
+            {start:10000001, end:20000001, value:0},
+            {start:20000001, end:30000001, value:1},
+            {start:30000001, end:40000001, value:2},
+        ]
+    },
+    {
+        parent: "chr22",
+        data: [
+            {start:1, end:10000001, value:3},
+            {start:10000001, end:20000001, value:4},
+            {start:20000001, end:30000001, value:5},
+            {start:30000001, end:40000001, value:6},
+            {start:40000001, end:50000001, value:7},
+        ]
+    },
+    {
+        parent: "chrX",
+        data: [
+            {start:1, end:10000001, value:8},
+            {start:10000001, end:20000001, value:9},
+            {start:20000001, end:30000001, value:0},
+            {start:30000001, end:40000001, value:1},
+            {start:40000001, end:50000001, value:2},
+            {start:50000001, end:60000001, value:3},
+            {start:60000001, end:70000001, value:4},
+            {start:70000001, end:80000001, value:5},
+            {start:80000001, end:90000001, value:6},
+            {start:90000001, end:100000001, value:7},
+            {start:100000001, end:110000001, value:8},
+            {start:110000001, end:120000001, value:9},
+            {start:120000001, end:130000001, value:0},
+            {start:130000001, end:140000001, value:1},
+            {start:140000001, end:150000001, value:2},
+        ]
+    },
+    {
+        parent: "chrY",
+        data: [
+            {start:1, end:10000001, value:3},
+            {start:10000001, end:20000001, value:4},
+            {start:20000001, end:30000001, value:5},
+            {start:30000001, end:40000001, value:6},
+            {start:40000001, end:50000001, value:7},
+        ]
+    },
+]
     
 
 var circos = new circosJS({
-    width: 550,
-    height: 550,
     container: '#chart'
 });
 
 circos
     .layout(
-        {
-            innerRadius: 200,
-            outerRadius: 250
-        },
+        {},
         karyotype
     )
-    .heatmap('h1', {}, [{start: 1, end: 5, value: 1}])
+    .heatmap('h1', {}, heatmap)
+    .heatmap('h2', {innerRadius: 150, outerRadius: 200, colorPalette: 'BuGn'}, heatmap)
     .render();
 
 

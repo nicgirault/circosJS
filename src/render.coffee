@@ -9,8 +9,9 @@ circosJS.Core.prototype.render = (ids) ->
     ## render layout
     ################################
     that = this
-    d3.select(this.getContainer())
-        .attr('width', this.getWidth()).attr('height', this.getHeight())
+    svg = d3.select(this.getContainer())
+
+    svg.attr('width', this.getWidth()).attr('height', this.getHeight())
         .append('g')
         .classed('cs-layout', true)
         .attr('transform', 'translate(' + parseInt(this.getWidth()/2) + ',' + parseInt(this.getHeight()/2) + ')')
@@ -27,3 +28,38 @@ circosJS.Core.prototype.render = (ids) ->
         )
         .attr('fill', (d) -> d.color)
         .attr('id', (d) -> d.id)
+
+    ################################
+    ## render heatmaps
+    ################################
+
+    console.log(this._heatmaps)
+    for heatmap_name in Object.keys(this._heatmaps)
+        heatmap = this._heatmaps[heatmap_name]
+
+        track = svg.append('g')
+            .classed(heatmap_name, true)
+            .classed(heatmap.getConf().colorPalette, true)
+            .attr('transform', 'translate(' + parseInt(this.getWidth()/2) + ',' + parseInt(this.getHeight()/2) + ')')
+
+        block = track.selectAll('g')
+            .data(heatmap.getData())
+            .enter().append('g')
+            .attr('class', (d,i)-> 
+                heatmap_name+'-'+d.parent
+            true)
+            .attr('transform', (d) -> 'rotate(' + that._layout.getAngle(d.parent, 'deg') + ')')
+
+        datum = block.selectAll('path')
+            .data((d)->d.data)
+            .enter().append('path')
+            .attr('d',
+                d3.svg.arc()
+                    .innerRadius(heatmap.getConf().innerRadius)
+                    .outerRadius(heatmap.getConf().outerRadius)
+                    .startAngle((d) -> d.start/that._layout.getSize()*2*Math.PI)
+                    .endAngle((d) -> d.end/that._layout.getSize()*2*Math.PI)
+            )
+            .attr('class', (d) -> 
+                'q'+heatmap.colorScale(d.value, 9, 'linear')+'-'+heatmap.getConf().colorPaletteSize
+            true)

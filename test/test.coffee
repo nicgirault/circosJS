@@ -95,15 +95,14 @@ describe 'Heatmap', ->
         expect(log).to.have.been.calledWith(2, 'Track data inconsistency')
 
     it 'should create a new heatmap instance when id is unknown', ->
-        count = c._heatmaps.length
+        count = Object.keys(c._heatmaps).length
         c.heatmap('h4', conf, [{ parent: '1', data: [{start: 1, end: 11, value: 1}]}])
-        expect(c._heatmaps.length).to.equal(count+1)
-        
-    it 'should not create a new heatmap instance when id is known', ->
-        return true
+        expect(Object.keys(c._heatmaps).length).to.equal(count+1)
 
-    it 'should update the good heatmap instance', ->
-        return true
+    it 'should not create a new heatmap instance when id is known', ->
+        count = Object.keys(c._heatmaps).length
+        c.heatmap('h4', conf, [{ parent: '1', data: [{start: 1, end: 11, value: 1}]}])
+        expect(Object.keys(c._heatmaps).length).to.equal(count)
 
     it 'should return data min/max when conf.min/conf.max value are "smart"', ->
         return true

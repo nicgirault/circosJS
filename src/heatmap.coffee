@@ -34,12 +34,7 @@ circosJS.Core.prototype.heatmap = (id, conf, data) ->
                     {'track_id': id, 'datum': datum, 'layout block': this._layout.getBlock(block.parent)}
                 )
 
-    if this._heatmaps[id]?
-        # update
-        null
-    else
-        # append
-        this._heatmaps[id] = new circosJS.Heatmap(conf, data)
+    this._heatmaps[id] = new circosJS.Heatmap(conf, data)
     return this
 
 
@@ -48,10 +43,54 @@ circosJS.Heatmap = (conf, data) ->
     # this refers the heatmap instance
     this._data = data
 
+    this._conf =
+        innerRadius: 200
+        outerRadius: 250
+        min: 'smart'
+        max: 'smart'
+        colorPalette: 'YlGnBu'
+        colorPaletteSize: 9
+
     # conf override the default configuration. Conf not in default conf
     # object are removed
     for k,v of this._conf
         this._conf[k] = if conf[k]? then conf[k] else v
+
+    # compute min and max values
+    if this._conf.min == 'smart' and this._conf.max == 'smart'
+        heatmapMin = 99999999
+        heatmapMax = -99999999
+        for k,v of data
+            for kc,vc of v.data
+                if vc.value > heatmapMax then heatmapMax = vc.value
+                if vc.value < heatmapMin then heatmapMin = vc.value
+        this._conf.cmin = heatmapMin
+        this._conf.cmax = heatmapMax
+    else if this._conf.min == 'smart'
+        heatmapMin = 99999999
+        for k,v of data
+            for kc,vc of v.data
+                if vc.value < heatmapMin then heatmapMin = vc.value
+        this._conf.cmin = heatmapMin
+        this._conf.cmax = this._conf.max
+    else if this._conf.max == 'smart'
+        heatmapMax = -99999999
+        for k,v of data
+            for kc,vc of v.data
+                if vc.value < heatmapMax then heatmapMax = vc.value
+        this._conf.cmax = heatmapMax
+        this._conf.cmin = this._conf.min
+    else
+        this._conf.cmin = this._conf.min
+        this._conf.cmax = this._conf.max
+
+    this.colorScale = (value, range, scale) ->
+        if value == this._conf.cmax
+            range-1
+        else if scale == 'linear'
+            Math.floor((value - this._conf.cmin) / (this._conf.cmax - this._conf.cmin) * this._conf.colorPaletteSize)
+            # else
+                # null
 
     # getters/setters
     this.getData = ->
@@ -61,46 +100,3 @@ circosJS.Heatmap = (conf, data) ->
     return this
 
 
-# # what if input data is largeur than chromosome length?
-    # instance.heatmap = (trackName, conf, data) ->
-    #     # get min and max values
-    #     heatmapMin = 99999999
-    #     heatmapMax = -99999999
-    #     for k,v of data
-    #         for kc,vc of v.data
-    #             if vc.value > heatmapMax then heatmapMax = vc.value
-    #             if vc.value < heatmapMin then heatmapMin = vc.value
-
-    #     colorScale = (value, range, scale) ->
-    #         if value == heatmapMax
-    #             range-1
-    #         else if scale == 'linear'
-    #             Math.floor((value - heatmapMin) / (heatmapMax - heatmapMin) * range)
-    #         # else
-    #             # null
-
-    #     track = instance.svg.append('g')
-    #         .classed(trackName, true)
-    #         .classed(conf.colorPalette, true)
-    #         .attr('transform', 'translate(' + parseInt(instance.width/2) + ',' + parseInt(instance.height/2) + ')')
-
-    #     chrBundles = track.selectAll('g').data(data)
-    #             .enter().append('g')
-    #             .attr('class', (d,i)-> 
-    #                 trackName+'-'+d.parent
-    #             true)
-    #             .attr('transform', (d) -> 'rotate(' + _layout.getAngle(d.parent, 'deg') + ')')
-
-    #     atoms = chrBundles.selectAll('path')
-    #         .data((d)->d.data).enter()
-    #         .append('path')
-    #         .attr('d',
-    #             d3.svg.arc()
-    #                 .innerRadius(conf.innerRadius)
-    #                 .outerRadius(conf.outerRadius)
-    #                 .startAngle((d) -> d.start/_layout.dataTotalLength*2*Math.PI)
-    #                 .endAngle((d) -> d.end/_layout.dataTotalLength*2*Math.PI)
-    #         )
-    #         .attr('class', (d) -> 
-    #             'q'+colorScale(d.value, 9, 'linear')+'-'+conf.colorRange
-    #         true)

@@ -1,7 +1,7 @@
 # Circos
 circosJS.Core.prototype._conf =
-    width: 550
-    height: 550
+    width: 610
+    height: 610
     container: 'circos'
 
 # Layout
@@ -13,10 +13,10 @@ circosJS.Layout.prototype._conf =
     labelRadialOffset: 0
 
 # Heatmap
-circosJS.Heatmap.prototype._conf =
-    innerRadius: 200
-    outerRadius: 249
-    min: 'smart'
-    max: 'smart'
-    colorPalette: 'RgYn'
-    colorPaletteSize: 9
+# circosJS.Heatmap.prototype._conf =
+#     innerRadius: 200
+#     outerRadius: 250
+#     min: 'smart'
+#     max: 'smart'
+#     colorPalette: 'YlGnBu'
+#     colorPaletteSize: 9

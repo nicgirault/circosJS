@@ -38,7 +38,10 @@ gulp.task 'test', ['concat-coffee'], ->
         return
     , 1000
 
-
+gulp.task 'watch', ->
+    gulp.watch 'src/*.coffee', ['coffee2js']
+    # gulp.watch 'src/*.less', ['css-full']
+    return
 # gulp.task 'requirejsBuild', ['coffee2js'], ->
 #     rjs
 #         name: 'circos.js'
@@ -77,9 +80,6 @@ gulp.task 'test', ['concat-coffee'], ->
 #     .pipe(gulp.dest('dist'))
 #     .on "error", gutil.log
 
-# gulp.task 'watch', ->
-#     gulp.watch 'src/*.coffee', ['js-full']
-#     gulp.watch 'src/*.less', ['css-full']
-#     return
+
 
 # gulp.task 'default', ['watch']
