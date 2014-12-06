@@ -1,7 +1,6 @@
 assert = require 'assert'
 expect = require('chai').expect
 circosJS = require('../src/circosJS.coffee')
-# global.circosJS.layout = require('../src/layout.coffee')
 
 describe 'CircosJS', ->
     c = new circosJS
@@ -43,10 +42,4 @@ describe 'Layout', ->
 
     it 'should return a data', ->
         expect(c._layout.getData()).to.deep.equal([1,2,3])
-    # describe 'Layout', ->
-    #     it 'should returns circosJS object', ->
-    #         x = c.layout
-    #             innerRadius: 200
-    #             outerRadius: 250
-    #         , karyotype
-    #         assert.typeOf(x, 'object', 'we have an object')
+    
