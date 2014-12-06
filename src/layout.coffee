@@ -1,64 +1,58 @@
-circosJS.layout = do(d3) ->
-    layout = (conf, data) ->
-        # most of the time, we call blocks by id so let's build a dictonary
-        # with block ids as keys
-        this.blocks = {}
-        this.data = data
-        offset = 0
-        for k,v of data
-            this.blocks[v.id] =
-                label: v.label
-                len: v.len
-                color: v.color
-                start: offset
-            v.start = offset
-            offset += v.len
-        this.size = offset
+# A layout instance
+circosJS.layout = (conf, data) ->
+    # this refers the layout instance
+    this._data = data
+    this._blocks = {} #data dictonary key=blockId
+    this._size = 0
 
-        # conf override the default configuration
-        for k,v of conf
-            this.conf[k] = if conf[k]? then conf[k] else v
+    offset = 0
+    for k,v of this._data
+        this._blocks[v.id] =
+            label: v.label
+            len: v.len
+            color: v.color
+            start: offset
+        v.start = offset
+        offset += v.len
+    this._size = offset
 
-        # return this
-        this
+    # conf override the default configuration. Conf not in default conf
+    # object are removed
+    for k,v of this._conf
+        this._conf[k] = if conf[k]? then conf[k] else v
 
-    # define default values for parameters
-    layout.prototype.conf =
-        innerRadius: 250
-        outerRadius: 300
-        gap: 0.04 # in radian
-        labelPosition: 'center'
-        labelRadialOffset: 0
-
-    layout.prototype.getGap = (unit) ->
+    # getters/setters
+    this.getData = ->
+        this._data
+    this.getGap = (unit) ->
         if unit == 'rad'
-            this.conf.gap
+            this._conf.gap
         else
             null #todo
-    
-    layout.prototype.setGap = (gap, unit) ->
-        if unit == 'rad'
-            this.conf.gap = gap
-        else
-            null
-        this
-        
-    layout.prototype.getBlock = (blockId) ->
-        layout.blocks[blockId]
-    layout.prototype.getAngle = (blockId, unit) ->
-        block = this.getBlock(blockId).start/this.size
+    this.getBlock = (blockId) ->
+        this._blocks[blockId]
+    this.getAngle = (blockId, unit) ->
+        block = this.getBlock(blockId).start/this._size
         if unit == 'deg' then block*360
         else if unit == 'rad' then block*2*Math.PI
         else null
+    this.getSize = ->
+        this._size
+    this.getConf = ->
+        this._conf
 
-    layout.prototype.getSize = ->
-        this.size
-    layout.prototype.getInnerRadius = ->
-        this.conf.innerRadius
-    layout.prototype.getOuterRadius = ->
-        this.conf.outerRadius
+    return this
 
-    layout
+# define default values for parameters
+circosJS.layout.prototype._conf =
+    innerRadius: 250
+    outerRadius: 300
+    gap: 0.04 # in radian
+    labelPosition: 'center'
+    labelRadialOffset: 0
+
+ 
+
 
     #             // Unique id so that the text path defs are unique - is there a better way to do this?
     #             var id = d3.selectAll(".circos-layout")[0].length;

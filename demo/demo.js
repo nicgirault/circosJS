@@ -64,44 +64,22 @@ var heatmap = [
 //     width: 500,
 //     height: 500,
 //     container: '#chart'
-// });
+// }).layout({
+    // ...
+// }).heatmap('id', {}, data).heatmap('id2', {}, data2).render(['id', 'id2', 'layout']--default all);
 
-// // var circos2 = new circosJS(d3);
-// // circos2.increment
-// // circos2.increment
-
-// circos.layout(
-//     {
-//         innerRadius: 200,
-//         outerRadius: 250
-//     },
-//     karyotype
-// );
-// circos.heatmap(
-//     'track1',
-//     {
-//         innerRadius: 160,
-//         outerRadius: 195,
-//         colorPalette: 'RdYlGn',
-//         colorRange: 9,
-//         min: 0, //todo
-//         max: 0 //todo
-//     },
-//     heatmap
-// );
-
-// circosJS.test();
-var c = new circosJS.circos({
-    width: 500,
-    height: 500,
+var circos = new circosJS({
+    width: 550,
+    height: 550,
     container: '#chart'
 });
+circos
+    .layout(
+        {
+            innerRadius: 200,
+            outerRadius: 250
+        },
+        karyotype
+    ).render();
 
-var l = new circosJS.layout(
-    {
-        innerRadius: 200,
-        outerRadius: 250
-    },
-    karyotype
-);
-c.layout(l).render();
+

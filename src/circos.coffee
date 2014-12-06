@@ -1,52 +1,45 @@
-circosJS = {}
-circosJS.circos = do(d3) ->
-    circos = (conf) ->
-        this.width = conf.width
-        this.height = conf.height
-        this.container = conf.container
-        
-        this.getContainer()
-            .attr('width', this.width)
-            .attr('height', this.height)
+circosJS = (conf) ->
+    instance = new circosJS.Core(conf)
+    # instance.init()
+    return instance
 
-        #return this
-        this
 
-    #default values
-    circos.prototype.width = 720
-    circos.prototype.height = 720
 
-    
-    circos.prototype.getContainer = ->
-        d3.select(this.container)
-    circos.prototype.getWidth = ->
-        this.width
-    circos.prototype.getHeight = ->
-        this.height
-    circos.prototype.layout = (layout) ->
-        this.layout = layout
-        this
+# Circos instance
+circosJS.Core = (conf) ->
+    this._heatmaps = {}
+    # this.init = function(){
+    #     console.log('initializing instance');
+    # };
 
-    circos.prototype.render = ->
-        that = this
-        # render layout
-        this.getContainer().append('g')
-            .classed('cs-layout', true)
-            .attr('transform', 'translate(' + parseInt(this.getWidth()/2) + ',' + parseInt(this.getHeight()/2) + ')')
-            .selectAll('path')
-            .data(this.layout.data)
-            .enter()
-            .append('path')
-            .attr('d',
-                d3.svg.arc()
-                    .innerRadius(this.layout.getInnerRadius())
-                    .outerRadius(this.layout.getOuterRadius())
-                    .startAngle((d,i) -> d.start/that.layout.getSize() * 2*Math.PI)
-                    .endAngle((d,i) -> (d.start+d.len)/that.layout.getSize() * 2*Math.PI - that.layout.getGap('rad'))
-            )
-            .attr('fill', (d) -> d.color)
-            .attr('id', (d) -> d.id)
-        circos
+    # conf override the default configuration. Conf not in default conf
+    # object are removed
+    for k,v of this._conf
+        this._conf[k] = if conf[k]? then conf[k] else v
 
-    circos
-    
+    this.getContainer = ->
+        this._conf.container
+    this.getWidth = ->
+        this._conf.width
+    this.getHeight = ->
+        this._conf.height
+    return
+
+# define default configuration values
+circosJS.Core.prototype._conf =
+    width: 550
+    height: 550
+    container: 'circos'
+
+circosJS.Core.prototype.layout = (conf, data) ->
+    # this refers the circos instance
+    this._layout = new circosJS.layout(conf, data)
+    return this
+
+circosJS.Core.prototype.heatmap = (id, conf, data) ->
+    if this._heatmaps[id]
+        # update
+        null
+    else
+        # append
+        null

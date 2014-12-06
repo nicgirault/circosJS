@@ -1,101 +1,89 @@
 var circosJS;
 
-circosJS = {};
+circosJS = function(conf) {
+  var instance;
+  instance = new circosJS.Core(conf);
+  return instance;
+};
 
-circosJS.circos = (function(d3) {
-  var circos;
-  circos = function(conf) {
-    this.width = conf.width;
-    this.height = conf.height;
-    this.container = conf.container;
-    this.getContainer().attr('width', this.width).attr('height', this.height);
-    return this;
+circosJS.Core = function(conf) {
+  var k, v, _ref;
+  this._heatmaps = {};
+  _ref = this._conf;
+  for (k in _ref) {
+    v = _ref[k];
+    this._conf[k] = conf[k] != null ? conf[k] : v;
+  }
+  this.getContainer = function() {
+    return this._conf.container;
   };
-  circos.prototype.width = 720;
-  circos.prototype.height = 720;
-  circos.prototype.getContainer = function() {
-    return d3.select(this.container);
+  this.getWidth = function() {
+    return this._conf.width;
   };
-  circos.prototype.getWidth = function() {
-    return this.width;
+  this.getHeight = function() {
+    return this._conf.height;
   };
-  circos.prototype.getHeight = function() {
-    return this.height;
-  };
-  circos.prototype.layout = function(layout) {
-    this.layout = layout;
-    return this;
-  };
-  circos.prototype.render = function() {
-    var that;
-    that = this;
-    this.getContainer().append('g').classed('cs-layout', true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')').selectAll('path').data(this.layout.data).enter().append('path').attr('d', d3.svg.arc().innerRadius(this.layout.getInnerRadius()).outerRadius(this.layout.getOuterRadius()).startAngle(function(d, i) {
-      return d.start / that.layout.getSize() * 2 * Math.PI;
-    }).endAngle(function(d, i) {
-      return (d.start + d.len) / that.layout.getSize() * 2 * Math.PI - that.layout.getGap('rad');
-    })).attr('fill', function(d) {
-      return d.color;
-    }).attr('id', function(d) {
-      return d.id;
-    });
-    return circos;
-  };
-  return circos;
-})(d3);
+};
 
-circosJS.layout = (function(d3) {
-  var layout;
-  layout = function(conf, data) {
-    var k, offset, v;
-    this.blocks = {};
-    this.data = data;
-    offset = 0;
-    for (k in data) {
-      v = data[k];
-      this.blocks[v.id] = {
-        label: v.label,
-        len: v.len,
-        color: v.color,
-        start: offset
-      };
-      v.start = offset;
-      offset += v.len;
-    }
-    this.size = offset;
-    for (k in conf) {
-      v = conf[k];
-      this.conf[k] = conf[k] != null ? conf[k] : v;
-    }
-    return this;
+circosJS.Core.prototype._conf = {
+  width: 550,
+  height: 550,
+  container: 'circos'
+};
+
+circosJS.Core.prototype.layout = function(conf, data) {
+  this._layout = new circosJS.layout(conf, data);
+  return this;
+};
+
+circosJS.Core.prototype.heatmap = function(id, conf, data) {
+  if (this._heatmaps[id]) {
+    return null;
+  } else {
+    return null;
+  }
+};
+
+circosJS.layout = function(conf, data) {
+  var k, offset, v, _ref, _ref1;
+  this._data = data;
+  this._blocks = {};
+  this._size = 0;
+  offset = 0;
+  _ref = this._data;
+  for (k in _ref) {
+    v = _ref[k];
+    this._blocks[v.id] = {
+      label: v.label,
+      len: v.len,
+      color: v.color,
+      start: offset
+    };
+    v.start = offset;
+    offset += v.len;
+  }
+  this._size = offset;
+  _ref1 = this._conf;
+  for (k in _ref1) {
+    v = _ref1[k];
+    this._conf[k] = conf[k] != null ? conf[k] : v;
+  }
+  this.getData = function() {
+    return this._data;
   };
-  layout.prototype.conf = {
-    innerRadius: 250,
-    outerRadius: 300,
-    gap: 0.04,
-    labelPosition: 'center',
-    labelRadialOffset: 0
-  };
-  layout.prototype.getGap = function(unit) {
+  this.getGap = function(unit) {
     if (unit === 'rad') {
-      return this.conf.gap;
+      return this._conf.gap;
     } else {
       return null;
     }
   };
-  layout.prototype.setGap = function(gap, unit) {
-    if (unit === 'rad') {
-      this.conf.gap = gap;
-    } else {
-      null;
-    }
-    return this;
+  this.getBlock = function(blockId) {
+    return this._blocks[blockId];
   };
-  layout.prototype.getBlock = function(blockId) {
-    return layout.blocks[blockId];
-  };
-  layout.prototype.getAngle = function(blockId, unit) {
+  this.getAngle = function(blockId, unit) {
     var block;
-    block = this.getBlock(blockId).start / this.size;
+    block = this.getBlock(blockId).start / this._size;
     if (unit === 'deg') {
       return block * 360;
     } else if (unit === 'rad') {
@@ -104,14 +92,37 @@ circosJS.layout = (function(d3) {
       return null;
     }
   };
-  layout.prototype.getSize = function() {
-    return this.size;
+  this.getSize = function() {
+    return this._size;
   };
-  layout.prototype.getInnerRadius = function() {
-    return this.conf.innerRadius;
+  this.getConf = function() {
+    return this._conf;
   };
-  layout.prototype.getOuterRadius = function() {
-    return this.conf.outerRadius;
-  };
-  return layout;
-})(d3);
+  return this;
+};
+
+circosJS.layout.prototype._conf = {
+  innerRadius: 250,
+  outerRadius: 300,
+  gap: 0.04,
+  labelPosition: 'center',
+  labelRadialOffset: 0
+};
+
+circosJS.Core.prototype.histogram = function(id, conf, data) {
+  return this;
+};
+
+circosJS.Core.prototype.render = function(ids) {
+  var that;
+  that = this;
+  return d3.select(this.getContainer()).attr('width', this.getWidth()).attr('height', this.getHeight()).append('g').classed('cs-layout', true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')').selectAll('path').data(this._layout.getData()).enter().append('path').attr('d', d3.svg.arc().innerRadius(this._layout.getConf().innerRadius).outerRadius(this._layout.getConf().outerRadius).startAngle(function(d, i) {
+    return d.start / that._layout.getSize() * 2 * Math.PI;
+  }).endAngle(function(d, i) {
+    return (d.start + d.len) / that._layout.getSize() * 2 * Math.PI - that._layout.getGap('rad');
+  })).attr('fill', function(d) {
+    return d.color;
+  }).attr('id', function(d) {
+    return d.id;
+  });
+};

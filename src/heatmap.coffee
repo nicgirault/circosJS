@@ -1,3 +1,8 @@
+circosJS.Core.prototype.histogram = (id, conf, data) ->
+    # this refer to the circos instance
+    return this
+
+
 # # what if input data is largeur than chromosome length?
     # instance.heatmap = (trackName, conf, data) ->
     #     # get min and max values
