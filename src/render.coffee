@@ -41,6 +41,32 @@ circosJS.Core.prototype.render = (ids) ->
         .attr('id', (d) -> d.id)
 
     ################################
+    ## Labels
+    layoutConf = this._layout.getConf()
+    r = layoutConf.innerRadius + layoutConf.labelRadialOffset
+    labels = svg.append('g')
+        .classed('labels', true)
+        .classed('segment', true)
+        .attr('transform', 'translate(' + parseInt(this.getWidth()/2) + ',' + parseInt(this.getHeight()/2) + ')')
+
+    # labels.append("def")
+    #     .selectAll('path')
+    #     .data(this._layout.getData()).enter()
+    #     .append("path")
+    #     .attr("id", (d) -> "segment-label-path-"+d.id)
+    #     .attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
+
+    labels.selectAll("text")
+        .data(this._layout.getData()).enter()
+        .append("text")
+        .append("textPath")
+        .attr("xlink:href", (d) -> "#"+d.id)
+        .attr("text-anchor", "middle")
+        # .attr("startOffset", (d, i) -> i * 100 / 24 + "%")
+
+        .text((d) -> d.label)
+
+    ################################
     ## render heatmaps
     ################################
     for heatmap_name in Object.keys(this._heatmaps)

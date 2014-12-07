@@ -53,34 +53,3 @@ circosJS.Layout = (conf, data) ->
         this._conf
 
     return this
-
-
- 
-
-
-    #             // Unique id so that the text path defs are unique - is there a better way to do this?
-    #             var id = d3.selectAll(".circos-layout")[0].length;
-
-    #             //labels
-    #             var r = innerRadius + labelRadialOffset;
-    #             labels = svg.append("g")
-    #                 .classed("labels", true)
-    #                 .classed("segment", true)
-    #                 .attr("transform", "translate(" + parseInt(offset) + "," + parseInt(offset) + ")");
-
-    #             labels.append("def")
-    #                 .append("path")
-    #                 .attr("id", "segment-label-path-"+id)
-    #                 .attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
-
-    #             labels.selectAll("text")
-    #                 .data(data).enter()
-    #                 .append("text")
-    #                 .append("textPath")
-    #                 .attr("xlink:href", "#segment-label-path-"+id)
-    #                 .attr("startOffset", getLabelStartOffset)
-    #                 .text(function(d) {return d.label;});
-
-    #         });
-
-    #     }

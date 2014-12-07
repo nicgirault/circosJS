@@ -248,7 +248,7 @@ circosJS.Heatmap = function(conf, data) {
 };
 
 circosJS.Core.prototype.render = function(ids) {
-  var angle, block, datum, heatmap, heatmap_name, svg, that, track, _i, _len, _ref, _results;
+  var angle, block, datum, heatmap, heatmap_name, labels, layoutConf, r, svg, that, track, _i, _len, _ref, _results;
   angle = function(i, pos) {
     var angle_no_gap, block, conf, size;
     conf = this._layout.getConf().gap;
@@ -268,6 +268,14 @@ circosJS.Core.prototype.render = function(ids) {
     return d.color;
   }).attr('id', function(d) {
     return d.id;
+  });
+  layoutConf = this._layout.getConf();
+  r = layoutConf.innerRadius + layoutConf.labelRadialOffset;
+  labels = svg.append('g').classed('labels', true).classed('segment', true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')');
+  labels.selectAll("text").data(this._layout.getData()).enter().append("text").append("textPath").attr("xlink:href", function(d) {
+    return "#" + d.id;
+  }).attr("text-anchor", "middle").text(function(d) {
+    return d.label;
   });
   _ref = Object.keys(this._heatmaps);
   _results = [];
