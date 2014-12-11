@@ -8,6 +8,7 @@ circosJS = (conf) ->
 # Circos instance
 circosJS.Core = (conf) ->
     this._heatmaps = {}
+    this._histograms = {}
     # this.init = function(){
     #     console.log('initializing instance');
     # };

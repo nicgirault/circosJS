@@ -481,6 +481,7 @@ circos
         karyotype
     )
     .heatmap('h1', {outerRadius: 240}, heatmap)
+    .histogram('hist1', {}, heatmap)
     // .heatmap('h2', {innerRadius: 150, outerRadius: 200, colorPalette: 'BuGn'}, heatmap)
     .render();
 

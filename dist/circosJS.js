@@ -10,6 +10,7 @@ circosJS = function(conf) {
 circosJS.Core = function(conf) {
   var k, v, _ref;
   this._heatmaps = {};
+  this._histograms = {};
   _ref = this._conf;
   for (k in _ref) {
     v = _ref[k];
