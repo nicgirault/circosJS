@@ -103,7 +103,7 @@ circosJS.Core.prototype.render = (ids) ->
 
             )
             .attr('class', (d) -> 
-                'q'+heatmap.colorScale(d.value, 9, 'linear')+'-'+heatmap.getConf().colorPaletteSize
+                'q'+heatmap.colorScale(d.value, 'linear')+'-'+heatmap.getConf().colorPaletteSize
             true)
 
     ################################
@@ -112,9 +112,11 @@ circosJS.Core.prototype.render = (ids) ->
     for histogram_name in Object.keys(this._histograms)
         histogram = this._histograms[histogram_name]
 
+        conf = histogram.getConf()
+
         track = svg.append('g')
             .classed(histogram_name, true)
-            # .classed(histogram.getConf().colorPalette, true)
+            .classed(conf.colorPalette, true)
             .attr('transform', 'translate(' + parseInt(this.getWidth()/2) + ',' + parseInt(this.getHeight()/2) + ')')
 
         block = track.selectAll('g')
@@ -131,16 +133,16 @@ circosJS.Core.prototype.render = (ids) ->
             .attr('d',
                 d3.svg.arc()
                     .innerRadius((d,i) ->
-                        if histogram.getConf().direction == 'in'
-                            histogram.getConf().outerRadius - histogram.height(d.value, 'linear')
+                        if conf.direction == 'in'
+                            conf.outerRadius - histogram.height(d.value, 'linear')
                         else
-                            histogram.getConf().innerRadius
+                            conf.innerRadius
                     )
                     .outerRadius((d,i) ->
-                        if histogram.getConf().direction == 'out'
-                            histogram.getConf().innerRadius + histogram.height(d.value, 'linear')
+                        if conf.direction == 'out'
+                            conf.innerRadius + histogram.height(d.value, 'linear')
                         else
-                            histogram.getConf().outerRadius
+                            conf.outerRadius
                     )
                     .startAngle((d, i) ->
                         block = that._layout.getBlock(d.block_id)
@@ -152,7 +154,10 @@ circosJS.Core.prototype.render = (ids) ->
                     )
 
             )
-            .attr('fill', histogram.getConf().color)
-            # .attr('class', (d) ->
-                # 'q'+histogram.colorScale(d.value, 9, 'linear')+'-'+histogram.getConf().colorPaletteSize
-            # true)
+
+        if conf.color?
+            datum.attr('fill', conf.color)
+        if conf.colorPalette?
+            datum.attr('class', (d) ->
+                'q'+histogram.colorScale(d.value, 'linear')+'-'+conf.colorPaletteSize
+            true)

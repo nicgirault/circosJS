@@ -89,9 +89,9 @@ circosJS.Heatmap = (conf, data) ->
         this._conf.cmin = this._conf.min
         this._conf.cmax = this._conf.max
 
-    this.colorScale = (value, range, scale) ->
+    this.colorScale = (value, scale) ->
         if value == this._conf.cmax
-            range-1
+            this._conf.colorPaletteSize-1
         else if scale == 'linear'
             Math.floor((value - this._conf.cmin) / (this._conf.cmax - this._conf.cmin) * this._conf.colorPaletteSize)
             # else

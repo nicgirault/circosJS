@@ -49,8 +49,10 @@ circosJS.Histogram = (conf, data) ->
         min: 'smart'
         max: 'smart'
         direction: 'out'
-        color: 'green'
+        color: 'green' #overriden by colorPalette
         colorPaletteSize: 9
+        colorPalette: 'YlGnBu'
+
 
     # conf override the default configuration. Conf not in default conf
     # object are removed
@@ -95,6 +97,14 @@ circosJS.Histogram = (conf, data) ->
             this._conf.outerRadius - this._conf.innerRadius
         else if scale == 'linear'
             Math.floor((value - this._conf.cmin) / this._conf.cmax * (this._conf.outerRadius - this._conf.innerRadius))
+            # else
+                # null
+
+    this.colorScale = (value, scale) ->
+        if value == this._conf.cmax
+            this._conf.colorPaletteSize - 1
+        else if scale == 'linear'
+            Math.floor((value - this._conf.cmin) / (this._conf.cmax - this._conf.cmin) * this._conf.colorPaletteSize)
             # else
                 # null
 
