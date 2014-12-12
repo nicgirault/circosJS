@@ -53,7 +53,7 @@ circosJS.Core.prototype.render = (ids) ->
     unless conf.turnOffLabels
         # http://stackoverflow.com/questions/20447106/how-to-center-horizontal-and-vertical-text-along-an-textpath-inside-an-arc-usi
         r = conf.innerRadius + conf.labelRadialOffset
-        
+
         labelArc = d3.svg.arc()
             .innerRadius r
             .outerRadius r
@@ -67,13 +67,13 @@ circosJS.Core.prototype.render = (ids) ->
             .attr 'id', (d) -> 'arc-label' + d.id
 
         label = block.append 'text'
-            .style 'font-size', '20px'
+            .style 'font-size', conf.labelSize
             .attr 'text-anchor', 'middle'
 
         label.append 'textPath'
             .attr 'startOffset', '25%'
             .attr 'xlink:href', (d) -> '#arc-label' + d.id
-            .style 'fill', '#000'
+            .style 'fill', conf.labelColor
             .text (d) -> d.label
 
     ################################
