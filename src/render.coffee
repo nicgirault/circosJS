@@ -21,50 +21,60 @@ circosJS.Core.prototype.render = (ids) ->
     ################################
     that = this
     svg = d3.select(this.getContainer())
+    conf = this._layout.getConf()
 
-    svg.attr('width', this.getWidth()).attr('height', this.getHeight())
+    layout = svg
+        .attr('width', this.getWidth())
+        .attr('height', this.getHeight())
         .append('g')
         .classed('cs-layout', true)
         .attr('transform', 'translate(' + parseInt(this.getWidth()/2) + ',' + parseInt(this.getHeight()/2) + ')')
-        .selectAll('path')
-        .data(this._layout.getData())
+
+    block = layout
+        .selectAll 'path'
+        .data this._layout.getData()
         .enter()
-        .append('path')
-        .attr('d',
-            d3.svg.arc()
-                .innerRadius(this._layout.getConf().innerRadius)
-                .outerRadius(this._layout.getConf().outerRadius)
-                .startAngle((d,i) -> d.start)
-                .endAngle((d,i) -> d.end)
-        )
-        .attr('fill', (d) -> d.color)
-        .attr('id', (d) -> d.id)
+        .append 'g'
+
+    entry = d3.svg.arc()
+        .innerRadius conf.innerRadius
+        .outerRadius conf.outerRadius
+        .startAngle (d,i) -> d.start
+        .endAngle (d,i) -> d.end
+
+    block.append 'path'
+        .attr 'd', entry
+        .attr 'fill', (d) -> d.color
+        .attr 'id', (d) -> d.id
 
     ################################
     ## Labels
-    layoutConf = this._layout.getConf()
-    r = layoutConf.innerRadius + layoutConf.labelRadialOffset
-    labels = svg.append('g')
-        .classed('labels', true)
-        .classed('segment', true)
-        .attr('transform', 'translate(' + parseInt(this.getWidth()/2) + ',' + parseInt(this.getHeight()/2) + ')')
+    ################################
+    unless conf.turnOffLabels
+        # http://stackoverflow.com/questions/20447106/how-to-center-horizontal-and-vertical-text-along-an-textpath-inside-an-arc-usi
+        r = conf.innerRadius + conf.labelRadialOffset
+        
+        labelArc = d3.svg.arc()
+            .innerRadius r
+            .outerRadius r
+            .startAngle (d,i) -> d.start
+            .endAngle (d,i) -> d.end
 
-    # labels.append("def")
-    #     .selectAll('path')
-    #     .data(this._layout.getData()).enter()
-    #     .append("path")
-    #     .attr("id", (d) -> "segment-label-path-"+d.id)
-    #     .attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
+        block.append 'path'
+            .attr 'fill', 'none'
+            .attr 'stroke', 'none'
+            .attr 'd', labelArc
+            .attr 'id', (d) -> 'arc-label' + d.id
 
-    labels.selectAll("text")
-        .data(this._layout.getData()).enter()
-        .append("text")
-        .append("textPath")
-        .attr("xlink:href", (d) -> "#"+d.id)
-        .attr("text-anchor", "middle")
-        # .attr("startOffset", (d, i) -> i * 100 / 24 + "%")
+        label = block.append 'text'
+            .style 'font-size', '20px'
+            .attr 'text-anchor', 'middle'
 
-        .text((d) -> d.label)
+        label.append 'textPath'
+            .attr 'startOffset', '25%'
+            .attr 'xlink:href', (d) -> '#arc-label' + d.id
+            .style 'fill', '#000'
+            .text (d) -> d.label
 
     ################################
     ## render heatmaps
@@ -127,7 +137,7 @@ circosJS.Core.prototype.render = (ids) ->
             true)
             .attr('transform', (d) -> 'rotate(' + that._layout.getBlock(d.parent).start*360/(2*Math.PI) + ')')
 
-        datum = block.selectAll('path')
+        bin = block.selectAll('path')
             .data((d)->d.data)
             .enter().append('path')
             .attr('d',
@@ -156,8 +166,8 @@ circosJS.Core.prototype.render = (ids) ->
             )
 
         if conf.color?
-            datum.attr('fill', conf.color)
-        if conf.colorPalette?
-            datum.attr('class', (d) ->
+            bin.attr('fill', conf.color)
+        else if conf.colorPalette?
+            bin.attr('class', (d) ->
                 'q'+histogram.colorScale(d.value, 'linear')+'-'+conf.colorPaletteSize
             true)

@@ -10,7 +10,8 @@ circosJS.Layout.prototype._conf =
     outerRadius: 300
     gap: 0.04 # in radian
     labelPosition: 'center'
-    labelRadialOffset: 0
+    labelRadialOffset: 25
+    turnOffLabels: false
 
 # Heatmap
 # circosJS.Heatmap.prototype._conf =

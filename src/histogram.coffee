@@ -49,7 +49,7 @@ circosJS.Histogram = (conf, data) ->
         min: 'smart'
         max: 'smart'
         direction: 'out'
-        color: 'green' #overriden by colorPalette
+        color: 'green'
         colorPaletteSize: 9
         colorPalette: 'YlGnBu'
 
