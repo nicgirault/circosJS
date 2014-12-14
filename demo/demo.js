@@ -475,6 +475,7 @@ var circos = new circosJS({
     container: '#chart'
 });
 
+
 circos
     .layout(
         {},
