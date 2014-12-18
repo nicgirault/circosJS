@@ -15,6 +15,7 @@ gulp.task 'concat-coffee', ->
         'src/layout.coffee'
         'src/heatmap.coffee'
         'src/histogram.coffee'
+        'src/chord.coffee'
         'src/render.coffee'
         'src/default_parameters.coffee'
     ]

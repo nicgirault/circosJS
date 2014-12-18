@@ -39,6 +39,7 @@ circosJS.Core.prototype.render = (ids) ->
     entry = d3.svg.arc()
         .innerRadius conf.innerRadius
         .outerRadius conf.outerRadius
+        # .cornerRadius conf.cornerRadius
         .startAngle (d,i) -> d.start
         .endAngle (d,i) -> d.end
 
@@ -217,3 +218,46 @@ circosJS.Core.prototype.render = (ids) ->
             bin.attr('class', (d) ->
                 'q'+histogram.colorScale(d.value, 'linear')+'-'+conf.colorPaletteSize
             true)
+
+
+    conf = this._layout.getConf()
+    that = this
+    getSource = (d) ->
+        d = d.source
+        block = that._layout.getBlock d.id
+        startAngle = block.start + d.start / block.len * (block.end - block.start)
+        endAngle = block.start + d.end / block.len * (block.end - block.start)
+        result =
+            radius: conf.innerRadius
+            startAngle: startAngle
+            endAngle: endAngle
+    getTarget = (d) ->
+        d = d.target
+        block = that._layout.getBlock d.id
+        startAngle = block.start + d.start / block.len * (block.end - block.start)
+        endAngle = block.start + d.end / block.len * (block.end - block.start)
+        result =
+            radius: conf.innerRadius
+            startAngle: startAngle
+            endAngle: endAngle
+
+    ################################
+    ## render chords
+    ################################
+    for chord_name in Object.keys(this._chords)
+        chord = this._chords[chord_name]
+        chordConf = chord.getConf()
+        track = svg.append('g')
+            .classed(chordConf.colorPalette, true)
+            .attr('transform', 'translate(' + parseInt(this.getWidth()/2) + ',' + parseInt(this.getHeight()/2) + ')')
+            .selectAll('path')
+            .data(chord.getData())
+            .enter().append('path')
+        track = track.attr('d',
+                d3.svg.chord()
+                .source(getSource)
+                .target(getTarget)
+            ).attr('class', (d) ->
+                'q'+d.value+'-'+ chordConf.colorPaletteSize
+            ).attr('opacity', chordConf.opacity)
+    return

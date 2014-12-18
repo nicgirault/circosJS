@@ -8,6 +8,7 @@ circosJS.Core.prototype._conf =
 circosJS.Layout.prototype._conf =
     innerRadius: 250
     outerRadius: 300
+    cornerRadius: 10
     gap: 0.04 # in radian
     labels:
         position: 'center'
