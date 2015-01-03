@@ -45,6 +45,40 @@ if (typeof module !== "undefined" && module !== null) {
 
 circosJS.Layout = function(conf, data) {
   var block_nb, gap, k, offset, size, v, _ref, _ref1, _ref2;
+  if (data == null) {
+    circosJS.log(2, 'no layout data', '');
+  }
+  this._conf = {
+    innerRadius: 250,
+    outerRadius: 300,
+    cornerRadius: 10,
+    gap: 0.04,
+    labels: {
+      position: 'center',
+      display: true,
+      size: '14px',
+      color: '#000',
+      radialOffset: 20
+    },
+    ticks: {
+      display: true,
+      color: 'grey',
+      spacing: 10000000,
+      labels: true,
+      labelSpacing: 10,
+      labelSuffix: 'Mb',
+      labelDenominator: 1000000,
+      labelDisplay0: true,
+      labelSize: '10px',
+      labelColor: '#000',
+      labelFont: 'default',
+      majorSpacing: 5,
+      size: {
+        minor: 2,
+        major: 5
+      }
+    }
+  };
   this._data = data;
   this._blocks = {};
   this._size = 0;
@@ -490,6 +524,7 @@ circosJS.Core.prototype.render = function(ids) {
   that = this;
   svg = d3.select(this.getContainer());
   conf = this._layout.getConf();
+  svg.select('.cs-layout').remove();
   layout = svg.attr('width', this.getWidth()).attr('height', this.getHeight()).append('g').classed('cs-layout', true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')');
   block = layout.selectAll('path').data(this._layout.getData()).enter().append('g');
   entry = d3.svg.arc().innerRadius(conf.innerRadius).outerRadius(conf.outerRadius).startAngle(function(d, i) {
@@ -671,36 +706,4 @@ circosJS.Core.prototype._conf = {
   width: 700,
   height: 700,
   container: 'circos'
-};
-
-circosJS.Layout.prototype._conf = {
-  innerRadius: 250,
-  outerRadius: 300,
-  cornerRadius: 10,
-  gap: 0.04,
-  labels: {
-    position: 'center',
-    display: true,
-    size: '14px',
-    color: '#000',
-    radialOffset: 20
-  },
-  ticks: {
-    display: true,
-    color: 'grey',
-    spacing: 10000000,
-    labels: true,
-    labelSpacing: 10,
-    labelSuffix: 'Mb',
-    labelDenominator: 1000000,
-    labelDisplay0: true,
-    labelSize: '10px',
-    labelColor: '#000',
-    labelFont: 'default',
-    majorSpacing: 5,
-    size: {
-      minor: 2,
-      major: 5
-    }
-  }
 };

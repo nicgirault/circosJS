@@ -3,8 +3,6 @@ circosJS = (conf) ->
     # instance.init()
     return instance
 
-
-
 # Circos instance
 circosJS.Core = (conf) ->
     this._heatmaps = {}

@@ -23,6 +23,9 @@ circosJS.Core.prototype.render = (ids) ->
     svg = d3.select(this.getContainer())
     conf = this._layout.getConf()
 
+    # tmp to allow update
+    svg.select('.cs-layout').remove()
+
     layout = svg
         .attr('width', this.getWidth())
         .attr('height', this.getHeight())
