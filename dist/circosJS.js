@@ -48,37 +48,7 @@ circosJS.Layout = function(conf, data) {
   if (data == null) {
     circosJS.log(2, 'no layout data', '');
   }
-  this._conf = {
-    innerRadius: 250,
-    outerRadius: 300,
-    cornerRadius: 10,
-    gap: 0.04,
-    labels: {
-      position: 'center',
-      display: true,
-      size: '14px',
-      color: '#000',
-      radialOffset: 20
-    },
-    ticks: {
-      display: true,
-      color: 'grey',
-      spacing: 10000000,
-      labels: true,
-      labelSpacing: 10,
-      labelSuffix: 'Mb',
-      labelDenominator: 1000000,
-      labelDisplay0: true,
-      labelSize: '10px',
-      labelColor: '#000',
-      labelFont: 'default',
-      majorSpacing: 5,
-      size: {
-        minor: 2,
-        major: 5
-      }
-    }
-  };
+  this._conf = JSON.parse(JSON.stringify(this._defaultConf));
   this._data = data;
   this._blocks = {};
   this._size = 0;
@@ -196,14 +166,7 @@ circosJS.Core.prototype.heatmap = function(id, conf, data) {
 circosJS.Heatmap = function(conf, data) {
   var datum, heatmapMax, heatmapMin, i, k, kc, v, vc, _ref, _ref1, _ref2, _ref3, _ref4;
   this._data = data;
-  this._conf = {
-    innerRadius: 200,
-    outerRadius: 250,
-    min: 'smart',
-    max: 'smart',
-    colorPalette: 'YlGnBu',
-    colorPaletteSize: 9
-  };
+  this._conf = JSON.parse(JSON.stringify(this._defaultConf));
   _ref = this._conf;
   for (k in _ref) {
     v = _ref[k];
@@ -334,16 +297,7 @@ circosJS.Core.prototype.histogram = function(id, conf, data) {
 circosJS.Histogram = function(conf, data) {
   var datum, histogramMax, histogramMin, i, k, kc, v, vc, _ref, _ref1, _ref2, _ref3, _ref4;
   this._data = data;
-  this._conf = {
-    innerRadius: 150,
-    outerRadius: 200,
-    min: 'smart',
-    max: 'smart',
-    direction: 'out',
-    color: 'green',
-    colorPaletteSize: 9,
-    colorPalette: 'YlGnBu'
-  };
+  this._conf = JSON.parse(JSON.stringify(this._defaultConf));
   _ref = this._conf;
   for (k in _ref) {
     v = _ref[k];
@@ -706,4 +660,56 @@ circosJS.Core.prototype._conf = {
   width: 700,
   height: 700,
   container: 'circos'
+};
+
+circosJS.Layout.prototype._defaultConf = {
+  innerRadius: 250,
+  outerRadius: 300,
+  cornerRadius: 10,
+  gap: 0.04,
+  labels: {
+    position: 'center',
+    display: true,
+    size: '14px',
+    color: '#000',
+    radialOffset: 20
+  },
+  ticks: {
+    display: true,
+    color: 'grey',
+    spacing: 10000000,
+    labels: true,
+    labelSpacing: 10,
+    labelSuffix: 'Mb',
+    labelDenominator: 1000000,
+    labelDisplay0: true,
+    labelSize: '10px',
+    labelColor: '#000',
+    labelFont: 'default',
+    majorSpacing: 5,
+    size: {
+      minor: 2,
+      major: 5
+    }
+  }
+};
+
+circosJS.Heatmap.prototype._defaultConf = {
+  innerRadius: 200,
+  outerRadius: 250,
+  min: 'smart',
+  max: 'smart',
+  colorPalette: 'YlGnBu',
+  colorPaletteSize: 9
+};
+
+circosJS.Histogram.prototype._defaultConf = {
+  innerRadius: 150,
+  outerRadius: 200,
+  min: 'smart',
+  max: 'smart',
+  direction: 'out',
+  color: 'green',
+  colorPaletteSize: 9,
+  colorPalette: 'YlGnBu'
 };

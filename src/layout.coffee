@@ -3,34 +3,8 @@ circosJS.Layout = (conf, data) ->
     unless data?
         circosJS.log 2, 'no layout data', ''
 
-    # Layout
-    this._conf =
-        innerRadius: 250
-        outerRadius: 300
-        cornerRadius: 10
-        gap: 0.04 # in radian
-        labels:
-            position: 'center'
-            display: true
-            size: '14px'
-            color: '#000'
-            radialOffset: 20
-        ticks:
-            display: true
-            color: 'grey'
-            spacing: 10000000
-            labels: true
-            labelSpacing: 10
-            labelSuffix: 'Mb'
-            labelDenominator: 1000000
-            labelDisplay0: true
-            labelSize: '10px'
-            labelColor: '#000'
-            labelFont: 'default'
-            majorSpacing: 5
-            size:
-                minor: 2
-                major: 5
+    # deep copy of default conf
+    this._conf = JSON.parse JSON.stringify this._defaultConf
 
     # this refers the layout instance
     this._data = data

@@ -43,16 +43,8 @@ circosJS.Histogram = (conf, data) ->
     # this refers the histogram instance
     this._data = data
 
-    this._conf =
-        innerRadius: 150
-        outerRadius: 200
-        min: 'smart'
-        max: 'smart'
-        direction: 'out'
-        color: 'green'
-        colorPaletteSize: 9
-        colorPalette: 'YlGnBu'
-
+    # deep copy of default conf
+    this._conf = JSON.parse JSON.stringify this._defaultConf
 
     # conf override the default configuration. Conf not in default conf
     # object are removed

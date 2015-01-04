@@ -43,13 +43,8 @@ circosJS.Heatmap = (conf, data) ->
     # this refers the heatmap instance
     this._data = data
 
-    this._conf =
-        innerRadius: 200
-        outerRadius: 250
-        min: 'smart'
-        max: 'smart'
-        colorPalette: 'YlGnBu'
-        colorPaletteSize: 9
+    # deep copy of default conf
+    this._conf = JSON.parse JSON.stringify this._defaultConf
 
     # conf override the default configuration. Conf not in default conf
     # object are removed
