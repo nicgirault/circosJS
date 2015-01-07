@@ -478,8 +478,9 @@ circosJS.Core.prototype.render = function(ids) {
   that = this;
   svg = d3.select(this.getContainer());
   conf = this._layout.getConf();
+  console.log(conf.clickCallback);
   svg.select('.cs-layout').remove();
-  layout = svg.attr('width', this.getWidth()).attr('height', this.getHeight()).append('g').classed('cs-layout', true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')');
+  layout = svg.attr('width', this.getWidth()).attr('height', this.getHeight()).append('g').classed('cs-layout', true).on('click', conf.clickCallback).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')');
   block = layout.selectAll('path').data(this._layout.getData()).enter().append('g');
   entry = d3.svg.arc().innerRadius(conf.innerRadius).outerRadius(conf.outerRadius).startAngle(function(d, i) {
     return d.start;
@@ -691,7 +692,8 @@ circosJS.Layout.prototype._defaultConf = {
       minor: 2,
       major: 5
     }
-  }
+  },
+  clickCallback: null
 };
 
 circosJS.Heatmap.prototype._defaultConf = {

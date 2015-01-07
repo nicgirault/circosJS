@@ -32,6 +32,7 @@ circosJS.Layout.prototype._defaultConf =
     size:
       minor: 2
       major: 5
+  clickCallback: null
 
 # Heatmap
 circosJS.Heatmap.prototype._defaultConf =

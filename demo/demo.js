@@ -490,7 +490,9 @@ var circos = new circosJS({
 
 circos
     .layout(
-        {},
+        {
+            clickCallback: function(){console.log('You clicked on the layout layer!');}
+        },
         karyotype
     )
     .heatmap('h1', {outerRadius: 240}, heatmap)
@@ -498,5 +500,4 @@ circos
     .chord('l1', {}, links)
     // .heatmap('h2', {innerRadius: 150, outerRadius: 200, colorPalette: 'BuGn'}, heatmap)
     .render();
-
 
