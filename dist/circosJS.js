@@ -478,7 +478,6 @@ circosJS.Core.prototype.render = function(ids) {
   that = this;
   svg = d3.select(this.getContainer());
   conf = this._layout.getConf();
-  console.log(conf.clickCallback);
   svg.select('.cs-layout').remove();
   layout = svg.attr('width', this.getWidth()).attr('height', this.getHeight()).append('g').classed('cs-layout', true).on('click', conf.clickCallback).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')');
   block = layout.selectAll('path').data(this._layout.getData()).enter().append('g');
@@ -561,6 +560,7 @@ circosJS.Core.prototype.render = function(ids) {
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     heatmap_name = _ref[_i];
     heatmap = this._heatmaps[heatmap_name];
+    svg.select(heatmap_name).remove();
     track = svg.append('g').classed(heatmap_name, true).classed(heatmap.getConf().colorPalette, true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')');
     block = track.selectAll('g').data(heatmap.getData()).enter().append('g').attr('class', function(d, i) {
       return heatmap_name + '-' + d.parent;

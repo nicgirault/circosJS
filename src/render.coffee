@@ -132,6 +132,7 @@ circosJS.Core.prototype.render = (ids) ->
     for heatmap_name in Object.keys(this._heatmaps)
         heatmap = this._heatmaps[heatmap_name]
 
+        svg.select(heatmap_name).remove()
         track = svg.append('g')
             .classed(heatmap_name, true)
             .classed(heatmap.getConf().colorPalette, true)
