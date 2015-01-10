@@ -560,7 +560,7 @@ circosJS.Core.prototype.render = function(ids) {
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     heatmap_name = _ref[_i];
     heatmap = this._heatmaps[heatmap_name];
-    svg.select(heatmap_name).remove();
+    svg.select('.' + heatmap_name).remove();
     track = svg.append('g').classed(heatmap_name, true).classed(heatmap.getConf().colorPalette, true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')');
     block = track.selectAll('g').data(heatmap.getData()).enter().append('g').attr('class', function(d, i) {
       return heatmap_name + '-' + d.parent;
