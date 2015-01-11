@@ -37,6 +37,40 @@ circosJS.Core.prototype.layout = function(conf, data) {
 circosJS.log = function(level, name, message, data) {
   var levels;
   levels = ['Permanent log', 'Error', 'Warning', 'Info'];
+  console.log('CircosJS: ', levels[level] + ' [' + name + '] ', message, data);
+};
+
+circosJS.parseData = function(data) {
+  var block, dict, newData, parentId, sample;
+  if (!(data.length > 0)) {
+    return data;
+  }
+  sample = data[0];
+  if (!Array.isArray(sample)) {
+    console.log(sample);
+    return data;
+  }
+  dict = {};
+  data.forEach(function(datum) {
+    if (dict[datum[0]] == null) {
+      dict[datum[0]] = [];
+    }
+    return dict[datum[0]].push({
+      start: datum[1],
+      end: datum[2],
+      value: datum[3]
+    });
+  });
+  newData = [];
+  for (parentId in dict) {
+    block = dict[parentId];
+    newData.push({
+      parent: parentId,
+      data: block
+    });
+  }
+  console.log(newData);
+  return newData;
 };
 
 if (typeof module !== "undefined" && module !== null) {
@@ -123,6 +157,7 @@ circosJS.Core.prototype.heatmap = function(id, conf, data) {
     });
     return this;
   }
+  data = circosJS.parseData(data);
   layout_ids = (function() {
     var _i, _len, _ref, _results;
     _ref = this._layout.getData();

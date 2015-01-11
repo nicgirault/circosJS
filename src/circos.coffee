@@ -36,8 +36,30 @@ circosJS.log = (level, name, message, data) ->
     # 1 - error
     # 2 - warning
     # 3 - info
-    # console.log('CircosJS: ', levels[level]+' ['+name+'] ', message, data)
+    console.log('CircosJS: ', levels[level]+' ['+name+'] ', message, data)
     return
+
+circosJS.parseData = (data) ->
+    unless data.length > 0
+        return data
+    sample = data[0]
+
+    unless Array.isArray(sample)
+        console.log sample
+        return data
+
+    # if it's an array:
+    # [parentId, start, end, value]
+    dict = {}
+    data.forEach (datum) ->
+        unless dict[datum[0]]?
+            dict[datum[0]] = []
+        dict[datum[0]].push {start: datum[1], end: datum[2], value: datum[3]}
+    newData = []
+    for parentId, block of dict
+        newData.push {parent: parentId, data: block}
+    console.log newData
+    return newData
 
 if module?
     module.exports = circosJS

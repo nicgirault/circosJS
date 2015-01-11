@@ -9,6 +9,9 @@ circosJS.Core.prototype.heatmap = (id, conf, data) ->
         )
         return this
 
+    # data can be csv or yaml.
+    data = circosJS.parseData(data)
+
     #check data consistency with layout
     layout_ids = (d.id for d in this._layout.getData())
     layout_lengths = {}
@@ -41,6 +44,8 @@ circosJS.Core.prototype.heatmap = (id, conf, data) ->
 # Heatmap instance constructor
 circosJS.Heatmap = (conf, data) ->
     # this refers the heatmap instance
+
+    # data can be csv or yaml.
     this._data = data
 
     # deep copy of default conf
