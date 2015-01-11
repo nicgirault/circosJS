@@ -164,7 +164,7 @@ circosJS.Core.prototype.render = (ids) ->
 
             )
             .attr('class', (d) -> 
-                'q'+heatmap.colorScale(d.value, 'linear')+'-'+heatmap.getConf().colorPaletteSize
+                'q'+heatmap.colorScale(d.value, heatmap.getConf().logScale)+'-'+heatmap.getConf().colorPaletteSize
             true)
 
     ################################

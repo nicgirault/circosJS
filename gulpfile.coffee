@@ -45,7 +45,7 @@ gulp.task 'watch', ->
     # gulp.watch 'src/*.less', ['css-full']
     return
 
-gulp.task 'build', ['coffee2js']
+gulp.task 'build', ['coffee2js', 'concat-coffee']
 # gulp.task 'requirejsBuild', ['coffee2js'], ->
 #     rjs
 #         name: 'circos.js'

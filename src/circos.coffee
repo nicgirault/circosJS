@@ -45,7 +45,6 @@ circosJS.parseData = (data) ->
     sample = data[0]
 
     unless Array.isArray(sample)
-        console.log sample
         return data
 
     # if it's an array:
@@ -58,7 +57,6 @@ circosJS.parseData = (data) ->
     newData = []
     for parentId, block of dict
         newData.push {parent: parentId, data: block}
-    console.log newData
     return newData
 
 if module?

@@ -47,7 +47,6 @@ circosJS.parseData = function(data) {
   }
   sample = data[0];
   if (!Array.isArray(sample)) {
-    console.log(sample);
     return data;
   }
   dict = {};
@@ -69,7 +68,6 @@ circosJS.parseData = function(data) {
       data: block
     });
   }
-  console.log(newData);
   return newData;
 };
 
@@ -199,7 +197,7 @@ circosJS.Core.prototype.heatmap = function(id, conf, data) {
 };
 
 circosJS.Heatmap = function(conf, data) {
-  var datum, heatmapMax, heatmapMin, i, k, kc, v, vc, _ref, _ref1, _ref2, _ref3, _ref4;
+  var blockData, datum, flattenValues, i, k, v, values, _ref, _ref1;
   this._data = data;
   this._conf = JSON.parse(JSON.stringify(this._defaultConf));
   _ref = this._conf;
@@ -215,60 +213,42 @@ circosJS.Heatmap = function(conf, data) {
       datum.block_id = v.parent;
     }
   }
-  if (this._conf.min === 'smart' && this._conf.max === 'smart') {
-    heatmapMin = 99999999;
-    heatmapMax = -99999999;
-    for (k in data) {
-      v = data[k];
-      _ref2 = v.data;
-      for (kc in _ref2) {
-        vc = _ref2[kc];
-        if (vc.value > heatmapMax) {
-          heatmapMax = vc.value;
+  values = (function() {
+    var _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = data.length; _i < _len; _i++) {
+      blockData = data[_i];
+      _results.push((function() {
+        var _j, _len1, _ref2, _results1;
+        _ref2 = blockData.data;
+        _results1 = [];
+        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+          datum = _ref2[_j];
+          _results1.push(datum.value);
         }
-        if (vc.value < heatmapMin) {
-          heatmapMin = vc.value;
-        }
-      }
+        return _results1;
+      })());
     }
-    this._conf.cmin = heatmapMin;
-    this._conf.cmax = heatmapMax;
-  } else if (this._conf.min === 'smart') {
-    heatmapMin = 99999999;
-    for (k in data) {
-      v = data[k];
-      _ref3 = v.data;
-      for (kc in _ref3) {
-        vc = _ref3[kc];
-        if (vc.value < heatmapMin) {
-          heatmapMin = vc.value;
-        }
-      }
-    }
-    this._conf.cmin = heatmapMin;
-    this._conf.cmax = this._conf.max;
-  } else if (this._conf.max === 'smart') {
-    heatmapMax = -99999999;
-    for (k in data) {
-      v = data[k];
-      _ref4 = v.data;
-      for (kc in _ref4) {
-        vc = _ref4[kc];
-        if (vc.value < heatmapMax) {
-          heatmapMax = vc.value;
-        }
-      }
-    }
-    this._conf.cmax = heatmapMax;
-    this._conf.cmin = this._conf.min;
+    return _results;
+  })();
+  flattenValues = [];
+  flattenValues = flattenValues.concat.apply(flattenValues, values);
+  if (this._conf.min === 'smart') {
+    this._conf.cmin = Math.min(flattenValues);
   } else {
     this._conf.cmin = this._conf.min;
+  }
+  if (this._conf.max === 'smart') {
+    this._conf.cmax = Math.min(flattenValues);
+  } else {
     this._conf.cmax = this._conf.max;
   }
-  this.colorScale = function(value, scale) {
+  this.colorScale = function(value, logScale) {
     if (value === this._conf.cmax) {
       return this._conf.colorPaletteSize - 1;
-    } else if (scale === 'linear') {
+    } else if (logScale) {
+      return Math.floor((Math.log(value) - Math.log(this._conf.cmin)) / (Math.log(this._conf.cmax) - Math.log(this._conf.cmin)) * this._conf.colorPaletteSize);
+    } else {
       return Math.floor((value - this._conf.cmin) / (this._conf.cmax - this._conf.cmin) * this._conf.colorPaletteSize);
     }
   };
@@ -611,7 +591,7 @@ circosJS.Core.prototype.render = function(ids) {
       block = that._layout.getBlock(d.block_id);
       return d.end / block.len * (block.end - block.start);
     })).attr('class', function(d) {
-      return 'q' + heatmap.colorScale(d.value, 'linear') + '-' + heatmap.getConf().colorPaletteSize;
+      return 'q' + heatmap.colorScale(d.value, heatmap.getConf().logScale) + '-' + heatmap.getConf().colorPaletteSize;
     }, true);
   }
   _ref1 = Object.keys(this._histograms);
@@ -737,7 +717,8 @@ circosJS.Heatmap.prototype._defaultConf = {
   min: 'smart',
   max: 'smart',
   colorPalette: 'YlGnBu',
-  colorPaletteSize: 9
+  colorPaletteSize: 9,
+  logScale: false
 };
 
 circosJS.Histogram.prototype._defaultConf = {

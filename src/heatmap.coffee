@@ -44,7 +44,6 @@ circosJS.Core.prototype.heatmap = (id, conf, data) ->
 # Heatmap instance constructor
 circosJS.Heatmap = (conf, data) ->
     # this refers the heatmap instance
-
     # data can be csv or yaml.
     this._data = data
 
@@ -62,40 +61,25 @@ circosJS.Heatmap = (conf, data) ->
             datum.block_id = v.parent
 
     # compute min and max values
-    if this._conf.min == 'smart' and this._conf.max == 'smart'
-        heatmapMin = 99999999
-        heatmapMax = -99999999
-        for k,v of data
-            for kc,vc of v.data
-                if vc.value > heatmapMax then heatmapMax = vc.value
-                if vc.value < heatmapMin then heatmapMin = vc.value
-        this._conf.cmin = heatmapMin
-        this._conf.cmax = heatmapMax
-    else if this._conf.min == 'smart'
-        heatmapMin = 99999999
-        for k,v of data
-            for kc,vc of v.data
-                if vc.value < heatmapMin then heatmapMin = vc.value
-        this._conf.cmin = heatmapMin
-        this._conf.cmax = this._conf.max
-    else if this._conf.max == 'smart'
-        heatmapMax = -99999999
-        for k,v of data
-            for kc,vc of v.data
-                if vc.value < heatmapMax then heatmapMax = vc.value
-        this._conf.cmax = heatmapMax
-        this._conf.cmin = this._conf.min
+    values = (datum.value for datum in blockData.data for blockData in data)
+    flattenValues = []
+    flattenValues = flattenValues.concat.apply flattenValues, values
+    if this._conf.min == 'smart'
+        this._conf.cmin = Math.min flattenValues
     else
         this._conf.cmin = this._conf.min
+    if this._conf.max == 'smart'
+        this._conf.cmax = Math.min flattenValues
+    else
         this._conf.cmax = this._conf.max
 
-    this.colorScale = (value, scale) ->
+    this.colorScale = (value, logScale) ->
         if value == this._conf.cmax
             this._conf.colorPaletteSize-1
-        else if scale == 'linear'
+        else if logScale
+            Math.floor((Math.log(value) - Math.log(this._conf.cmin)) / (Math.log(this._conf.cmax) - Math.log(this._conf.cmin)) * this._conf.colorPaletteSize)
+        else
             Math.floor((value - this._conf.cmin) / (this._conf.cmax - this._conf.cmin) * this._conf.colorPaletteSize)
-            # else
-                # null
 
     # getters/setters
     this.getData = ->

@@ -42,6 +42,7 @@ circosJS.Heatmap.prototype._defaultConf =
   max: 'smart'
   colorPalette: 'YlGnBu'
   colorPaletteSize: 9
+  logScale: false
 
 # Histogram
 circosJS.Histogram.prototype._defaultConf =
