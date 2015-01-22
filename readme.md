@@ -43,15 +43,12 @@ Then you can create a layout has followed:
         {len: 155270560, color: 'rgb(153,153,153)', label: 'X', id: 'chrX'},
         {len: 59373566, color: 'rgb(204,204,204)', label: 'Y', id: 'chrY'},
     ];
-    var c = new circosJS({
+    var circos = new circosJS({
         width: 500,
         height: 500,
         container: '#chart'
     });
-    var l = new circosJS.layout(
-        
-    );
-    c.layout(
+    circos.layout(
         {
             innerRadius: 200,
             outerRadius: 250
