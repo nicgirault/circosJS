@@ -65,21 +65,36 @@ circosJS.Heatmap = (conf, data) ->
     flattenValues = []
     flattenValues = flattenValues.concat.apply flattenValues, values
     if this._conf.min == 'smart'
-        this._conf.cmin = Math.min flattenValues
+        this._conf.cmin = Math.min.apply null, flattenValues
     else
         this._conf.cmin = this._conf.min
     if this._conf.max == 'smart'
-        this._conf.cmax = Math.min flattenValues
+        this._conf.cmax = Math.max.apply null, flattenValues
     else
         this._conf.cmax = this._conf.max
 
     this.colorScale = (value, logScale) ->
-        if value == this._conf.cmax
-            this._conf.colorPaletteSize-1
-        else if logScale
-            Math.floor((Math.log(value) - Math.log(this._conf.cmin)) / (Math.log(this._conf.cmax) - Math.log(this._conf.cmin)) * this._conf.colorPaletteSize)
+        if logScale
+            scaleLogBase = 1
         else
-            Math.floor((value - this._conf.cmin) / (this._conf.cmax - this._conf.cmin) * this._conf.colorPaletteSize)
+            scaleLogBase = 2.3
+
+        min = this._conf.cmin
+        max = this._conf.cmax
+        scope = this._conf.colorPaletteSize
+
+        if min == max
+            return 0
+        if value == min
+            return 0
+        if value == max
+            return scope - 1
+
+        fraction = (value - min) / (max - min)
+
+        x = Math.exp(1 / scaleLogBase * Math.log(fraction))
+
+        return Math.floor(scope * x)
 
     # getters/setters
     this.getData = ->

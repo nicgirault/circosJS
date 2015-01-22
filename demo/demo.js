@@ -495,7 +495,7 @@ circos
         },
         karyotype
     )
-    .heatmap('h1', {outerRadius: 240}, heatmap)
+    .heatmap('h1', {outerRadius: 240, logScale: true}, heatmap)
     .histogram('hist1', {}, heatmap)
     .chord('l1', {}, links)
     // .heatmap('h2', {innerRadius: 150, outerRadius: 200, colorPalette: 'BuGn'}, heatmap)

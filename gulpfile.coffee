@@ -9,7 +9,7 @@ mocha = require("gulp-mocha")
 watch = require("gulp-watch")
 # rjs = require('gulp-requirejs')
 
-gulp.task 'concat-coffee', ->
+gulp.task 'coffee2js', ->
     gulp.src [
         'src/circos.coffee'
         'src/layout.coffee'
@@ -20,12 +20,6 @@ gulp.task 'concat-coffee', ->
         'src/default_parameters.coffee'
     ]
     .pipe(concat('circosJS.coffee'))
-    .pipe(gulp.dest('src'))
-    .on 'error', gutil.log
-    return
-
-gulp.task 'coffee2js', ['concat-coffee'], ->
-    gulp.src 'src/circosJS.coffee'
     .pipe(coffee(bare: true))
     .pipe(concat('circosJS.js'))
     .pipe(gulp.dest('dist'))
@@ -45,7 +39,7 @@ gulp.task 'watch', ->
     # gulp.watch 'src/*.less', ['css-full']
     return
 
-gulp.task 'build', ['coffee2js', 'concat-coffee']
+gulp.task 'build', ['coffee2js']
 # gulp.task 'requirejsBuild', ['coffee2js'], ->
 #     rjs
 #         name: 'circos.js'
