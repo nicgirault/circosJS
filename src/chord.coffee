@@ -49,11 +49,9 @@ circosJS.Chord = (conf, data) ->
     # this refers the histogram instance
     this._data = data
 
-    this._conf =
-        colorPaletteSize: 9
-        colorPalette: 'PuBuGn'
-        opacity: 0.7
-
+    # conf override the default configuration. Conf not in default conf
+    # object are removed
+    this._conf = circosJS.mixConf conf, JSON.parse(JSON.stringify(this._defaultConf))
 
     # conf override the default configuration. Conf not in default conf
     # object are removed

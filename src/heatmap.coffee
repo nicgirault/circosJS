@@ -47,12 +47,9 @@ circosJS.Heatmap = (conf, data) ->
     # data can be csv or yaml.
     this._data = data
 
-    # deep copy of default conf
-    this._conf = JSON.parse JSON.stringify this._defaultConf
-
     # conf override the default configuration. Conf not in default conf
     # object are removed
-    this._conf = circosJS.mixConf conf, JSON.parse JSON.stringify this._defaultConf
+    this._conf = circosJS.mixConf conf, JSON.parse(JSON.stringify(this._defaultConf))
 
     # add parent is datum. Needed for rendering
     for k,v of data

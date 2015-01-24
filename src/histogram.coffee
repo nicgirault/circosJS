@@ -43,13 +43,9 @@ circosJS.Histogram = (conf, data) ->
     # this refers the histogram instance
     this._data = data
 
-    # deep copy of default conf
-    this._conf = JSON.parse JSON.stringify this._defaultConf
-
     # conf override the default configuration. Conf not in default conf
     # object are removed
-    for k,v of this._conf
-        this._conf[k] = if conf[k]? then conf[k] else v
+    this._conf = circosJS.mixConf conf, JSON.parse(JSON.stringify(this._defaultConf))
 
     # add parent is datum. Needed for rendering
     for k,v of data

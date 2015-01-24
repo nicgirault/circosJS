@@ -71,6 +71,24 @@ circosJS.parseData = function(data) {
   return newData;
 };
 
+circosJS.mixConf = function(conf, defaultConf) {
+  var key, newConf, value;
+  newConf = {};
+  for (key in defaultConf) {
+    value = defaultConf[key];
+    if (key in conf) {
+      if (typeof value === 'object') {
+        newConf[key] = defaults(conf[key], value);
+      } else {
+        newConf[key] = conf[key];
+      }
+    } else {
+      newConf[key] = value;
+    }
+  }
+  return newConf;
+};
+
 if (typeof module !== "undefined" && module !== null) {
   module.exports = circosJS;
 }
@@ -197,19 +215,14 @@ circosJS.Core.prototype.heatmap = function(id, conf, data) {
 };
 
 circosJS.Heatmap = function(conf, data) {
-  var blockData, datum, flattenValues, i, k, v, values, _ref, _ref1;
+  var blockData, datum, flattenValues, i, k, v, values, _ref;
   this._data = data;
-  this._conf = JSON.parse(JSON.stringify(this._defaultConf));
-  _ref = this._conf;
-  for (k in _ref) {
-    v = _ref[k];
-    this._conf[k] = conf[k] != null ? conf[k] : v;
-  }
+  this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   for (k in data) {
     v = data[k];
-    _ref1 = v.data;
-    for (i in _ref1) {
-      datum = _ref1[i];
+    _ref = v.data;
+    for (i in _ref) {
+      datum = _ref[i];
       datum.block_id = v.parent;
     }
   }
@@ -219,11 +232,11 @@ circosJS.Heatmap = function(conf, data) {
     for (_i = 0, _len = data.length; _i < _len; _i++) {
       blockData = data[_i];
       _results.push((function() {
-        var _j, _len1, _ref2, _results1;
-        _ref2 = blockData.data;
+        var _j, _len1, _ref1, _results1;
+        _ref1 = blockData.data;
         _results1 = [];
-        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-          datum = _ref2[_j];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          datum = _ref1[_j];
           _results1.push(datum.value);
         }
         return _results1;
@@ -324,19 +337,14 @@ circosJS.Core.prototype.histogram = function(id, conf, data) {
 };
 
 circosJS.Histogram = function(conf, data) {
-  var datum, histogramMax, histogramMin, i, k, kc, v, vc, _ref, _ref1, _ref2, _ref3, _ref4;
+  var datum, histogramMax, histogramMin, i, k, kc, v, vc, _ref, _ref1, _ref2, _ref3;
   this._data = data;
-  this._conf = JSON.parse(JSON.stringify(this._defaultConf));
-  _ref = this._conf;
-  for (k in _ref) {
-    v = _ref[k];
-    this._conf[k] = conf[k] != null ? conf[k] : v;
-  }
+  this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   for (k in data) {
     v = data[k];
-    _ref1 = v.data;
-    for (i in _ref1) {
-      datum = _ref1[i];
+    _ref = v.data;
+    for (i in _ref) {
+      datum = _ref[i];
       datum.block_id = v.parent;
     }
   }
@@ -345,9 +353,9 @@ circosJS.Histogram = function(conf, data) {
     histogramMax = -99999999;
     for (k in data) {
       v = data[k];
-      _ref2 = v.data;
-      for (kc in _ref2) {
-        vc = _ref2[kc];
+      _ref1 = v.data;
+      for (kc in _ref1) {
+        vc = _ref1[kc];
         if (vc.value > histogramMax) {
           histogramMax = vc.value;
         }
@@ -362,9 +370,9 @@ circosJS.Histogram = function(conf, data) {
     histogramMin = 99999999;
     for (k in data) {
       v = data[k];
-      _ref3 = v.data;
-      for (kc in _ref3) {
-        vc = _ref3[kc];
+      _ref2 = v.data;
+      for (kc in _ref2) {
+        vc = _ref2[kc];
         if (vc.value < histogramMin) {
           histogramMin = vc.value;
         }
@@ -376,9 +384,9 @@ circosJS.Histogram = function(conf, data) {
     histogramMax = -99999999;
     for (k in data) {
       v = data[k];
-      _ref4 = v.data;
-      for (kc in _ref4) {
-        vc = _ref4[kc];
+      _ref3 = v.data;
+      for (kc in _ref3) {
+        vc = _ref3[kc];
         if (vc.value < histogramMax) {
           histogramMax = vc.value;
         }
@@ -467,11 +475,7 @@ circosJS.Core.prototype.chord = function(id, conf, data) {
 circosJS.Chord = function(conf, data) {
   var k, v, _ref;
   this._data = data;
-  this._conf = {
-    colorPaletteSize: 9,
-    colorPalette: 'PuBuGn',
-    opacity: 0.7
-  };
+  this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   _ref = this._conf;
   for (k in _ref) {
     v = _ref[k];
@@ -744,4 +748,10 @@ circosJS.Histogram.prototype._defaultConf = {
   color: 'green',
   colorPaletteSize: 9,
   colorPalette: 'YlGnBu'
+};
+
+circosJS.Chord.prototype._defaultConf = {
+  colorPaletteSize: 9,
+  colorPalette: 'PuBuGn',
+  opacity: 0.7
 };
