@@ -59,6 +59,18 @@ circosJS.parseData = (data) ->
         newData.push {parent: parentId, data: block}
     return newData
 
+circosJS.mixConf = (conf, defaultConf) ->
+    newConf = {}
+    for key, value of defaultConf
+        if key of conf
+            if typeof value == 'object'
+                newConf[key] = defaults(conf[key], value)
+            else
+                newConf[key] = conf[key]
+        else
+            newConf[key] = value
+    return newConf
+
 if module?
     module.exports = circosJS
 
