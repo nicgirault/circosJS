@@ -251,8 +251,10 @@ circosJS.Core.prototype.render = (ids) ->
     for chord_name in Object.keys(this._chords)
         chord = this._chords[chord_name]
         chordConf = chord.getConf()
+        svg.select('.' + chord_name).remove()
         track = svg.append('g')
             .classed(chordConf.colorPalette, true)
+            .classed(chord_name, true)
             .attr('transform', 'translate(' + parseInt(this.getWidth()/2) + ',' + parseInt(this.getHeight()/2) + ')')
             .selectAll('path')
             .data(chord.getData())

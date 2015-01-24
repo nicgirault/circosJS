@@ -683,7 +683,8 @@ circosJS.Core.prototype.render = function(ids) {
     chord_name = _ref2[_k];
     chord = this._chords[chord_name];
     chordConf = chord.getConf();
-    track = svg.append('g').classed(chordConf.colorPalette, true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')').selectAll('path').data(chord.getData()).enter().append('path');
+    svg.select('.' + chord_name).remove();
+    track = svg.append('g').classed(chordConf.colorPalette, true).classed(chord_name, true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')').selectAll('path').data(chord.getData()).enter().append('path');
     track = track.attr('d', d3.svg.chord().source(getSource).target(getTarget)).attr('class', function(d) {
       return 'q' + d.value + '-' + chordConf.colorPaletteSize;
     }).attr('opacity', chordConf.opacity);
