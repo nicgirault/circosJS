@@ -214,80 +214,6 @@ circosJS.Core.prototype.heatmap = function(id, conf, data) {
   return this;
 };
 
-circosJS.Heatmap = function(conf, data) {
-  var blockData, datum, flattenValues, i, k, v, values, _ref;
-  this._data = data;
-  this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  for (k in data) {
-    v = data[k];
-    _ref = v.data;
-    for (i in _ref) {
-      datum = _ref[i];
-      datum.block_id = v.parent;
-    }
-  }
-  values = (function() {
-    var _i, _len, _results;
-    _results = [];
-    for (_i = 0, _len = data.length; _i < _len; _i++) {
-      blockData = data[_i];
-      _results.push((function() {
-        var _j, _len1, _ref1, _results1;
-        _ref1 = blockData.data;
-        _results1 = [];
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          datum = _ref1[_j];
-          _results1.push(datum.value);
-        }
-        return _results1;
-      })());
-    }
-    return _results;
-  })();
-  flattenValues = [];
-  flattenValues = flattenValues.concat.apply(flattenValues, values);
-  if (this._conf.min === 'smart') {
-    this._conf.cmin = Math.min.apply(null, flattenValues);
-  } else {
-    this._conf.cmin = this._conf.min;
-  }
-  if (this._conf.max === 'smart') {
-    this._conf.cmax = Math.max.apply(null, flattenValues);
-  } else {
-    this._conf.cmax = this._conf.max;
-  }
-  this.colorScale = function(value, logScale) {
-    var fraction, max, min, scaleLogBase, scope, x;
-    if (logScale) {
-      scaleLogBase = 1;
-    } else {
-      scaleLogBase = 2.3;
-    }
-    min = this._conf.cmin;
-    max = this._conf.cmax;
-    scope = this._conf.colorPaletteSize;
-    if (min === max) {
-      return 0;
-    }
-    if (value === min) {
-      return 0;
-    }
-    if (value === max) {
-      return scope - 1;
-    }
-    fraction = (value - min) / (max - min);
-    x = Math.exp(1 / scaleLogBase * Math.log(fraction));
-    return Math.floor(scope * x);
-  };
-  this.getData = function() {
-    return this._data;
-  };
-  this.getConf = function() {
-    return this._conf;
-  };
-  return this;
-};
-
 circosJS.Core.prototype.histogram = function(id, conf, data) {
   var block, d, datum, layout_ids, layout_lengths, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
   if (this._layout == null) {
@@ -334,87 +260,6 @@ circosJS.Core.prototype.histogram = function(id, conf, data) {
     }
   }
   this._histograms[id] = new circosJS.Histogram(conf, data);
-  return this;
-};
-
-circosJS.Histogram = function(conf, data) {
-  var blockData, datum, flattenValues, i, k, v, values, _ref;
-  this._data = data;
-  this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  for (k in data) {
-    v = data[k];
-    _ref = v.data;
-    for (i in _ref) {
-      datum = _ref[i];
-      datum.block_id = v.parent;
-    }
-  }
-  values = (function() {
-    var _i, _len, _results;
-    _results = [];
-    for (_i = 0, _len = data.length; _i < _len; _i++) {
-      blockData = data[_i];
-      _results.push((function() {
-        var _j, _len1, _ref1, _results1;
-        _ref1 = blockData.data;
-        _results1 = [];
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          datum = _ref1[_j];
-          _results1.push(datum.value);
-        }
-        return _results1;
-      })());
-    }
-    return _results;
-  })();
-  flattenValues = [];
-  flattenValues = flattenValues.concat.apply(flattenValues, values);
-  if (this._conf.min === 'smart') {
-    this._conf.cmin = Math.min.apply(null, flattenValues);
-  } else {
-    this._conf.cmin = this._conf.min;
-  }
-  if (this._conf.max === 'smart') {
-    this._conf.cmax = Math.max.apply(null, flattenValues);
-  } else {
-    this._conf.cmax = this._conf.max;
-  }
-  this.height = function(value, scale) {
-    if (value >= this._conf.cmax) {
-      return this._conf.outerRadius - this._conf.innerRadius;
-    } else if (scale === 'linear') {
-      return Math.floor((value - this._conf.cmin) / this._conf.cmax * (this._conf.outerRadius - this._conf.innerRadius));
-    }
-  };
-  this.colorScale = function(value, logScale) {
-    var fraction, max, min, scaleLogBase, scope, x;
-    if (logScale) {
-      scaleLogBase = 1;
-    } else {
-      scaleLogBase = 2.3;
-    }
-    min = this._conf.cmin;
-    max = this._conf.cmax;
-    scope = this._conf.colorPaletteSize;
-    if (min === max) {
-      return 0;
-    }
-    if (value === min) {
-      return 0;
-    }
-    if (value === max) {
-      return scope - 1;
-    }
-    fraction = (value - min) / (max - min);
-    x = Math.exp(1 / scaleLogBase * Math.log(fraction));
-    return Math.floor(scope * x);
-  };
-  this.getData = function() {
-    return this._data;
-  };
-  this.getConf = function() {
-    return this._conf;
-  };
   return this;
 };
 
@@ -522,6 +367,105 @@ circosJS.Chord = function(conf, data, layout) {
   })(this);
   return this;
 };
+
+circosJS.Track = function(conf, data) {
+  var blockData, datum, flattenValues, i, k, v, values, _ref;
+  this._data = data;
+  this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
+  for (k in data) {
+    v = data[k];
+    _ref = v.data;
+    for (i in _ref) {
+      datum = _ref[i];
+      datum.block_id = v.parent;
+    }
+  }
+  values = (function() {
+    var _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = data.length; _i < _len; _i++) {
+      blockData = data[_i];
+      _results.push((function() {
+        var _j, _len1, _ref1, _results1;
+        _ref1 = blockData.data;
+        _results1 = [];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          datum = _ref1[_j];
+          _results1.push(datum.value);
+        }
+        return _results1;
+      })());
+    }
+    return _results;
+  })();
+  flattenValues = [];
+  flattenValues = flattenValues.concat.apply(flattenValues, values);
+  if (this._conf.min === 'smart') {
+    this._conf.cmin = Math.min.apply(null, flattenValues);
+  } else {
+    this._conf.cmin = this._conf.min;
+  }
+  if (this._conf.max === 'smart') {
+    this._conf.cmax = Math.max.apply(null, flattenValues);
+  } else {
+    this._conf.cmax = this._conf.max;
+  }
+  this.colorScale = function(value, logScale) {
+    var fraction, max, min, scaleLogBase, scope, x;
+    if (logScale) {
+      scaleLogBase = 1;
+    } else {
+      scaleLogBase = 2.3;
+    }
+    min = this._conf.cmin;
+    max = this._conf.cmax;
+    scope = this._conf.colorPaletteSize;
+    if (min === max) {
+      return 0;
+    }
+    if (value === min) {
+      return 0;
+    }
+    if (value === max) {
+      return scope - 1;
+    }
+    fraction = (value - min) / (max - min);
+    x = Math.exp(1 / scaleLogBase * Math.log(fraction));
+    return Math.floor(scope * x);
+  };
+  this.getData = function() {
+    return this._data;
+  };
+  this.getConf = function() {
+    return this._conf;
+  };
+  return this;
+};
+
+circosJS.Heatmap = function(conf, data) {
+  circosJS.Track.call(this, conf, data);
+  return this;
+};
+
+circosJS.Heatmap.prototype = Object.create(circosJS.Track.prototype);
+
+circosJS.Heatmap.prototype.constructor = circosJS.Heatmap;
+
+circosJS.Histogram = function(conf, data) {
+  circosJS.Track.call(this, conf, data);
+  this.height = function(value, scale) {
+    if (value >= this._conf.cmax) {
+      return this._conf.outerRadius - this._conf.innerRadius;
+    } else if (scale === 'linear') {
+      return Math.floor((value - this._conf.cmin) / this._conf.cmax * (this._conf.outerRadius - this._conf.innerRadius));
+    }
+  };
+  return this;
+};
+
+circosJS.Histogram.prototype = Object.create(circosJS.Track.prototype);
+
+circosJS.Histogram.prototype.constructor = circosJS.Histogram;
 
 circosJS.renderChord = function(name, chord, instance, d3, svg) {
   var conf, track;

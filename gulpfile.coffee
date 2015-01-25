@@ -16,9 +16,12 @@ gulp.task 'coffee2js', ->
         'src/heatmap.coffee'
         'src/histogram.coffee'
         'src/chord.coffee'
+        'src/tracks/Track.coffee'
+        'src/tracks/Heatmap.coffee'
+        'src/tracks/Histogram.coffee'
+        'src/rendering/*.coffee'
         'src/render.coffee'
         'src/default_parameters.coffee'
-        'src/rendering/*.coffee'
     ]
     .pipe(concat('circosJS.coffee'))
     .pipe(coffee(bare: true))
