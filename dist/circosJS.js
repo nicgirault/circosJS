@@ -465,13 +465,15 @@ circosJS.Core.prototype.chord = function(id, conf, data) {
       });
     }
   }
-  this._chords[id] = new circosJS.Chord(conf, data);
+  this._chords[id] = new circosJS.Chord(conf, data, this._layout);
   return this;
 };
 
-circosJS.Chord = function(conf, data) {
+circosJS.Chord = function(conf, data, layout) {
   var k, v, _ref;
   this._data = data;
+  this.layout = layout;
+  console.log(this.layout);
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   _ref = this._conf;
   for (k in _ref) {
@@ -491,11 +493,39 @@ circosJS.Chord = function(conf, data) {
   this.getConf = function() {
     return this._conf;
   };
+  this.getSource = (function(_this) {
+    return function(d) {
+      var block, endAngle, result, startAngle;
+      d = d.source;
+      block = _this.layout.getBlock(d.id);
+      startAngle = block.start + d.start / block.len * (block.end - block.start);
+      endAngle = block.start + d.end / block.len * (block.end - block.start);
+      return result = {
+        radius: _this.layout.getConf().innerRadius,
+        startAngle: startAngle,
+        endAngle: endAngle
+      };
+    };
+  })(this);
+  this.getTarget = (function(_this) {
+    return function(d) {
+      var block, endAngle, result, startAngle;
+      d = d.target;
+      block = _this.layout.getBlock(d.id);
+      startAngle = block.start + d.start / block.len * (block.end - block.start);
+      endAngle = block.start + d.end / block.len * (block.end - block.start);
+      return result = {
+        radius: _this.layout.getConf().innerRadius,
+        startAngle: startAngle,
+        endAngle: endAngle
+      };
+    };
+  })(this);
   return this;
 };
 
 circosJS.Core.prototype.render = function(ids) {
-  var angle, bin, block, blockTicks, chord, chordConf, chord_name, conf, datum, displayLabel, entry, getSource, getTarget, heatmap, heatmap_name, histogram, histogram_name, label, labelArc, layout, r, svg, that, ticks, track, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+  var angle, block, blockTicks, chord, chord_name, conf, displayLabel, entry, heatmap, heatmap_name, histogram, histogram_name, label, labelArc, layout, r, svg, that, ticks, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
   angle = function(i, pos) {
     var angle_no_gap, block, conf, size;
     conf = this._layout.getConf().gap;
@@ -590,102 +620,21 @@ circosJS.Core.prototype.render = function(ids) {
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     heatmap_name = _ref[_i];
     heatmap = this._heatmaps[heatmap_name];
-    svg.select('.' + heatmap_name).remove();
-    track = svg.append('g').classed(heatmap_name, true).classed(heatmap.getConf().colorPalette, true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')');
-    block = track.selectAll('g').data(heatmap.getData()).enter().append('g').attr('class', function(d, i) {
-      return heatmap_name + '-' + d.parent;
-    }, true).attr('transform', function(d) {
-      return 'rotate(' + that._layout.getBlock(d.parent).start * 360 / (2 * Math.PI) + ')';
-    });
-    datum = block.selectAll('path').data(function(d) {
-      return d.data;
-    }).enter().append('path').attr('d', d3.svg.arc().innerRadius(heatmap.getConf().innerRadius).outerRadius(heatmap.getConf().outerRadius).startAngle(function(d, i) {
-      block = that._layout.getBlock(d.block_id);
-      return d.start / block.len * (block.end - block.start);
-    }).endAngle(function(d, i) {
-      block = that._layout.getBlock(d.block_id);
-      return d.end / block.len * (block.end - block.start);
-    })).attr('class', function(d) {
-      return 'q' + heatmap.colorScale(d.value, heatmap.getConf().logScale) + '-' + heatmap.getConf().colorPaletteSize;
-    }, true);
+    circosJS.renderHeatmap(heatmap_name, heatmap, this, d3, svg);
   }
   _ref1 = Object.keys(this._histograms);
   for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
     histogram_name = _ref1[_j];
     histogram = this._histograms[histogram_name];
-    conf = histogram.getConf();
-    svg.select('.' + histogram_name).remove();
-    track = svg.append('g').classed(histogram_name, true).classed(conf.colorPalette, true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')');
-    block = track.selectAll('g').data(histogram.getData()).enter().append('g').attr('class', function(d, i) {
-      return heatmap_name + '-' + d.parent;
-    }, true).attr('transform', function(d) {
-      return 'rotate(' + that._layout.getBlock(d.parent).start * 360 / (2 * Math.PI) + ')';
-    });
-    bin = block.selectAll('path').data(function(d) {
-      return d.data;
-    }).enter().append('path').attr('d', d3.svg.arc().innerRadius(function(d, i) {
-      if (conf.direction === 'in') {
-        return conf.outerRadius - histogram.height(d.value, 'linear');
-      } else {
-        return conf.innerRadius;
-      }
-    }).outerRadius(function(d, i) {
-      if (conf.direction === 'out') {
-        return conf.innerRadius + histogram.height(d.value, 'linear');
-      } else {
-        return conf.outerRadius;
-      }
-    }).startAngle(function(d, i) {
-      block = that._layout.getBlock(d.block_id);
-      return d.start / block.len * (block.end - block.start);
-    }).endAngle(function(d, i) {
-      block = that._layout.getBlock(d.block_id);
-      return d.end / block.len * (block.end - block.start);
-    }));
-    if (conf.color != null) {
-      bin.attr('fill', conf.color);
-    } else if (conf.colorPalette != null) {
-      bin.attr('class', function(d) {
-        return 'q' + histogram.colorScale(d.value, 'linear') + '-' + conf.colorPaletteSize;
-      }, true);
-    }
+    circosJS.renderHistogram(histogram_name, histogram, this, d3, svg);
   }
   conf = this._layout.getConf();
   that = this;
-  getSource = function(d) {
-    var endAngle, result, startAngle;
-    d = d.source;
-    block = that._layout.getBlock(d.id);
-    startAngle = block.start + d.start / block.len * (block.end - block.start);
-    endAngle = block.start + d.end / block.len * (block.end - block.start);
-    return result = {
-      radius: conf.innerRadius,
-      startAngle: startAngle,
-      endAngle: endAngle
-    };
-  };
-  getTarget = function(d) {
-    var endAngle, result, startAngle;
-    d = d.target;
-    block = that._layout.getBlock(d.id);
-    startAngle = block.start + d.start / block.len * (block.end - block.start);
-    endAngle = block.start + d.end / block.len * (block.end - block.start);
-    return result = {
-      radius: conf.innerRadius,
-      startAngle: startAngle,
-      endAngle: endAngle
-    };
-  };
   _ref2 = Object.keys(this._chords);
   for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
     chord_name = _ref2[_k];
     chord = this._chords[chord_name];
-    chordConf = chord.getConf();
-    svg.select('.' + chord_name).remove();
-    track = svg.append('g').classed(chordConf.colorPalette, true).classed(chord_name, true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')').selectAll('path').data(chord.getData()).enter().append('path');
-    track = track.attr('d', d3.svg.chord().source(getSource).target(getTarget)).attr('class', function(d) {
-      return 'q' + d.value + '-' + chordConf.colorPaletteSize;
-    }).attr('opacity', chordConf.opacity);
+    circosJS.renderChord(chord_name, chord, this, d3, svg);
   }
 };
 
@@ -744,7 +693,7 @@ circosJS.Histogram.prototype._defaultConf = {
   min: 'smart',
   max: 'smart',
   direction: 'out',
-  color: 'green',
+  color: '#fd6a62',
   colorPaletteSize: 9,
   colorPalette: 'YlGnBu'
 };
@@ -753,4 +702,77 @@ circosJS.Chord.prototype._defaultConf = {
   colorPaletteSize: 9,
   colorPalette: 'PuBuGn',
   opacity: 0.7
+};
+
+circosJS.renderChord = function(name, chord, instance, d3, svg) {
+  var conf, track;
+  conf = chord.getConf();
+  svg.select('.' + name).remove();
+  track = svg.append('g').classed(conf.colorPalette, true).classed(name, true).attr('transform', 'translate(' + parseInt(instance.getWidth() / 2) + ',' + parseInt(instance.getHeight() / 2) + ')').selectAll('path').data(chord.getData()).enter().append('path');
+  return track = track.attr('d', d3.svg.chord().source(chord.getSource).target(chord.getTarget)).attr('class', function(d) {
+    return 'q' + d.value + '-' + conf.colorPaletteSize;
+  }).attr('opacity', conf.opacity);
+};
+
+circosJS.renderHeatmap = function(name, heatmap, instance, d3, svg) {
+  var block, conf, datum, track;
+  conf = heatmap.getConf();
+  svg.select('.' + name).remove();
+  track = svg.append('g').classed(name, true).classed(conf.colorPalette, true).attr('transform', 'translate(' + parseInt(instance.getWidth() / 2) + ',' + parseInt(instance.getHeight() / 2) + ')');
+  block = track.selectAll('g').data(heatmap.getData()).enter().append('g').attr('class', function(d, i) {
+    return name + '-' + d.parent;
+  }, true).attr('transform', function(d) {
+    return 'rotate(' + instance._layout.getBlock(d.parent).start * 360 / (2 * Math.PI) + ')';
+  });
+  return datum = block.selectAll('path').data(function(d) {
+    return d.data;
+  }).enter().append('path').attr('d', d3.svg.arc().innerRadius(conf.innerRadius).outerRadius(conf.outerRadius).startAngle(function(d, i) {
+    block = instance._layout.getBlock(d.block_id);
+    return d.start / block.len * (block.end - block.start);
+  }).endAngle(function(d, i) {
+    block = instance._layout.getBlock(d.block_id);
+    return d.end / block.len * (block.end - block.start);
+  })).attr('class', function(d) {
+    return 'q' + heatmap.colorScale(d.value, conf.logScale) + '-' + conf.colorPaletteSize;
+  }, true);
+};
+
+circosJS.renderHistogram = function(name, histogram, instance, d3, svg) {
+  var bin, block, conf, track;
+  conf = histogram.getConf();
+  svg.select('.' + name).remove();
+  track = svg.append('g').classed(name, true).classed(conf.colorPalette, true).attr('transform', 'translate(' + parseInt(instance.getWidth() / 2) + ',' + parseInt(instance.getHeight() / 2) + ')');
+  block = track.selectAll('g').data(histogram.getData()).enter().append('g').attr('class', function(d, i) {
+    return name + '-' + d.parent;
+  }, true).attr('transform', function(d) {
+    return 'rotate(' + instance._layout.getBlock(d.parent).start * 360 / (2 * Math.PI) + ')';
+  });
+  bin = block.selectAll('path').data(function(d) {
+    return d.data;
+  }).enter().append('path').attr('d', d3.svg.arc().innerRadius(function(d, i) {
+    if (conf.direction === 'in') {
+      return conf.outerRadius - histogram.height(d.value, 'linear');
+    } else {
+      return conf.innerRadius;
+    }
+  }).outerRadius(function(d, i) {
+    if (conf.direction === 'out') {
+      return conf.innerRadius + histogram.height(d.value, 'linear');
+    } else {
+      return conf.outerRadius;
+    }
+  }).startAngle(function(d, i) {
+    block = instance._layout.getBlock(d.block_id);
+    return d.start / block.len * (block.end - block.start);
+  }).endAngle(function(d, i) {
+    block = instance._layout.getBlock(d.block_id);
+    return d.end / block.len * (block.end - block.start);
+  }));
+  if (conf.color != null) {
+    return bin.attr('fill', conf.color);
+  } else if (conf.colorPalette != null) {
+    return bin.attr('class', function(d) {
+      return 'q' + histogram.colorScale(d.value, 'linear') + '-' + conf.colorPaletteSize;
+    }, true);
+  }
 };

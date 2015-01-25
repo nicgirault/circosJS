@@ -40,25 +40,26 @@ circosJS.Core.prototype.chord = (id, conf, data) ->
                 {'track_id': id, 'datum': datum, 'layout block': this._layout.getBlock(datum.target.id)}
             )
 
-    this._chords[id] = new circosJS.Chord(conf, data)
+    this._chords[id] = new circosJS.Chord(conf, data, @_layout)
     return this
 
 
-# Histogram instance constructor
-circosJS.Chord = (conf, data) ->
+# Chord instance constructor
+circosJS.Chord = (conf, data, layout) ->
     # this refers the histogram instance
-    this._data = data
+    @_data = data
+    @layout = layout
 
     # conf override the default configuration. Conf not in default conf
     # object are removed
-    this._conf = circosJS.mixConf conf, JSON.parse(JSON.stringify(this._defaultConf))
+    @_conf = circosJS.mixConf conf, JSON.parse(JSON.stringify(this._defaultConf))
 
     # conf override the default configuration. Conf not in default conf
     # object are removed
     for k,v of this._conf
         this._conf[k] = if conf[k]? then conf[k] else v
 
-    this.colorScale = (value, scale) ->
+    @colorScale = (value, scale) ->
         if value == this._conf.cmax
             this._conf.colorPaletteSize - 1
         else if scale == 'linear'
@@ -66,11 +67,30 @@ circosJS.Chord = (conf, data) ->
             # else
                 # null
 
-    # getters/setters
-    this.getData = ->
+    @getData = ->
         this._data
-    this.getConf = ->
+    @getConf = ->
         this._conf
+
+    @getSource = (d) =>
+        d = d.source
+        block = @layout.getBlock d.id
+        startAngle = block.start + d.start / block.len * (block.end - block.start)
+        endAngle = block.start + d.end / block.len * (block.end - block.start)
+        result =
+            radius: @layout.getConf().innerRadius
+            startAngle: startAngle
+            endAngle: endAngle
+    @getTarget = (d) =>
+        d = d.target
+        block = @layout.getBlock d.id
+        startAngle = block.start + d.start / block.len * (block.end - block.start)
+        endAngle = block.start + d.end / block.len * (block.end - block.start)
+        result =
+            radius: @layout.getConf().innerRadius
+            startAngle: startAngle
+            endAngle: endAngle
+
     return this
 
 

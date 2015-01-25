@@ -51,7 +51,7 @@ circosJS.Histogram.prototype._defaultConf =
   min: 'smart'
   max: 'smart'
   direction: 'out'
-  color: 'green'
+  color: '#fd6a62'
   colorPaletteSize: 9
   colorPalette: 'YlGnBu'
 

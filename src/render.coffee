@@ -131,140 +131,20 @@ circosJS.Core.prototype.render = (ids) ->
     ################################
     for heatmap_name in Object.keys(this._heatmaps)
         heatmap = this._heatmaps[heatmap_name]
-
-        svg.select('.' + heatmap_name).remove()
-        track = svg.append('g')
-            .classed(heatmap_name, true)
-            .classed(heatmap.getConf().colorPalette, true)
-            .attr('transform', 'translate(' + parseInt(this.getWidth()/2) + ',' + parseInt(this.getHeight()/2) + ')')
-
-        block = track.selectAll('g')
-            .data(heatmap.getData())
-            .enter().append('g')
-            .attr('class', (d,i)-> 
-                heatmap_name+'-'+d.parent
-            true)
-            .attr('transform', (d) -> 'rotate(' + that._layout.getBlock(d.parent).start*360/(2*Math.PI) + ')')
-
-        datum = block.selectAll('path')
-            .data((d)->d.data)
-            .enter().append('path')
-            .attr('d',
-                d3.svg.arc()
-                    .innerRadius(heatmap.getConf().innerRadius)
-                    .outerRadius(heatmap.getConf().outerRadius)
-                    .startAngle((d, i) ->
-                        block = that._layout.getBlock(d.block_id)
-                        d.start/block.len * (block.end - block.start)
-                    )
-                    .endAngle((d, i) -> 
-                        block = that._layout.getBlock(d.block_id)
-                        d.end/block.len * (block.end - block.start)
-                    )
-
-            )
-            .attr('class', (d) -> 
-                'q'+heatmap.colorScale(d.value, heatmap.getConf().logScale)+'-'+heatmap.getConf().colorPaletteSize
-            true)
-
+        circosJS.renderHeatmap(heatmap_name, heatmap, this, d3, svg)
+        
     ################################
     ## render histogram
     ################################
     for histogram_name in Object.keys(this._histograms)
         histogram = this._histograms[histogram_name]
-
-        conf = histogram.getConf()
-
-        svg.select('.' + histogram_name).remove()
-        track = svg.append('g')
-            .classed(histogram_name, true)
-            .classed(conf.colorPalette, true)
-            .attr('transform', 'translate(' + parseInt(this.getWidth()/2) + ',' + parseInt(this.getHeight()/2) + ')')
-
-        block = track.selectAll('g')
-            .data(histogram.getData())
-            .enter().append('g')
-            .attr('class', (d,i)-> 
-                heatmap_name+'-'+d.parent
-            true)
-            .attr('transform', (d) -> 'rotate(' + that._layout.getBlock(d.parent).start*360/(2*Math.PI) + ')')
-
-        bin = block.selectAll('path')
-            .data((d)->d.data)
-            .enter().append('path')
-            .attr('d',
-                d3.svg.arc()
-                    .innerRadius((d,i) ->
-                        if conf.direction == 'in'
-                            conf.outerRadius - histogram.height(d.value, 'linear')
-                        else
-                            conf.innerRadius
-                    )
-                    .outerRadius((d,i) ->
-                        if conf.direction == 'out'
-                            conf.innerRadius + histogram.height(d.value, 'linear')
-                        else
-                            conf.outerRadius
-                    )
-                    .startAngle((d, i) ->
-                        block = that._layout.getBlock(d.block_id)
-                        d.start/block.len * (block.end - block.start)
-                    )
-                    .endAngle((d, i) ->
-                        block = that._layout.getBlock(d.block_id)
-                        d.end/block.len * (block.end - block.start)
-                    )
-
-            )
-
-        if conf.color?
-            bin.attr('fill', conf.color)
-        else if conf.colorPalette?
-            bin.attr('class', (d) ->
-                'q'+histogram.colorScale(d.value, 'linear')+'-'+conf.colorPaletteSize
-            true)
-
-
-    conf = this._layout.getConf()
-    that = this
-    getSource = (d) ->
-        d = d.source
-        block = that._layout.getBlock d.id
-        startAngle = block.start + d.start / block.len * (block.end - block.start)
-        endAngle = block.start + d.end / block.len * (block.end - block.start)
-        result =
-            radius: conf.innerRadius
-            startAngle: startAngle
-            endAngle: endAngle
-    getTarget = (d) ->
-        d = d.target
-        block = that._layout.getBlock d.id
-        startAngle = block.start + d.start / block.len * (block.end - block.start)
-        endAngle = block.start + d.end / block.len * (block.end - block.start)
-        result =
-            radius: conf.innerRadius
-            startAngle: startAngle
-            endAngle: endAngle
+        circosJS.renderHistogram(histogram_name, histogram, this, d3, svg)
 
     ################################
     ## render chords
     ################################
     for chord_name in Object.keys(this._chords)
         chord = this._chords[chord_name]
-        chordConf = chord.getConf()
-        svg.select('.' + chord_name).remove()
-        track = svg.append('g')
-            .classed(chordConf.colorPalette, true)
-            .classed(chord_name, true)
-            .attr('transform', 'translate(' + parseInt(this.getWidth()/2) + ',' + parseInt(this.getHeight()/2) + ')')
-            .selectAll('path')
-            .data(chord.getData())
-            .enter().append('path')
-        track = track.attr('d',
-                d3.svg.chord()
-                .source(getSource)
-                .target(getTarget)
-            ).attr('class', (d) ->
-                'q'+d.value+'-'+ chordConf.colorPaletteSize
-            ).attr('opacity', chordConf.opacity)
+        circosJS.renderChord(chord_name, chord, this, d3, svg)
+        
     return

@@ -18,6 +18,7 @@ gulp.task 'coffee2js', ->
         'src/chord.coffee'
         'src/render.coffee'
         'src/default_parameters.coffee'
+        'src/rendering/*.coffee'
     ]
     .pipe(concat('circosJS.coffee'))
     .pipe(coffee(bare: true))
