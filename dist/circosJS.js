@@ -473,7 +473,6 @@ circosJS.Chord = function(conf, data, layout) {
   var k, v, _ref;
   this._data = data;
   this.layout = layout;
-  console.log(this.layout);
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   _ref = this._conf;
   for (k in _ref) {
@@ -522,186 +521,6 @@ circosJS.Chord = function(conf, data, layout) {
     };
   })(this);
   return this;
-};
-
-circosJS.Core.prototype.render = function(ids) {
-  var angle, block, blockTicks, chord, chord_name, conf, displayLabel, entry, heatmap, heatmap_name, histogram, histogram_name, label, labelArc, layout, r, svg, that, ticks, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
-  angle = function(i, pos) {
-    var angle_no_gap, block, conf, size;
-    conf = this._layout.getConf().gap;
-    size = this._layout.getSize();
-    block = this._layout.getBlock();
-    angle_no_gap = pos / size * 2 * Math.PI;
-    angle = angle_no_gap + i * gap;
-    return angle;
-  };
-  that = this;
-  svg = d3.select(this.getContainer());
-  conf = this._layout.getConf();
-  svg.select('.cs-layout').remove();
-  layout = svg.attr('width', this.getWidth()).attr('height', this.getHeight()).append('g').classed('cs-layout', true).on('click', conf.clickCallback).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')');
-  block = layout.selectAll('path').data(this._layout.getData()).enter().append('g');
-  entry = d3.svg.arc().innerRadius(conf.innerRadius).outerRadius(conf.outerRadius).startAngle(function(d, i) {
-    return d.start;
-  }).endAngle(function(d, i) {
-    return d.end;
-  });
-  block.append('path').attr('d', entry).attr('fill', function(d) {
-    return d.color;
-  }).attr('id', function(d) {
-    return d.id;
-  });
-  if (conf.labels.display) {
-    r = conf.innerRadius + conf.labels.radialOffset;
-    labelArc = d3.svg.arc().innerRadius(r).outerRadius(r).startAngle(function(d, i) {
-      return d.start;
-    }).endAngle(function(d, i) {
-      return d.end;
-    });
-    block.append('path').attr('fill', 'none').attr('stroke', 'none').attr('d', labelArc).attr('id', function(d) {
-      return 'arc-label' + d.id;
-    });
-    label = block.append('text').style('font-size', conf.labels.size).attr('text-anchor', 'middle');
-    label.append('textPath').attr('startOffset', '25%').attr('xlink:href', function(d) {
-      return '#arc-label' + d.id;
-    }).style('fill', conf.labels.color).text(function(d) {
-      return d.label;
-    });
-  }
-  if (conf.ticks.display) {
-    blockTicks = function(d) {
-      var k;
-      k = (d.end - d.start) / d.len;
-      return d3.range(0, d.len, conf.ticks.spacing).map(function(v, i) {
-        return {
-          angle: v * k + d.start,
-          label: displayLabel(v, i)
-        };
-      });
-    };
-    displayLabel = function(v, i) {
-      if (conf.ticks.labels === false) {
-        return null;
-      } else if (conf.ticks.labelDisplay0 === false && i === 0) {
-        return null;
-      } else if (i % conf.ticks.labelSpacing) {
-        return null;
-      } else {
-        return v / conf.ticks.labelDenominator + conf.ticks.labelSuffix;
-      }
-    };
-    ticks = layout.append("g").selectAll("g").data(this._layout.getData()).enter().append("g").selectAll("g").data(blockTicks).enter().append("g").attr("transform", function(d) {
-      return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")" + "translate(" + conf.outerRadius + ",0)";
-    });
-    ticks.append("line").attr("x1", 0).attr("y1", 1).attr("x2", function(d, i) {
-      if (i % conf.ticks.majorSpacing) {
-        return conf.ticks.size.minor;
-      } else {
-        return conf.ticks.size.major;
-      }
-    }).attr("y2", 1).style("stroke", conf.ticks.color);
-    ticks.append("text").attr("x", 8).attr("dy", ".35em").attr("transform", function(d) {
-      if (d.angle > Math.PI) {
-        return "rotate(180)translate(-16)";
-      } else {
-        return null;
-      }
-    }).style("text-anchor", function(d) {
-      if (d.angle > Math.PI) {
-        return "end";
-      } else {
-        return null;
-      }
-    }).style('font-size', conf.ticks.labelSize).style('fill', conf.ticks.labelColor).text(function(d) {
-      return d.label;
-    });
-  }
-  _ref = Object.keys(this._heatmaps);
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    heatmap_name = _ref[_i];
-    heatmap = this._heatmaps[heatmap_name];
-    circosJS.renderHeatmap(heatmap_name, heatmap, this, d3, svg);
-  }
-  _ref1 = Object.keys(this._histograms);
-  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-    histogram_name = _ref1[_j];
-    histogram = this._histograms[histogram_name];
-    circosJS.renderHistogram(histogram_name, histogram, this, d3, svg);
-  }
-  conf = this._layout.getConf();
-  that = this;
-  _ref2 = Object.keys(this._chords);
-  for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-    chord_name = _ref2[_k];
-    chord = this._chords[chord_name];
-    circosJS.renderChord(chord_name, chord, this, d3, svg);
-  }
-};
-
-circosJS.Core.prototype._conf = {
-  width: 700,
-  height: 700,
-  container: 'circos'
-};
-
-circosJS.Layout.prototype._defaultConf = {
-  innerRadius: 250,
-  outerRadius: 300,
-  cornerRadius: 10,
-  gap: 0.04,
-  labels: {
-    position: 'center',
-    display: true,
-    size: '14px',
-    color: '#000',
-    radialOffset: 20
-  },
-  ticks: {
-    display: true,
-    color: 'grey',
-    spacing: 10000000,
-    labels: true,
-    labelSpacing: 10,
-    labelSuffix: 'Mb',
-    labelDenominator: 1000000,
-    labelDisplay0: true,
-    labelSize: '10px',
-    labelColor: '#000',
-    labelFont: 'default',
-    majorSpacing: 5,
-    size: {
-      minor: 2,
-      major: 5
-    }
-  },
-  clickCallback: null
-};
-
-circosJS.Heatmap.prototype._defaultConf = {
-  innerRadius: 200,
-  outerRadius: 250,
-  min: 'smart',
-  max: 'smart',
-  colorPalette: 'YlGnBu',
-  colorPaletteSize: 9,
-  logScale: false
-};
-
-circosJS.Histogram.prototype._defaultConf = {
-  innerRadius: 150,
-  outerRadius: 200,
-  min: 'smart',
-  max: 'smart',
-  direction: 'out',
-  color: '#fd6a62',
-  colorPaletteSize: 9,
-  colorPalette: 'YlGnBu'
-};
-
-circosJS.Chord.prototype._defaultConf = {
-  colorPaletteSize: 9,
-  colorPalette: 'PuBuGn',
-  opacity: 0.7
 };
 
 circosJS.renderChord = function(name, chord, instance, d3, svg) {
@@ -775,4 +594,198 @@ circosJS.renderHistogram = function(name, histogram, instance, d3, svg) {
       return 'q' + histogram.colorScale(d.value, 'linear') + '-' + conf.colorPaletteSize;
     }, true);
   }
+};
+
+circosJS.renderLayout = function(d3, svg, instance) {
+  var block, conf, entry, layout;
+  conf = instance._layout.getConf();
+  svg.select('.cs-layout').remove();
+  layout = svg.attr('width', instance.getWidth()).attr('height', instance.getHeight()).append('g').classed('cs-layout', true).on('click', conf.clickCallback).attr('transform', 'translate(' + parseInt(instance.getWidth() / 2) + ',' + parseInt(instance.getHeight() / 2) + ')');
+  block = layout.selectAll('path').data(instance._layout.getData()).enter().append('g');
+  entry = d3.svg.arc().innerRadius(conf.innerRadius).outerRadius(conf.outerRadius).startAngle(function(d, i) {
+    return d.start;
+  }).endAngle(function(d, i) {
+    return d.end;
+  });
+  block.append('path').attr('d', entry).attr('fill', function(d) {
+    return d.color;
+  }).attr('id', function(d) {
+    return d.id;
+  });
+  if (conf.labels.display) {
+    circosJS.renderLayoutLabels(conf, d3, block);
+  }
+  if (conf.ticks.display) {
+    return circosJS.renderLayoutTicks(conf, layout, d3, instance);
+  }
+};
+
+circosJS.renderLayoutLabels = function(conf, d3, block) {
+  var label, labelArc, r;
+  r = conf.innerRadius + conf.labels.radialOffset;
+  labelArc = d3.svg.arc().innerRadius(r).outerRadius(r).startAngle(function(d, i) {
+    return d.start;
+  }).endAngle(function(d, i) {
+    return d.end;
+  });
+  block.append('path').attr('fill', 'none').attr('stroke', 'none').attr('d', labelArc).attr('id', function(d) {
+    return 'arc-label' + d.id;
+  });
+  label = block.append('text').style('font-size', conf.labels.size).attr('text-anchor', 'middle');
+  return label.append('textPath').attr('startOffset', '25%').attr('xlink:href', function(d) {
+    return '#arc-label' + d.id;
+  }).style('fill', conf.labels.color).text(function(d) {
+    return d.label;
+  });
+};
+
+circosJS.renderLayoutTicks = function(conf, layout, d3, instance) {
+  var blockTicks, displayLabel, ticks;
+  blockTicks = function(d) {
+    var k;
+    k = (d.end - d.start) / d.len;
+    return d3.range(0, d.len, conf.ticks.spacing).map(function(v, i) {
+      return {
+        angle: v * k + d.start,
+        label: displayLabel(v, i)
+      };
+    });
+  };
+  displayLabel = function(v, i) {
+    if (conf.ticks.labels === false) {
+      return null;
+    } else if (conf.ticks.labelDisplay0 === false && i === 0) {
+      return null;
+    } else if (i % conf.ticks.labelSpacing) {
+      return null;
+    } else {
+      return v / conf.ticks.labelDenominator + conf.ticks.labelSuffix;
+    }
+  };
+  ticks = layout.append("g").selectAll("g").data(instance._layout.getData()).enter().append("g").selectAll("g").data(blockTicks).enter().append("g").attr("transform", function(d) {
+    return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")" + "translate(" + conf.outerRadius + ",0)";
+  });
+  ticks.append("line").attr("x1", 0).attr("y1", 1).attr("x2", function(d, i) {
+    if (i % conf.ticks.majorSpacing) {
+      return conf.ticks.size.minor;
+    } else {
+      return conf.ticks.size.major;
+    }
+  }).attr("y2", 1).style("stroke", conf.ticks.color);
+  return ticks.append("text").attr("x", 8).attr("dy", ".35em").attr("transform", function(d) {
+    if (d.angle > Math.PI) {
+      return "rotate(180)translate(-16)";
+    } else {
+      return null;
+    }
+  }).style("text-anchor", function(d) {
+    if (d.angle > Math.PI) {
+      return "end";
+    } else {
+      return null;
+    }
+  }).style('font-size', conf.ticks.labelSize).style('fill', conf.ticks.labelColor).text(function(d) {
+    return d.label;
+  });
+};
+
+circosJS.Core.prototype.render = function(ids) {
+  var chord, chord_name, heatmap, heatmap_name, histogram, histogram_name, renderAll, svg, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+  if (typeof ids === 'undefined') {
+    renderAll = true;
+  }
+  svg = d3.select(this.getContainer());
+  if (renderAll || __indexOf.call(ids, 'layout') >= 0) {
+    circosJS.renderLayout(d3, svg, this);
+  }
+  _ref = Object.keys(this._heatmaps);
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    heatmap_name = _ref[_i];
+    if (renderAll || __indexOf.call(ids, heatmap_name) >= 0) {
+      heatmap = this._heatmaps[heatmap_name];
+      circosJS.renderHeatmap(heatmap_name, heatmap, this, d3, svg);
+    }
+  }
+  _ref1 = Object.keys(this._histograms);
+  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+    histogram_name = _ref1[_j];
+    if (renderAll || __indexOf.call(ids, histogram_name) >= 0) {
+      histogram = this._histograms[histogram_name];
+      circosJS.renderHistogram(histogram_name, histogram, this, d3, svg);
+    }
+  }
+  _ref2 = Object.keys(this._chords);
+  for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+    chord_name = _ref2[_k];
+    if (renderAll || __indexOf.call(ids, chord_name) >= 0) {
+      chord = this._chords[chord_name];
+      circosJS.renderChord(chord_name, chord, this, d3, svg);
+    }
+  }
+};
+
+circosJS.Core.prototype._conf = {
+  width: 700,
+  height: 700,
+  container: 'circos'
+};
+
+circosJS.Layout.prototype._defaultConf = {
+  innerRadius: 250,
+  outerRadius: 300,
+  cornerRadius: 10,
+  gap: 0.04,
+  labels: {
+    position: 'center',
+    display: true,
+    size: '14px',
+    color: '#000',
+    radialOffset: 20
+  },
+  ticks: {
+    display: true,
+    color: 'grey',
+    spacing: 10000000,
+    labels: true,
+    labelSpacing: 10,
+    labelSuffix: 'Mb',
+    labelDenominator: 1000000,
+    labelDisplay0: true,
+    labelSize: '10px',
+    labelColor: '#000',
+    labelFont: 'default',
+    majorSpacing: 5,
+    size: {
+      minor: 2,
+      major: 5
+    }
+  },
+  clickCallback: null
+};
+
+circosJS.Heatmap.prototype._defaultConf = {
+  innerRadius: 200,
+  outerRadius: 250,
+  min: 'smart',
+  max: 'smart',
+  colorPalette: 'YlGnBu',
+  colorPaletteSize: 9,
+  logScale: false
+};
+
+circosJS.Histogram.prototype._defaultConf = {
+  innerRadius: 150,
+  outerRadius: 200,
+  min: 'smart',
+  max: 'smart',
+  direction: 'out',
+  color: '#fd6a62',
+  colorPaletteSize: 9,
+  colorPalette: 'YlGnBu'
+};
+
+circosJS.Chord.prototype._defaultConf = {
+  colorPaletteSize: 9,
+  colorPalette: 'PuBuGn',
+  opacity: 0.7
 };

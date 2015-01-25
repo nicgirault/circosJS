@@ -500,4 +500,5 @@ circos
     .chord('l1', {}, links)
     // .heatmap('h2', {innerRadius: 150, outerRadius: 200, colorPalette: 'BuGn'}, heatmap)
     .render();
+    // .render(['layout', 'h1']);
 
