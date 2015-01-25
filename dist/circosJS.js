@@ -614,6 +614,7 @@ circosJS.Core.prototype.render = function(ids) {
     histogram_name = _ref1[_j];
     histogram = this._histograms[histogram_name];
     conf = histogram.getConf();
+    svg.select('.' + histogram_name).remove();
     track = svg.append('g').classed(histogram_name, true).classed(conf.colorPalette, true).attr('transform', 'translate(' + parseInt(this.getWidth() / 2) + ',' + parseInt(this.getHeight() / 2) + ')');
     block = track.selectAll('g').data(histogram.getData()).enter().append('g').attr('class', function(d, i) {
       return heatmap_name + '-' + d.parent;
