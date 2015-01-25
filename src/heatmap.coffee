@@ -44,7 +44,6 @@ circosJS.Core.prototype.heatmap = (id, conf, data) ->
 # Heatmap instance constructor
 circosJS.Heatmap = (conf, data) ->
     # this refers the heatmap instance
-    # data can be csv or yaml.
     this._data = data
 
     # conf override the default configuration. Conf not in default conf

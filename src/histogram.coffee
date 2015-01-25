@@ -9,6 +9,9 @@ circosJS.Core.prototype.histogram = (id, conf, data) ->
         )
         return this
 
+    # data can be csv or yaml.
+    data = circosJS.parseData(data)
+
     #check data consistency with layout
     layout_ids = (d.id for d in this._layout.getData())
     layout_lengths = {}
@@ -53,31 +56,16 @@ circosJS.Histogram = (conf, data) ->
             datum.block_id = v.parent
 
     # compute min and max values
-    if this._conf.min == 'smart' and this._conf.max == 'smart'
-        histogramMin = 99999999
-        histogramMax = -99999999
-        for k,v of data
-            for kc,vc of v.data
-                if vc.value > histogramMax then histogramMax = vc.value
-                if vc.value < histogramMin then histogramMin = vc.value
-        this._conf.cmin = histogramMin
-        this._conf.cmax = histogramMax
-    else if this._conf.min == 'smart'
-        histogramMin = 99999999
-        for k,v of data
-            for kc,vc of v.data
-                if vc.value < histogramMin then histogramMin = vc.value
-        this._conf.cmin = histogramMin
-        this._conf.cmax = this._conf.max
-    else if this._conf.max == 'smart'
-        histogramMax = -99999999
-        for k,v of data
-            for kc,vc of v.data
-                if vc.value < histogramMax then histogramMax = vc.value
-        this._conf.cmax = histogramMax
-        this._conf.cmin = this._conf.min
+    values = (datum.value for datum in blockData.data for blockData in data)
+    flattenValues = []
+    flattenValues = flattenValues.concat.apply flattenValues, values
+    if this._conf.min == 'smart'
+        this._conf.cmin = Math.min.apply null, flattenValues
     else
         this._conf.cmin = this._conf.min
+    if this._conf.max == 'smart'
+        this._conf.cmax = Math.max.apply null, flattenValues
+    else
         this._conf.cmax = this._conf.max
 
     this.height = (value, scale) ->
@@ -88,14 +76,28 @@ circosJS.Histogram = (conf, data) ->
             # else
                 # null
 
-    this.colorScale = (value, scale) ->
-        if value == this._conf.cmax
-            this._conf.colorPaletteSize - 1
-        else if scale == 'linear'
-            Math.floor((value - this._conf.cmin) / (this._conf.cmax - this._conf.cmin) * this._conf.colorPaletteSize)
-            # else
-                # null
+    this.colorScale = (value, logScale) ->
+        if logScale
+            scaleLogBase = 1
+        else
+            scaleLogBase = 2.3
 
+        min = this._conf.cmin
+        max = this._conf.cmax
+        scope = this._conf.colorPaletteSize
+
+        if min == max
+            return 0
+        if value == min
+            return 0
+        if value == max
+            return scope - 1
+
+        fraction = (value - min) / (max - min)
+
+        x = Math.exp(1 / scaleLogBase * Math.log(fraction))
+
+        return Math.floor(scope * x)
 
     # getters/setters
     this.getData = ->
