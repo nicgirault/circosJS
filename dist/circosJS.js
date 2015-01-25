@@ -296,6 +296,7 @@ circosJS.Core.prototype.histogram = function(id, conf, data) {
     });
     return this;
   }
+  data = circosJS.parseData(data);
   layout_ids = (function() {
     var _i, _len, _ref, _results;
     _ref = this._layout.getData();
@@ -337,7 +338,7 @@ circosJS.Core.prototype.histogram = function(id, conf, data) {
 };
 
 circosJS.Histogram = function(conf, data) {
-  var datum, histogramMax, histogramMin, i, k, kc, v, vc, _ref, _ref1, _ref2, _ref3;
+  var blockData, datum, flattenValues, i, k, v, values, _ref;
   this._data = data;
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   for (k in data) {
@@ -348,54 +349,34 @@ circosJS.Histogram = function(conf, data) {
       datum.block_id = v.parent;
     }
   }
-  if (this._conf.min === 'smart' && this._conf.max === 'smart') {
-    histogramMin = 99999999;
-    histogramMax = -99999999;
-    for (k in data) {
-      v = data[k];
-      _ref1 = v.data;
-      for (kc in _ref1) {
-        vc = _ref1[kc];
-        if (vc.value > histogramMax) {
-          histogramMax = vc.value;
+  values = (function() {
+    var _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = data.length; _i < _len; _i++) {
+      blockData = data[_i];
+      _results.push((function() {
+        var _j, _len1, _ref1, _results1;
+        _ref1 = blockData.data;
+        _results1 = [];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          datum = _ref1[_j];
+          _results1.push(datum.value);
         }
-        if (vc.value < histogramMin) {
-          histogramMin = vc.value;
-        }
-      }
+        return _results1;
+      })());
     }
-    this._conf.cmin = histogramMin;
-    this._conf.cmax = histogramMax;
-  } else if (this._conf.min === 'smart') {
-    histogramMin = 99999999;
-    for (k in data) {
-      v = data[k];
-      _ref2 = v.data;
-      for (kc in _ref2) {
-        vc = _ref2[kc];
-        if (vc.value < histogramMin) {
-          histogramMin = vc.value;
-        }
-      }
-    }
-    this._conf.cmin = histogramMin;
-    this._conf.cmax = this._conf.max;
-  } else if (this._conf.max === 'smart') {
-    histogramMax = -99999999;
-    for (k in data) {
-      v = data[k];
-      _ref3 = v.data;
-      for (kc in _ref3) {
-        vc = _ref3[kc];
-        if (vc.value < histogramMax) {
-          histogramMax = vc.value;
-        }
-      }
-    }
-    this._conf.cmax = histogramMax;
-    this._conf.cmin = this._conf.min;
+    return _results;
+  })();
+  flattenValues = [];
+  flattenValues = flattenValues.concat.apply(flattenValues, values);
+  if (this._conf.min === 'smart') {
+    this._conf.cmin = Math.min.apply(null, flattenValues);
   } else {
     this._conf.cmin = this._conf.min;
+  }
+  if (this._conf.max === 'smart') {
+    this._conf.cmax = Math.max.apply(null, flattenValues);
+  } else {
     this._conf.cmax = this._conf.max;
   }
   this.height = function(value, scale) {
@@ -405,12 +386,28 @@ circosJS.Histogram = function(conf, data) {
       return Math.floor((value - this._conf.cmin) / this._conf.cmax * (this._conf.outerRadius - this._conf.innerRadius));
     }
   };
-  this.colorScale = function(value, scale) {
-    if (value === this._conf.cmax) {
-      return this._conf.colorPaletteSize - 1;
-    } else if (scale === 'linear') {
-      return Math.floor((value - this._conf.cmin) / (this._conf.cmax - this._conf.cmin) * this._conf.colorPaletteSize);
+  this.colorScale = function(value, logScale) {
+    var fraction, max, min, scaleLogBase, scope, x;
+    if (logScale) {
+      scaleLogBase = 1;
+    } else {
+      scaleLogBase = 2.3;
     }
+    min = this._conf.cmin;
+    max = this._conf.cmax;
+    scope = this._conf.colorPaletteSize;
+    if (min === max) {
+      return 0;
+    }
+    if (value === min) {
+      return 0;
+    }
+    if (value === max) {
+      return scope - 1;
+    }
+    fraction = (value - min) / (max - min);
+    x = Math.exp(1 / scaleLogBase * Math.log(fraction));
+    return Math.floor(scope * x);
   };
   this.getData = function() {
     return this._data;
