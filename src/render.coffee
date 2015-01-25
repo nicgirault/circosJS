@@ -175,6 +175,7 @@ circosJS.Core.prototype.render = (ids) ->
 
         conf = histogram.getConf()
 
+        svg.select('.' + histogram_name).remove()
         track = svg.append('g')
             .classed(histogram_name, true)
             .classed(conf.colorPalette, true)
