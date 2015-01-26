@@ -13,11 +13,11 @@ gulp.task 'coffee2js', ->
     gulp.src [
         'src/circos.coffee'
         'src/layout.coffee'
-        'src/heatmap.coffee'
-        'src/histogram.coffee'
+        'src/tracks.coffee'
         'src/chord.coffee'
         'src/tracks/Track.coffee'
         'src/tracks/Heatmap.coffee'
+        'src/tracks/Chord.coffee'
         'src/tracks/Histogram.coffee'
         'src/rendering/*.coffee'
         'src/render.coffee'
