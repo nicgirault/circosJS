@@ -314,9 +314,9 @@ circosJS.Histogram = function(conf, data) {
   this.height = function(value, logScale) {
     var fraction, max, min, scaleLogBase, scope, x;
     if (logScale) {
-      scaleLogBase = 1;
-    } else {
       scaleLogBase = 2.3;
+    } else {
+      scaleLogBase = 1;
     }
     min = this._conf.cmin;
     max = this._conf.cmax;
@@ -395,9 +395,9 @@ circosJS.Track = function(conf, data) {
   this.colorScale = function(value, logScale) {
     var fraction, max, min, scaleLogBase, scope, x;
     if (logScale) {
-      scaleLogBase = 1;
-    } else {
       scaleLogBase = 2.3;
+    } else {
+      scaleLogBase = 1;
     }
     min = this._conf.cmin;
     max = this._conf.cmax;

@@ -26,9 +26,9 @@ circosJS.Track = (conf, data) ->
 
     @colorScale = (value, logScale) ->
         if logScale
-            scaleLogBase = 1
-        else
             scaleLogBase = 2.3
+        else
+            scaleLogBase = 1
 
         min = @_conf.cmin
         max = @_conf.cmax
