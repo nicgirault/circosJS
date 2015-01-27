@@ -311,12 +311,28 @@ circosJS.Heatmap = function(conf, data) {
 circosJS.Histogram = function(conf, data) {
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   circosJS.Track.call(this, conf, data);
-  this.height = function(value, scale) {
-    if (value >= this._conf.cmax) {
-      return this._conf.outerRadius - this._conf.innerRadius;
-    } else if (scale === 'linear') {
-      return Math.floor((value - this._conf.cmin) / this._conf.cmax * (this._conf.outerRadius - this._conf.innerRadius));
+  this.height = function(value, logScale) {
+    var fraction, max, min, scaleLogBase, scope, x;
+    if (logScale) {
+      scaleLogBase = 1;
+    } else {
+      scaleLogBase = 2.3;
     }
+    min = this._conf.cmin;
+    max = this._conf.cmax;
+    scope = this._conf.outerRadius - this._conf.innerRadius;
+    if (min === max) {
+      return 0;
+    }
+    if (value === min) {
+      return 0;
+    }
+    if (value === max) {
+      return scope - 1;
+    }
+    fraction = (value - min) / (max - min);
+    x = Math.exp(1 / scaleLogBase * Math.log(fraction));
+    return Math.floor(scope * x);
   };
   return this;
 };
@@ -513,13 +529,13 @@ circosJS.renderHistogram = function(name, histogram, instance, d3, svg) {
     return d.data;
   }).enter().append('path').attr('d', d3.svg.arc().innerRadius(function(d, i) {
     if (conf.direction === 'in') {
-      return conf.outerRadius - histogram.height(d.value, 'linear');
+      return conf.outerRadius - histogram.height(d.value, conf.logScale);
     } else {
       return conf.innerRadius;
     }
   }).outerRadius(function(d, i) {
     if (conf.direction === 'out') {
-      return conf.innerRadius + histogram.height(d.value, 'linear');
+      return conf.innerRadius + histogram.height(d.value, conf.logScale);
     } else {
       return conf.outerRadius;
     }

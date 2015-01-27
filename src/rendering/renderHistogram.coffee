@@ -24,13 +24,13 @@ circosJS.renderHistogram = (name, histogram, instance, d3, svg) ->
             d3.svg.arc()
                 .innerRadius((d,i) ->
                     if conf.direction == 'in'
-                        conf.outerRadius - histogram.height(d.value, 'linear')
+                        conf.outerRadius - histogram.height(d.value, conf.logScale)
                     else
                         conf.innerRadius
                 )
                 .outerRadius((d,i) ->
                     if conf.direction == 'out'
-                        conf.innerRadius + histogram.height(d.value, 'linear')
+                        conf.innerRadius + histogram.height(d.value, conf.logScale)
                     else
                         conf.outerRadius
                 )

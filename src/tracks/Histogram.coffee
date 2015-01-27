@@ -4,10 +4,27 @@ circosJS.Histogram = (conf, data) ->
     @_conf = circosJS.mixConf conf, JSON.parse(JSON.stringify(@_defaultConf))
 
     circosJS.Track.call(@, conf, data)
-    @height = (value, scale) ->
-        if value >= @_conf.cmax
-            @_conf.outerRadius - @_conf.innerRadius
-        else if scale == 'linear'
-            Math.floor((value - @_conf.cmin) / @_conf.cmax * (@_conf.outerRadius - @_conf.innerRadius))
+    @height = (value, logScale) ->
+      if logScale
+          scaleLogBase = 1
+      else
+          scaleLogBase = 2.3
+
+      min = @_conf.cmin
+      max = @_conf.cmax
+      scope = @_conf.outerRadius - @_conf.innerRadius
+
+      if min == max
+          return 0
+      if value == min
+          return 0
+      if value == max
+          return scope - 1
+
+      fraction = (value - min) / (max - min)
+
+      x = Math.exp(1 / scaleLogBase * Math.log(fraction))
+
+      return Math.floor(scope * x)
     return @
 
