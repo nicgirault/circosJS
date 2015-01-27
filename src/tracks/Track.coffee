@@ -2,19 +2,17 @@ circosJS.Track = (conf, data) ->
     # @refers the track instance
     @_data = circosJS.parseData(data)
 
-    # conf override the default configuration. Conf not in default conf
-    # object are removed
-    @_conf = circosJS.mixConf conf, JSON.parse(JSON.stringify(@_defaultConf))
-
-    # WIP: the if distinguish chords vs histogram/heatmap...
-    if data[0].data?
+    # Only for heatmap and histograms...
+    @completeData = ->
         # add parent is datum. Needed for rendering
-        for k,v of data
+        for k,v of @_data
             for i, datum of v.data
                 datum.block_id = v.parent
 
+    # Only for heatmap and histograms...
+    @computeMinMax = ->
         # compute min and max values
-        values = (datum.value for datum in blockData.data for blockData in data)
+        values = (datum.value for datum in blockData.data for blockData in @_data)
         flattenValues = []
         flattenValues = flattenValues.concat.apply flattenValues, values
         if @_conf.min == 'smart'

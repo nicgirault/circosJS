@@ -168,7 +168,9 @@ circosJS.Layout = function(conf, data) {
 circosJS.Core.prototype.heatmap = function(id, conf, data) {
   var track;
   track = new circosJS.Heatmap(conf, data);
+  track.completeData();
   if (track.isLayoutCompliant(this, id)) {
+    track.computeMinMax();
     this._heatmaps[id] = track;
   }
   return this;
@@ -177,7 +179,9 @@ circosJS.Core.prototype.heatmap = function(id, conf, data) {
 circosJS.Core.prototype.histogram = function(id, conf, data) {
   var track;
   track = new circosJS.Histogram(conf, data);
+  track.completeData();
   if (track.isLayoutCompliant(this, id)) {
+    track.computeMinMax();
     this._histograms[id] = track;
   }
   return this;
@@ -194,6 +198,7 @@ circosJS.Core.prototype.chord = function(id, conf, data) {
 };
 
 circosJS.Chord = function(conf, data, layout) {
+  this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   circosJS.Track.call(this, conf, data);
   this.getSource = (function(_this) {
     return function(d) {
@@ -298,11 +303,13 @@ circosJS.Chord = function(conf, data, layout) {
 };
 
 circosJS.Heatmap = function(conf, data) {
+  this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   circosJS.Track.call(this, conf, data);
   return this;
 };
 
 circosJS.Histogram = function(conf, data) {
+  this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   circosJS.Track.call(this, conf, data);
   this.height = function(value, scale) {
     if (value >= this._conf.cmax) {
@@ -315,23 +322,34 @@ circosJS.Histogram = function(conf, data) {
 };
 
 circosJS.Track = function(conf, data) {
-  var blockData, datum, flattenValues, i, k, v, values, _ref;
   this._data = circosJS.parseData(data);
-  this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  if (data[0].data != null) {
-    for (k in data) {
-      v = data[k];
-      _ref = v.data;
-      for (i in _ref) {
-        datum = _ref[i];
-        datum.block_id = v.parent;
-      }
+  this.completeData = function() {
+    var datum, i, k, v, _ref, _results;
+    _ref = this._data;
+    _results = [];
+    for (k in _ref) {
+      v = _ref[k];
+      _results.push((function() {
+        var _ref1, _results1;
+        _ref1 = v.data;
+        _results1 = [];
+        for (i in _ref1) {
+          datum = _ref1[i];
+          _results1.push(datum.block_id = v.parent);
+        }
+        return _results1;
+      })());
     }
+    return _results;
+  };
+  this.computeMinMax = function() {
+    var blockData, datum, flattenValues, values;
     values = (function() {
-      var _i, _len, _results;
+      var _i, _len, _ref, _results;
+      _ref = this._data;
       _results = [];
-      for (_i = 0, _len = data.length; _i < _len; _i++) {
-        blockData = data[_i];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        blockData = _ref[_i];
         _results.push((function() {
           var _j, _len1, _ref1, _results1;
           _ref1 = blockData.data;
@@ -344,7 +362,7 @@ circosJS.Track = function(conf, data) {
         })());
       }
       return _results;
-    })();
+    }).call(this);
     flattenValues = [];
     flattenValues = flattenValues.concat.apply(flattenValues, values);
     if (this._conf.min === 'smart') {
@@ -353,11 +371,11 @@ circosJS.Track = function(conf, data) {
       this._conf.cmin = this._conf.min;
     }
     if (this._conf.max === 'smart') {
-      this._conf.cmax = Math.max.apply(null, flattenValues);
+      return this._conf.cmax = Math.max.apply(null, flattenValues);
     } else {
-      this._conf.cmax = this._conf.max;
+      return this._conf.cmax = this._conf.max;
     }
-  }
+  };
   this.colorScale = function(value, logScale) {
     var fraction, max, min, scaleLogBase, scope, x;
     if (logScale) {
@@ -388,7 +406,7 @@ circosJS.Track = function(conf, data) {
     return this._conf;
   };
   return this.isLayoutCompliant = function(instance, id) {
-    var block, d, layout_ids, layout_lengths, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2, _ref3;
+    var block, d, datum, layout_ids, layout_lengths, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
     if (instance._layout == null) {
       circosJS.log(1, 'No layout defined', 'Circos cannot add or update a heatmap track without layout', {
         'heatmap_id': id
@@ -396,32 +414,32 @@ circosJS.Track = function(conf, data) {
       return false;
     }
     layout_ids = (function() {
-      var _i, _len, _ref1, _results;
-      _ref1 = instance._layout.getData();
+      var _i, _len, _ref, _results;
+      _ref = instance._layout.getData();
       _results = [];
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        d = _ref1[_i];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        d = _ref[_i];
         _results.push(d.id);
       }
       return _results;
     })();
     layout_lengths = {};
-    _ref1 = instance._layout.getData();
-    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-      d = _ref1[_i];
+    _ref = instance._layout.getData();
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      d = _ref[_i];
       layout_lengths[d.id] = d.len;
     }
     for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
       block = data[_j];
-      if (_ref2 = block.parent, __indexOf.call(layout_ids, _ref2) < 0) {
+      if (_ref1 = block.parent, __indexOf.call(layout_ids, _ref1) < 0) {
         circosJS.log(2, 'No layout block id match', 'Heatmap data has a parent property that does not correspond to any layout block id', {
           'heatmap_id': id,
           'block_id': block.parent
         });
       }
-      _ref3 = block.data;
-      for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
-        datum = _ref3[_k];
+      _ref2 = block.data;
+      for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+        datum = _ref2[_k];
         if (datum.start < 0 || datum.end > layout_lengths[block.parent]) {
           circosJS.log(2, 'Track data inconsistency', 'Track data has a start < 0 or a end above the block length', {
             'track_id': id,
