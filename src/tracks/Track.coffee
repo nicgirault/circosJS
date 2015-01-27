@@ -69,7 +69,7 @@ circosJS.Track = (conf, data) ->
         for d in instance._layout.getData()
             layout_lengths[d.id] = d.len
         # for datum in data
-        for block in data
+        for block in @_data
             # check match between track and layout block id
             unless block.parent in layout_ids
                 circosJS.log(

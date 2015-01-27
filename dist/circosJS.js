@@ -406,7 +406,7 @@ circosJS.Track = function(conf, data) {
     return this._conf;
   };
   return this.isLayoutCompliant = function(instance, id) {
-    var block, d, datum, layout_ids, layout_lengths, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+    var block, d, datum, layout_ids, layout_lengths, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3;
     if (instance._layout == null) {
       circosJS.log(1, 'No layout defined', 'Circos cannot add or update a heatmap track without layout', {
         'heatmap_id': id
@@ -429,17 +429,18 @@ circosJS.Track = function(conf, data) {
       d = _ref[_i];
       layout_lengths[d.id] = d.len;
     }
-    for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
-      block = data[_j];
-      if (_ref1 = block.parent, __indexOf.call(layout_ids, _ref1) < 0) {
+    _ref1 = this._data;
+    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+      block = _ref1[_j];
+      if (_ref2 = block.parent, __indexOf.call(layout_ids, _ref2) < 0) {
         circosJS.log(2, 'No layout block id match', 'Heatmap data has a parent property that does not correspond to any layout block id', {
           'heatmap_id': id,
           'block_id': block.parent
         });
       }
-      _ref2 = block.data;
-      for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-        datum = _ref2[_k];
+      _ref3 = block.data;
+      for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
+        datum = _ref3[_k];
         if (datum.start < 0 || datum.end > layout_lengths[block.parent]) {
           circosJS.log(2, 'Track data inconsistency', 'Track data has a start < 0 or a end above the block length', {
             'track_id': id,
