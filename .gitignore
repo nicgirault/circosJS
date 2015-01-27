@@ -2,3 +2,5 @@
 node_modules/*
 src/circosJS.coffee
 demo/generateHeatmap.py
+build
+vendors

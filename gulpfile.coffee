@@ -9,16 +9,12 @@ mocha = require("gulp-mocha")
 watch = require("gulp-watch")
 # rjs = require('gulp-requirejs')
 
-gulp.task 'coffee2js', ->
+gulp.task 'coffee', ->
     gulp.src [
         'src/circos.coffee'
         'src/layout.coffee'
         'src/tracks.coffee'
-        'src/chord.coffee'
-        'src/tracks/Track.coffee'
-        'src/tracks/Heatmap.coffee'
-        'src/tracks/Chord.coffee'
-        'src/tracks/Histogram.coffee'
+        'src/tracks/*.coffee'
         'src/rendering/*.coffee'
         'src/render.coffee'
         'src/default_parameters.coffee'
@@ -30,58 +26,10 @@ gulp.task 'coffee2js', ->
     .on 'error', gutil.log
     return
 
-gulp.task 'test', ['concat-coffee'], ->
-    setTimeout ->
-        gulp.src 'test/test.coffee', {read: false}
-        .pipe mocha {reporter: 'nyan', compilers: 'coffee:coffee-script'}
-        .on 'error', gutil.log
-        return
-    , 1000
-
 gulp.task 'watch', ->
-    gulp.watch 'src/*.coffee', ['coffee2js']
-    # gulp.watch 'src/*.less', ['css-full']
+    gulp.watch 'src/*.coffee', ['coffee']
     return
 
 gulp.task 'build', ['coffee2js']
-# gulp.task 'requirejsBuild', ['coffee2js'], ->
-#     rjs
-#         name: 'circos.js'
-#         baseUrl: './src/'
-#         out: './src/circosJS.js'
-#     .pipe(gulp.dest('./dist/'))
-#     .on "error", gutil.log
-#     return
-
-# gulp.task "js-full", ["compile-js"], ->
-#     gulp.src([
-#         "src/vendor/d3/d3.min.js"
-#         "dist/circosJS.js"
-#     ]).pipe(concat("circosJS.full.js")).pipe(gulp.dest("dist")).on "error", gutil.log
-#     return
-
-# gulp.task "css-full", ["less2css"], ->
-#     gulp.src([
-#         "src/vendor/colorBrewer/colorBrewer.css"
-#         "dist/circosJS.css"
-#     ]).pipe(concat("circosJS.full.css")).pipe(gulp.dest("dist")).on "error", gutil.log
-#     return
-
-# gulp.task 'less2css', ->
-#     gulp.src ['src/circosJS.less']
-#     .pipe less 'circosJS.css'
-#     .pipe gulp.dest 'dist'
-#     .on 'error', gutil.log
-#     return
-
-
-# gulp.task 'md_test', ->
-#     gulp.src ['./src/md_layout.coffee', './src/md_rendering.coffee','./src/md_circos.coffee']
-#     .pipe concat 'md_circosJS.coffee'
-#     .pipe coffee(bare: true)
-#     .pipe(gulp.dest('dist'))
-#     .on "error", gutil.log
-
-
 
 # gulp.task 'default', ['watch']

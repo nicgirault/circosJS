@@ -168,7 +168,7 @@ circosJS.Layout = function(conf, data) {
 circosJS.Core.prototype.heatmap = function(id, conf, data) {
   var track;
   track = new circosJS.Heatmap(conf, data);
-  if (track.isLayoutCompliant(this)) {
+  if (track.isLayoutCompliant(this, id)) {
     this._heatmaps[id] = track;
   }
   return this;
@@ -177,60 +177,117 @@ circosJS.Core.prototype.heatmap = function(id, conf, data) {
 circosJS.Core.prototype.histogram = function(id, conf, data) {
   var track;
   track = new circosJS.Histogram(conf, data);
-  if (track.isLayoutCompliant(this)) {
+  if (track.isLayoutCompliant(this, id)) {
     this._histograms[id] = track;
   }
   return this;
 };
 
 circosJS.Core.prototype.chord = function(id, conf, data) {
-  var d, datum, layout_ids, layout_lengths, _i, _j, _len, _len1, _ref, _ref1, _ref2;
-  if (this._layout == null) {
-    circosJS.log(1, 'No layout defined', 'Circos cannot add or update a chord track without layout', {
-      'chord_id': id
-    });
-    return this;
+  var track;
+  track = new circosJS.Chord(conf, data, this._layout);
+  if (track.isLayoutCompliant(this, id)) {
+    this._chords[id] = track;
   }
-  layout_ids = (function() {
-    var _i, _len, _ref, _results;
-    _ref = this._layout.getData();
-    _results = [];
+  return this;
+};
+
+circosJS.Chord = function(conf, data, layout) {
+  circosJS.Track.call(this, conf, data);
+  this.getSource = (function(_this) {
+    return function(d) {
+      var block, endAngle, result, startAngle;
+      d = d.source;
+      block = layout.getBlock(d.id);
+      startAngle = block.start + d.start / block.len * (block.end - block.start);
+      endAngle = block.start + d.end / block.len * (block.end - block.start);
+      return result = {
+        radius: layout.getConf().innerRadius,
+        startAngle: startAngle,
+        endAngle: endAngle
+      };
+    };
+  })(this);
+  this.getTarget = (function(_this) {
+    return function(d) {
+      var block, endAngle, result, startAngle;
+      d = d.target;
+      block = layout.getBlock(d.id);
+      startAngle = block.start + d.start / block.len * (block.end - block.start);
+      endAngle = block.start + d.end / block.len * (block.end - block.start);
+      return result = {
+        radius: layout.getConf().innerRadius,
+        startAngle: startAngle,
+        endAngle: endAngle
+      };
+    };
+  })(this);
+  this.isLayoutCompliant = function(instance, id) {
+    var d, datum, layout_ids, layout_lengths, _i, _j, _len, _len1, _ref, _ref1, _ref2;
+    if (instance._layout == null) {
+      circosJS.log(1, 'No layout defined', 'Circos cannot add or update a chord track without layout', {
+        'chord_id': id
+      });
+      return false;
+    }
+    layout_ids = (function() {
+      var _i, _len, _ref, _results;
+      _ref = instance._layout.getData();
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        d = _ref[_i];
+        _results.push(d.id);
+      }
+      return _results;
+    })();
+    layout_lengths = {};
+    _ref = instance._layout.getData();
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       d = _ref[_i];
-      _results.push(d.id);
+      layout_lengths[d.id] = d.len;
     }
-    return _results;
-  }).call(this);
-  layout_lengths = {};
-  _ref = this._layout.getData();
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    d = _ref[_i];
-    layout_lengths[d.id] = d.len;
-  }
-  for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
-    datum = data[_j];
-    if (!((_ref1 = datum.source.id, __indexOf.call(layout_ids, _ref1) >= 0) && (_ref2 = datum.target.id, __indexOf.call(layout_ids, _ref2) >= 0))) {
-      circosJS.log(2, 'No layout block id match', 'Link data has a source or tagret id that does not correspond to any layout block id', {
-        'chord_id': id,
-        'datum': datum
-      });
+    for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
+      datum = data[_j];
+      if (!((_ref1 = datum.source.id, __indexOf.call(layout_ids, _ref1) >= 0) && (_ref2 = datum.target.id, __indexOf.call(layout_ids, _ref2) >= 0))) {
+        circosJS.log(2, 'No layout block id match', 'Link data has a source or tagret id that does not correspond to any layout block id', {
+          'chord_id': id,
+          'datum': datum
+        });
+      }
+      if (datum.source.start < 0 || datum.source.end > layout_lengths[datum.source.id]) {
+        circosJS.log(2, 'Track data inconsistency', 'Track data has a start < 0 or a end above the block length', {
+          'track_id': id,
+          'datum': datum,
+          'layout block': instance._layout.getBlock(datum.source.id)
+        });
+      }
+      if (datum.target.start < 0 || datum.target.end > layout_lengths[datum.target.id]) {
+        circosJS.log(2, 'Track data inconsistency', 'Track data has a start < 0 or a end above the block length', {
+          'track_id': id,
+          'datum': datum,
+          'layout block': instance._layout.getBlock(datum.target.id)
+        });
+      }
     }
-    if (datum.source.start < 0 || datum.source.end > layout_lengths[datum.source.id]) {
-      circosJS.log(2, 'Track data inconsistency', 'Track data has a start < 0 or a end above the block length', {
-        'track_id': id,
-        'datum': datum,
-        'layout block': this._layout.getBlock(datum.source.id)
-      });
+    return true;
+  };
+  return this;
+};
+
+circosJS.Heatmap = function(conf, data) {
+  circosJS.Track.call(this, conf, data);
+  return this;
+};
+
+circosJS.Histogram = function(conf, data) {
+  circosJS.Track.call(this, conf, data);
+  this.height = function(value, scale) {
+    if (value >= this._conf.cmax) {
+      return this._conf.outerRadius - this._conf.innerRadius;
+    } else if (scale === 'linear') {
+      return Math.floor((value - this._conf.cmin) / this._conf.cmax * (this._conf.outerRadius - this._conf.innerRadius));
     }
-    if (datum.target.start < 0 || datum.target.end > layout_lengths[datum.target.id]) {
-      circosJS.log(2, 'Track data inconsistency', 'Track data has a start < 0 or a end above the block length', {
-        'track_id': id,
-        'datum': datum,
-        'layout block': this._layout.getBlock(datum.target.id)
-      });
-    }
-  }
-  this._chords[id] = new circosJS.Chord(conf, data, this._layout);
+  };
   return this;
 };
 
@@ -307,7 +364,7 @@ circosJS.Track = function(conf, data) {
   this.getConf = function() {
     return this._conf;
   };
-  return this.isLayoutCompliant = function(instance) {
+  return this.isLayoutCompliant = function(instance, id) {
     var block, d, layout_ids, layout_lengths, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2, _ref3;
     if (instance._layout == null) {
       circosJS.log(1, 'No layout defined', 'Circos cannot add or update a heatmap track without layout', {
@@ -354,68 +411,6 @@ circosJS.Track = function(conf, data) {
     return true;
   };
 };
-
-circosJS.Heatmap = function(conf, data) {
-  circosJS.Track.call(this, conf, data);
-  return this;
-};
-
-circosJS.Heatmap.prototype = Object.create(circosJS.Track.prototype);
-
-circosJS.Heatmap.prototype.constructor = circosJS.Heatmap;
-
-circosJS.Chord = function(conf, data, layout) {
-  circosJS.Track.call(this, conf, data);
-  this.getSource = (function(_this) {
-    return function(d) {
-      var block, endAngle, result, startAngle;
-      d = d.source;
-      block = layout.getBlock(d.id);
-      startAngle = block.start + d.start / block.len * (block.end - block.start);
-      endAngle = block.start + d.end / block.len * (block.end - block.start);
-      return result = {
-        radius: layout.getConf().innerRadius,
-        startAngle: startAngle,
-        endAngle: endAngle
-      };
-    };
-  })(this);
-  this.getTarget = (function(_this) {
-    return function(d) {
-      var block, endAngle, result, startAngle;
-      d = d.target;
-      block = layout.getBlock(d.id);
-      startAngle = block.start + d.start / block.len * (block.end - block.start);
-      endAngle = block.start + d.end / block.len * (block.end - block.start);
-      return result = {
-        radius: layout.getConf().innerRadius,
-        startAngle: startAngle,
-        endAngle: endAngle
-      };
-    };
-  })(this);
-  return this;
-};
-
-circosJS.Chord.prototype = Object.create(circosJS.Track.prototype);
-
-circosJS.Chord.prototype.constructor = circosJS.Chord;
-
-circosJS.Histogram = function(conf, data) {
-  circosJS.Track.call(this, conf, data);
-  this.height = function(value, scale) {
-    if (value >= this._conf.cmax) {
-      return this._conf.outerRadius - this._conf.innerRadius;
-    } else if (scale === 'linear') {
-      return Math.floor((value - this._conf.cmin) / this._conf.cmax * (this._conf.outerRadius - this._conf.innerRadius));
-    }
-  };
-  return this;
-};
-
-circosJS.Histogram.prototype = Object.create(circosJS.Track.prototype);
-
-circosJS.Histogram.prototype.constructor = circosJS.Histogram;
 
 circosJS.renderChord = function(name, chord, instance, d3, svg) {
   var conf, track;

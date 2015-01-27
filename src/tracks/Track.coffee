@@ -54,7 +54,7 @@ circosJS.Track = (conf, data) ->
     @getConf = ->
         @_conf
 
-    @isLayoutCompliant = (instance) ->
+    @isLayoutCompliant = (instance, id) ->
         # Check layout is defined
         unless instance._layout?
             circosJS.log(
