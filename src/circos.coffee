@@ -64,7 +64,7 @@ circosJS.mixConf = (conf, defaultConf) ->
     for key, value of defaultConf
         if key of conf
             if typeof value == 'object'
-                newConf[key] = defaults(conf[key], value)
+                newConf[key] = circosJS.mixConf(conf[key], value)
             else
                 newConf[key] = conf[key]
         else

@@ -78,7 +78,7 @@ circosJS.mixConf = function(conf, defaultConf) {
     value = defaultConf[key];
     if (key in conf) {
       if (typeof value === 'object') {
-        newConf[key] = defaults(conf[key], value);
+        newConf[key] = circosJS.mixConf(conf[key], value);
       } else {
         newConf[key] = conf[key];
       }
