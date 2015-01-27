@@ -18,6 +18,7 @@ circosJS.Core.prototype.chord = (id, conf, data) ->
     track = new circosJS.Chord(conf, data, @_layout)
 
     if track.isLayoutCompliant @, id
+        track.computeMinMax()
         @_chords[id] = track
 
     return @

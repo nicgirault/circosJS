@@ -30,6 +30,6 @@ gulp.task 'watch', ->
     gulp.watch 'src/*.coffee', ['coffee']
     return
 
-gulp.task 'build', ['coffee2js']
+gulp.task 'build', ['coffee']
 
 # gulp.task 'default', ['watch']

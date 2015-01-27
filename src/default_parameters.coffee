@@ -54,9 +54,14 @@ circosJS.Histogram.prototype._defaultConf =
   color: '#fd6a62'
   colorPaletteSize: 9
   colorPalette: 'YlGnBu'
+  logScale: false
 
 # Chord
 circosJS.Chord.prototype._defaultConf =
   colorPaletteSize: 9
   colorPalette: 'PuBuGn'
+  color: null
   opacity: 0.7
+  min: 'smart'
+  max: 'smart'
+  logScale: false

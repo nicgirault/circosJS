@@ -19,6 +19,18 @@ circosJS.Chord = (conf, data, layout) ->
             startAngle: startAngle
             endAngle: endAngle
 
+    @computeMinMax = () ->
+        # compute min and max values
+        values = (datum.value for datum in data)
+        if @_conf.min == 'smart'
+            @_conf.cmin = Math.min.apply null, values
+        else
+            @_conf.cmin = @_conf.min
+        if @_conf.max == 'smart'
+            @_conf.cmax = Math.max.apply null, values
+        else
+            @_conf.cmax = @_conf.max
+
     @isLayoutCompliant = (instance, id) ->
         # Check layout is defined
         unless instance._layout?

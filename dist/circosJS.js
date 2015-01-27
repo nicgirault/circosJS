@@ -187,6 +187,7 @@ circosJS.Core.prototype.chord = function(id, conf, data) {
   var track;
   track = new circosJS.Chord(conf, data, this._layout);
   if (track.isLayoutCompliant(this, id)) {
+    track.computeMinMax();
     this._chords[id] = track;
   }
   return this;
@@ -222,6 +223,28 @@ circosJS.Chord = function(conf, data, layout) {
       };
     };
   })(this);
+  this.computeMinMax = function() {
+    var datum, values;
+    values = (function() {
+      var _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = data.length; _i < _len; _i++) {
+        datum = data[_i];
+        _results.push(datum.value);
+      }
+      return _results;
+    })();
+    if (this._conf.min === 'smart') {
+      this._conf.cmin = Math.min.apply(null, values);
+    } else {
+      this._conf.cmin = this._conf.min;
+    }
+    if (this._conf.max === 'smart') {
+      return this._conf.cmax = Math.max.apply(null, values);
+    } else {
+      return this._conf.cmax = this._conf.max;
+    }
+  };
   this.isLayoutCompliant = function(instance, id) {
     var d, datum, layout_ids, layout_lengths, _i, _j, _len, _len1, _ref, _ref1, _ref2;
     if (instance._layout == null) {
@@ -413,13 +436,22 @@ circosJS.Track = function(conf, data) {
 };
 
 circosJS.renderChord = function(name, chord, instance, d3, svg) {
-  var conf, track;
+  var conf, link, track;
   conf = chord.getConf();
   svg.select('.' + name).remove();
-  track = svg.append('g').classed(conf.colorPalette, true).classed(name, true).attr('transform', 'translate(' + parseInt(instance.getWidth() / 2) + ',' + parseInt(instance.getHeight() / 2) + ')').selectAll('path').data(chord.getData()).enter().append('path');
-  return track = track.attr('d', d3.svg.chord().source(chord.getSource).target(chord.getTarget)).attr('class', function(d) {
-    return 'q' + d.value + '-' + conf.colorPaletteSize;
-  }).attr('opacity', conf.opacity);
+  track = svg.append('g').classed(name, true).attr('transform', 'translate(' + parseInt(instance.getWidth() / 2) + ',' + parseInt(instance.getHeight() / 2) + ')');
+  if (!conf.color) {
+    track = track.classed(conf.colorPalette, true);
+  }
+  link = track.selectAll('path').data(chord.getData()).enter().append('path');
+  link = link.attr('d', d3.svg.chord().source(chord.getSource).target(chord.getTarget)).attr('opacity', conf.opacity);
+  if (conf.color) {
+    return link.attr('fill', conf.color);
+  } else if (conf.colorPalette != null) {
+    return link.attr('class', function(d) {
+      return 'q' + chord.colorScale(d.value, conf.logScale) + '-' + conf.colorPaletteSize;
+    }, true);
+  }
 };
 
 circosJS.renderHeatmap = function(name, heatmap, instance, d3, svg) {
@@ -449,7 +481,10 @@ circosJS.renderHistogram = function(name, histogram, instance, d3, svg) {
   var bin, block, conf, track;
   conf = histogram.getConf();
   svg.select('.' + name).remove();
-  track = svg.append('g').classed(name, true).classed(conf.colorPalette, true).attr('transform', 'translate(' + parseInt(instance.getWidth() / 2) + ',' + parseInt(instance.getHeight() / 2) + ')');
+  track = svg.append('g').classed(name, true).attr('transform', 'translate(' + parseInt(instance.getWidth() / 2) + ',' + parseInt(instance.getHeight() / 2) + ')');
+  if (!conf.color) {
+    track.classed(conf.colorPalette, true);
+  }
   block = track.selectAll('g').data(histogram.getData()).enter().append('g').attr('class', function(d, i) {
     return name + '-' + d.parent;
   }, true).attr('transform', function(d) {
@@ -476,11 +511,11 @@ circosJS.renderHistogram = function(name, histogram, instance, d3, svg) {
     block = instance._layout.getBlock(d.block_id);
     return d.end / block.len * (block.end - block.start);
   }));
-  if (conf.color != null) {
+  if (conf.color) {
     return bin.attr('fill', conf.color);
   } else if (conf.colorPalette != null) {
     return bin.attr('class', function(d) {
-      return 'q' + histogram.colorScale(d.value, 'linear') + '-' + conf.colorPaletteSize;
+      return 'q' + histogram.colorScale(d.value, conf.logScale) + '-' + conf.colorPaletteSize;
     }, true);
   }
 };
@@ -670,11 +705,16 @@ circosJS.Histogram.prototype._defaultConf = {
   direction: 'out',
   color: '#fd6a62',
   colorPaletteSize: 9,
-  colorPalette: 'YlGnBu'
+  colorPalette: 'YlGnBu',
+  logScale: false
 };
 
 circosJS.Chord.prototype._defaultConf = {
   colorPaletteSize: 9,
   colorPalette: 'PuBuGn',
-  opacity: 0.7
+  color: null,
+  opacity: 0.7,
+  min: 'smart',
+  max: 'smart',
+  logScale: false
 };
