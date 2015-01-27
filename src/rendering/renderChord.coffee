@@ -7,7 +7,7 @@ circosJS.renderChord = (name, chord, instance, d3, svg) ->
         .classed(name, true)
         .attr('transform', 'translate(' + parseInt(instance.getWidth()/2) + ',' + parseInt(instance.getHeight()/2) + ')')
         
-    track = track.classed(conf.colorPalette, true) unless conf.color
+    track = track.classed(conf.colorPalette, true) if conf.usePalette
     
     link = track.selectAll('path')
         .data(chord.getData())
@@ -19,9 +19,10 @@ circosJS.renderChord = (name, chord, instance, d3, svg) ->
         .target(chord.getTarget)
     ).attr('opacity', conf.opacity)
 
-    if conf.color
-        link.attr('fill', conf.color)
-    else if conf.colorPalette?
+    if conf.usePalette
         link.attr('class', (d) ->
             'q' + chord.colorScale(d.value, conf.logScale) + '-' + conf.colorPaletteSize
         true)
+    else
+        link.attr('fill', conf.color)
+        

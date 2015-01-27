@@ -51,16 +51,18 @@ circosJS.Histogram.prototype._defaultConf =
   min: 'smart'
   max: 'smart'
   direction: 'out'
-  color: '#fd6a62'
   colorPaletteSize: 9
   colorPalette: 'YlGnBu'
+  usePalette: true
+  color: '#fd6a62'
   logScale: false
 
 # Chord
 circosJS.Chord.prototype._defaultConf =
   colorPaletteSize: 9
   colorPalette: 'PuBuGn'
-  color: null
+  usePalette: true
+  color: '#fd6a62'
   opacity: 0.7
   min: 'smart'
   max: 'smart'

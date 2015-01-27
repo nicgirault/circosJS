@@ -7,7 +7,7 @@ circosJS.renderHistogram = (name, histogram, instance, d3, svg) ->
         .classed(name, true)
         .attr('transform', 'translate(' + parseInt(instance.getWidth()/2) + ',' + parseInt(instance.getHeight()/2) + ')')
 
-    track.classed(conf.colorPalette, true) unless conf.color
+    track.classed(conf.colorPalette, true) if conf.usePalette
 
     block = track.selectAll('g')
         .data(histogram.getData())
@@ -45,9 +45,9 @@ circosJS.renderHistogram = (name, histogram, instance, d3, svg) ->
 
         )
 
-    if conf.color
-        bin.attr('fill', conf.color)
-    else if conf.colorPalette?
+    if conf.usePalette
         bin.attr('class', (d) ->
             'q' + histogram.colorScale(d.value, conf.logScale) + '-' + conf.colorPaletteSize
         true)
+    else
+        bin.attr('fill', conf.color)

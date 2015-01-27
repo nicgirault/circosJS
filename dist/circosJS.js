@@ -458,17 +458,17 @@ circosJS.renderChord = function(name, chord, instance, d3, svg) {
   conf = chord.getConf();
   svg.select('.' + name).remove();
   track = svg.append('g').classed(name, true).attr('transform', 'translate(' + parseInt(instance.getWidth() / 2) + ',' + parseInt(instance.getHeight() / 2) + ')');
-  if (!conf.color) {
+  if (conf.usePalette) {
     track = track.classed(conf.colorPalette, true);
   }
   link = track.selectAll('path').data(chord.getData()).enter().append('path');
   link = link.attr('d', d3.svg.chord().source(chord.getSource).target(chord.getTarget)).attr('opacity', conf.opacity);
-  if (conf.color) {
-    return link.attr('fill', conf.color);
-  } else if (conf.colorPalette != null) {
+  if (conf.usePalette) {
     return link.attr('class', function(d) {
       return 'q' + chord.colorScale(d.value, conf.logScale) + '-' + conf.colorPaletteSize;
     }, true);
+  } else {
+    return link.attr('fill', conf.color);
   }
 };
 
@@ -500,7 +500,7 @@ circosJS.renderHistogram = function(name, histogram, instance, d3, svg) {
   conf = histogram.getConf();
   svg.select('.' + name).remove();
   track = svg.append('g').classed(name, true).attr('transform', 'translate(' + parseInt(instance.getWidth() / 2) + ',' + parseInt(instance.getHeight() / 2) + ')');
-  if (!conf.color) {
+  if (conf.usePalette) {
     track.classed(conf.colorPalette, true);
   }
   block = track.selectAll('g').data(histogram.getData()).enter().append('g').attr('class', function(d, i) {
@@ -529,12 +529,12 @@ circosJS.renderHistogram = function(name, histogram, instance, d3, svg) {
     block = instance._layout.getBlock(d.block_id);
     return d.end / block.len * (block.end - block.start);
   }));
-  if (conf.color) {
-    return bin.attr('fill', conf.color);
-  } else if (conf.colorPalette != null) {
+  if (conf.usePalette) {
     return bin.attr('class', function(d) {
       return 'q' + histogram.colorScale(d.value, conf.logScale) + '-' + conf.colorPaletteSize;
     }, true);
+  } else {
+    return bin.attr('fill', conf.color);
   }
 };
 
@@ -721,16 +721,18 @@ circosJS.Histogram.prototype._defaultConf = {
   min: 'smart',
   max: 'smart',
   direction: 'out',
-  color: '#fd6a62',
   colorPaletteSize: 9,
   colorPalette: 'YlGnBu',
+  usePalette: true,
+  color: '#fd6a62',
   logScale: false
 };
 
 circosJS.Chord.prototype._defaultConf = {
   colorPaletteSize: 9,
   colorPalette: 'PuBuGn',
-  color: null,
+  usePalette: true,
+  color: '#fd6a62',
   opacity: 0.7,
   min: 'smart',
   max: 'smart',
