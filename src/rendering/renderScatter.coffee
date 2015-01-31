@@ -13,7 +13,6 @@ circosJS.renderScatter = (name, scatter, instance, d3, svg) ->
         .attr('class', (d,i)->
             name + '-' + d.parent
         true)
-        # .attr('transform', (d) -> 'rotate(' + instance._layout.getBlock(d.parent).start*360/(2*Math.PI) + ')')
 
     point = block.selectAll('.point')
         .data((d)->d.data)
@@ -36,15 +35,11 @@ circosJS.renderScatter = (name, scatter, instance, d3, svg) ->
         angle = theta(d) - Math.PI/2
         r * Math.sin(angle)
 
-    if conf.glyph.shape == 'dot'
-        point = point.enter().append('circle')
-            .attr('r', conf.glyph.size)
-            .attr('cx', (d,i) -> x(d))
-            .attr('cy', (d,i) -> y(d))
-    else
-        point = point.enter().append('path')
-            .attr('d', d3.svg.symbol().type(conf.glyph.shape).size(conf.glyph.size))
-            .attr('transform', (d) -> 'translate(' + x(d) + ',' + y(d) + ') rotate(' + theta(d)*360/(2*Math.PI) + ')')
-    point = point.attr('class', 'point')
-        .style('fill', conf.color)
+    point = point.enter().append('path')
+        .attr('d', d3.svg.symbol().type(conf.glyph.shape).size(conf.glyph.size))
+        .attr('transform', (d) -> 'translate(' + x(d) + ',' + y(d) + ') rotate(' + theta(d)*360/(2*Math.PI) + ')')
 
+    point = point.attr('class', 'point')
+        .attr('stroke', conf.strokeColor)
+        .attr('stroke-width', conf.strikeWidth)
+        .attr('fill', if conf.glyph.fill then conf.color else 'none')

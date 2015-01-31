@@ -699,18 +699,10 @@ circosJS.renderScatter = function(name, scatter, instance, d3, svg) {
     angle = theta(d) - Math.PI / 2;
     return r * Math.sin(angle);
   };
-  if (conf.glyph.shape === 'dot') {
-    point = point.enter().append('circle').attr('r', conf.glyph.size).attr('cx', function(d, i) {
-      return x(d);
-    }).attr('cy', function(d, i) {
-      return y(d);
-    });
-  } else {
-    point = point.enter().append('path').attr('d', d3.svg.symbol().type(conf.glyph.shape).size(conf.glyph.size)).attr('transform', function(d) {
-      return 'translate(' + x(d) + ',' + y(d) + ') rotate(' + theta(d) * 360 / (2 * Math.PI) + ')';
-    });
-  }
-  return point = point.attr('class', 'point').style('fill', conf.color);
+  point = point.enter().append('path').attr('d', d3.svg.symbol().type(conf.glyph.shape).size(conf.glyph.size)).attr('transform', function(d) {
+    return 'translate(' + x(d) + ',' + y(d) + ') rotate(' + theta(d) * 360 / (2 * Math.PI) + ')';
+  });
+  return point = point.attr('class', 'point').attr('stroke', conf.strokeColor).attr('stroke-width', conf.strikeWidth).attr('fill', conf.glyph.fill ? conf.color : 'none');
 };
 
 circosJS.Core.prototype.render = function(ids) {
@@ -836,9 +828,12 @@ circosJS.Scatter.prototype._defaultConf = {
   max: 'smart',
   direction: 'out',
   color: '#fd6a62',
+  fill: true,
   logScale: false,
   glyph: {
     size: 15,
     shape: 'circle'
-  }
+  },
+  strokeColor: '#d1d1d1',
+  strokeWidth: 2
 };

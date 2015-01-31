@@ -76,7 +76,10 @@ circosJS.Scatter.prototype._defaultConf =
   max: 'smart'
   direction: 'out'
   color: '#fd6a62'
+  fill: true
   logScale: false
   glyph:
     size: 15
     shape: 'circle'
+  strokeColor: '#d1d1d1'
+  strokeWidth: 2

@@ -535,10 +535,10 @@ circos
         },
         karyotype
     )
-    .heatmap('h1', {outerRadius: 240, logScale: true}, heatmap)
-    .histogram('hist1', {}, heatmap)
+    .heatmap('h1', {innerRadius: 220, outerRadius: 240, logScale: true}, heatmap)
+    .histogram('hist1', {innerRadius: 200, outerRadius: 220}, heatmap)
+    .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter)
     .chord('l1', {}, links)
-    // .heatmap('h2', {innerRadius: 150, outerRadius: 200, colorPalette: 'BuGn'}, heatmap)
     .render();
     // .render(['layout', 'h1']);
 
