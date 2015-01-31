@@ -699,7 +699,7 @@ circosJS.renderScatter = function(name, scatter, instance, d3, svg) {
     angle = theta(d) - Math.PI / 2;
     return r * Math.sin(angle);
   };
-  if (conf.glyph.shape === 'circle') {
+  if (conf.glyph.shape === 'dot') {
     point = point.enter().append('circle').attr('r', conf.glyph.size).attr('cx', function(d, i) {
       return x(d);
     }).attr('cy', function(d, i) {

@@ -36,7 +36,7 @@ circosJS.renderScatter = (name, scatter, instance, d3, svg) ->
         angle = theta(d) - Math.PI/2
         r * Math.sin(angle)
 
-    if conf.glyph.shape == 'circle'
+    if conf.glyph.shape == 'dot'
         point = point.enter().append('circle')
             .attr('r', conf.glyph.size)
             .attr('cx', (d,i) -> x(d))
