@@ -29,3 +29,11 @@ circosJS.Core.prototype.chord = (id, conf, data) ->
 
     return @
 
+circosJS.Core.prototype.scatter = (id, conf, data) ->
+    track = new circosJS.Scatter(conf, data)
+    track.completeData()
+
+    track.computeMinMax()
+    @_scatters[id] = track
+
+    return @

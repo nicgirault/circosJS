@@ -481,7 +481,47 @@ links = [
     {source: {id: 'chr10', start: 20000000, end: 40000000}, target: {id: 'chr7', start: 1, end: 40000000}, value: 7}
 ];
 
-    
+scatter = [
+    {
+        parent: "chr1",
+        data: [
+            {position:10000000, value:6},
+            {position:20000000, value:5},
+            {position:30000000, value:4},
+            {position:40000000, value:3},
+            {position:50000000, value:2},
+            {position:60000000, value:6},
+            {position:70000000, value:6},
+            {position:80000000, value:5},
+            {position:90000000, value:4},
+            {position:100000000, value:3},
+            {position:110000000, value:2},
+            {position:120000000, value:6}
+        ]
+    },
+    {
+        parent: "chr2",
+        data: [
+            {position:10000000, value:6},
+            {position:20000000, value:5},
+            {position:30000000, value:4},
+            {position:40000000, value:3},
+            {position:50000000, value:2},
+            {position:59373566, value:6}
+        ]
+    },
+    {
+        parent: "chr3",
+        data: [
+            {position:10000000, value:6},
+            {position:20000000, value:5},
+            {position:30000000, value:4},
+            {position:40000000, value:3},
+            {position:50000000, value:2},
+            {position:59373566, value:6}
+        ]
+    }
+]
 
 var circos = new circosJS({
     container: '#chart'

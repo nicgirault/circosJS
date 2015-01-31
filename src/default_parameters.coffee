@@ -67,3 +67,16 @@ circosJS.Chord.prototype._defaultConf =
   min: 'smart'
   max: 'smart'
   logScale: false
+
+# Scatter
+circosJS.Scatter.prototype._defaultConf =
+  innerRadius: 150
+  outerRadius: 200
+  min: 'smart'
+  max: 'smart'
+  direction: 'out'
+  color: '#fd6a62'
+  logScale: false
+  glyph:
+    size: 15
+    shape: 'circle'

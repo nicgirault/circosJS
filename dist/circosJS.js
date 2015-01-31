@@ -12,6 +12,7 @@ circosJS.Core = function(conf) {
   this._heatmaps = {};
   this._histograms = {};
   this._chords = {};
+  this._scatters = {};
   _ref = this._conf;
   for (k in _ref) {
     v = _ref[k];
@@ -197,6 +198,15 @@ circosJS.Core.prototype.chord = function(id, conf, data) {
   return this;
 };
 
+circosJS.Core.prototype.scatter = function(id, conf, data) {
+  var track;
+  track = new circosJS.Scatter(conf, data);
+  track.completeData();
+  track.computeMinMax();
+  this._scatters[id] = track;
+  return this;
+};
+
 circosJS.Chord = function(conf, data, layout) {
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   circosJS.Track.call(this, conf, data);
@@ -311,29 +321,12 @@ circosJS.Heatmap = function(conf, data) {
 circosJS.Histogram = function(conf, data) {
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   circosJS.Track.call(this, conf, data);
-  this.height = function(value, logScale) {
-    var fraction, max, min, scaleLogBase, scope, x;
-    if (logScale) {
-      scaleLogBase = 2.3;
-    } else {
-      scaleLogBase = 1;
-    }
-    min = this._conf.cmin;
-    max = this._conf.cmax;
-    scope = this._conf.outerRadius - this._conf.innerRadius;
-    if (min === max) {
-      return 0;
-    }
-    if (value === min) {
-      return 0;
-    }
-    if (value === max) {
-      return scope - 1;
-    }
-    fraction = (value - min) / (max - min);
-    x = Math.exp(1 / scaleLogBase * Math.log(fraction));
-    return Math.floor(scope * x);
-  };
+  return this;
+};
+
+circosJS.Scatter = function(conf, data) {
+  this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
+  circosJS.Track.call(this, conf, data);
   return this;
 };
 
@@ -402,6 +395,29 @@ circosJS.Track = function(conf, data) {
     min = this._conf.cmin;
     max = this._conf.cmax;
     scope = this._conf.colorPaletteSize;
+    if (min === max) {
+      return 0;
+    }
+    if (value === min) {
+      return 0;
+    }
+    if (value === max) {
+      return scope - 1;
+    }
+    fraction = (value - min) / (max - min);
+    x = Math.exp(1 / scaleLogBase * Math.log(fraction));
+    return Math.floor(scope * x);
+  };
+  this.height = function(value, logScale) {
+    var fraction, max, min, scaleLogBase, scope, x;
+    if (logScale) {
+      scaleLogBase = 2.3;
+    } else {
+      scaleLogBase = 1;
+    }
+    min = this._conf.cmin;
+    max = this._conf.cmax;
+    scope = this._conf.outerRadius - this._conf.innerRadius;
     if (min === max) {
       return 0;
     }
@@ -648,8 +664,57 @@ circosJS.renderLayoutTicks = function(conf, layout, d3, instance) {
   });
 };
 
+circosJS.renderScatter = function(name, scatter, instance, d3, svg) {
+  var block, conf, point, theta, track, x, y;
+  conf = scatter.getConf();
+  svg.select('.' + name).remove();
+  track = svg.append('g').classed(name, true).attr('transform', 'translate(' + parseInt(instance.getWidth() / 2) + ',' + parseInt(instance.getHeight() / 2) + ')');
+  block = track.selectAll('g').data(scatter.getData()).enter().append('g').attr('class', function(d, i) {
+    return name + '-' + d.parent;
+  }, true);
+  point = block.selectAll('.point').data(function(d) {
+    return d.data;
+  });
+  theta = function(d) {
+    block = instance._layout.getBlock(d.block_id);
+    return block.start + d.position / block.len * (block.end - block.start);
+  };
+  x = function(d) {
+    var angle, r;
+    if (conf.direction === 'in') {
+      r = conf.outerRadius - scatter.height(d.value, conf.logScale);
+    } else {
+      r = conf.innerRadius + scatter.height(d.value, conf.logScale);
+    }
+    angle = theta(d) - Math.PI / 2;
+    return r * Math.cos(angle);
+  };
+  y = function(d) {
+    var angle, r;
+    if (conf.direction === 'in') {
+      r = conf.outerRadius - scatter.height(d.value, conf.logScale);
+    } else {
+      r = conf.innerRadius + scatter.height(d.value, conf.logScale);
+    }
+    angle = theta(d) - Math.PI / 2;
+    return r * Math.sin(angle);
+  };
+  if (conf.glyph.shape === 'circle') {
+    point = point.enter().append('circle').attr('r', conf.glyph.size).attr('cx', function(d, i) {
+      return x(d);
+    }).attr('cy', function(d, i) {
+      return y(d);
+    });
+  } else {
+    point = point.enter().append('path').attr('d', d3.svg.symbol().type(conf.glyph.shape).size(conf.glyph.size)).attr('transform', function(d) {
+      return 'translate(' + x(d) + ',' + y(d) + ') rotate(' + theta(d) * 360 / (2 * Math.PI) + ')';
+    });
+  }
+  return point = point.attr('class', 'point').style('fill', conf.color);
+};
+
 circosJS.Core.prototype.render = function(ids) {
-  var chord, chord_name, heatmap, heatmap_name, histogram, histogram_name, renderAll, svg, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+  var chord, chord_name, heatmap, heatmap_name, histogram, histogram_name, renderAll, scatter, scatter_name, svg, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3;
   if (typeof ids === 'undefined') {
     renderAll = true;
   }
@@ -679,6 +744,14 @@ circosJS.Core.prototype.render = function(ids) {
     if (renderAll || __indexOf.call(ids, chord_name) >= 0) {
       chord = this._chords[chord_name];
       circosJS.renderChord(chord_name, chord, this, d3, svg);
+    }
+  }
+  _ref3 = Object.keys(this._scatters);
+  for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
+    scatter_name = _ref3[_l];
+    if (renderAll || __indexOf.call(ids, scatter_name) >= 0) {
+      scatter = this._scatters[scatter_name];
+      circosJS.renderScatter(scatter_name, scatter, this, d3, svg);
     }
   }
 };
@@ -754,4 +827,18 @@ circosJS.Chord.prototype._defaultConf = {
   min: 'smart',
   max: 'smart',
   logScale: false
+};
+
+circosJS.Scatter.prototype._defaultConf = {
+  innerRadius: 150,
+  outerRadius: 200,
+  min: 'smart',
+  max: 'smart',
+  direction: 'out',
+  color: '#fd6a62',
+  logScale: false,
+  glyph: {
+    size: 15,
+    shape: 'circle'
+  }
 };
