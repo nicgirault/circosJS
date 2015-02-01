@@ -40,6 +40,6 @@ circosJS.renderScatter = (name, scatter, instance, d3, svg) ->
         .attr('transform', (d) -> 'translate(' + x(d) + ',' + y(d) + ') rotate(' + theta(d)*360/(2*Math.PI) + ')')
 
     point = point.attr('class', 'point')
-        .attr('stroke', conf.strokeColor)
-        .attr('stroke-width', conf.strikeWidth)
-        .attr('fill', if conf.glyph.fill then conf.color else 'none')
+        .attr('stroke', conf.glyph.strokeColor)
+        .attr('stroke-width', conf.glyph.strikeWidth)
+        .attr('fill', if conf.glyph.fill then conf.glyph.color else 'none')

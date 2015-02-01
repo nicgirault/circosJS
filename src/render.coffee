@@ -29,4 +29,9 @@ circosJS.Core.prototype.render = (ids) ->
             scatter = this._scatters[scatter_name]
             circosJS.renderScatter(scatter_name, scatter, this, d3, svg)
 
+    for line_name in Object.keys(this._lines)
+        if renderAll or line_name in ids
+            line = this._lines[line_name]
+            circosJS.renderLine(line_name, line, this, d3, svg)
+
     return

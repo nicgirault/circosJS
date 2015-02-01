@@ -9,6 +9,7 @@ circosJS.Core = (conf) ->
     this._histograms = {}
     this._chords = {}
     this._scatters = {}
+    this._lines = {}
     # this.init = function(){
     #     console.log('initializing instance');
     # };

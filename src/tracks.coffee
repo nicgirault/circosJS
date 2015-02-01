@@ -37,3 +37,12 @@ circosJS.Core.prototype.scatter = (id, conf, data) ->
     @_scatters[id] = track
 
     return @
+
+circosJS.Core.prototype.line = (id, conf, data) ->
+    track = new circosJS.Line(conf, data)
+    track.completeData()
+
+    track.computeMinMax()
+    @_lines[id] = track
+
+    return @

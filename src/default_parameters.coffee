@@ -75,11 +75,25 @@ circosJS.Scatter.prototype._defaultConf =
   min: 'smart'
   max: 'smart'
   direction: 'out'
-  color: '#fd6a62'
-  fill: true
   logScale: false
   glyph:
+    color: '#fd6a62'
+    fill: true
     size: 15
     shape: 'circle'
-  strokeColor: '#d1d1d1'
-  strokeWidth: 2
+    strokeColor: '#d3d3d3'
+    strokeWidth: 2
+
+# Line
+circosJS.Line.prototype._defaultConf =
+  innerRadius: 150
+  outerRadius: 200
+  min: 'smart'
+  max: 'smart'
+  direction: 'out'
+  logScale: false
+  color: '#fd6a62'
+  fill: true
+  fill_color: '#d3d3d3'
+  thickness: 2
+  max_gap: 10000000

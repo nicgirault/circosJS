@@ -9,7 +9,6 @@ circosJS.Track = (conf, data) ->
             for i, datum of v.data
                 datum.block_id = v.parent
 
-    # Only for heatmap and histograms...
     @computeMinMax = ->
         # compute min and max values
         values = (datum.value for datum in blockData.data for blockData in @_data)
