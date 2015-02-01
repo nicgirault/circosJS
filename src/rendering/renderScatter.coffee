@@ -1,14 +1,7 @@
-circosJS.renderScatter = (name, scatter, instance, d3, svg) ->
-    conf = scatter.getConf()
-
-    svg.select('.' + name).remove()
-
-    track = svg.append('g')
-        .classed(name, true)
-        .attr('transform', 'translate(' + parseInt(instance.getWidth()/2) + ',' + parseInt(instance.getHeight()/2) + ')')
+circosJS.renderScatter = (track, scatter, conf, data, instance, d3) ->
 
     block = track.selectAll('g')
-        .data(scatter.getData())
+        .data(data)
         .enter().append('g')
         .attr('class', (d,i)->
             name + '-' + d.parent

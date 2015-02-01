@@ -17,8 +17,18 @@ circosJS.Core.prototype.render = (ids) ->
         {store: @_lines, renderFunction: circosJS.renderLine}
     ]
 
-    preRender = (trackName, track, instance, d3, svg, callback) ->
-        callback(trackName, track, instance, d3, svg)
+    preRender = (name, track, instance, d3, svg, callback) ->
+        conf = track.getConf()
+
+        svg.select('.' + name).remove()
+
+        track1 = svg.append('g')
+            .classed(name, true)
+            .attr('transform', 'translate(' + parseInt(instance.getWidth()/2) + ',' + parseInt(instance.getHeight()/2) + ')')
+
+        data = track.getData()
+
+        callback(track1, track, conf, data, instance, d3, svg)
 
     for trackType in types
         for trackName in Object.keys(trackType.store)

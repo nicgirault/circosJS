@@ -1,14 +1,6 @@
-circosJS.renderChord = (name, chord, instance, d3, svg) ->
-    conf = chord.getConf()
-
-    svg.select('.' + name).remove()
-    
-    track = svg.append('g')
-        .classed(name, true)
-        .attr('transform', 'translate(' + parseInt(instance.getWidth()/2) + ',' + parseInt(instance.getHeight()/2) + ')')
-        
+circosJS.renderChord = (track, chord, conf, data, instance, d3) ->
     track = track.classed(conf.colorPalette, true) if conf.usePalette
-    
+
     link = track.selectAll('path')
         .data(chord.getData())
         .enter().append('path')
@@ -25,4 +17,4 @@ circosJS.renderChord = (name, chord, instance, d3, svg) ->
         true)
     else
         link.attr('fill', conf.color)
-        
+

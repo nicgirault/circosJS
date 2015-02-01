@@ -1,18 +1,10 @@
-circosJS.renderHistogram = (name, histogram, instance, d3, svg) ->
-    conf = histogram.getConf()
-
-    svg.select('.' + name).remove()
-
-    track = svg.append('g')
-        .classed(name, true)
-        .attr('transform', 'translate(' + parseInt(instance.getWidth()/2) + ',' + parseInt(instance.getHeight()/2) + ')')
-
-    track.classed(conf.colorPalette, true) if conf.usePalette
+circosJS.renderHistogram = (track, histogram, conf, data, instance, d3) ->
+    track = track.classed(conf.colorPalette, true) if conf.usePalette
 
     block = track.selectAll('g')
         .data(histogram.getData())
         .enter().append('g')
-        .attr('class', (d,i)-> 
+        .attr('class', (d,i)->
             name + '-' + d.parent
         true)
         .attr('transform', (d) -> 'rotate(' + instance._layout.getBlock(d.parent).start*360/(2*Math.PI) + ')')

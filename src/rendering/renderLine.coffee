@@ -1,12 +1,4 @@
-circosJS.renderLine = (name, line_track, instance, d3, svg) ->
-    conf = line_track.getConf()
-
-    svg.select('.' + name).remove()
-
-    track = svg.append('g')
-        .classed(name, true)
-        .attr('transform', 'translate(' + parseInt(instance.getWidth()/2) + ',' + parseInt(instance.getHeight()/2) + ')')
-
+circosJS.renderLine = (track, line_track, conf, data, instance, d3) ->
     theta = (d) ->
         block = instance._layout.getBlock(d.block_id)
         block.start + d.position / block.len * (block.end - block.start)
@@ -26,7 +18,7 @@ circosJS.renderLine = (name, line_track, instance, d3, svg) ->
         r * Math.sin(angle)
 
     block = track.selectAll('g')
-        .data(line_track.getData())
+        .data(data)
         .enter().append('g')
         .attr('class', (d,i)->
             name + '-' + d.parent
