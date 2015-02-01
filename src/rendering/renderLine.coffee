@@ -35,6 +35,7 @@ circosJS.renderLine = (name, line_track, instance, d3, svg) ->
     line = d3.svg.line()
         .x((d) -> x(d))
         .y((d) -> y(d))
+        .interpolate(conf.interpolation)
 
     block.append("path")
       .datum((d) -> d.data)

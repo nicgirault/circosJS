@@ -97,3 +97,4 @@ circosJS.Line.prototype._defaultConf =
   fill_color: '#d3d3d3'
   thickness: 2
   max_gap: 10000000
+  interpolation: 'linear'

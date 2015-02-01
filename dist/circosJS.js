@@ -717,7 +717,7 @@ circosJS.renderLine = function(name, line_track, instance, d3, svg) {
     return x(d);
   }).y(function(d) {
     return y(d);
-  });
+  }).interpolate(conf.interpolation);
   return block.append("path").datum(function(d) {
     return d.data;
   }).attr("class", "line").attr("d", line).attr('stroke-width', conf.thickness).attr('fill', conf.fill ? conf.fill_color : 'none').attr('stroke', conf.color);
@@ -916,5 +916,6 @@ circosJS.Line.prototype._defaultConf = {
   fill: true,
   fill_color: '#d3d3d3',
   thickness: 2,
-  max_gap: 10000000
+  max_gap: 10000000,
+  interpolation: 'linear'
 };

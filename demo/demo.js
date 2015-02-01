@@ -486,27 +486,27 @@ scatter = [
         parent: "chr1",
         data: [
             {position:10000000, value:6},
-            {position:20000000, value:5},
-            {position:40000000, value:3},
-            {position:50000000, value:2},
-            {position:60000000, value:6},
+            {position:20000000, value:2},
+            {position:40000000, value:4},
+            {position:50000000, value:1},
+            {position:60000000, value:3},
             {position:70000000, value:6},
             {position:80000000, value:5},
             {position:90000000, value:4},
-            {position:100000000, value:3},
+            {position:100000000, value:6},
             {position:110000000, value:2},
-            {position:120000000, value:6}
+            {position:120000000, value:4}
         ]
     },
     {
         parent: "chr2",
         data: [
             {position:10000000, value:6},
-            {position:20000000, value:5},
+            {position:20000000, value:3},
             {position:30000000, value:4},
-            {position:40000000, value:3},
-            {position:50000000, value:2},
-            {position:59373566, value:6}
+            {position:40000000, value:2},
+            {position:50000000, value:6},
+            {position:59373566, value:5}
         ]
     },
     {
@@ -537,7 +537,7 @@ circos
     // .heatmap('h1', {innerRadius: 220, outerRadius: 240, logScale: true}, heatmap)
     // .histogram('hist1', {innerRadius: 200, outerRadius: 220}, heatmap)
     // .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter)
-    .line('line1', {innerRadius: 150, outerRadius: 200}, scatter)
+    .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
     // .chord('l1', {}, links)
     .render();
     // .render(['layout', 'h1']);
