@@ -9,29 +9,21 @@ circosJS.Core.prototype.render = (ids) ->
     if renderAll or 'layout' in ids
         circosJS.renderLayout d3, svg, this
 
-    for heatmap_name in Object.keys(this._heatmaps)
-        if renderAll or heatmap_name in ids
-            heatmap = this._heatmaps[heatmap_name]
-            circosJS.renderHeatmap(heatmap_name, heatmap, this, d3, svg)
+    types = [
+        {store: @_heatmaps, renderFunction: circosJS.renderHeatmap}
+        {store: @_histograms, renderFunction: circosJS.renderHistogram}
+        {store: @_chords, renderFunction: circosJS.renderChord}
+        {store: @_scatters, renderFunction: circosJS.renderScatter}
+        {store: @_lines, renderFunction: circosJS.renderLine}
+    ]
 
-    for histogram_name in Object.keys(this._histograms)
-        if renderAll or histogram_name in ids
-            histogram = this._histograms[histogram_name]
-            circosJS.renderHistogram(histogram_name, histogram, this, d3, svg)
+    preRender = (trackName, track, instance, d3, svg, callback) ->
+        callback(trackName, track, instance, d3, svg)
 
-    for chord_name in Object.keys(this._chords)
-        if renderAll or chord_name in ids
-            chord = this._chords[chord_name]
-            circosJS.renderChord(chord_name, chord, this, d3, svg)
-
-    for scatter_name in Object.keys(this._scatters)
-        if renderAll or scatter_name in ids
-            scatter = this._scatters[scatter_name]
-            circosJS.renderScatter(scatter_name, scatter, this, d3, svg)
-
-    for line_name in Object.keys(this._lines)
-        if renderAll or line_name in ids
-            line = this._lines[line_name]
-            circosJS.renderLine(line_name, line, this, d3, svg)
+    for trackType in types
+        for trackName in Object.keys(trackType.store)
+            if renderAll or trackName in ids
+                track = trackType.store[ trackName ]
+                preRender trackName, track, @, d3, svg, trackType.renderFunction
 
     return

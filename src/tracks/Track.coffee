@@ -1,6 +1,18 @@
-circosJS.Track = (conf, data) ->
-    # @refers the track instance
+circosJS.Track = (conf, data, rules) ->
+    # this refers the track instance
     @_data = circosJS.parseData(data)
+
+    # a rule look like this:
+    # {parameter: color, value: 'blue', condition: function, flow: 'stop if true'}
+    @_rules = rules
+
+    @applyRules = ->
+        console.log 'apply rules'
+        for k,v of @_data
+            for i, datum of v.data
+                for rule in rules
+                    if rule.condition(datum.value)
+                        datum[rule.parameter] = rule.value
 
     # Only for heatmap and histograms...
     @completeData = ->
@@ -73,6 +85,8 @@ circosJS.Track = (conf, data) ->
         @_data
     @getConf = ->
         @_conf
+    @getRules = ->
+        @_rules
 
     @isLayoutCompliant = (instance, id) ->
         # Check layout is defined

@@ -1,5 +1,5 @@
-circosJS.Core.prototype.heatmap = (id, conf, data) ->
-    track = new circosJS.Heatmap(conf, data)
+circosJS.Core.prototype.heatmap = (id, conf, data, rules) ->
+    track = new circosJS.Heatmap(conf, data, rules)
 
     track.completeData()
 
@@ -9,8 +9,8 @@ circosJS.Core.prototype.heatmap = (id, conf, data) ->
 
     return @
 
-circosJS.Core.prototype.histogram = (id, conf, data) ->
-    track = new circosJS.Histogram(conf, data)
+circosJS.Core.prototype.histogram = (id, conf, data, rules) ->
+    track = new circosJS.Histogram(conf, data, rules)
 
     track.completeData()
 
@@ -20,8 +20,8 @@ circosJS.Core.prototype.histogram = (id, conf, data) ->
 
     return @
 
-circosJS.Core.prototype.chord = (id, conf, data) ->
-    track = new circosJS.Chord(conf, data, @_layout)
+circosJS.Core.prototype.chord = (id, conf, data, rules) ->
+    track = new circosJS.Chord(conf, data, rules, @_layout)
 
     if track.isLayoutCompliant @, id
         track.computeMinMax()
@@ -29,17 +29,18 @@ circosJS.Core.prototype.chord = (id, conf, data) ->
 
     return @
 
-circosJS.Core.prototype.scatter = (id, conf, data) ->
-    track = new circosJS.Scatter(conf, data)
+circosJS.Core.prototype.scatter = (id, conf, data, rules) ->
+    track = new circosJS.Scatter(conf, data, rules)
     track.completeData()
+    track.applyRules()
 
     track.computeMinMax()
     @_scatters[id] = track
 
     return @
 
-circosJS.Core.prototype.line = (id, conf, data) ->
-    track = new circosJS.Line(conf, data)
+circosJS.Core.prototype.line = (id, conf, data, rules) ->
+    track = new circosJS.Line(conf, data, rules)
     track.completeData()
 
     track.computeMinMax()

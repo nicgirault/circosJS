@@ -167,9 +167,9 @@ circosJS.Layout = function(conf, data) {
   return this;
 };
 
-circosJS.Core.prototype.heatmap = function(id, conf, data) {
+circosJS.Core.prototype.heatmap = function(id, conf, data, rules) {
   var track;
-  track = new circosJS.Heatmap(conf, data);
+  track = new circosJS.Heatmap(conf, data, rules);
   track.completeData();
   if (track.isLayoutCompliant(this, id)) {
     track.computeMinMax();
@@ -178,9 +178,9 @@ circosJS.Core.prototype.heatmap = function(id, conf, data) {
   return this;
 };
 
-circosJS.Core.prototype.histogram = function(id, conf, data) {
+circosJS.Core.prototype.histogram = function(id, conf, data, rules) {
   var track;
-  track = new circosJS.Histogram(conf, data);
+  track = new circosJS.Histogram(conf, data, rules);
   track.completeData();
   if (track.isLayoutCompliant(this, id)) {
     track.computeMinMax();
@@ -189,9 +189,9 @@ circosJS.Core.prototype.histogram = function(id, conf, data) {
   return this;
 };
 
-circosJS.Core.prototype.chord = function(id, conf, data) {
+circosJS.Core.prototype.chord = function(id, conf, data, rules) {
   var track;
-  track = new circosJS.Chord(conf, data, this._layout);
+  track = new circosJS.Chord(conf, data, rules, this._layout);
   if (track.isLayoutCompliant(this, id)) {
     track.computeMinMax();
     this._chords[id] = track;
@@ -199,27 +199,28 @@ circosJS.Core.prototype.chord = function(id, conf, data) {
   return this;
 };
 
-circosJS.Core.prototype.scatter = function(id, conf, data) {
+circosJS.Core.prototype.scatter = function(id, conf, data, rules) {
   var track;
-  track = new circosJS.Scatter(conf, data);
+  track = new circosJS.Scatter(conf, data, rules);
   track.completeData();
+  track.applyRules();
   track.computeMinMax();
   this._scatters[id] = track;
   return this;
 };
 
-circosJS.Core.prototype.line = function(id, conf, data) {
+circosJS.Core.prototype.line = function(id, conf, data, rules) {
   var track;
-  track = new circosJS.Line(conf, data);
+  track = new circosJS.Line(conf, data, rules);
   track.completeData();
   track.computeMinMax();
   this._lines[id] = track;
   return this;
 };
 
-circosJS.Chord = function(conf, data, layout) {
+circosJS.Chord = function(conf, data, rules, layout) {
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  circosJS.Track.call(this, conf, data);
+  circosJS.Track.call(this, conf, data, rules);
   this.getSource = (function(_this) {
     return function(d) {
       var block, endAngle, result, startAngle;
@@ -322,32 +323,65 @@ circosJS.Chord = function(conf, data, layout) {
   return this;
 };
 
-circosJS.Heatmap = function(conf, data) {
+circosJS.Heatmap = function(conf, data, rules) {
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  circosJS.Track.call(this, conf, data);
+  circosJS.Track.call(this, conf, data, rules);
   return this;
 };
 
-circosJS.Histogram = function(conf, data) {
+circosJS.Histogram = function(conf, data, rules) {
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  circosJS.Track.call(this, conf, data);
+  circosJS.Track.call(this, conf, data, rules);
   return this;
 };
 
-circosJS.Line = function(conf, data) {
+circosJS.Line = function(conf, data, rules) {
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  circosJS.Track.call(this, conf, data);
+  circosJS.Track.call(this, conf, data, rules);
   return this;
 };
 
-circosJS.Scatter = function(conf, data) {
+circosJS.Scatter = function(conf, data, rules) {
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  circosJS.Track.call(this, conf, data);
+  circosJS.Track.call(this, conf, data, rules);
   return this;
 };
 
-circosJS.Track = function(conf, data) {
+circosJS.Track = function(conf, data, rules) {
   this._data = circosJS.parseData(data);
+  this._rules = rules;
+  this.applyRules = function() {
+    var datum, i, k, rule, v, _ref, _results;
+    console.log('apply rules');
+    _ref = this._data;
+    _results = [];
+    for (k in _ref) {
+      v = _ref[k];
+      _results.push((function() {
+        var _ref1, _results1;
+        _ref1 = v.data;
+        _results1 = [];
+        for (i in _ref1) {
+          datum = _ref1[i];
+          _results1.push((function() {
+            var _i, _len, _results2;
+            _results2 = [];
+            for (_i = 0, _len = rules.length; _i < _len; _i++) {
+              rule = rules[_i];
+              if (rule.condition(datum.value)) {
+                _results2.push(datum[rule.parameter] = rule.value);
+              } else {
+                _results2.push(void 0);
+              }
+            }
+            return _results2;
+          })());
+        }
+        return _results1;
+      })());
+    }
+    return _results;
+  };
   this.completeData = function() {
     var datum, i, k, v, _ref, _results;
     _ref = this._data;
@@ -452,6 +486,9 @@ circosJS.Track = function(conf, data) {
   };
   this.getConf = function() {
     return this._conf;
+  };
+  this.getRules = function() {
+    return this._rules;
   };
   return this.isLayoutCompliant = function(instance, id) {
     var block, d, datum, layout_ids, layout_lengths, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3;
@@ -761,11 +798,13 @@ circosJS.renderScatter = function(name, scatter, instance, d3, svg) {
   point = point.enter().append('path').attr('d', d3.svg.symbol().type(conf.glyph.shape).size(conf.glyph.size)).attr('transform', function(d) {
     return 'translate(' + x(d) + ',' + y(d) + ') rotate(' + theta(d) * 360 / (2 * Math.PI) + ')';
   });
-  return point = point.attr('class', 'point').attr('stroke', conf.glyph.strokeColor).attr('stroke-width', conf.glyph.strikeWidth).attr('fill', conf.glyph.fill ? conf.glyph.color : 'none');
+  return point = point.attr('class', 'point').attr('stroke', function(d) {
+    return d.strokeColor || conf.glyph.strokeColor;
+  }).attr('stroke-width', conf.glyph.strikeWidth).attr('fill', conf.glyph.fill ? conf.glyph.color : 'none');
 };
 
 circosJS.Core.prototype.render = function(ids) {
-  var chord, chord_name, heatmap, heatmap_name, histogram, histogram_name, line, line_name, renderAll, scatter, scatter_name, svg, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3, _ref4;
+  var preRender, renderAll, svg, track, trackName, trackType, types, _i, _j, _len, _len1, _ref;
   if (typeof ids === 'undefined') {
     renderAll = true;
   }
@@ -773,44 +812,36 @@ circosJS.Core.prototype.render = function(ids) {
   if (renderAll || __indexOf.call(ids, 'layout') >= 0) {
     circosJS.renderLayout(d3, svg, this);
   }
-  _ref = Object.keys(this._heatmaps);
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    heatmap_name = _ref[_i];
-    if (renderAll || __indexOf.call(ids, heatmap_name) >= 0) {
-      heatmap = this._heatmaps[heatmap_name];
-      circosJS.renderHeatmap(heatmap_name, heatmap, this, d3, svg);
+  types = [
+    {
+      store: this._heatmaps,
+      renderFunction: circosJS.renderHeatmap
+    }, {
+      store: this._histograms,
+      renderFunction: circosJS.renderHistogram
+    }, {
+      store: this._chords,
+      renderFunction: circosJS.renderChord
+    }, {
+      store: this._scatters,
+      renderFunction: circosJS.renderScatter
+    }, {
+      store: this._lines,
+      renderFunction: circosJS.renderLine
     }
-  }
-  _ref1 = Object.keys(this._histograms);
-  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-    histogram_name = _ref1[_j];
-    if (renderAll || __indexOf.call(ids, histogram_name) >= 0) {
-      histogram = this._histograms[histogram_name];
-      circosJS.renderHistogram(histogram_name, histogram, this, d3, svg);
-    }
-  }
-  _ref2 = Object.keys(this._chords);
-  for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-    chord_name = _ref2[_k];
-    if (renderAll || __indexOf.call(ids, chord_name) >= 0) {
-      chord = this._chords[chord_name];
-      circosJS.renderChord(chord_name, chord, this, d3, svg);
-    }
-  }
-  _ref3 = Object.keys(this._scatters);
-  for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
-    scatter_name = _ref3[_l];
-    if (renderAll || __indexOf.call(ids, scatter_name) >= 0) {
-      scatter = this._scatters[scatter_name];
-      circosJS.renderScatter(scatter_name, scatter, this, d3, svg);
-    }
-  }
-  _ref4 = Object.keys(this._lines);
-  for (_m = 0, _len4 = _ref4.length; _m < _len4; _m++) {
-    line_name = _ref4[_m];
-    if (renderAll || __indexOf.call(ids, line_name) >= 0) {
-      line = this._lines[line_name];
-      circosJS.renderLine(line_name, line, this, d3, svg);
+  ];
+  preRender = function(trackName, track, instance, d3, svg, callback) {
+    return callback(trackName, track, instance, d3, svg);
+  };
+  for (_i = 0, _len = types.length; _i < _len; _i++) {
+    trackType = types[_i];
+    _ref = Object.keys(trackType.store);
+    for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+      trackName = _ref[_j];
+      if (renderAll || __indexOf.call(ids, trackName) >= 0) {
+        track = trackType.store[trackName];
+        preRender(trackName, track, this, d3, svg, trackType.renderFunction);
+      }
     }
   }
 };
