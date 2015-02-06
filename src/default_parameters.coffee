@@ -98,3 +98,20 @@ circosJS.Line.prototype._defaultConf =
   thickness: 2
   max_gap: 10000000
   interpolation: 'linear'
+
+# Stack
+circosJS.Stack.prototype._defaultConf =
+  innerRadius: 150
+  outerRadius: 200
+  colorPaletteSize: 9
+  colorPalette: 'PuBuGn'
+  usePalette: true
+  color: '#fd6a62'
+  min: 'smart'
+  max: 'smart'
+  direction: 'out'
+  logScale: false
+  color: '#fd6a62'
+  fill: true
+  fill_color: '#d3d3d3'
+  thickness: 2

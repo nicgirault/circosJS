@@ -47,3 +47,12 @@ circosJS.Core.prototype.line = (id, conf, data, rules) ->
     @_lines[id] = track
 
     return @
+
+circosJS.Core.prototype.stack = (id, conf, data, rules) ->
+    track = new circosJS.Stack(conf, data, rules)
+    track.completeData()
+    track.buildLayeredData()
+    track.computeMinMax()
+    @_stacks[id] = track
+
+    return @

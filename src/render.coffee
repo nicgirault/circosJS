@@ -15,6 +15,7 @@ circosJS.Core.prototype.render = (ids) ->
         {store: @_chords, renderFunction: circosJS.renderChord}
         {store: @_scatters, renderFunction: circosJS.renderScatter}
         {store: @_lines, renderFunction: circosJS.renderLine}
+        {store: @_stacks, renderFunction: circosJS.renderStack}
     ]
 
     preRender = (name, track, instance, d3, svg, callback) ->

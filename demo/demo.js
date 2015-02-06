@@ -1,28 +1,16 @@
-karyotype = [
-    {len: 249250621, color: 'rgb(153,102,0)', label: '1', id: 'chr1'},
-    {len: 243199373, color: 'rgb(102,102,0)', label: '2', id: 'chr2'},
-    {len: 198022430, color: 'rgb(153,153,30)', label: '3', id: 'chr3'},
-    {len: 191154276, color: 'rgb(204,0,0)', label: '4', id: 'chr4'},
-    {len: 180915260, color: 'rgb(255,0,0)', label: '5', id: 'chr5'},
-    {len: 171115067, color: 'rgb(255,0,204)', label: '6', id: 'chr6'},
-    {len: 159138663, color: 'rgb(255,204,204)', label: '7', id: 'chr7'},
-    {len: 146364022, color: 'rgb(255,153,0)', label: '8', id: 'chr8'},
-    {len: 141213431, color: 'rgb(255,204,0)', label: '9', id: 'chr9'},
-    {len: 135534747, color: 'rgb(255,255,0)', label: '10', id: 'chr10'},
-    {len: 135006516, color: 'rgb(204,255,0)', label: '11', id: 'chr11'},
-    {len: 133851895, color: 'rgb(0,255,0)', label: '12', id: 'chr12'},
-    {len: 115169878, color: 'rgb(53,128,0)', label: '13', id: 'chr13'},
-    {len: 107349540, color: 'rgb(0,0,204)', label: '14', id: 'chr14'},
-    {len: 102531392, color: 'rgb(102,153,255)', label: '5', id: 'chr15'},
-    {len: 90354753, color: 'rgb(153,204,255)', label: '16', id: 'chr16'},
-    {len: 81195210, color: 'rgb(0,255,255)', label: '17', id: 'chr17'},
-    {len: 78077248, color: 'rgb(204,255,255)', label: '18', id: 'chr18'},
-    {len: 59128983, color: 'rgb(153,0,204)', label: '19', id: 'chr19'},
-    {len: 63025520, color: 'rgb(204,51,255)', label: '20', id: 'chr20'},
-    {len: 48129895, color: 'rgb(204,153,255)', label: '21', id: 'chr21'},
-    {len: 51304566, color: 'rgb(102,102,102)', label: '22', id: 'chr22'},
-    {len: 155270560, color: 'rgb(153,153,153)', label: 'X', id: 'chrX'},
-    {len: 59373566, color: 'rgb(204,204,204)', label: 'Y', id: 'chrY'},
+var layout_data = [
+  { "len": 31, "color": "#8dd3c7", "label": "January", "id": "january" },
+  { "len": 28, "color": "#ffffb3", "label": "February", "id": "february" },
+  { "len": 31, "color": "#bebada", "label": "March", "id": "march" },
+  { "len": 30, "color": "#fb8072", "label": "April", "id": "april" },
+  { "len": 31, "color": "#80b1d3", "label": "May", "id": "may" },
+  { "len": 30, "color": "#fdb462", "label": "June", "id": "june" },
+  { "len": 31, "color": "#b3de69", "label": "July", "id": "july" },
+  { "len": 31, "color": "#fccde5", "label": "August", "id": "august" },
+  { "len": 30, "color": "#d9d9d9", "label": "September", "id": "september" },
+  { "len": 31, "color": "#bc80bd", "label": "October", "id": "october" },
+  { "len": 30, "color": "#ccebc5", "label": "November", "id": "november" },
+  { "len": 31, "color": "#ffed6f", "label": "December", "id": "december" }
 ];
 var heatmap = [
     {
@@ -522,6 +510,20 @@ scatter = [
     }
 ]
 
+stack = [
+    {
+        parent: 'january',
+        data: [
+            {start: 1, end: 10, value: 8},
+            {start: 1, end: 20, value: 7},
+            {start: 11, end: 23, value: 3},
+            {start: 2, end: 20, value: 4},
+            {start: 19, end: 25, value: 5},
+            {start: 21, end: 25, value: 6}
+        ]
+    }
+]
+
 var circos = new circosJS({
     container: '#chart'
 });
@@ -532,15 +534,17 @@ var rules = [
 circos
     .layout(
         {
+            ticks: {display: false},
             clickCallback: function(){console.log('You clicked on the layout layer!');}
         },
-        karyotype
+        layout_data
     )
-    .heatmap('h1', {innerRadius: 220, outerRadius: 240, logScale: true}, heatmap)
-    .histogram('hist1', {innerRadius: 200, outerRadius: 220}, heatmap)
-    .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter, rules)
-    .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
-    .chord('l1', {}, links)
+    // .heatmap('h1', {innerRadius: 220, outerRadius: 240, logScale: true}, heatmap)
+    // .histogram('hist1', {innerRadius: 200, outerRadius: 220}, heatmap)
+    // .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter, rules)
+    // .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
+    // .chord('l1', {}, links)
+    .stack('stack1', {thickness: 10, usePalette: false}, stack)
     .render();
     // .render(['layout', 'h1']);
 

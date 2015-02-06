@@ -7,7 +7,6 @@ circosJS.Track = (conf, data, rules) ->
     @_rules = rules
 
     @applyRules = ->
-        console.log 'apply rules'
         for k,v of @_data
             for i, datum of v.data
                 for rule in rules

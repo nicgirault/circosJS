@@ -10,6 +10,7 @@ circosJS.Core = (conf) ->
     this._chords = {}
     this._scatters = {}
     this._lines = {}
+    this._stacks = {}
     # this.init = function(){
     #     console.log('initializing instance');
     # };
