@@ -20,12 +20,12 @@ circosJS.renderStack = (track, stack, conf, data, instance, d3) ->
         .attr('d',
             d3.svg.arc()
                 .innerRadius((d,i,j) ->
-                    inner = conf.innerRadius + conf.thickness * j
+                    inner = conf.innerRadius + (conf.thickness + conf.radialMargin) * j
                     if inner > conf.outerRadius then 0 else inner
                 )
                 .outerRadius((d,i,j) ->
-                    outer = conf.innerRadius + conf.thickness * (j+1)
-                    inner = conf.innerRadius + conf.thickness * j
+                    outer = conf.innerRadius + conf.thickness * (j+1) + conf.radialMargin * j
+                    inner = conf.innerRadius + (conf.thickness + conf.radialMargin) * j
                     if inner > conf.outerRadius then 0 else Math.min outer, conf.outerRadius
                 )
                 .startAngle((d, i) ->

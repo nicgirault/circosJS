@@ -115,3 +115,5 @@ circosJS.Stack.prototype._defaultConf =
   fill: true
   fill_color: '#d3d3d3'
   thickness: 2
+  radialMargin: 2
+  margin: 2

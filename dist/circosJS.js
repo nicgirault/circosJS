@@ -389,7 +389,7 @@ circosJS.Stack = function(conf, data, rules) {
         for (_j = 0, _len1 = layers.length; _j < _len1; _j++) {
           layer = layers[_j];
           lastDatumInLayer = layer.slice(0).pop();
-          if (lastDatumInLayer.end < datum.start) {
+          if (lastDatumInLayer.end + this._conf.margin < datum.start) {
             layer.push(datum);
             placed = true;
             break;
@@ -870,7 +870,7 @@ circosJS.renderStack = function(track, stack, conf, data, instance, d3) {
     return d;
   }).enter().append('path').attr('d', d3.svg.arc().innerRadius(function(d, i, j) {
     var inner;
-    inner = conf.innerRadius + conf.thickness * j;
+    inner = conf.innerRadius + (conf.thickness + conf.radialMargin) * j;
     if (inner > conf.outerRadius) {
       return 0;
     } else {
@@ -878,8 +878,8 @@ circosJS.renderStack = function(track, stack, conf, data, instance, d3) {
     }
   }).outerRadius(function(d, i, j) {
     var inner, outer;
-    outer = conf.innerRadius + conf.thickness * (j + 1);
-    inner = conf.innerRadius + conf.thickness * j;
+    outer = conf.innerRadius + conf.thickness * (j + 1) + conf.radialMargin * j;
+    inner = conf.innerRadius + (conf.thickness + conf.radialMargin) * j;
     if (inner > conf.outerRadius) {
       return 0;
     } else {
@@ -1071,5 +1071,7 @@ circosJS.Stack.prototype._defaultConf = {
   color: '#fd6a62',
   fill: true,
   fill_color: '#d3d3d3',
-  thickness: 2
+  thickness: 2,
+  radialMargin: 2,
+  margin: 2
 };

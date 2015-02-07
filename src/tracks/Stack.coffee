@@ -27,7 +27,7 @@ circosJS.Stack = (conf, data, rules) ->
           for layer in layers
               # try to place datum
               lastDatumInLayer = layer[..].pop()
-              if lastDatumInLayer.end < datum.start
+              if lastDatumInLayer.end + @_conf.margin < datum.start
                   layer.push datum
                   placed = true
                   break
