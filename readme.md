@@ -14,8 +14,9 @@ The documentation is [here](http://nicgirault.gitbooks.io/circosjs/content/).
 
 Installation
 ------------
-
+```
 bower install circosjs
+```
 
 Author
 ------
