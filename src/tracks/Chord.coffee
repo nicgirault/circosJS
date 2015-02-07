@@ -1,9 +1,9 @@
-circosJS.Chord = (conf, data, rules, layout) ->
+circosJS.Chord = (instance, conf, data, rules, layout) ->
     # conf override the default configuration. Conf not in default conf
     # object are removed
     @_conf = circosJS.mixConf conf, JSON.parse(JSON.stringify(@_defaultConf))
 
-    circosJS.Track.call(@, conf, data, rules)
+    circosJS.Track.call(@, instance, conf, data, rules)
     @getSource = (d) =>
         d = d.source
         block = layout.getBlock d.id

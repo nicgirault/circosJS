@@ -1,4 +1,4 @@
-circosJS.Track = (conf, data, rules) ->
+circosJS.Track = (instance, conf, data, rules) ->
     # this refers the track instance
     @_data = circosJS.parseData(data)
 

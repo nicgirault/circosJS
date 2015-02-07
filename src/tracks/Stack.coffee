@@ -1,9 +1,9 @@
-circosJS.Stack = (conf, data, rules) ->
+circosJS.Stack = (instance, conf, data, rules) ->
     # conf override the default configuration. Conf not in default conf
     # object are removed
     @_conf = circosJS.mixConf conf, JSON.parse(JSON.stringify(@_defaultConf))
 
-    circosJS.Track.call(@, conf, data, rules)
+    circosJS.Track.call(@, instance, conf, data, rules)
 
     @buildLayeredData = ->
       data = @_data
@@ -42,7 +42,15 @@ circosJS.Stack = (conf, data, rules) ->
     @getData = ->
       @_layers
 
-    @radialPosition = (d, i, j) ->
+    @applyRules = ->
+      for k,v of @_layers
+        for i, layer of v.layers
+          for datum in layer
+            for rule in rules
+              if rule.condition(v.parent, datum, i)
+                datum[rule.parameter] = rule.value
+
+    @datumRadialPosition = (d, i, j) ->
       radialStart = (@_conf.thickness + @_conf.radialMargin) * j
       radialEnd = radialStart + @_conf.thickness
 
@@ -56,11 +64,31 @@ circosJS.Stack = (conf, data, rules) ->
           Math.max @_conf.outerRadius - radialEnd, @_conf.innerRadius
           @_conf.outerRadius - radialStart
         ]
-    @datumInnerRadius = (d,i,j) =>
-      @radialPosition(d, i, j)[0]
-    @datumOuterRadius = (d,i,j) =>
-      @radialPosition(d, i, j)[1]
+      if @_conf.direction == 'center'
+        origin = Math.floor (@_conf.outerRadius + @_conf.innerRadius) / 2
+        radialStart = (@_conf.thickness + @_conf.radialMargin) * Math.floor j / 2
+        radialEnd = radialStart + @_conf.thickness
 
+        if j % 2 == 0
+          return [
+            origin + radialStart
+            origin + radialEnd
+          ]
+        else
+          return [
+            origin - radialStart - @_conf.radialMargin
+            origin - radialEnd - @_conf.radialMargin
+          ]
+    @datumInnerRadius = (d,i,j) =>
+      @datumRadialPosition(d, i, j)[0]
+    @datumOuterRadius = (d,i,j) =>
+      @datumRadialPosition(d, i, j)[1]
+    @datumStartAngle = (d,i) =>
+      block = instance._layout.getBlock(d.block_id)
+      d.start / block.len * (block.end - block.start)
+    @datumEndAngle = (d, i) =>
+      block = instance._layout.getBlock(d.block_id)
+      d.end / block.len * (block.end - block.start)
     return @
 
 

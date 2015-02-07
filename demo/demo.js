@@ -531,6 +531,13 @@ var circos = new circosJS({
 var rules = [
     {parameter: 'strokeColor', value: 'blue', condition: function(value){ return value > 5;}}
 ]
+
+var stack_rules = [
+    {parameter: 'color', value: 'red', condition: function(parent, datum, layer_id){ return (datum.end - datum.start > 8);}},
+    // {parameter: 'color', value: 'blue', condition: function(parent, datum, layer_id){ return (layer_id > 2);}}
+    {parameter: 'usePalette', value: true, condition: function(parent, datum, layer_id){ return (layer_id > 2);}}
+]
+
 circos
     .layout(
         {
@@ -544,7 +551,7 @@ circos
     // .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter, rules)
     // .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
     // .chord('l1', {}, links)
-    .stack('stack1', {thickness: 10, usePalette: false}, stack)
+    .stack('stack1', {thickness: 10, usePalette: false, margin: 0, direction: 'center'}, stack, stack_rules)
     .render();
     // .render(['layout', 'h1']);
 
