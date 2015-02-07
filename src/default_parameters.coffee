@@ -112,8 +112,8 @@ circosJS.Stack.prototype._defaultConf =
   direction: 'out'
   logScale: false
   color: '#fd6a62'
-  fill: true
-  fill_color: '#d3d3d3'
-  thickness: 2
+  thickness: 10
   radialMargin: 2
   margin: 2
+  strokeWidth: 1
+  strokeColor: '#000000'

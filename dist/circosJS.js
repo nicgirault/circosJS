@@ -409,6 +409,27 @@ circosJS.Stack = function(conf, data, rules) {
   this.getData = function() {
     return this._layers;
   };
+  this.radialPosition = function(d, i, j) {
+    var radialEnd, radialStart;
+    radialStart = (this._conf.thickness + this._conf.radialMargin) * j;
+    radialEnd = radialStart + this._conf.thickness;
+    if (this._conf.direction === 'out') {
+      return [this._conf.innerRadius + radialStart, Math.min(this._conf.innerRadius + radialEnd, this._conf.outerRadius)];
+    }
+    if (this._conf.direction === 'in') {
+      return [Math.max(this._conf.outerRadius - radialEnd, this._conf.innerRadius), this._conf.outerRadius - radialStart];
+    }
+  };
+  this.datumInnerRadius = (function(_this) {
+    return function(d, i, j) {
+      return _this.radialPosition(d, i, j)[0];
+    };
+  })(this);
+  this.datumOuterRadius = (function(_this) {
+    return function(d, i, j) {
+      return _this.radialPosition(d, i, j)[1];
+    };
+  })(this);
   return this;
 };
 
@@ -868,24 +889,7 @@ circosJS.renderStack = function(track, stack, conf, data, instance, d3) {
   }).enter().append('g').attr('class', 'layer');
   span = layer.selectAll('path').data(function(d, i) {
     return d;
-  }).enter().append('path').attr('d', d3.svg.arc().innerRadius(function(d, i, j) {
-    var inner;
-    inner = conf.innerRadius + (conf.thickness + conf.radialMargin) * j;
-    if (inner > conf.outerRadius) {
-      return 0;
-    } else {
-      return inner;
-    }
-  }).outerRadius(function(d, i, j) {
-    var inner, outer;
-    outer = conf.innerRadius + conf.thickness * (j + 1) + conf.radialMargin * j;
-    inner = conf.innerRadius + (conf.thickness + conf.radialMargin) * j;
-    if (inner > conf.outerRadius) {
-      return 0;
-    } else {
-      return Math.min(outer, conf.outerRadius);
-    }
-  }).startAngle(function(d, i) {
+  }).enter().append('path').attr('d', d3.svg.arc().innerRadius(stack.datumInnerRadius).outerRadius(stack.datumOuterRadius).startAngle(function(d, i) {
     block = instance._layout.getBlock(d.block_id);
     return d.start / block.len * (block.end - block.start);
   }).endAngle(function(d, i) {
@@ -893,12 +897,14 @@ circosJS.renderStack = function(track, stack, conf, data, instance, d3) {
     return d.end / block.len * (block.end - block.start);
   }));
   if (conf.usePalette) {
-    return span.attr('class', function(d) {
+    span.attr('class', function(d) {
       return 'q' + stack.colorScale(d.value, conf.logScale) + '-' + conf.colorPaletteSize;
     }, true);
   } else {
-    return span.attr('fill', conf.color);
+    span.attr('fill', conf.color);
   }
+  span.attr('stroke-width', conf.strokeWidth);
+  return span.attr('stroke', conf.strokeColor);
 };
 
 circosJS.Core.prototype.render = function(ids) {
@@ -1069,9 +1075,9 @@ circosJS.Stack.prototype._defaultConf = {
   direction: 'out',
   logScale: false,
   color: '#fd6a62',
-  fill: true,
-  fill_color: '#d3d3d3',
-  thickness: 2,
+  thickness: 10,
   radialMargin: 2,
-  margin: 2
+  margin: 2,
+  strokeWidth: 1,
+  strokeColor: '#000000'
 };

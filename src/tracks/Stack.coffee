@@ -41,6 +41,26 @@ circosJS.Stack = (conf, data, rules) ->
 
     @getData = ->
       @_layers
+
+    @radialPosition = (d, i, j) ->
+      radialStart = (@_conf.thickness + @_conf.radialMargin) * j
+      radialEnd = radialStart + @_conf.thickness
+
+      if @_conf.direction == 'out'
+        return [
+          @_conf.innerRadius + radialStart
+          Math.min @_conf.innerRadius + radialEnd, @_conf.outerRadius
+        ]
+      if @_conf.direction == 'in'
+        return [
+          Math.max @_conf.outerRadius - radialEnd, @_conf.innerRadius
+          @_conf.outerRadius - radialStart
+        ]
+    @datumInnerRadius = (d,i,j) =>
+      @radialPosition(d, i, j)[0]
+    @datumOuterRadius = (d,i,j) =>
+      @radialPosition(d, i, j)[1]
+
     return @
 
 

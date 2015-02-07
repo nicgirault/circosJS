@@ -1,4 +1,5 @@
 circosJS.renderStack = (track, stack, conf, data, instance, d3) ->
+
     track = track.classed(conf.colorPalette, true) if conf.usePalette
 
     block = track.selectAll('g')
@@ -19,15 +20,8 @@ circosJS.renderStack = (track, stack, conf, data, instance, d3) ->
         .enter().append('path')
         .attr('d',
             d3.svg.arc()
-                .innerRadius((d,i,j) ->
-                    inner = conf.innerRadius + (conf.thickness + conf.radialMargin) * j
-                    if inner > conf.outerRadius then 0 else inner
-                )
-                .outerRadius((d,i,j) ->
-                    outer = conf.innerRadius + conf.thickness * (j+1) + conf.radialMargin * j
-                    inner = conf.innerRadius + (conf.thickness + conf.radialMargin) * j
-                    if inner > conf.outerRadius then 0 else Math.min outer, conf.outerRadius
-                )
+                .innerRadius(stack.datumInnerRadius)
+                .outerRadius(stack.datumOuterRadius)
                 .startAngle((d, i) ->
                     block = instance._layout.getBlock(d.block_id)
                     d.start / block.len * (block.end - block.start)
@@ -45,4 +39,7 @@ circosJS.renderStack = (track, stack, conf, data, instance, d3) ->
         true)
     else
         span.attr('fill', conf.color)
+
+    span.attr('stroke-width', conf.strokeWidth)
+    span.attr('stroke', conf.strokeColor)
 
