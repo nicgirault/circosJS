@@ -123,3 +123,22 @@ circosJS.Track = (instance, conf, data, rules) ->
                         {'track_id': id, 'datum': datum, 'layout block': instance._layout.getBlock(block.parent)}
                     )
         return true
+
+    @theta = (d) =>
+        block = instance._layout.getBlock(d.block_id)
+        block.start + d.position / block.len * (block.end - block.start)
+    @x = (d) =>
+        if @_conf.direction == 'in'
+            r = @_conf.outerRadius - @height d.value, @_conf.logScale
+        else
+            r = @_conf.innerRadius + @height d.value, @_conf.logScale
+        angle = @theta(d) - Math.PI/2
+        r * Math.cos angle
+    @y = (d) =>
+        if @_conf.direction == 'in'
+            r = @_conf.outerRadius - @height d.value, @_conf.logScale
+        else
+            r = @_conf.innerRadius + @height d.value, @_conf.logScale
+        angle = @theta(d) - Math.PI/2
+        r * Math.sin angle
+

@@ -471,41 +471,30 @@ links = [
 
 scatter = [
     {
-        parent: "chr1",
+        parent: "january",
         data: [
-            {position:10000000, value:6},
-            {position:20000000, value:2},
-            {position:40000000, value:4},
-            {position:50000000, value:1},
-            {position:60000000, value:3},
-            {position:70000000, value:6},
-            {position:80000000, value:5},
-            {position:90000000, value:4},
-            {position:100000000, value:6},
-            {position:110000000, value:2},
-            {position:120000000, value:4}
+            {position:1, value:6},
+            {position:2, value:2},
+            {position:3, value:4},
+            {position:4, value:1},
+            {position:5, value:3},
+            {position:6, value:6},
+            {position:7, value:5},
+            {position:8, value:4},
+            {position:9, value:6},
+            {position:10, value:2},
+            {position:12, value:4}
         ]
     },
     {
-        parent: "chr2",
+        parent: "february",
         data: [
-            {position:10000000, value:6},
-            {position:20000000, value:3},
-            {position:30000000, value:4},
-            {position:40000000, value:2},
-            {position:50000000, value:6},
-            {position:59373566, value:5}
-        ]
-    },
-    {
-        parent: "chr3",
-        data: [
-            {position:10000000, value:6},
-            {position:20000000, value:5},
-            {position:30000000, value:4},
-            {position:40000000, value:3},
-            {position:50000000, value:2},
-            {position:59373566, value:6}
+            {position:1, value:6},
+            {position:2, value:3},
+            {position:3, value:4},
+            {position:4, value:2},
+            {position:5, value:6},
+            {position:6, value:5}
         ]
     }
 ]
@@ -529,13 +518,13 @@ var circos = new circosJS({
 });
 
 var rules = [
-    {parameter: 'strokeColor', value: 'blue', condition: function(value){ return value > 5;}}
+    {parameter: 'glyph_strokeColor', value: 'blue', condition: function(value){ return value > 5;}}
 ]
 
 var stack_rules = [
-    {parameter: 'color', value: 'red', condition: function(parent, datum, layer_id){ return (datum.end - datum.start > 8);}},
+    // {parameter: 'color', value: 'red', condition: function(parent, datum, layer_id){ return (datum.end - datum.start > 8);}},
     // {parameter: 'color', value: 'blue', condition: function(parent, datum, layer_id){ return (layer_id > 2);}}
-    {parameter: 'usePalette', value: true, condition: function(parent, datum, layer_id){ return (layer_id > 2);}}
+    // {parameter: 'usePalette', value: true, condition: function(parent, datum, layer_id){ return (layer_id > 2);}}
 ]
 
 circos
@@ -548,10 +537,10 @@ circos
     )
     // .heatmap('h1', {innerRadius: 220, outerRadius: 240, logScale: true}, heatmap)
     // .histogram('hist1', {innerRadius: 200, outerRadius: 220}, heatmap)
-    // .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter, rules)
-    // .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
+    .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter, rules)
+    .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
     // .chord('l1', {}, links)
-    .stack('stack1', {thickness: 10, usePalette: false, margin: 0, direction: 'center'}, stack, stack_rules)
+    .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 190, outerRadius: 240}, stack, stack_rules)
     .render();
     // .render(['layout', 'h1']);
 

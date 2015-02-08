@@ -639,7 +639,7 @@ circosJS.Track = function(instance, conf, data, rules) {
   this.getRules = function() {
     return this._rules;
   };
-  return this.isLayoutCompliant = function(instance, id) {
+  this.isLayoutCompliant = function(instance, id) {
     var block, d, datum, layout_ids, layout_lengths, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3;
     if (instance._layout == null) {
       circosJS.log(1, 'No layout defined', 'Circos cannot add or update a heatmap track without layout', {
@@ -686,6 +686,37 @@ circosJS.Track = function(instance, conf, data, rules) {
     }
     return true;
   };
+  this.theta = (function(_this) {
+    return function(d) {
+      var block;
+      block = instance._layout.getBlock(d.block_id);
+      return block.start + d.position / block.len * (block.end - block.start);
+    };
+  })(this);
+  this.x = (function(_this) {
+    return function(d) {
+      var angle, r;
+      if (_this._conf.direction === 'in') {
+        r = _this._conf.outerRadius - _this.height(d.value, _this._conf.logScale);
+      } else {
+        r = _this._conf.innerRadius + _this.height(d.value, _this._conf.logScale);
+      }
+      angle = _this.theta(d) - Math.PI / 2;
+      return r * Math.cos(angle);
+    };
+  })(this);
+  return this.y = (function(_this) {
+    return function(d) {
+      var angle, r;
+      if (_this._conf.direction === 'in') {
+        r = _this._conf.outerRadius - _this.height(d.value, _this._conf.logScale);
+      } else {
+        r = _this._conf.innerRadius + _this.height(d.value, _this._conf.logScale);
+      }
+      angle = _this.theta(d) - Math.PI / 2;
+      return r * Math.sin(angle);
+    };
+  })(this);
 };
 
 circosJS.renderChord = function(track, chord, conf, data, instance, d3) {
@@ -859,83 +890,54 @@ circosJS.renderLayoutTicks = function(conf, layout, d3, instance) {
 };
 
 circosJS.renderLine = function(track, line_track, conf, data, instance, d3) {
-  var block, line, theta, x, y;
-  theta = function(d) {
-    var block;
-    block = instance._layout.getBlock(d.block_id);
-    return block.start + d.position / block.len * (block.end - block.start);
-  };
-  x = function(d) {
-    var angle, r;
-    if (conf.direction === 'in') {
-      r = conf.outerRadius - line_track.height(d.value, conf.logScale);
-    } else {
-      r = conf.innerRadius + line_track.height(d.value, conf.logScale);
-    }
-    angle = theta(d) - Math.PI / 2;
-    return r * Math.cos(angle);
-  };
-  y = function(d) {
-    var angle, r;
-    if (conf.direction === 'in') {
-      r = conf.outerRadius - line_track.height(d.value, conf.logScale);
-    } else {
-      r = conf.innerRadius + line_track.height(d.value, conf.logScale);
-    }
-    angle = theta(d) - Math.PI / 2;
-    return r * Math.sin(angle);
-  };
-  block = track.selectAll('g').data(data).enter().append('g').attr('class', function(d, i) {
-    return name + '-' + d.parent;
-  }, true);
-  line = d3.svg.line().x(function(d) {
-    return x(d);
-  }).y(function(d) {
-    return y(d);
-  }).interpolate(conf.interpolation);
-  return block.append("path").datum(function(d) {
+  var block, line;
+  block = track.selectAll('g').data(data).enter().append('g');
+  line = d3.svg.line().x(line_track.x).y(line_track.y).interpolate(conf.interpolation);
+  block = block.append('path').datum(function(d) {
     return d.data;
-  }).attr("class", "line").attr("d", line).attr('stroke-width', conf.thickness).attr('fill', conf.fill ? conf.fill_color : 'none').attr('stroke', conf.color);
+  });
+  return block.attr('class', 'line').attr('d', line).attr('stroke-width', function(d) {
+    return d.thickness || conf.thickness;
+  }).attr('stroke', function(d) {
+    return d.color || conf.color;
+  }).attr('fill', function(d) {
+    var color, fill;
+    fill = d.fill || conf.fill;
+    color = d.fill_color || conf.fill_color;
+    if (fill) {
+      return color;
+    } else {
+      return 'none';
+    }
+  });
 };
 
 circosJS.renderScatter = function(track, scatter, conf, data, instance, d3) {
-  var block, point, theta, x, y;
-  block = track.selectAll('g').data(data).enter().append('g').attr('class', function(d, i) {
-    return name + '-' + d.parent;
-  }, true);
+  var block, point;
+  block = track.selectAll('g').data(data).enter().append('g');
   point = block.selectAll('.point').data(function(d) {
     return d.data;
   });
-  theta = function(d) {
-    block = instance._layout.getBlock(d.block_id);
-    return block.start + d.position / block.len * (block.end - block.start);
-  };
-  x = function(d) {
-    var angle, r;
-    if (conf.direction === 'in') {
-      r = conf.outerRadius - scatter.height(d.value, conf.logScale);
-    } else {
-      r = conf.innerRadius + scatter.height(d.value, conf.logScale);
-    }
-    angle = theta(d) - Math.PI / 2;
-    return r * Math.cos(angle);
-  };
-  y = function(d) {
-    var angle, r;
-    if (conf.direction === 'in') {
-      r = conf.outerRadius - scatter.height(d.value, conf.logScale);
-    } else {
-      r = conf.innerRadius + scatter.height(d.value, conf.logScale);
-    }
-    angle = theta(d) - Math.PI / 2;
-    return r * Math.sin(angle);
-  };
-  point = point.enter().append('path').attr('d', d3.svg.symbol().type(conf.glyph.shape).size(conf.glyph.size)).attr('transform', function(d) {
-    return 'translate(' + x(d) + ',' + y(d) + ') rotate(' + theta(d) * 360 / (2 * Math.PI) + ')';
+  point.enter().append('path').attr('d', d3.svg.symbol().type(conf.glyph.shape).size(conf.glyph.size)).attr('transform', function(d) {
+    return 'translate(' + scatter.x(d) + ',' + scatter.y(d) + ') rotate(' + scatter.theta(d) * 360 / (2 * Math.PI) + ')';
   });
-  return point = point.attr('class', 'point').attr('stroke', function(d) {
-    return d.strokeColor || conf.glyph.strokeColor;
-  }).attr('stroke-width', conf.glyph.strikeWidth).attr('fill', conf.glyph.fill ? conf.glyph.color : 'none');
+  point.classed('point', true);
+  point.attr('stroke', function(d) {
+    return d.glyph_strokeColor || conf.glyph.strokeColor;
+  });
+  point.attr('stroke-width', function(d) {
+    return d.glyph_strokeWidth || conf.glyph.strokeWidth;
+  });
+  return point.attr('fill', function(d) {
+    var color, fill;
+    fill = d.glyph_fill || conf.glyph.fill;
+    color = d.glyph_color || conf.glyph.color;
+    if (fill) {
+      return color;
+    } else {
+      return 'none';
+    }
+  });
 };
 
 circosJS.renderStack = function(track, stack, conf, data, instance, d3) {
