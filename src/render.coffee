@@ -18,6 +18,57 @@ circosJS.Core.prototype.render = (ids) ->
         {store: @_stacks, renderFunction: circosJS.renderStack}
     ]
 
+    renderBackgrounds = (d3Track, track, instance, d3, svg) ->
+        backgrounds = track._backgrounds
+
+        for k, b of instance._layout._blocks
+            b.block_id = k
+
+        blocks = (b for k, b of instance._layout._blocks)
+        conf = track.getConf()
+
+        scope = conf.outerRadius - conf.innerRadius
+
+        # a block background
+        blockBackground = d3.svg.arc()
+        .innerRadius (d, i, j) ->
+            if conf.direction == 'in'
+                conf.outerRadius - scope * backgrounds[j].start
+            else
+                conf.innerRadius + scope * backgrounds[j].start
+        .outerRadius (d, i, j) ->
+            if conf.direction == 'in'
+                conf.outerRadius - scope * backgrounds[j].end
+            else
+                conf.innerRadius + scope * backgrounds[j].end
+        .startAngle (d) -> d.start
+        .endAngle (d) -> d.end
+
+        # add backgrounds
+        d3Track = d3Track.selectAll '.background'
+            .data backgrounds
+            .enter().append 'g'
+            .classed 'background', true
+
+        # add path for each layout block
+        d3Track = d3Track.selectAll 'path'
+            .data blocks
+            .enter()
+            .append 'path'
+            # if blackground has a parent attribute, we draw the background only for the background
+            .filter (block, i, j) ->
+                parent = backgrounds[j].parent
+                if typeof  parent == 'undefined'
+                    return true
+                else if typeof parent == 'string'
+                    return block.block_id == parent
+                else if typeof parent == 'object'
+                    return block.block_id in parent
+
+        d3Track.attr 'd', blockBackground
+        .attr 'fill', (d, i, j) -> backgrounds[j].color
+        .attr 'opacity', (d, i, j) -> backgrounds[j].opacity
+
     preRender = (name, track, instance, d3, svg, callback) ->
         conf = track.getConf()
 
@@ -27,6 +78,7 @@ circosJS.Core.prototype.render = (ids) ->
             .classed(name, true)
             .attr('transform', 'translate(' + parseInt(instance.getWidth()/2) + ',' + parseInt(instance.getHeight()/2) + ')')
 
+        renderBackgrounds(track1, track, instance, d3, svg)
         data = track.getData()
 
         callback(track1, track, conf, data, instance, d3, svg)
@@ -38,3 +90,5 @@ circosJS.Core.prototype.render = (ids) ->
                 preRender trackName, track, @, d3, svg, trackType.renderFunction
 
     return
+
+

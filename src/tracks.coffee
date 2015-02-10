@@ -29,8 +29,8 @@ circosJS.Core.prototype.chord = (id, conf, data, rules) ->
 
     return @
 
-circosJS.Core.prototype.scatter = (id, conf, data, rules) ->
-    track = new circosJS.Scatter(@, conf, data, rules)
+circosJS.Core.prototype.scatter = (id, conf, data, rules, backgrounds) ->
+    track = new circosJS.Scatter(@, conf, data, rules, backgrounds)
     track.completeData()
     track.applyRules()
 

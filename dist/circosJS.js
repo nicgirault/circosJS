@@ -200,9 +200,9 @@ circosJS.Core.prototype.chord = function(id, conf, data, rules) {
   return this;
 };
 
-circosJS.Core.prototype.scatter = function(id, conf, data, rules) {
+circosJS.Core.prototype.scatter = function(id, conf, data, rules, backgrounds) {
   var track;
-  track = new circosJS.Scatter(this, conf, data, rules);
+  track = new circosJS.Scatter(this, conf, data, rules, backgrounds);
   track.completeData();
   track.applyRules();
   track.computeMinMax();
@@ -353,9 +353,9 @@ circosJS.Line = function(instance, conf, data, rules) {
   return this;
 };
 
-circosJS.Scatter = function(instance, conf, data, rules) {
+circosJS.Scatter = function(instance, conf, data, rules, backgrounds) {
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  circosJS.Track.call(this, instance, conf, data, rules);
+  circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
@@ -497,8 +497,9 @@ circosJS.Stack = function(instance, conf, data, rules) {
   return this;
 };
 
-circosJS.Track = function(instance, conf, data, rules) {
+circosJS.Track = function(instance, conf, data, rules, backgrounds) {
   this._data = circosJS.parseData(data);
+  this._backgrounds = backgrounds || [];
   this._rules = rules;
   this.applyRules = function() {
     var datum, i, k, rule, v, _ref, _results;
@@ -971,7 +972,7 @@ circosJS.renderStack = function(track, stack, conf, data, instance, d3) {
 };
 
 circosJS.Core.prototype.render = function(ids) {
-  var preRender, renderAll, svg, track, trackName, trackType, types, _i, _j, _len, _len1, _ref;
+  var preRender, renderAll, renderBackgrounds, svg, track, trackName, trackType, types, _i, _j, _len, _len1, _ref;
   if (typeof ids === 'undefined') {
     renderAll = true;
   }
@@ -1000,11 +1001,67 @@ circosJS.Core.prototype.render = function(ids) {
       renderFunction: circosJS.renderStack
     }
   ];
+  renderBackgrounds = function(d3Track, track, instance, d3, svg) {
+    var b, backgrounds, blockBackground, blocks, conf, k, scope, _ref;
+    backgrounds = track._backgrounds;
+    _ref = instance._layout._blocks;
+    for (k in _ref) {
+      b = _ref[k];
+      b.block_id = k;
+    }
+    blocks = (function() {
+      var _ref1, _results;
+      _ref1 = instance._layout._blocks;
+      _results = [];
+      for (k in _ref1) {
+        b = _ref1[k];
+        _results.push(b);
+      }
+      return _results;
+    })();
+    conf = track.getConf();
+    scope = conf.outerRadius - conf.innerRadius;
+    blockBackground = d3.svg.arc().innerRadius(function(d, i, j) {
+      if (conf.direction === 'in') {
+        return conf.outerRadius - scope * backgrounds[j].start;
+      } else {
+        return conf.innerRadius + scope * backgrounds[j].start;
+      }
+    }).outerRadius(function(d, i, j) {
+      if (conf.direction === 'in') {
+        return conf.outerRadius - scope * backgrounds[j].end;
+      } else {
+        return conf.innerRadius + scope * backgrounds[j].end;
+      }
+    }).startAngle(function(d) {
+      return d.start;
+    }).endAngle(function(d) {
+      return d.end;
+    });
+    d3Track = d3Track.selectAll('.background').data(backgrounds).enter().append('g').classed('background', true);
+    d3Track = d3Track.selectAll('path').data(blocks).enter().append('path').filter(function(block, i, j) {
+      var parent, _ref1;
+      parent = backgrounds[j].parent;
+      if (typeof parent === 'undefined') {
+        return true;
+      } else if (typeof parent === 'string') {
+        return block.block_id === parent;
+      } else if (typeof parent === 'object') {
+        return _ref1 = block.block_id, __indexOf.call(parent, _ref1) >= 0;
+      }
+    });
+    return d3Track.attr('d', blockBackground).attr('fill', function(d, i, j) {
+      return backgrounds[j].color;
+    }).attr('opacity', function(d, i, j) {
+      return backgrounds[j].opacity;
+    });
+  };
   preRender = function(name, track, instance, d3, svg, callback) {
     var conf, data, track1;
     conf = track.getConf();
     svg.select('.' + name).remove();
     track1 = svg.append('g').classed(name, true).attr('transform', 'translate(' + parseInt(instance.getWidth() / 2) + ',' + parseInt(instance.getHeight() / 2) + ')');
+    renderBackgrounds(track1, track, instance, d3, svg);
     data = track.getData();
     return callback(track1, track, conf, data, instance, d3, svg);
   };

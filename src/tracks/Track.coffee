@@ -1,6 +1,7 @@
-circosJS.Track = (instance, conf, data, rules) ->
+circosJS.Track = (instance, conf, data, rules, backgrounds) ->
     # this refers the track instance
     @_data = circosJS.parseData(data)
+    @_backgrounds = backgrounds || []
 
     # a rule look like this:
     # {parameter: color, value: 'blue', condition: function, flow: 'stop if true'}

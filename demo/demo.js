@@ -521,6 +521,11 @@ var rules = [
     {parameter: 'glyph_strokeColor', value: 'blue', condition: function(value){ return value > 5;}}
 ]
 
+var backgrounds = [
+    {start: 0, end: 0.5, color: '#d3d3d3', opacity: 1},
+    {start: 0.5, end: 1, color: '#333333', opacity: 0.5, parent: ['february', 'april']}
+]
+
 var stack_rules = [
     // {parameter: 'color', value: 'red', condition: function(parent, datum, layer_id){ return (datum.end - datum.start > 8);}},
     // {parameter: 'color', value: 'blue', condition: function(parent, datum, layer_id){ return (layer_id > 2);}}
@@ -537,7 +542,7 @@ circos
     )
     // .heatmap('h1', {innerRadius: 220, outerRadius: 240, logScale: true}, heatmap)
     // .histogram('hist1', {innerRadius: 200, outerRadius: 220}, heatmap)
-    .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter, rules)
+    .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter, rules, backgrounds)
     .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
     // .chord('l1', {}, links)
     .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 190, outerRadius: 240}, stack, stack_rules)
