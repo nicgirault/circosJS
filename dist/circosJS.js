@@ -168,9 +168,9 @@ circosJS.Layout = function(conf, data) {
   return this;
 };
 
-circosJS.Core.prototype.heatmap = function(id, conf, data, rules) {
+circosJS.Core.prototype.heatmap = function(id, conf, data, rules, backgrounds) {
   var track;
-  track = new circosJS.Heatmap(this, conf, data, rules);
+  track = new circosJS.Heatmap(this, conf, data, rules, backgrounds);
   track.completeData();
   if (track.isLayoutCompliant(this, id)) {
     track.computeMinMax();
@@ -179,9 +179,9 @@ circosJS.Core.prototype.heatmap = function(id, conf, data, rules) {
   return this;
 };
 
-circosJS.Core.prototype.histogram = function(id, conf, data, rules) {
+circosJS.Core.prototype.histogram = function(id, conf, data, rules, backgrounds) {
   var track;
-  track = new circosJS.Histogram(this, conf, data, rules);
+  track = new circosJS.Histogram(this, conf, data, rules, backgrounds);
   track.completeData();
   if (track.isLayoutCompliant(this, id)) {
     track.computeMinMax();
@@ -210,18 +210,18 @@ circosJS.Core.prototype.scatter = function(id, conf, data, rules, backgrounds) {
   return this;
 };
 
-circosJS.Core.prototype.line = function(id, conf, data, rules) {
+circosJS.Core.prototype.line = function(id, conf, data, rules, backgrounds) {
   var track;
-  track = new circosJS.Line(this, conf, data, rules);
+  track = new circosJS.Line(this, conf, data, rules, backgrounds);
   track.completeData();
   track.computeMinMax();
   this._lines[id] = track;
   return this;
 };
 
-circosJS.Core.prototype.stack = function(id, conf, data, rules) {
+circosJS.Core.prototype.stack = function(id, conf, data, rules, backgrounds) {
   var track;
-  track = new circosJS.Stack(this, conf, data, rules);
+  track = new circosJS.Stack(this, conf, data, rules, backgrounds);
   track.completeData();
   track.buildLayeredData();
   track.computeMinMax();
@@ -335,21 +335,21 @@ circosJS.Chord = function(instance, conf, data, rules, layout) {
   return this;
 };
 
-circosJS.Heatmap = function(instance, conf, data, rules) {
+circosJS.Heatmap = function(instance, conf, data, rules, backgrounds) {
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  circosJS.Track.call(this, instance, conf, data, rules);
+  circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
-circosJS.Histogram = function(instance, conf, data, rules) {
+circosJS.Histogram = function(instance, conf, data, rules, backgrounds) {
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  circosJS.Track.call(this, instance, conf, data, rules);
+  circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
-circosJS.Line = function(instance, conf, data, rules) {
+circosJS.Line = function(instance, conf, data, rules, backgrounds) {
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  circosJS.Track.call(this, instance, conf, data, rules);
+  circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
@@ -359,9 +359,9 @@ circosJS.Scatter = function(instance, conf, data, rules, backgrounds) {
   return this;
 };
 
-circosJS.Stack = function(instance, conf, data, rules) {
+circosJS.Stack = function(instance, conf, data, rules, backgrounds) {
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  circosJS.Track.call(this, instance, conf, data, rules);
+  circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   this.buildLayeredData = function() {
     var block, datum, idx, lastDatumInLayer, layer, layeredData, layers, placed, sortedData, _i, _j, _len, _len1;
     data = this._data;

@@ -1,5 +1,5 @@
-circosJS.Core.prototype.heatmap = (id, conf, data, rules) ->
-    track = new circosJS.Heatmap(@, conf, data, rules)
+circosJS.Core.prototype.heatmap = (id, conf, data, rules, backgrounds) ->
+    track = new circosJS.Heatmap(@, conf, data, rules, backgrounds)
 
     track.completeData()
 
@@ -9,8 +9,8 @@ circosJS.Core.prototype.heatmap = (id, conf, data, rules) ->
 
     return @
 
-circosJS.Core.prototype.histogram = (id, conf, data, rules) ->
-    track = new circosJS.Histogram(@, conf, data, rules)
+circosJS.Core.prototype.histogram = (id, conf, data, rules, backgrounds) ->
+    track = new circosJS.Histogram(@, conf, data, rules, backgrounds)
 
     track.completeData()
 
@@ -39,8 +39,8 @@ circosJS.Core.prototype.scatter = (id, conf, data, rules, backgrounds) ->
 
     return @
 
-circosJS.Core.prototype.line = (id, conf, data, rules) ->
-    track = new circosJS.Line(@, conf, data, rules)
+circosJS.Core.prototype.line = (id, conf, data, rules, backgrounds) ->
+    track = new circosJS.Line(@, conf, data, rules, backgrounds)
     track.completeData()
 
     track.computeMinMax()
@@ -48,8 +48,8 @@ circosJS.Core.prototype.line = (id, conf, data, rules) ->
 
     return @
 
-circosJS.Core.prototype.stack = (id, conf, data, rules) ->
-    track = new circosJS.Stack(@, conf, data, rules)
+circosJS.Core.prototype.stack = (id, conf, data, rules, backgrounds) ->
+    track = new circosJS.Stack(@, conf, data, rules, backgrounds)
     track.completeData()
     track.buildLayeredData()
     track.computeMinMax()

@@ -532,6 +532,13 @@ var stack_rules = [
     // {parameter: 'usePalette', value: true, condition: function(parent, datum, layer_id){ return (layer_id > 2);}}
 ]
 
+backgrounds2 = [
+    {start: 0, end: 0.5, color: '#d3d3d3'},
+    {start: 0.5, end: 0.8, color: '#fdbb84', opacity: 0.8},
+    {start: 0.8, end: 1, color: '#e34a33', parent: ['january', 'february']},
+    {start: 0.8, end: 1, color: '#2c7fb8', parent: 'march'}
+];
+
 circos
     .layout(
         {
@@ -546,6 +553,7 @@ circos
     .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
     // .chord('l1', {}, links)
     .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 190, outerRadius: 240}, stack, stack_rules)
+    .line('line2', {innerRadius:100, outerRadius: 200}, [], {}, backgrounds2)
     .render();
     // .render(['layout', 'h1']);
 
