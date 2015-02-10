@@ -891,13 +891,55 @@ circosJS.renderLayoutTicks = function(conf, layout, d3, instance) {
 };
 
 circosJS.renderLine = function(track, line_track, conf, data, instance, d3) {
-  var block, line;
+  var axes, axis, block, buildAxes, line;
   block = track.selectAll('g').data(data).enter().append('g');
+  buildAxes = function(conf) {
+    var axes, x;
+    if (conf.axes.minor.spacingType === 'pixel') {
+      axes = (function() {
+        var _i, _ref, _ref1, _ref2, _results;
+        _results = [];
+        for (x = _i = _ref = conf.innerRadius, _ref1 = conf.outerRadius, _ref2 = conf.axes.minor.spacing; _ref2 > 0 ? _i <= _ref1 : _i >= _ref1; x = _i += _ref2) {
+          _results.push(x);
+        }
+        return _results;
+      })();
+    }
+    return axes;
+  };
+  axes = buildAxes(conf);
   line = d3.svg.line().x(line_track.x).y(line_track.y).interpolate(conf.interpolation);
-  block = block.append('path').datum(function(d) {
-    return d.data;
+  axis = d3.svg.arc().innerRadius(function(d, i, j) {
+    return d;
+  }).outerRadius(function(d) {
+    return d;
+  }).startAngle(function(d, i, j) {
+    var b;
+    b = instance._layout.getBlock(data[j].parent);
+    return b.start;
+  }).endAngle(function(d, i, j) {
+    var b;
+    b = instance._layout.getBlock(data[j].parent);
+    return b.end;
   });
-  return block.attr('class', 'line').attr('d', line).attr('stroke-width', function(d) {
+  block.selectAll('.axis').data(function(d) {
+    return axes;
+  }).enter().append('path').classed('axis', true).attr('d', axis).attr('stroke-width', function(d, i) {
+    if (i % conf.axes.major.spacing === 0) {
+      return conf.axes.major.thickness;
+    } else {
+      return conf.axes.minor.thickness;
+    }
+  }).attr('stroke', function(d, i) {
+    if (i % conf.axes.major.spacing === 0) {
+      return conf.axes.major.color;
+    } else {
+      return conf.axes.minor.color;
+    }
+  });
+  return block.append('path').datum(function(d) {
+    return d.data;
+  }).attr('class', 'line').attr('d', line).attr('stroke-width', function(d) {
     return d.thickness || conf.thickness;
   }).attr('stroke', function(d) {
     return d.color || conf.color;
@@ -1180,7 +1222,20 @@ circosJS.Line.prototype._defaultConf = {
   fill_color: '#d3d3d3',
   thickness: 2,
   max_gap: 10000000,
-  interpolation: 'linear'
+  interpolation: 'linear',
+  axes: {
+    minor: {
+      spacing: 5,
+      spacingType: 'pixel',
+      color: '#d3d3d3',
+      thickness: 2
+    },
+    major: {
+      spacing: 5,
+      color: '#000000',
+      thickness: 2
+    }
+  }
 };
 
 circosJS.Stack.prototype._defaultConf = {

@@ -98,6 +98,17 @@ circosJS.Line.prototype._defaultConf =
   thickness: 2
   max_gap: 10000000
   interpolation: 'linear'
+  axes:
+    minor:
+      spacing: 5
+      spacingType: 'pixel'
+      color: '#d3d3d3'
+      thickness: 2
+    major:
+      spacing: 5
+      color: '#000000'
+      thickness: 2
+
 
 # Stack
 circosJS.Stack.prototype._defaultConf =
