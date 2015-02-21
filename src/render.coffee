@@ -11,12 +11,9 @@ circosJS.Core.prototype.render = (ids, removeTracks) ->
         # remove all tracks to be sure to keep consistent data
         # TODO: a smarter strategy could be implemented:
         # remove tracks only if layout data changes
-        @_heatmaps = []
-        @_histograms = []
-        @_chords = []
-        @_scatters = []
-        @_lines = []
-        @_stacks = []
+        for trackType in types
+            for trackName in Object.keys(trackType.store)
+                svg.select('.' + trackName).remove()
 
     if renderAll or 'layout' in ids
         circosJS.renderLayout d3, svg, this

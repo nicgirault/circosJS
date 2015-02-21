@@ -1014,18 +1014,20 @@ circosJS.renderStack = function(track, stack, conf, data, instance, d3) {
 };
 
 circosJS.Core.prototype.render = function(ids, removeTracks) {
-  var preRender, renderAll, renderBackgrounds, svg, track, trackName, trackType, types, _i, _j, _len, _len1, _ref;
+  var preRender, renderAll, renderBackgrounds, svg, track, trackName, trackType, types, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1;
   if (typeof ids === 'undefined') {
     renderAll = true;
   }
   svg = d3.select(this.getContainer());
   if (removeTracks) {
-    this._heatmaps = [];
-    this._histograms = [];
-    this._chords = [];
-    this._scatters = [];
-    this._lines = [];
-    this._stacks = [];
+    for (_i = 0, _len = types.length; _i < _len; _i++) {
+      trackType = types[_i];
+      _ref = Object.keys(trackType.store);
+      for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+        trackName = _ref[_j];
+        svg.select('.' + trackName).remove();
+      }
+    }
   }
   if (renderAll || __indexOf.call(ids, 'layout') >= 0) {
     circosJS.renderLayout(d3, svg, this);
@@ -1052,19 +1054,19 @@ circosJS.Core.prototype.render = function(ids, removeTracks) {
     }
   ];
   renderBackgrounds = function(d3Track, track, instance, d3, svg) {
-    var b, backgrounds, blockBackground, blocks, conf, k, scope, _ref;
+    var b, backgrounds, blockBackground, blocks, conf, k, scope, _ref1;
     backgrounds = track._backgrounds;
-    _ref = instance._layout._blocks;
-    for (k in _ref) {
-      b = _ref[k];
+    _ref1 = instance._layout._blocks;
+    for (k in _ref1) {
+      b = _ref1[k];
       b.block_id = k;
     }
     blocks = (function() {
-      var _ref1, _results;
-      _ref1 = instance._layout._blocks;
+      var _ref2, _results;
+      _ref2 = instance._layout._blocks;
       _results = [];
-      for (k in _ref1) {
-        b = _ref1[k];
+      for (k in _ref2) {
+        b = _ref2[k];
         _results.push(b);
       }
       return _results;
@@ -1090,14 +1092,14 @@ circosJS.Core.prototype.render = function(ids, removeTracks) {
     });
     d3Track = d3Track.selectAll('.background').data(backgrounds).enter().append('g').classed('background', true);
     d3Track = d3Track.selectAll('path').data(blocks).enter().append('path').filter(function(block, i, j) {
-      var parent, _ref1;
+      var parent, _ref2;
       parent = backgrounds[j].parent;
       if (typeof parent === 'undefined') {
         return true;
       } else if (typeof parent === 'string') {
         return block.block_id === parent;
       } else if (typeof parent === 'object') {
-        return _ref1 = block.block_id, __indexOf.call(parent, _ref1) >= 0;
+        return _ref2 = block.block_id, __indexOf.call(parent, _ref2) >= 0;
       }
     });
     return d3Track.attr('d', blockBackground).attr('fill', function(d, i, j) {
@@ -1115,11 +1117,11 @@ circosJS.Core.prototype.render = function(ids, removeTracks) {
     data = track.getData();
     return callback(track1, track, conf, data, instance, d3, svg);
   };
-  for (_i = 0, _len = types.length; _i < _len; _i++) {
-    trackType = types[_i];
-    _ref = Object.keys(trackType.store);
-    for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
-      trackName = _ref[_j];
+  for (_k = 0, _len2 = types.length; _k < _len2; _k++) {
+    trackType = types[_k];
+    _ref1 = Object.keys(trackType.store);
+    for (_l = 0, _len3 = _ref1.length; _l < _len3; _l++) {
+      trackName = _ref1[_l];
       if (renderAll || __indexOf.call(ids, trackName) >= 0) {
         track = trackType.store[trackName];
         preRender(trackName, track, this, d3, svg, trackType.renderFunction);
