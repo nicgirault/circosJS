@@ -1,10 +1,22 @@
-circosJS.Core.prototype.render = (ids) ->
+# removeTracks allows to clean track data if layout is changed
+circosJS.Core.prototype.render = (ids, removeTracks) ->
     # this refers the circos instance
 
     if typeof ids == 'undefined'
         renderAll = true
 
     svg = d3.select(this.getContainer())
+
+    if removeTracks
+        # remove all tracks to be sure to keep consistent data
+        # TODO: a smarter strategy could be implemented:
+        # remove tracks only if layout data changes
+        @_heatmaps = []
+        @_histograms = []
+        @_chords = []
+        @_scatters = []
+        @_lines = []
+        @_stacks = []
 
     if renderAll or 'layout' in ids
         circosJS.renderLayout d3, svg, this

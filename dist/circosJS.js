@@ -1013,12 +1013,20 @@ circosJS.renderStack = function(track, stack, conf, data, instance, d3) {
   });
 };
 
-circosJS.Core.prototype.render = function(ids) {
+circosJS.Core.prototype.render = function(ids, removeTracks) {
   var preRender, renderAll, renderBackgrounds, svg, track, trackName, trackType, types, _i, _j, _len, _len1, _ref;
   if (typeof ids === 'undefined') {
     renderAll = true;
   }
   svg = d3.select(this.getContainer());
+  if (removeTracks) {
+    this._heatmaps = [];
+    this._histograms = [];
+    this._chords = [];
+    this._scatters = [];
+    this._lines = [];
+    this._stacks = [];
+  }
   if (renderAll || __indexOf.call(ids, 'layout') >= 0) {
     circosJS.renderLayout(d3, svg, this);
   }
