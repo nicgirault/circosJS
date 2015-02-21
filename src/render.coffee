@@ -7,14 +7,6 @@ circosJS.Core.prototype.render = (ids, removeTracks) ->
 
     svg = d3.select(this.getContainer())
 
-    if removeTracks
-        # remove all tracks to be sure to keep consistent data
-        # TODO: a smarter strategy could be implemented:
-        # remove tracks only if layout data changes
-        for trackType in types
-            for trackName in Object.keys(trackType.store)
-                svg.select('.' + trackName).remove()
-
     if renderAll or 'layout' in ids
         circosJS.renderLayout d3, svg, this
 
@@ -26,6 +18,14 @@ circosJS.Core.prototype.render = (ids, removeTracks) ->
         {store: @_lines, renderFunction: circosJS.renderLine}
         {store: @_stacks, renderFunction: circosJS.renderStack}
     ]
+
+    if removeTracks
+        # remove all tracks to be sure to keep consistent data
+        # TODO: a smarter strategy could be implemented:
+        # remove tracks only if layout data changes
+        for trackType in types
+            for trackName in Object.keys(trackType.store)
+                svg.select('.' + trackName).remove()
 
     renderBackgrounds = (d3Track, track, instance, d3, svg) ->
         backgrounds = track._backgrounds
