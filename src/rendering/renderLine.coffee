@@ -1,7 +1,8 @@
 circosJS.renderLine = (track, line_track, conf, data, instance, d3) ->
-  block = track.selectAll 'g'
+  block = track.selectAll '.block'
     .data data
     .enter().append 'g'
+    .classed 'block', true
 
   buildAxes = (conf) ->
     if conf.axes.minor.spacingType == 'pixel'

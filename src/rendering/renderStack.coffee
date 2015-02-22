@@ -1,9 +1,10 @@
 circosJS.renderStack = (track, stack, conf, data, instance, d3) ->
   track = track.classed conf.colorPalette, true
 
-  block = track.selectAll 'g'
+  block = track.selectAll '.block'
     .data data
     .enter().append 'g'
+    .classed 'block', true
     .attr 'transform', (d) ->
       'rotate(' + instance._layout.getBlock(d.parent).start * 360 / (2 * Math.PI) + ')'
 

@@ -1,11 +1,11 @@
 circosJS.renderHeatmap = (track, heatmap, conf, data, instance, d3) ->
     track = track.classed(conf.colorPalette, true)
 
-    block = track.selectAll('g')
+    block = track.selectAll('.block')
         .data(data)
         .enter().append('g')
         .attr('class', (d,i)->
-            name + '-' + d.parent
+            name + '-' + d.parent + ' block'
         true)
         .attr('transform', (d) -> 'rotate(' + instance._layout.getBlock(d.parent).start*360/(2*Math.PI) + ')')
 

@@ -1,7 +1,8 @@
 circosJS.renderScatter = (track, scatter, conf, data, instance, d3) ->
-  block = track.selectAll 'g'
+  block = track.selectAll '.block'
     .data data
     .enter().append 'g'
+    .classed 'block', true
 
   point = block.selectAll '.point'
     .data (d) -> d.data

@@ -551,8 +551,8 @@ circos
     .line('line2', {innerRadius:100, outerRadius: 200}, [], {}, backgrounds2)
     .render();
 
-circos.removeTracks(['l1'])
-circos.removeTracks('stack1')
+// circos.removeTracks(['l1'])
+// circos.removeTracks('stack1')
 // circos.removeTracks()
     // .render(['layout', 'h1']);
 

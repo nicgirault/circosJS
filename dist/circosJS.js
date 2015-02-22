@@ -776,8 +776,8 @@ circosJS.renderChord = function(track, chord, conf, data, instance, d3) {
 circosJS.renderHeatmap = function(track, heatmap, conf, data, instance, d3) {
   var block, datum;
   track = track.classed(conf.colorPalette, true);
-  block = track.selectAll('g').data(data).enter().append('g').attr('class', function(d, i) {
-    return name + '-' + d.parent;
+  block = track.selectAll('.block').data(data).enter().append('g').attr('class', function(d, i) {
+    return name + '-' + d.parent + ' block';
   }, true).attr('transform', function(d) {
     return 'rotate(' + instance._layout.getBlock(d.parent).start * 360 / (2 * Math.PI) + ')';
   });
@@ -799,8 +799,8 @@ circosJS.renderHistogram = function(track, histogram, conf, data, instance, d3) 
   if (conf.usePalette) {
     track = track.classed(conf.colorPalette, true);
   }
-  block = track.selectAll('g').data(histogram.getData()).enter().append('g').attr('class', function(d, i) {
-    return name + '-' + d.parent;
+  block = track.selectAll('.block').data(histogram.getData()).enter().append('g').attr('class', function(d, i) {
+    return name + '-' + d.parent + ' block';
   }, true).attr('transform', function(d) {
     return 'rotate(' + instance._layout.getBlock(d.parent).start * 360 / (2 * Math.PI) + ')';
   });
@@ -929,7 +929,7 @@ circosJS.renderLayoutTicks = function(conf, layout, d3, instance) {
 
 circosJS.renderLine = function(track, line_track, conf, data, instance, d3) {
   var axes, axis, block, buildAxes, line;
-  block = track.selectAll('g').data(data).enter().append('g');
+  block = track.selectAll('.block').data(data).enter().append('g').classed('block', true);
   buildAxes = function(conf) {
     var axes, x;
     if (conf.axes.minor.spacingType === 'pixel') {
@@ -994,7 +994,7 @@ circosJS.renderLine = function(track, line_track, conf, data, instance, d3) {
 
 circosJS.renderScatter = function(track, scatter, conf, data, instance, d3) {
   var block, point;
-  block = track.selectAll('g').data(data).enter().append('g');
+  block = track.selectAll('.block').data(data).enter().append('g').classed('block', true);
   point = block.selectAll('.point').data(function(d) {
     return d.data;
   });
@@ -1023,7 +1023,7 @@ circosJS.renderScatter = function(track, scatter, conf, data, instance, d3) {
 circosJS.renderStack = function(track, stack, conf, data, instance, d3) {
   var block, layer, tile;
   track = track.classed(conf.colorPalette, true);
-  block = track.selectAll('g').data(data).enter().append('g').attr('transform', function(d) {
+  block = track.selectAll('.block').data(data).enter().append('g').classed('block', true).attr('transform', function(d) {
     return 'rotate(' + instance._layout.getBlock(d.parent).start * 360 / (2 * Math.PI) + ')';
   });
   layer = block.selectAll('.layer').data(function(d) {
