@@ -39,11 +39,16 @@ circosJS.Core.prototype.removeTracks = (trackIds) ->
     # this refers the circos instance
     svg = d3.select(this.getContainer())
 
-    for id in trackIds
-        for type, store of this.tracks
-            if id of store
-                svg.select('.' + id).remove()
-                delete store[id]
+    for type, store of this.tracks
+        if typeof(trackIds) == 'object'
+            for id in trackIds
+                if id of store
+                    svg.select('.' + id).remove()
+                    delete store[id]
+        else if typeof(trackIds) == 'string'
+            if trackIds of store
+                svg.select('.' + trackIds).remove()
+                delete store[trackIds]
     return this
 
 circosJS.Core.prototype.layout = (conf, data) ->

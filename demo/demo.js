@@ -552,5 +552,6 @@ circos
     .render();
 
 circos.removeTracks(['l1'])
+circos.removeTracks('stack1')
     // .render(['layout', 'h1']);
 
