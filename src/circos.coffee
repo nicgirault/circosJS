@@ -14,6 +14,13 @@ circosJS.Core = (conf) ->
     # this.init = function(){
     #     console.log('initializing instance');
     # };
+    this.tracks =
+        histograms: this._histograms
+        heatmaps: this._heatmaps
+        chords: this._chords
+        scatters: this._scatters
+        lines: this._lines
+        stacks: this._stacks
 
     # conf override the default configuration. Conf not in default conf
     # object are removed
@@ -26,6 +33,17 @@ circosJS.Core = (conf) ->
         this._conf.width
     this.getHeight = ->
         this._conf.height
+    return this
+
+circosJS.Core.prototype.removeTracks = (trackIds) ->
+    # this refers the circos instance
+    svg = d3.select(this.getContainer())
+
+    for id in trackIds
+        for type, store of this.tracks
+            if id of store
+                svg.select('.' + id).remove()
+                delete store[id]
     return this
 
 circosJS.Core.prototype.layout = (conf, data) ->

@@ -550,5 +550,7 @@ circos
     .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 190, outerRadius: 240}, stack, stack_rules)
     .line('line2', {innerRadius:100, outerRadius: 200}, [], {}, backgrounds2)
     .render();
+
+circos.removeTracks(['l1'])
     // .render(['layout', 'h1']);
 

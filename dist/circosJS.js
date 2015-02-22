@@ -15,6 +15,14 @@ circosJS.Core = function(conf) {
   this._scatters = {};
   this._lines = {};
   this._stacks = {};
+  this.tracks = {
+    histograms: this._histograms,
+    heatmaps: this._heatmaps,
+    chords: this._chords,
+    scatters: this._scatters,
+    lines: this._lines,
+    stacks: this._stacks
+  };
   _ref = this._conf;
   for (k in _ref) {
     v = _ref[k];
@@ -29,6 +37,23 @@ circosJS.Core = function(conf) {
   this.getHeight = function() {
     return this._conf.height;
   };
+  return this;
+};
+
+circosJS.Core.prototype.removeTracks = function(trackIds) {
+  var id, store, svg, type, _i, _len, _ref;
+  svg = d3.select(this.getContainer());
+  for (_i = 0, _len = trackIds.length; _i < _len; _i++) {
+    id = trackIds[_i];
+    _ref = this.tracks;
+    for (type in _ref) {
+      store = _ref[type];
+      if (id in store) {
+        svg.select('.' + id).remove();
+        delete store[id];
+      }
+    }
+  }
   return this;
 };
 
