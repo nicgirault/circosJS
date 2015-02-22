@@ -41,7 +41,7 @@ circosJS.Core = function(conf) {
 };
 
 circosJS.Core.prototype.removeTracks = function(trackIds) {
-  var id, store, svg, type, _i, _len, _ref;
+  var id, store, svg, trackId, type, _i, _len, _ref;
   svg = d3.select(this.getContainer());
   _ref = this.tracks;
   for (type in _ref) {
@@ -58,6 +58,11 @@ circosJS.Core.prototype.removeTracks = function(trackIds) {
       if (trackIds in store) {
         svg.select('.' + trackIds).remove();
         delete store[trackIds];
+      }
+    } else if (typeof trackIds === 'undefined') {
+      for (trackId in store) {
+        svg.select('.' + trackId).remove();
+        delete store[trackId];
       }
     }
   }

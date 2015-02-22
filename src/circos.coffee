@@ -49,6 +49,10 @@ circosJS.Core.prototype.removeTracks = (trackIds) ->
             if trackIds of store
                 svg.select('.' + trackIds).remove()
                 delete store[trackIds]
+        else if typeof(trackIds) == 'undefined'
+            for trackId of store
+                svg.select('.' + trackId).remove()
+                delete store[trackId]
     return this
 
 circosJS.Core.prototype.layout = (conf, data) ->
