@@ -555,7 +555,7 @@ circosJS.Track = function(instance, conf, data, rules, backgrounds) {
             _results2 = [];
             for (_i = 0, _len = rules.length; _i < _len; _i++) {
               rule = rules[_i];
-              if (rule.condition(datum.value)) {
+              if (rule.condition(v.parent, datum, i)) {
                 _results2.push(datum[rule.parameter] = rule.value);
               } else {
                 _results2.push(void 0);
