@@ -11,7 +11,7 @@ circosJS.Track = (instance, conf, data, rules, backgrounds) ->
         for k,v of @_data
             for i, datum of v.data
                 for rule in rules
-                    if rule.condition(datum.value)
+                    if rule.condition(datum)
                         datum[rule.parameter] = rule.value
 
     # Only for heatmap and histograms...

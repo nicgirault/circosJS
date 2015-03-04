@@ -513,7 +513,7 @@ var circos = new circosJS({
 });
 
 var rules = [
-    {parameter: 'glyph_strokeColor', value: 'blue', condition: function(value){ return value > 5;}}
+    {parameter: 'glyph_strokeColor', value: 'blue', condition: function(datum){ return datum.value > 5;}}
 ]
 
 var backgrounds = [
