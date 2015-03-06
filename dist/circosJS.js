@@ -953,7 +953,7 @@ circosJS.renderLayoutLabels = function(conf, d3, block) {
   block.append('path').attr('fill', 'none').attr('stroke', 'none').attr('d', labelArc).attr('id', function(d) {
     return 'arc-label' + d.id;
   });
-  label = block.append('text').style('font-size', conf.labels.size).attr('text-anchor', 'middle');
+  label = block.append('text').style('font-size', '' + conf.labels.size + 'px').attr('text-anchor', 'middle');
   return label.append('textPath').attr('startOffset', '25%').attr('xlink:href', function(d) {
     return '#arc-label' + d.id;
   }).style('fill', conf.labels.color).text(function(d) {
@@ -1006,7 +1006,7 @@ circosJS.renderLayoutTicks = function(conf, layout, d3, instance) {
     } else {
       return null;
     }
-  }).style('font-size', conf.ticks.labelSize).style('fill', conf.ticks.labelColor).text(function(d) {
+  }).style('font-size', '' + conf.ticks.labelSize + 'px').style('fill', conf.ticks.labelColor).text(function(d) {
     return d.label;
   });
 };
@@ -1266,7 +1266,7 @@ circosJS.Layout.prototype._defaultConf = {
   labels: {
     position: 'center',
     display: true,
-    size: '14px',
+    size: 14,
     color: '#000',
     radialOffset: 20
   },
@@ -1279,7 +1279,7 @@ circosJS.Layout.prototype._defaultConf = {
     labelSuffix: 'Mb',
     labelDenominator: 1000000,
     labelDisplay0: true,
-    labelSize: '10px',
+    labelSize: 10,
     labelColor: '#000',
     labelFont: 'default',
     majorSpacing: 5,

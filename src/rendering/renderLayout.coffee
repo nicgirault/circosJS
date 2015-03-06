@@ -52,7 +52,7 @@ circosJS.renderLayoutLabels = (conf, d3, block) ->
         .attr 'id', (d) -> 'arc-label' + d.id
 
     label = block.append 'text'
-        .style 'font-size', conf.labels.size
+        .style 'font-size', '' + conf.labels.size + 'px'
         .attr 'text-anchor', 'middle'
 
     label.append 'textPath'
@@ -98,7 +98,7 @@ circosJS.renderLayoutTicks = (conf, layout, d3, instance) ->
         .attr("dy", ".35em")
         .attr("transform", (d) -> if d.angle > Math.PI then "rotate(180)translate(-16)" else null)
         .style("text-anchor", (d) -> if d.angle > Math.PI then "end" else null)
-        .style 'font-size', conf.ticks.labelSize
+        .style 'font-size', '' + conf.ticks.labelSize + 'px'
         .style 'fill', conf.ticks.labelColor
         .text((d) -> d.label)
 

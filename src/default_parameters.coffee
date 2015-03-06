@@ -14,7 +14,7 @@ circosJS.Layout.prototype._defaultConf =
   labels:
     position: 'center'
     display: true
-    size: '14px'
+    size: 14
     color: '#000'
     radialOffset: 20
   ticks:
@@ -26,7 +26,7 @@ circosJS.Layout.prototype._defaultConf =
     labelSuffix: 'Mb'
     labelDenominator: 1000000
     labelDisplay0: true
-    labelSize: '10px'
+    labelSize: 10
     labelColor: '#000'
     labelFont: 'default'
     majorSpacing: 5
