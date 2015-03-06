@@ -428,60 +428,60 @@ circosJS.Chord = function(instance, conf, data, rules, layout) {
 
 circosJS.Heatmap = function(instance, conf, data, rules, backgrounds) {
   var smartBorders;
-  if (!((conf.innerRadius != null) || (conf.outerRadius != null))) {
-    smartBorders = instance.smartBorders();
-    conf.innerRadius = smartBorders["in"];
-    conf.outerRadius = smartBorders.out;
-  }
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
+  if (this._conf.innerRadius === 0 && this._conf.outerRadius === 0) {
+    smartBorders = instance.smartBorders();
+    this._conf.innerRadius = smartBorders["in"];
+    this._conf.outerRadius = smartBorders.out;
+  }
   circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
 circosJS.Histogram = function(instance, conf, data, rules, backgrounds) {
   var smartBorders;
-  if (!((conf.innerRadius != null) || (conf.outerRadius != null))) {
-    smartBorders = instance.smartBorders();
-    conf.innerRadius = smartBorders["in"];
-    conf.outerRadius = smartBorders.out;
-  }
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
+  if (this._conf.innerRadius === 0 && this._conf.outerRadius === 0) {
+    smartBorders = instance.smartBorders();
+    this._conf.innerRadius = smartBorders["in"];
+    this._conf.outerRadius = smartBorders.out;
+  }
   circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
 circosJS.Line = function(instance, conf, data, rules, backgrounds) {
   var smartBorders;
-  if (!((conf.innerRadius != null) || (conf.outerRadius != null))) {
-    smartBorders = instance.smartBorders();
-    conf.innerRadius = smartBorders["in"];
-    conf.outerRadius = smartBorders.out;
-  }
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
+  if (this._conf.innerRadius === 0 && this._conf.outerRadius === 0) {
+    smartBorders = instance.smartBorders();
+    this._conf.innerRadius = smartBorders["in"];
+    this._conf.outerRadius = smartBorders.out;
+  }
   circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
 circosJS.Scatter = function(instance, conf, data, rules, backgrounds) {
   var smartBorders;
-  if (!((conf.innerRadius != null) || (conf.outerRadius != null))) {
-    smartBorders = instance.smartBorders();
-    conf.innerRadius = smartBorders["in"];
-    conf.outerRadius = smartBorders.out;
-  }
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
+  if (this._conf.innerRadius === 0 && this._conf.outerRadius === 0) {
+    smartBorders = instance.smartBorders();
+    this._conf.innerRadius = smartBorders["in"];
+    this._conf.outerRadius = smartBorders.out;
+  }
   circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
 circosJS.Stack = function(instance, conf, data, rules, backgrounds) {
   var smartBorders;
-  if (!((conf.innerRadius != null) || (conf.outerRadius != null))) {
-    smartBorders = instance.smartBorders();
-    conf.innerRadius = smartBorders["in"];
-    conf.outerRadius = smartBorders.out;
-  }
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
+  if (this._conf.innerRadius === 0 && this._conf.outerRadius === 0) {
+    smartBorders = instance.smartBorders();
+    this._conf.innerRadius = smartBorders["in"];
+    this._conf.outerRadius = smartBorders.out;
+  }
   circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   this.buildLayeredData = function() {
     var block, datum, idx, lastDatumInLayer, layer, layeredData, layers, placed, sortedData, _i, _j, _len, _len1;
@@ -1292,8 +1292,8 @@ circosJS.Layout.prototype._defaultConf = {
 };
 
 circosJS.Heatmap.prototype._defaultConf = {
-  innerRadius: 200,
-  outerRadius: 250,
+  innerRadius: 0,
+  outerRadius: 0,
   min: 'smart',
   max: 'smart',
   colorPalette: 'YlGnBu',
@@ -1302,8 +1302,8 @@ circosJS.Heatmap.prototype._defaultConf = {
 };
 
 circosJS.Histogram.prototype._defaultConf = {
-  innerRadius: 150,
-  outerRadius: 200,
+  innerRadius: 0,
+  outerRadius: 0,
   min: 'smart',
   max: 'smart',
   direction: 'out',
@@ -1326,8 +1326,8 @@ circosJS.Chord.prototype._defaultConf = {
 };
 
 circosJS.Scatter.prototype._defaultConf = {
-  innerRadius: 150,
-  outerRadius: 200,
+  innerRadius: 0,
+  outerRadius: 0,
   min: 'smart',
   max: 'smart',
   direction: 'out',
@@ -1343,8 +1343,8 @@ circosJS.Scatter.prototype._defaultConf = {
 };
 
 circosJS.Line.prototype._defaultConf = {
-  innerRadius: 150,
-  outerRadius: 200,
+  innerRadius: 0,
+  outerRadius: 0,
   min: 'smart',
   max: 'smart',
   direction: 'out',
@@ -1371,8 +1371,8 @@ circosJS.Line.prototype._defaultConf = {
 };
 
 circosJS.Stack.prototype._defaultConf = {
-  innerRadius: 150,
-  outerRadius: 200,
+  innerRadius: 0,
+  outerRadius: 0,
   colorPaletteSize: 9,
   colorPalette: 'PuBuGn',
   usePalette: true,

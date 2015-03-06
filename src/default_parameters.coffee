@@ -37,8 +37,8 @@ circosJS.Layout.prototype._defaultConf =
 
 # Heatmap
 circosJS.Heatmap.prototype._defaultConf =
-  innerRadius: 200
-  outerRadius: 250
+  innerRadius: 0
+  outerRadius: 0
   min: 'smart'
   max: 'smart'
   colorPalette: 'YlGnBu'
@@ -47,8 +47,8 @@ circosJS.Heatmap.prototype._defaultConf =
 
 # Histogram
 circosJS.Histogram.prototype._defaultConf =
-  innerRadius: 150
-  outerRadius: 200
+  innerRadius: 0
+  outerRadius: 0
   min: 'smart'
   max: 'smart'
   direction: 'out'
@@ -71,8 +71,8 @@ circosJS.Chord.prototype._defaultConf =
 
 # Scatter
 circosJS.Scatter.prototype._defaultConf =
-  innerRadius: 150
-  outerRadius: 200
+  innerRadius: 0
+  outerRadius: 0
   min: 'smart'
   max: 'smart'
   direction: 'out'
@@ -87,8 +87,8 @@ circosJS.Scatter.prototype._defaultConf =
 
 # Line
 circosJS.Line.prototype._defaultConf =
-  innerRadius: 150
-  outerRadius: 200
+  innerRadius: 0
+  outerRadius: 0
   min: 'smart'
   max: 'smart'
   direction: 'out'
@@ -113,8 +113,8 @@ circosJS.Line.prototype._defaultConf =
 
 # Stack
 circosJS.Stack.prototype._defaultConf =
-  innerRadius: 150
-  outerRadius: 200
+  innerRadius: 0
+  outerRadius: 0
   colorPaletteSize: 9
   colorPalette: 'PuBuGn'
   usePalette: true
