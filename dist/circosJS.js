@@ -129,6 +129,60 @@ circosJS.mixConf = function(conf, defaultConf) {
   return newConf;
 };
 
+circosJS.Core.prototype.smartBorders = function() {
+  var border, borders, currentBorder, layout, store, track, trackId, trackType, width, _i, _len, _ref;
+  width = this._conf.defaultTrackWidth;
+  layout = {
+    "in": this._layout._conf.innerRadius,
+    out: this._layout._conf.outerRadius
+  };
+  borders = [];
+  _ref = this.tracks;
+  for (trackType in _ref) {
+    store = _ref[trackType];
+    for (trackId in store) {
+      track = store[trackId];
+      if (track._conf.innerRadius) {
+        borders.push({
+          "in": track._conf.innerRadius,
+          out: track._conf.outerRadius
+        });
+      }
+    }
+  }
+  borders = borders.sort(function(a, b) {
+    if (a.out > b.out) {
+      1;
+    }
+    if (a.out < b.out) {
+      -1;
+    }
+    return 0;
+  });
+  currentBorder = layout;
+  for (_i = 0, _len = borders.length; _i < _len; _i++) {
+    border = borders[_i];
+    if (border.out < currentBorder["in"] - width) {
+      return {
+        "in": currentBorder["in"] - width,
+        out: currentBorder["in"]
+      };
+    }
+    currentBorder = border;
+  }
+  if (currentBorder["in"] > width) {
+    return {
+      "in": currentBorder["in"] - width,
+      out: currentBorder["in"]
+    };
+  } else {
+    return {
+      "in": borders[0].out,
+      out: borders[0].out + width
+    };
+  }
+};
+
 if (typeof module !== "undefined" && module !== null) {
   module.exports = circosJS;
 }
@@ -373,30 +427,60 @@ circosJS.Chord = function(instance, conf, data, rules, layout) {
 };
 
 circosJS.Heatmap = function(instance, conf, data, rules, backgrounds) {
+  var smartBorders;
+  if (!((conf.innerRadius != null) || (conf.outerRadius != null))) {
+    smartBorders = instance.smartBorders();
+    conf.innerRadius = smartBorders["in"];
+    conf.outerRadius = smartBorders.out;
+  }
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
 circosJS.Histogram = function(instance, conf, data, rules, backgrounds) {
+  var smartBorders;
+  if (!((conf.innerRadius != null) || (conf.outerRadius != null))) {
+    smartBorders = instance.smartBorders();
+    conf.innerRadius = smartBorders["in"];
+    conf.outerRadius = smartBorders.out;
+  }
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
 circosJS.Line = function(instance, conf, data, rules, backgrounds) {
+  var smartBorders;
+  if (!((conf.innerRadius != null) || (conf.outerRadius != null))) {
+    smartBorders = instance.smartBorders();
+    conf.innerRadius = smartBorders["in"];
+    conf.outerRadius = smartBorders.out;
+  }
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
 circosJS.Scatter = function(instance, conf, data, rules, backgrounds) {
+  var smartBorders;
+  if (!((conf.innerRadius != null) || (conf.outerRadius != null))) {
+    smartBorders = instance.smartBorders();
+    conf.innerRadius = smartBorders["in"];
+    conf.outerRadius = smartBorders.out;
+  }
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
 circosJS.Stack = function(instance, conf, data, rules, backgrounds) {
+  var smartBorders;
+  if (!((conf.innerRadius != null) || (conf.outerRadius != null))) {
+    smartBorders = instance.smartBorders();
+    conf.innerRadius = smartBorders["in"];
+    conf.outerRadius = smartBorders.out;
+  }
   this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
   circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   this.buildLayeredData = function() {
@@ -1170,7 +1254,8 @@ circosJS.Core.prototype.render = function(ids, removeTracks) {
 circosJS.Core.prototype._conf = {
   width: 700,
   height: 700,
-  container: 'circos'
+  container: 'circos',
+  defaultTrackWidth: 10
 };
 
 circosJS.Layout.prototype._defaultConf = {

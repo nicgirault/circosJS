@@ -26,7 +26,7 @@ gulp.task 'coffee', ->
     .on 'error', gutil.log
     return
 
-gulp.task 'watch', ->
+gulp.task 'watch', ['build'], ->
     gulp.watch 'src/*.coffee', ['coffee']
     return
 

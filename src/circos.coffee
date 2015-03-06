@@ -101,6 +101,30 @@ circosJS.mixConf = (conf, defaultConf) ->
             newConf[key] = value
     return newConf
 
+circosJS.Core.prototype.smartBorders = ->
+    width = @_conf.defaultTrackWidth
+    layout = {in: @_layout._conf.innerRadius, out: @_layout._conf.outerRadius}
+    borders = []
+    for trackType, store of @tracks
+        for trackId, track of store
+            borders.push {in: track._conf.innerRadius, out: track._conf.outerRadius} if track._conf.innerRadius
+
+    borders = borders.sort (a,b) ->
+        1 if a.out > b.out
+        -1 if a.out < b.out
+        0
+
+    currentBorder = layout
+    for border in borders
+        if border.out < currentBorder.in - width
+            return {in: currentBorder.in - width, out: currentBorder.in}
+        currentBorder = border
+    if currentBorder.in > width
+        return {in: currentBorder.in - width, out: currentBorder.in}
+    else
+        return {in: borders[0].out, out: borders[0].out + width}
+
+
 if module?
     module.exports = circosJS
 

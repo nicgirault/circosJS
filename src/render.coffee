@@ -1,7 +1,6 @@
 # removeTracks allows to clean track data if layout is changed
 circosJS.Core.prototype.render = (ids, removeTracks) ->
     # this refers the circos instance
-
     if typeof ids == 'undefined'
         renderAll = true
 

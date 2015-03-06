@@ -3,6 +3,7 @@ circosJS.Core.prototype._conf =
     width: 700
     height: 700
     container: 'circos'
+    defaultTrackWidth: 10
 
 # Layout
 circosJS.Layout.prototype._defaultConf =
