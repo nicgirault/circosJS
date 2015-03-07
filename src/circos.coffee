@@ -60,13 +60,13 @@ circosJS.Core.prototype.layout = (conf, data) ->
     this._layout = new circosJS.Layout(conf, data)
     return this
 
-circosJS.log = (level, name, message, data) ->
+circosJS.log = (level, code, message, data) ->
     levels = ['Permanent log', 'Error', 'Warning', 'Info']
     # 0 - permanent
     # 1 - error
     # 2 - warning
     # 3 - info
-    console.log('CircosJS: ', levels[level]+' ['+name+'] ', message, data)
+    console.log('CircosJS: ', levels[level]+' ['+code+'] ', message, data)
     return
 
 circosJS.parseData = (data) ->
@@ -80,9 +80,19 @@ circosJS.parseData = (data) ->
     # if it's an array:
     # [parentId, start, end, value]
     dict = {}
-    data.forEach (datum) ->
+    header = ['parent', 'start', 'end', 'value']
+    data.forEach (datum, index) ->
         unless dict[datum[0]]?
             dict[datum[0]] = []
+
+        for element, i in datum.slice 1
+            buffer = parseFloat element
+            if isNaN buffer
+                circosJS.log(1, header[i+1], 'not a number', {line: i+1, value: element})
+            else
+                datum[i+1] = buffer
+
+
         dict[datum[0]].push {start: datum[1], end: datum[2], value: datum[3]}
     newData = []
     for parentId, block of dict

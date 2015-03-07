@@ -74,14 +74,14 @@ circosJS.Core.prototype.layout = function(conf, data) {
   return this;
 };
 
-circosJS.log = function(level, name, message, data) {
+circosJS.log = function(level, code, message, data) {
   var levels;
   levels = ['Permanent log', 'Error', 'Warning', 'Info'];
-  console.log('CircosJS: ', levels[level] + ' [' + name + '] ', message, data);
+  console.log('CircosJS: ', levels[level] + ' [' + code + '] ', message, data);
 };
 
 circosJS.parseData = function(data) {
-  var block, dict, newData, parentId, sample;
+  var block, dict, header, newData, parentId, sample;
   if (!(data.length > 0)) {
     return data;
   }
@@ -90,9 +90,24 @@ circosJS.parseData = function(data) {
     return data;
   }
   dict = {};
-  data.forEach(function(datum) {
+  header = ['parent', 'start', 'end', 'value'];
+  data.forEach(function(datum, index) {
+    var buffer, element, i, _i, _len, _ref;
     if (dict[datum[0]] == null) {
       dict[datum[0]] = [];
+    }
+    _ref = datum.slice(1);
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      element = _ref[i];
+      buffer = parseFloat(element);
+      if (isNaN(buffer)) {
+        circosJS.log(1, header[i + 1], 'not a number', {
+          line: i + 1,
+          value: element
+        });
+      } else {
+        datum[i + 1] = buffer;
+      }
     }
     return dict[datum[0]].push({
       start: datum[1],
@@ -423,6 +438,18 @@ circosJS.Chord = function(instance, conf, data, rules, layout) {
     }
     return true;
   };
+  return this;
+};
+
+circosJS.CircularTrack = function(instance, conf, data, rules, backgrounds) {
+  var smartBorders;
+  this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
+  if (this._conf.innerRadius === 0 && this._conf.outerRadius === 0) {
+    smartBorders = instance.smartBorders();
+    this._conf.innerRadius = smartBorders["in"];
+    this._conf.outerRadius = smartBorders.out;
+  }
+  circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
