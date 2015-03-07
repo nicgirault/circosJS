@@ -92,7 +92,8 @@ circosJS.parseData = function(data) {
   dict = {};
   header = ['parent', 'start', 'end', 'value'];
   data.forEach(function(datum, index) {
-    var buffer, element, i, _i, _len, _ref;
+    var buffer, element, error, i, _i, _len, _ref;
+    error = false;
     if (dict[datum[0]] == null) {
       dict[datum[0]] = [];
     }
@@ -106,15 +107,18 @@ circosJS.parseData = function(data) {
           value: element,
           header: header[i + 1]
         });
+        error = true;
       } else {
         datum[i + 1] = buffer;
       }
     }
-    return dict[datum[0]].push({
-      start: datum[1],
-      end: datum[2],
-      value: datum[3]
-    });
+    if (!error) {
+      return dict[datum[0]].push({
+        start: datum[1],
+        end: datum[2],
+        value: datum[3]
+      });
+    }
   });
   newData = [];
   for (parentId in dict) {

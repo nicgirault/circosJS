@@ -82,6 +82,7 @@ circosJS.parseData = (data) ->
     dict = {}
     header = ['parent', 'start', 'end', 'value']
     data.forEach (datum, index) ->
+        error = false
         unless dict[datum[0]]?
             dict[datum[0]] = []
 
@@ -89,11 +90,10 @@ circosJS.parseData = (data) ->
             buffer = parseFloat element
             if isNaN buffer
                 circosJS.log(1, 'datum', 'not a number', {line: index+1, value: element, header: header[i+1]})
+                error = true
             else
                 datum[i+1] = buffer
-
-
-        dict[datum[0]].push {start: datum[1], end: datum[2], value: datum[3]}
+        dict[datum[0]].push({start: datum[1], end: datum[2], value: datum[3]}) unless error
     newData = []
     for parentId, block of dict
         newData.push {parent: parentId, data: block}
