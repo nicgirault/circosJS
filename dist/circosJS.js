@@ -101,9 +101,10 @@ circosJS.parseData = function(data) {
       element = _ref[i];
       buffer = parseFloat(element);
       if (isNaN(buffer)) {
-        circosJS.log(1, header[i + 1], 'not a number', {
-          line: i + 1,
-          value: element
+        circosJS.log(1, 'datum', 'not a number', {
+          line: index + 1,
+          value: element,
+          header: header[i + 1]
         });
       } else {
         datum[i + 1] = buffer;

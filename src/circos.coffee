@@ -88,7 +88,7 @@ circosJS.parseData = (data) ->
         for element, i in datum.slice 1
             buffer = parseFloat element
             if isNaN buffer
-                circosJS.log(1, header[i+1], 'not a number', {line: i+1, value: element})
+                circosJS.log(1, 'datum', 'not a number', {line: index+1, value: element, header: header[i+1]})
             else
                 datum[i+1] = buffer
 
