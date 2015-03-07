@@ -622,6 +622,14 @@ circosJS.Track = function(instance, conf, data, rules, backgrounds) {
   this._data = circosJS.parseData(data);
   this._backgrounds = backgrounds || [];
   this._rules = rules;
+  if (conf.innerRadius && conf.outerRadius) {
+    if (conf.innerRadius > conf.outerRadius) {
+      circosJS.log(2, 'radiusInconsitency', 'Inner radius greater than outer radius', {
+        'innerRadius': conf.innerRadius,
+        'outerRadius': conf.outerRadius
+      });
+    }
+  }
   this.applyRules = function() {
     var datum, i, k, rule, v, _ref, _results;
     _ref = this._data;
@@ -762,9 +770,9 @@ circosJS.Track = function(instance, conf, data, rules, backgrounds) {
     return this._rules;
   };
   this.isLayoutCompliant = function(instance, id) {
-    var block, d, datum, layout_ids, layout_lengths, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3;
+    var block, d, datum, layout_ids, layout_lengths, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
     if (instance._layout == null) {
-      circosJS.log(1, 'No layout defined', 'Circos cannot add or update a heatmap track without layout', {
+      circosJS.log(1, 'undefinedLayout', 'No layout defined', {
         'heatmap_id': id
       });
       return false;
@@ -785,18 +793,24 @@ circosJS.Track = function(instance, conf, data, rules, backgrounds) {
       d = _ref[_i];
       layout_lengths[d.id] = d.len;
     }
-    _ref1 = this._data;
-    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-      block = _ref1[_j];
-      if (_ref2 = block.parent, __indexOf.call(layout_ids, _ref2) < 0) {
-        circosJS.log(2, 'No layout block id match', 'Heatmap data has a parent property that does not correspond to any layout block id', {
+    this._data = this._data.filter(function(block) {
+      var _ref1;
+      if (_ref1 = block.parent, __indexOf.call(layout_ids, _ref1) >= 0) {
+        return true;
+      } else {
+        circosJS.log(2, 'undefinedParentId', 'Heatmap data has a parent property that does not correspond to any layout block id', {
           'heatmap_id': id,
           'block_id': block.parent
         });
+        return false;
       }
-      _ref3 = block.data;
-      for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
-        datum = _ref3[_k];
+    });
+    _ref1 = this._data;
+    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+      block = _ref1[_j];
+      _ref2 = block.data;
+      for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+        datum = _ref2[_k];
         if (datum.start < 0 || datum.end > layout_lengths[block.parent]) {
           circosJS.log(2, 'Track data inconsistency', 'Track data has a start < 0 or a end above the block length', {
             'track_id': id,

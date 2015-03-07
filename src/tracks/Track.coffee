@@ -7,6 +7,16 @@ circosJS.Track = (instance, conf, data, rules, backgrounds) ->
     # {parameter: color, value: 'blue', condition: function, flow: 'stop if true'}
     @_rules = rules
 
+    if conf.innerRadius and conf.outerRadius
+        if conf.innerRadius > conf.outerRadius
+            circosJS.log(
+                2,
+                'radiusInconsitency',
+                'Inner radius greater than outer radius',
+                {'innerRadius': conf.innerRadius, 'outerRadius': conf.outerRadius}
+            )
+
+
     @applyRules = ->
         for k,v of @_data
             for i, datum of v.data
@@ -93,8 +103,8 @@ circosJS.Track = (instance, conf, data, rules, backgrounds) ->
         unless instance._layout?
             circosJS.log(
                 1,
+                'undefinedLayout',
                 'No layout defined',
-                'Circos cannot add or update a heatmap track without layout',
                 {'heatmap_id': id}
             )
             return false
@@ -104,16 +114,20 @@ circosJS.Track = (instance, conf, data, rules, backgrounds) ->
         layout_lengths = {}
         for d in instance._layout.getData()
             layout_lengths[d.id] = d.len
-        # for datum in data
-        for block in @_data
-            # check match between track and layout block id
-            unless block.parent in layout_ids
+
+        @_data = @_data.filter (block) ->
+            if block.parent in layout_ids
+                return true
+            else
                 circosJS.log(
                     2,
-                    'No layout block id match',
+                    'undefinedParentId',
                     'Heatmap data has a parent property that does not correspond to any layout block id',
                     {'heatmap_id': id, 'block_id': block.parent}
                 )
+                return false
+
+        for block in @_data
             # check datum lengths and layout block length
             for datum in block.data
                 if datum.start < 0 or datum.end > layout_lengths[block.parent]
