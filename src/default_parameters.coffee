@@ -43,6 +43,7 @@ circosJS.Heatmap.prototype._defaultConf =
   max: 'smart'
   colorPalette: 'YlGnBu'
   colorPaletteSize: 9
+  colorPaletteReverse: false
   logScale: false
 
 # Histogram
@@ -55,6 +56,7 @@ circosJS.Histogram.prototype._defaultConf =
   colorPaletteSize: 9
   colorPalette: 'YlGnBu'
   usePalette: true
+  colorPaletteReverse: false
   color: '#fd6a62'
   logScale: false
 
@@ -63,6 +65,7 @@ circosJS.Chord.prototype._defaultConf =
   colorPaletteSize: 9
   colorPalette: 'PuBuGn'
   usePalette: true
+  colorPaletteReverse: false
   color: '#fd6a62'
   opacity: 0.7
   min: 'smart'
@@ -118,6 +121,7 @@ circosJS.Stack.prototype._defaultConf =
   colorPaletteSize: 9
   colorPalette: 'PuBuGn'
   usePalette: true
+  colorPaletteReverse: false
   color: '#fd6a62'
   min: 'smart'
   max: 'smart'

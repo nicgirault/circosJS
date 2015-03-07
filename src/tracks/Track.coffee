@@ -54,6 +54,7 @@ circosJS.Track = (instance, conf, data, rules, backgrounds) ->
         min = @_conf.cmin
         max = @_conf.cmax
         scope = @_conf.colorPaletteSize
+        reverse = @_conf.colorPaletteReverse
 
         if min == max
             return 0
@@ -65,7 +66,8 @@ circosJS.Track = (instance, conf, data, rules, backgrounds) ->
         fraction = (value - min) / (max - min)
 
         x = Math.exp(1 / scaleLogBase * Math.log(fraction))
-
+        if reverse
+            x = 1 - x
         return Math.floor(scope * x)
 
     @height = (value, logScale) ->

@@ -715,7 +715,7 @@ circosJS.Track = function(instance, conf, data, rules, backgrounds) {
     }
   };
   this.colorScale = function(value, logScale) {
-    var fraction, max, min, scaleLogBase, scope, x;
+    var fraction, max, min, reverse, scaleLogBase, scope, x;
     if (logScale) {
       scaleLogBase = 2.3;
     } else {
@@ -724,6 +724,7 @@ circosJS.Track = function(instance, conf, data, rules, backgrounds) {
     min = this._conf.cmin;
     max = this._conf.cmax;
     scope = this._conf.colorPaletteSize;
+    reverse = this._conf.colorPaletteReverse;
     if (min === max) {
       return 0;
     }
@@ -735,6 +736,9 @@ circosJS.Track = function(instance, conf, data, rules, backgrounds) {
     }
     fraction = (value - min) / (max - min);
     x = Math.exp(1 / scaleLogBase * Math.log(fraction));
+    if (reverse) {
+      x = 1 - x;
+    }
     return Math.floor(scope * x);
   };
   this.height = function(value, logScale) {
@@ -1312,6 +1316,7 @@ circosJS.Heatmap.prototype._defaultConf = {
   max: 'smart',
   colorPalette: 'YlGnBu',
   colorPaletteSize: 9,
+  colorPaletteReverse: false,
   logScale: false
 };
 
@@ -1324,6 +1329,7 @@ circosJS.Histogram.prototype._defaultConf = {
   colorPaletteSize: 9,
   colorPalette: 'YlGnBu',
   usePalette: true,
+  colorPaletteReverse: false,
   color: '#fd6a62',
   logScale: false
 };
@@ -1332,6 +1338,7 @@ circosJS.Chord.prototype._defaultConf = {
   colorPaletteSize: 9,
   colorPalette: 'PuBuGn',
   usePalette: true,
+  colorPaletteReverse: false,
   color: '#fd6a62',
   opacity: 0.7,
   min: 'smart',
@@ -1390,6 +1397,7 @@ circosJS.Stack.prototype._defaultConf = {
   colorPaletteSize: 9,
   colorPalette: 'PuBuGn',
   usePalette: true,
+  colorPaletteReverse: false,
   color: '#fd6a62',
   min: 'smart',
   max: 'smart',
