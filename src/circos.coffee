@@ -69,36 +69,6 @@ circosJS.log = (level, code, message, data) ->
     console.log('CircosJS: ', levels[level]+' ['+code+'] ', message, data)
     return
 
-circosJS.parseData = (data) ->
-    unless data.length > 0
-        return data
-    sample = data[0]
-
-    unless Array.isArray(sample)
-        return data
-
-    # if it's an array:
-    # [parentId, start, end, value]
-    dict = {}
-    header = ['parent', 'start', 'end', 'value']
-    data.forEach (datum, index) ->
-        error = false
-        unless dict[datum[0]]?
-            dict[datum[0]] = []
-
-        for element, i in datum.slice 1
-            buffer = parseFloat element
-            if isNaN buffer
-                circosJS.log(1, 'datum', 'not a number', {line: index+1, value: element, header: header[i+1]})
-                error = true
-            else
-                datum[i+1] = buffer
-        dict[datum[0]].push({start: datum[1], end: datum[2], value: datum[3]}) unless error
-    newData = []
-    for parentId, block of dict
-        newData.push {parent: parentId, data: block}
-    return newData
-
 circosJS.mixConf = (conf, defaultConf) ->
     newConf = {}
     for key, value of defaultConf

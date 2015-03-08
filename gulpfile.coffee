@@ -12,24 +12,21 @@ watch = require("gulp-watch")
 gulp.task 'coffee', ->
     gulp.src [
         'src/circos.coffee'
+        'src/dataParser.coffee'
         'src/layout.coffee'
         'src/tracks.coffee'
         'src/tracks/*.coffee'
         'src/rendering/*.coffee'
         'src/render.coffee'
-        'src/default_parameters.coffee'
+        'src/defaultParameters.coffee'
     ]
     .pipe(concat('circosJS.coffee'))
     .pipe(coffee(bare: true))
     .pipe(concat('circosJS.js'))
     .pipe(gulp.dest('dist'))
     .on 'error', gutil.log
-    return
-
-gulp.task 'watch', ['build'], ->
-    gulp.watch 'src/*.coffee', ['coffee']
-    return
 
 gulp.task 'build', ['coffee']
 
-# gulp.task 'default', ['watch']
+gulp.task 'watch', ['build'], ->
+    gulp.watch 'src/**/*.coffee', ['coffee']

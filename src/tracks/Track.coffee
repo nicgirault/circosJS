@@ -1,6 +1,7 @@
 circosJS.Track = (instance, conf, data, rules, backgrounds) ->
+    layout_ids = (d.id for d in instance._layout.getData())
     # this refers the track instance
-    @_data = circosJS.parseData(data)
+    @_data = circosJS.parseData(data, layout_ids)
     @_backgrounds = backgrounds || []
 
     # a rule look like this:
@@ -23,13 +24,6 @@ circosJS.Track = (instance, conf, data, rules, backgrounds) ->
                 for rule in rules
                     if rule.condition(v.parent, datum, i)
                         datum[rule.parameter] = rule.value
-
-    # Only for heatmap and histograms...
-    @completeData = ->
-        # add parent is datum. Needed for rendering
-        for k,v of @_data
-            for i, datum of v.data
-                datum.block_id = v.parent
 
     @computeMinMax = ->
         # compute min and max values
@@ -116,18 +110,6 @@ circosJS.Track = (instance, conf, data, rules, backgrounds) ->
         layout_lengths = {}
         for d in instance._layout.getData()
             layout_lengths[d.id] = d.len
-
-        @_data = @_data.filter (block) ->
-            if block.parent in layout_ids
-                return true
-            else
-                circosJS.log(
-                    2,
-                    'undefinedParentId',
-                    'Heatmap data has a parent property that does not correspond to any layout block id',
-                    {'heatmap_id': id, 'block_id': block.parent}
-                )
-                return false
 
         for block in @_data
             # check datum lengths and layout block length

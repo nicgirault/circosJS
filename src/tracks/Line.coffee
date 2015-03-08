@@ -8,5 +8,5 @@ circosJS.Line = (instance, conf, data, rules, backgrounds) ->
     @_conf.innerRadius = smartBorders.in
     @_conf.outerRadius = smartBorders.out
 
-  circosJS.Track.call(@, instance, conf, data, rules, backgrounds)
+  circosJS.CircularTrack.call(@, instance, conf, data, rules, backgrounds)
   return @

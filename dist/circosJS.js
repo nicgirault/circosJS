@@ -80,57 +80,6 @@ circosJS.log = function(level, code, message, data) {
   console.log('CircosJS: ', levels[level] + ' [' + code + '] ', message, data);
 };
 
-circosJS.parseData = function(data) {
-  var block, dict, header, newData, parentId, sample;
-  if (!(data.length > 0)) {
-    return data;
-  }
-  sample = data[0];
-  if (!Array.isArray(sample)) {
-    return data;
-  }
-  dict = {};
-  header = ['parent', 'start', 'end', 'value'];
-  data.forEach(function(datum, index) {
-    var buffer, element, error, i, _i, _len, _ref;
-    error = false;
-    if (dict[datum[0]] == null) {
-      dict[datum[0]] = [];
-    }
-    _ref = datum.slice(1);
-    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-      element = _ref[i];
-      buffer = parseFloat(element);
-      if (isNaN(buffer)) {
-        circosJS.log(1, 'datum', 'not a number', {
-          line: index + 1,
-          value: element,
-          header: header[i + 1]
-        });
-        error = true;
-      } else {
-        datum[i + 1] = buffer;
-      }
-    }
-    if (!error) {
-      return dict[datum[0]].push({
-        start: datum[1],
-        end: datum[2],
-        value: datum[3]
-      });
-    }
-  });
-  newData = [];
-  for (parentId in dict) {
-    block = dict[parentId];
-    newData.push({
-      parent: parentId,
-      data: block
-    });
-  }
-  return newData;
-};
-
 circosJS.mixConf = function(conf, defaultConf) {
   var key, newConf, value;
   newConf = {};
@@ -206,6 +155,167 @@ circosJS.Core.prototype.smartBorders = function() {
 if (typeof module !== "undefined" && module !== null) {
   module.exports = circosJS;
 }
+
+circosJS.parseData = function(data, layoutIds) {
+  var sample;
+  if (!(data.length > 0)) {
+    return data;
+  }
+  sample = data[0];
+  if (!Array.isArray(sample)) {
+    return data;
+  }
+  return circosJS.parseSpanValueData(data, layoutIds);
+};
+
+circosJS.parseSpanValueData = function(data, layoutIds) {
+  var header;
+  header = ['parent', 'start', 'end', 'value'];
+  return _(data).filter(function(datum, index) {
+    var _ref;
+    if (_ref = datum[0], __indexOf.call(layoutIds, _ref) < 0) {
+      circosJS.log(1, 'datum', 'unknown parent id', {
+        line: index + 1,
+        value: element,
+        header: header[i + 1],
+        expected: layoutIds
+      });
+      return false;
+    }
+    return true;
+  }).filter(function(datum, index) {
+    var element, i, _i, _len, _ref;
+    _ref = datum.slice(1);
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      element = _ref[i];
+      if (isNaN(element)) {
+        circosJS.log(1, 'datum', 'not a number', {
+          line: index + 1,
+          value: element,
+          header: header[i + 1]
+        });
+        return false;
+      }
+    }
+    return true;
+  }).map(function(datum) {
+    return {
+      block_id: datum[0],
+      start: parseFloat(datum[1]),
+      end: parseFloat(datum[2]),
+      value: parseFloat(datum[3])
+    };
+  }).groupBy(function(datum) {
+    return datum.block_id;
+  }).map(function(group, parentId) {
+    return {
+      parent: parentId,
+      data: group
+    };
+  }).value();
+};
+
+circosJS.parsePositionValueData = function(data, layoutIds) {
+  var header;
+  header = ['parent', 'position', 'value'];
+  return _(data).filter(function(datum, index) {
+    var _ref;
+    if (_ref = datum[0], __indexOf.call(layoutIds, _ref) < 0) {
+      circosJS.log(1, 'datum', 'unknown parent id', {
+        line: index + 1,
+        value: element,
+        header: header[0],
+        expected: layoutIds
+      });
+      return false;
+    }
+    return true;
+  }).filter(function(datum, index) {
+    var element, i, _i, _len, _ref;
+    _ref = datum.slice(1);
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      element = _ref[i];
+      if (isNaN(element)) {
+        circosJS.log(1, 'datum', 'not a number', {
+          line: index + 1,
+          value: element,
+          header: header[i + 1]
+        });
+        return false;
+      }
+    }
+    return true;
+  }).map(function(datum) {
+    return {
+      block_id: datum[0],
+      position: parseFloat(datum[1]),
+      value: parseFloat(datum[2])
+    };
+  }).groupBy(function(datum) {
+    return datum.block_id;
+  }).map(function(group, parentId) {
+    return {
+      parent: parentId,
+      data: group
+    };
+  }).value();
+};
+
+circosJS.parseChordData = function(data, layoutIds) {
+  var header;
+  header = ['source_id', 'source_start', 'source_end', 'target_id', 'target_start', 'target_end', 'value'];
+  return _(data).filter(function(datum, index) {
+    var _ref, _ref1;
+    if (_ref = datum[0], __indexOf.call(layoutIds, _ref) < 0) {
+      circosJS.log(1, 'datum', 'unknown parent id', {
+        line: index + 1,
+        value: element,
+        header: header[0],
+        expected: layoutIds
+      });
+      return false;
+    }
+    if (_ref1 = datum[3], __indexOf.call(layoutIds, _ref1) < 0) {
+      circosJS.log(1, 'datum', 'unknown parent id', {
+        line: index + 1,
+        value: element,
+        header: header[3],
+        expected: layoutIds
+      });
+      return false;
+    }
+    return true;
+  }).filter(function(datum, index) {
+    var element, i, _i, _len, _ref;
+    _ref = ['0', datum[1], datum[2], '0', datum[4], datum[5], datum[6]];
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      element = _ref[i];
+      if (isNaN(element)) {
+        circosJS.log(1, 'datum', 'not a number', {
+          line: index + 1,
+          value: element,
+          header: header[i]
+        });
+        return false;
+      }
+    }
+    return true;
+  }).map(function(datum) {
+    return {
+      source: {
+        id: datum[0],
+        start: parseFloat(datum[1]),
+        end: parseFloat(datum[2])
+      },
+      target: {
+        id: datum[3],
+        start: parseFloat(datum[4]),
+        end: parseFloat(datum[5])
+      },
+      value: parseFloat(datum[6])
+    };
+  }).value();
+};
 
 circosJS.Layout = function(conf, data) {
   var block_nb, gap, k, offset, size, v, _ref, _ref1, _ref2;
@@ -447,13 +557,25 @@ circosJS.Chord = function(instance, conf, data, rules, layout) {
 };
 
 circosJS.CircularTrack = function(instance, conf, data, rules, backgrounds) {
-  var smartBorders;
-  this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  if (this._conf.innerRadius === 0 && this._conf.outerRadius === 0) {
-    smartBorders = instance.smartBorders();
-    this._conf.innerRadius = smartBorders["in"];
-    this._conf.outerRadius = smartBorders.out;
-  }
+  this.completeData = function() {
+    var datum, i, k, v, _ref, _results;
+    _ref = this._data;
+    _results = [];
+    for (k in _ref) {
+      v = _ref[k];
+      _results.push((function() {
+        var _ref1, _results1;
+        _ref1 = v.data;
+        _results1 = [];
+        for (i in _ref1) {
+          datum = _ref1[i];
+          _results1.push(datum.block_id = v.parent);
+        }
+        return _results1;
+      })());
+    }
+    return _results;
+  };
   circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
@@ -466,7 +588,7 @@ circosJS.Heatmap = function(instance, conf, data, rules, backgrounds) {
     this._conf.innerRadius = smartBorders["in"];
     this._conf.outerRadius = smartBorders.out;
   }
-  circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
+  circosJS.CircularTrack.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
@@ -478,7 +600,7 @@ circosJS.Histogram = function(instance, conf, data, rules, backgrounds) {
     this._conf.innerRadius = smartBorders["in"];
     this._conf.outerRadius = smartBorders.out;
   }
-  circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
+  circosJS.CircularTrack.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
@@ -490,7 +612,7 @@ circosJS.Line = function(instance, conf, data, rules, backgrounds) {
     this._conf.innerRadius = smartBorders["in"];
     this._conf.outerRadius = smartBorders.out;
   }
-  circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
+  circosJS.CircularTrack.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
@@ -502,7 +624,7 @@ circosJS.Scatter = function(instance, conf, data, rules, backgrounds) {
     this._conf.innerRadius = smartBorders["in"];
     this._conf.outerRadius = smartBorders.out;
   }
-  circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
+  circosJS.CircularTrack.call(this, instance, conf, data, rules, backgrounds);
   return this;
 };
 
@@ -514,7 +636,7 @@ circosJS.Stack = function(instance, conf, data, rules, backgrounds) {
     this._conf.innerRadius = smartBorders["in"];
     this._conf.outerRadius = smartBorders.out;
   }
-  circosJS.Track.call(this, instance, conf, data, rules, backgrounds);
+  circosJS.CircularTrack.call(this, instance, conf, data, rules, backgrounds);
   this.buildLayeredData = function() {
     var block, datum, idx, lastDatumInLayer, layer, layeredData, layers, placed, sortedData, _i, _j, _len, _len1;
     data = this._data;
@@ -651,7 +773,18 @@ circosJS.Stack = function(instance, conf, data, rules, backgrounds) {
 };
 
 circosJS.Track = function(instance, conf, data, rules, backgrounds) {
-  this._data = circosJS.parseData(data);
+  var d, layout_ids;
+  layout_ids = (function() {
+    var _i, _len, _ref, _results;
+    _ref = instance._layout.getData();
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      d = _ref[_i];
+      _results.push(d.id);
+    }
+    return _results;
+  })();
+  this._data = circosJS.parseData(data, layout_ids);
   this._backgrounds = backgrounds || [];
   this._rules = rules;
   if (conf.innerRadius && conf.outerRadius) {
@@ -687,25 +820,6 @@ circosJS.Track = function(instance, conf, data, rules, backgrounds) {
             }
             return _results2;
           })());
-        }
-        return _results1;
-      })());
-    }
-    return _results;
-  };
-  this.completeData = function() {
-    var datum, i, k, v, _ref, _results;
-    _ref = this._data;
-    _results = [];
-    for (k in _ref) {
-      v = _ref[k];
-      _results.push((function() {
-        var _ref1, _results1;
-        _ref1 = v.data;
-        _results1 = [];
-        for (i in _ref1) {
-          datum = _ref1[i];
-          _results1.push(datum.block_id = v.parent);
         }
         return _results1;
       })());
@@ -806,7 +920,7 @@ circosJS.Track = function(instance, conf, data, rules, backgrounds) {
     return this._rules;
   };
   this.isLayoutCompliant = function(instance, id) {
-    var block, d, datum, layout_ids, layout_lengths, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+    var block, datum, layout_lengths, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
     if (instance._layout == null) {
       circosJS.log(1, 'undefinedLayout', 'No layout defined', {
         'heatmap_id': id
@@ -829,18 +943,6 @@ circosJS.Track = function(instance, conf, data, rules, backgrounds) {
       d = _ref[_i];
       layout_lengths[d.id] = d.len;
     }
-    this._data = this._data.filter(function(block) {
-      var _ref1;
-      if (_ref1 = block.parent, __indexOf.call(layout_ids, _ref1) >= 0) {
-        return true;
-      } else {
-        circosJS.log(2, 'undefinedParentId', 'Heatmap data has a parent property that does not correspond to any layout block id', {
-          'heatmap_id': id,
-          'block_id': block.parent
-        });
-        return false;
-      }
-    });
     _ref1 = this._data;
     for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
       block = _ref1[_j];

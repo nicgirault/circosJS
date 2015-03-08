@@ -3,10 +3,30 @@
   "description": "d3js library to draw circular graphs",
   "main": "dist/circosJS.js",
   "license": "GPL-2.0",
-  "ignore": ["demo"],
-  "keywords": ["d3", "d3js", "circos", "chords", "circle", "circular", "ring", "plot", "scatter", "heatmap", "histogram", "layout", "chart", "graph"],
+  "ignore": [
+    "demo"
+  ],
+  "keywords": [
+    "d3",
+    "d3js",
+    "circos",
+    "chords",
+    "circle",
+    "circular",
+    "ring",
+    "plot",
+    "scatter",
+    "heatmap",
+    "histogram",
+    "layout",
+    "chart",
+    "graph"
+  ],
   "authors": [
-    { "name": "Nicolas Girault", "email": "nic.girault@gmail.com" },
+    {
+      "name": "Nicolas Girault",
+      "email": "nic.girault@gmail.com"
+    }
   ],
   "homepage": "nicgirault.gitbooks.io/circosjs/content/",
   "repository": {
@@ -16,5 +36,6 @@
   "dependencies": {
     "d3": "~3.5.2",
     "colorBrewer": "https://raw.githubusercontent.com/mbostock/d3/master/lib/colorbrewer/colorbrewer.css",
+    "lodash": "~3.4.0"
   }
 }
