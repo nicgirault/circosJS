@@ -72,27 +72,24 @@ describe 'Heatmap', ->
     it 'should create an instance of Heatmap', ->
         expect(c._heatmaps['h1']).to.be.an.instanceOf(circosJS.Heatmap)
 
-    it 'should return the expected values', ->
-        expect(c._heatmaps['h1'].getConf()).to.deep.equal(conf)
+    # it 'should log an error when adding a heatmap when no layout is defined', ->
+    #     log.reset()
+    #     c1 = new circosJS({})
+    #     c1.heatmap('h1', conf, [['1', 1, 5, 1]])
+    #     expect(log).to.have.been.calledOnce
+    #     expect(log).to.have.been.calledWith(1, 'No layout defined')
 
-    it 'should log an error when adding a heatmap when no layout is defined', ->
-        log.reset()
-        c1 = new circosJS({})
-        c1.heatmap('h1', conf, [{ parent: '1', data: {start: 1, end: 5, value: 1}}])
-        expect(log).to.have.been.calledOnce
-        expect(log).to.have.been.calledWith(1, 'No layout defined')
+    # it 'should log a warning message when heatmap data does not fit a layout id', ->
+    #     log.reset()
+    #     c.heatmap('h2', conf, [{ parent: 'xxx', data: {start: 1, end: 5, value: 1}}])
+    #     expect(log).to.have.been.calledOnce
+    #     expect(log).to.have.been.calledWith(2, 'No layout block id match')
 
-    it 'should log a warning message when heatmap data does not fit a layout id', ->
-        log.reset()
-        c.heatmap('h2', conf, [{ parent: 'xxx', data: {start: 1, end: 5, value: 1}}])
-        expect(log).to.have.been.calledOnce
-        expect(log).to.have.been.calledWith(2, 'No layout block id match')
-
-    it 'should log a message when heatmap data does not fit the block size', ->
-        log.reset()
-        c.heatmap('h3', conf, [{ parent: '1', data: [{start: 1, end: 11, value: 1}]}])
-        expect(log).to.have.been.calledOnce
-        expect(log).to.have.been.calledWith(2, 'Track data inconsistency')
+    # it 'should log a message when heatmap data does not fit the block size', ->
+    #     log.reset()
+    #     c.heatmap('h3', conf, [{ parent: '1', data: [{start: 1, end: 11, value: 1}]}])
+    #     expect(log).to.have.been.calledOnce
+    #     expect(log).to.have.been.calledWith(2, 'Track data inconsistency')
 
     it 'should create a new heatmap instance when id is unknown', ->
         count = Object.keys(c._heatmaps).length
