@@ -510,12 +510,11 @@ stack = [
 
 heatmap = [
     ['january', 'a', 2,3],
-    ['january', 1, 2,3],
-    ['january', 1, 2,3],
-    ['february', 1, 2,3],
+    ['january', 1, 31,10],
+    ['february', 1, 28,3],
     ['march', 1, 2,3],
     ['march', 1, 2,3]
-]
+];
 
 var circos = new circosJS({
     container: '#chart'
@@ -551,13 +550,13 @@ circos
         },
         layout_data
     )
-    .heatmap('h1', {innerRadius: 220, outerRadius: 240, logScale: true}, heatmap)
+    .heatmap('h1', {logScale: true}, heatmap)
     //.histogram('hist1', {innerRadius: 200, outerRadius: 220}, heatmap)
-    .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter, rules, backgrounds)
-    .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
-    .chord('l1', {}, links)
-    .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 190, outerRadius: 240}, stack, stack_rules)
-    .line('line2', {innerRadius:100, outerRadius: 200}, [], {}, backgrounds2)
+    // .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter, rules, backgrounds)
+    // .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
+    // .chord('l1', {}, links)
+    // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 190, outerRadius: 240}, stack, stack_rules)
+    // .line('line2', {innerRadius:100, outerRadius: 200}, [], {}, backgrounds2)
     .render();
 
 // circos.removeTracks(['l1'])

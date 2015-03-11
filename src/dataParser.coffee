@@ -8,13 +8,13 @@ circosJS.parseData = (data, layoutIds) ->
 
     circosJS.parseSpanValueData(data, layoutIds)
 
-circosJS.parseSpanValueData = (data, layoutIds) ->
+circosJS.parseSpanValueData = (data, layoutSummary) ->
     header = ['parent', 'start', 'end', 'value']
 
-    _(data)
+    data = data
     .filter (datum, index) ->
-        unless datum[0] in layoutIds
-            circosJS.log(1, 'datum', 'unknown parent id', {line: index+1, value: element, header: header[i+1], expected: layoutIds})
+        unless datum[0] of layoutSummary
+            circosJS.log(1, 'datum', 'unknown parent id', {line: index+1, value: datum[0], header: header[0], layoutSummary: layoutSummary})
             return false
         true
     .filter (datum, index) ->
@@ -24,23 +24,31 @@ circosJS.parseSpanValueData = (data, layoutIds) ->
                 return false
         true
     .map (datum) ->
+        if datum.start < 0 or datum.end > layoutSummary[datum[0]]
+            circosJS.log(2, 'position', 'position inconsistency', { datum: datum, layoutSummary: layoutSummary})
         block_id: datum[0]
-        start: parseFloat datum[1]
-        end: parseFloat datum[2]
+        start: Math.max 0, parseFloat datum[1]
+        end: Math.min layoutSummary[datum[0]], parseFloat datum[2]
         value: parseFloat datum[3]
-    .groupBy (datum) ->
-        datum.block_id
-    .map (group, parentId) ->
-        parent: parentId
-        data: group
-    .value()
 
-circosJS.parsePositionValueData = (data, layoutIds) ->
+    # group data by block id
+    groups = d3.nest()
+        .key (datum) ->
+            datum.block_id
+        .entries data
+    return {
+        data: groups
+        meta:
+            min: d3.min data, (d) -> d.value
+            max: d3.max data, (d) -> d.value
+    }
+
+circosJS.parsePositionValueData = (data, layoutSummary) ->
     header = ['parent', 'position', 'value']
 
     _(data)
     .filter (datum, index) ->
-        unless datum[0] in layoutIds
+        unless datum[0] of layoutSummary
             circosJS.log(1, 'datum', 'unknown parent id', {line: index+1, value: element, header: header[0], expected: layoutIds})
             return false
         true
@@ -61,15 +69,15 @@ circosJS.parsePositionValueData = (data, layoutIds) ->
         data: group
     .value()
 
-circosJS.parseChordData = (data, layoutIds) ->
+circosJS.parseChordData = (data, layoutSummary) ->
     header = ['source_id', 'source_start', 'source_end', 'target_id', 'target_start', 'target_end', 'value']
 
     _(data)
     .filter (datum, index) ->
-        unless datum[0] in layoutIds
+        unless datum[0] of layoutSummary
             circosJS.log(1, 'datum', 'unknown parent id', {line: index+1, value: element, header: header[0], expected: layoutIds})
             return false
-        unless datum[3] in layoutIds
+        unless datum[3] of layoutSummary
             circosJS.log(1, 'datum', 'unknown parent id', {line: index+1, value: element, header: header[3], expected: layoutIds})
             return false
         true

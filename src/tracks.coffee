@@ -3,9 +3,8 @@ circosJS.Core.prototype.heatmap = (id, conf, data, rules, backgrounds) ->
 
     track.completeData()
 
-    if track.isLayoutCompliant @, id
-        track.computeMinMax()
-        @_heatmaps[id] = track
+    track.computeMinMax()
+    @_heatmaps[id] = track
 
     return @
 
@@ -14,18 +13,16 @@ circosJS.Core.prototype.histogram = (id, conf, data, rules, backgrounds) ->
 
     track.completeData()
 
-    if track.isLayoutCompliant @, id
-        track.computeMinMax()
-        @_histograms[id] = track
+    track.computeMinMax()
+    @_histograms[id] = track
 
     return @
 
 circosJS.Core.prototype.chord = (id, conf, data, rules) ->
     track = new circosJS.Chord(@, conf, data, rules, @_layout)
 
-    if track.isLayoutCompliant @, id
-        track.computeMinMax()
-        @_chords[id] = track
+    track.computeMinMax()
+    @_chords[id] = track
 
     return @
 

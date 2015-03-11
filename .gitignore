@@ -1,5 +1,6 @@
 *.DS_Store
-node_modules/*
+node_modules
+bower_components
 src/circosJS.coffee
 demo/generateHeatmap.py
 build

@@ -1,9 +1,13 @@
 circosJS.Track = (instance, conf, data, rules, backgrounds) ->
-    layout_ids = (d.id for d in instance._layout.getData())
     # this refers the track instance
-    @_data = circosJS.parseData(data, layout_ids)
-    @_backgrounds = backgrounds || []
 
+    layoutSummary = {}
+    for d in instance._layout.getData()
+        layoutSummary[d.id] = d.len
+
+    result = circosJS.parseData(data, layoutSummary)
+    @_data = result.data
+    @_backgrounds = backgrounds || []
     # a rule look like this:
     # {parameter: color, value: 'blue', condition: function, flow: 'stop if true'}
     @_rules = rules
@@ -27,17 +31,8 @@ circosJS.Track = (instance, conf, data, rules, backgrounds) ->
 
     @computeMinMax = ->
         # compute min and max values
-        values = (datum.value for datum in blockData.data for blockData in @_data)
-        flattenValues = []
-        flattenValues = flattenValues.concat.apply flattenValues, values
-        if @_conf.min == 'smart'
-            @_conf.cmin = Math.min.apply null, flattenValues
-        else
-            @_conf.cmin = @_conf.min
-        if @_conf.max == 'smart'
-            @_conf.cmax = Math.max.apply null, flattenValues
-        else
-            @_conf.cmax = @_conf.max
+        @_conf.cmin = if @_conf.min == 'smart' then result.meta.min else @_conf.min
+        @_conf.cmax = if @_conf.max == 'smart' then result.meta.max else @_conf.max
 
     @colorScale = (value, logScale) ->
         if logScale
@@ -93,35 +88,6 @@ circosJS.Track = (instance, conf, data, rules, backgrounds) ->
         @_conf
     @getRules = ->
         @_rules
-
-    @isLayoutCompliant = (instance, id) ->
-        # Check layout is defined
-        unless instance._layout?
-            circosJS.log(
-                1,
-                'undefinedLayout',
-                'No layout defined',
-                {'heatmap_id': id}
-            )
-            return false
-
-        #check data consistency with layout
-        layout_ids = (d.id for d in instance._layout.getData())
-        layout_lengths = {}
-        for d in instance._layout.getData()
-            layout_lengths[d.id] = d.len
-
-        for block in @_data
-            # check datum lengths and layout block length
-            for datum in block.data
-                if datum.start < 0 or datum.end > layout_lengths[block.parent]
-                    circosJS.log(
-                        2,
-                        'Track data inconsistency',
-                        'Track data has a start < 0 or a end above the block length',
-                        {'track_id': id, 'datum': datum, 'layout block': instance._layout.getBlock(block.parent)}
-                    )
-        return true
 
     @theta = (d) =>
         block = instance._layout.getBlock(d.block_id)

@@ -6,7 +6,7 @@ sinon_chai = require 'sinon-chai'
 
 chai.use(sinon_chai)
 
-circosJS = require('../src/circosJS.coffee')
+circosJS = require('../build/circosJS.coffee')
 
 describe 'CircosJS', ->
     c = new circosJS
@@ -48,11 +48,11 @@ describe 'Layout', ->
 
     it 'should return a data', ->
         expect(c._layout.getData()).to.deep.equal([1,2,3])
-    
+
 
 
 describe 'Heatmap', ->
-    conf = 
+    conf =
         innerRadius: 10
         outerRadius: 20
         min: -2
