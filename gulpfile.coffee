@@ -33,6 +33,6 @@ gulp.task 'watch', ['build'], ->
     gulp.watch 'src/**/*.coffee', ['compile']
 
 gulp.task 'test', ['concat'], ->
-    gulp.src 'test/*.coffee', read: false
+    gulp.src 'test/**/*.coffee', read: false
     .pipe mocha reporter: 'nyan', compilers: 'coffee:coffee-script'
     .on 'error', gutil.log

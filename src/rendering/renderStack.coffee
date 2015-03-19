@@ -6,7 +6,7 @@ circosJS.renderStack = (track, stack, conf, data, instance, d3) ->
     .enter().append 'g'
     .classed 'block', true
     .attr 'transform', (d) ->
-      'rotate(' + instance._layout.getBlock(d.parent).start * 360 / (2 * Math.PI) + ')'
+      'rotate(' + instance._layout.getBlock(d.key).start * 360 / (2 * Math.PI) + ')'
 
     layer = block.selectAll '.layer'
       .data (d) -> d.layers

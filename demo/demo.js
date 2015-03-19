@@ -510,7 +510,9 @@ stack = [
 
 heatmap = [
     ['january', 'a', 2,3],
-    ['january', 1, 31,10],
+    ['january', 1, 4,2],
+    ['january', 5, 10,10],
+    ['january', 11, 15,13],
     ['february', 1, 28,3],
     ['march', 1, 2,3],
     ['march', 1, 2,3]
@@ -550,8 +552,8 @@ circos
         },
         layout_data
     )
-    .heatmap('h1', {logScale: true}, heatmap)
-    //.histogram('hist1', {innerRadius: 200, outerRadius: 220}, heatmap)
+    // .heatmap('h1', {innerRadius: 150, outerRadius: 200}, heatmap)
+    .histogram('hist1', {innerRadius: 200, outerRadius: 220}, heatmap)
     // .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter, rules, backgrounds)
     // .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
     // .chord('l1', {}, links)

@@ -1,4 +1,4 @@
-circosJS.renderLine = (track, line_track, conf, data, instance, d3) ->
+circosJS.renderLine = (track, line_track, conf, data, instance) ->
   block = track.selectAll '.block'
     .data data
     .enter().append 'g'

@@ -6,7 +6,10 @@ sinon_chai = require 'sinon-chai'
 
 chai.use(sinon_chai)
 
+require '../bower_components/d3/d3.js'
 circosJS = require('../build/circosJS.coffee')
+circosJS.log = () ->
+    return
 
 describe 'CircosJS', ->
     c = new circosJS

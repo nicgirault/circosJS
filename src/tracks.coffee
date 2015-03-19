@@ -1,21 +1,13 @@
 circosJS.Core.prototype.heatmap = (id, conf, data, rules, backgrounds) ->
-    track = new circosJS.Heatmap(@, conf, data, rules, backgrounds)
-
-    track.completeData()
-
-    track.computeMinMax()
+    track = new circosJS.Heatmap()
+    track.build(@, conf, data, rules, backgrounds)
     @_heatmaps[id] = track
-
     return @
 
 circosJS.Core.prototype.histogram = (id, conf, data, rules, backgrounds) ->
-    track = new circosJS.Histogram(@, conf, data, rules, backgrounds)
-
-    track.completeData()
-
-    track.computeMinMax()
+    track = new circosJS.Histogram()
+    track.build(@, conf, data, rules, backgrounds)
     @_histograms[id] = track
-
     return @
 
 circosJS.Core.prototype.chord = (id, conf, data, rules) ->
@@ -31,7 +23,7 @@ circosJS.Core.prototype.scatter = (id, conf, data, rules, backgrounds) ->
     track.completeData()
     track.applyRules()
 
-    track.computeMinMax()
+    # track.computeMinMax()
     @_scatters[id] = track
 
     return @

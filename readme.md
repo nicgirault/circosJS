@@ -18,6 +18,13 @@ Installation
 bower install circosjs
 ```
 
+DDD
+---
+Layout
+Track
+Rule
+Backgroud
+
 Author
 ------
 Nicolas Girault

@@ -8,13 +8,13 @@ circosJS.Layout = (conf, data) ->
 
     # this refers the layout instance
     this._data = data
-    this._blocks = {} #data dictonary key=blockId
+    this.blocks = {} #data dictonary key=blockId
     this._size = 0
 
     # compute block offset
     offset = 0
     for k,v of this._data
-        this._blocks[v.id] =
+        this.blocks[v.id] =
             label: v.label
             len: v.len
             color: v.color
@@ -33,8 +33,8 @@ circosJS.Layout = (conf, data) ->
     size = this._size
     block_nb = this._data.length
     for k,v of this._data
-        this._blocks[v.id].start = v.offset/size *(2*Math.PI-block_nb*gap)  + k*gap
-        this._blocks[v.id].end = (v.offset + v.len)/size *(2*Math.PI-block_nb*gap)  + k*gap
+        this.blocks[v.id].start = v.offset/size *(2*Math.PI-block_nb*gap)  + k*gap
+        this.blocks[v.id].end = (v.offset + v.len)/size *(2*Math.PI-block_nb*gap)  + k*gap
         v.start = v.offset/size *(2*Math.PI-block_nb*gap)  + k*gap
         v.end = (v.offset + v.len)/size *(2*Math.PI-block_nb*gap)  + k*gap
 
@@ -46,10 +46,8 @@ circosJS.Layout = (conf, data) ->
             this._conf.gap
         else
             null #todo
-    this.getBlock = (blockId) ->
-        this._blocks[blockId]
     this.getAngle = (blockId, unit) ->
-        block = this.getBlock(blockId).start/this._size
+        block = this.blocks[blockId].start/this._size
         if unit == 'deg' then block*360
         else if unit == 'rad' then block*2*Math.PI
         else null
@@ -57,5 +55,11 @@ circosJS.Layout = (conf, data) ->
         this._size
     this.getConf = ->
         this._conf
+
+    this.summary = ->
+        layoutSummary = {}
+        for d in @_data
+            layoutSummary[d.id] = d.len
+        layoutSummary
 
     return this
