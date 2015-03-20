@@ -458,10 +458,8 @@ var heatmap = [
 ]
 
 links = [
-  {source: {id: 'january', start: 1, end: 10}, target: {id: 'february', start: 20, end: 25}, value: 0},
-  {source: {id: 'march', start: 1, end: 10}, target: {id: 'december', start: 20, end: 25}, value: 1},
-  {source: {id: 'march', start: 8, end: 10}, target: {id: 'august', start: 7, end: 25}, value: 2},
-  {source: {id: 'april', start: 13, end: 15}, target: {id: 'november', start: 10, end: 25}, value: 3}
+  ['january', 1, 10, 'february', 20, 25, 0],
+  ['october', 1, 10, 'march', 20, 25, 10]
 ];
 
 scatter = [
@@ -542,9 +540,9 @@ circos
   )
   // .heatmap('h1', {innerRadius: 150, outerRadius: 200}, heatmap)
   // .histogram('hist1', {innerRadius: 200, outerRadius: 220}, heatmap)
-  .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter)
+  // .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter)
   // .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
-  // .chord('l1', {}, links)
+  .chord('l1', {}, links)
   // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 190, outerRadius: 240}, stack, stack_rules)
   // .line('line2', {innerRadius:100, outerRadius: 200}, [], {}, backgrounds2)
   .render();

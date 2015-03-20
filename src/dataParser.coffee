@@ -60,8 +60,7 @@ circosJS.parsePositionValueData = (data, layoutSummary) ->
     true
   .map (datum) ->
     block_id: datum[0]
-    position: parseFloat datum[1]
-    value: parseFloat datum[2]
+    position: Math.min layoutSummary[datum[0]], parseFloat datum[1]
 
   # group data by block id
   groups = d3.nest()
@@ -78,13 +77,13 @@ circosJS.parsePositionValueData = (data, layoutSummary) ->
 circosJS.parseChordData = (data, layoutSummary) ->
   header = ['source_id', 'source_start', 'source_end', 'target_id', 'target_start', 'target_end', 'value']
 
-  _(data)
+  data = data
   .filter (datum, index) ->
     unless datum[0] of layoutSummary
-      circosJS.log(1, 'datum', 'unknown parent id', {line: index+1, value: element, header: header[0], expected: layoutIds})
+      circosJS.log(1, 'datum', 'unknown parent id', {line: index+1, value: datum[0], header: header[0], layoutSummary: layoutSummary})
       return false
     unless datum[3] of layoutSummary
-      circosJS.log(1, 'datum', 'unknown parent id', {line: index+1, value: element, header: header[3], expected: layoutIds})
+      circosJS.log(1, 'datum', 'unknown parent id', {line: index+1, value: datum[3], header: header[3], layoutSummary: layoutSummary})
       return false
     true
   .filter (datum, index) ->
@@ -96,11 +95,17 @@ circosJS.parseChordData = (data, layoutSummary) ->
   .map (datum) ->
     source:
       id: datum[0]
-      start: parseFloat datum[1]
-      end: parseFloat datum[2]
+      start: Math.max 0, parseFloat datum[1]
+      end: Math.min layoutSummary[datum[0]], parseFloat datum[2]
     target:
       id: datum[3]
-      start: parseFloat datum[4]
-      end: parseFloat datum[5]
+      start: Math.max 0, parseFloat datum[4]
+      end: Math.min layoutSummary[datum[0]], parseFloat datum[5]
     value: parseFloat datum[6]
-  .value()
+
+  return {
+    data: data
+    meta:
+      min: d3.min data, (d) -> d.value
+      max: d3.max data, (d) -> d.value
+  }

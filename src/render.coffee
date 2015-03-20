@@ -15,7 +15,7 @@ circosJS.Core.prototype.render = (ids, removeTracks) ->
 
   for trackType, trackStore of @tracks
     for name, track of trackStore
-      track.render(this, tracks, name)
+      track.render this, tracks, name
 
   # if removeTracks
   #   # remove all tracks to be sure to keep consistent data

@@ -10,12 +10,10 @@ circosJS.Core.prototype.histogram = (id, conf, data, rules, backgrounds) ->
   @tracks.histograms[id] = track
   return @
 
-circosJS.Core.prototype.chord = (id, conf, data, rules) ->
-  track = new circosJS.Chord(@, conf, data, rules, @_layout)
-
-  track.computeMinMax()
-  @_chords[id] = track
-
+circosJS.Core.prototype.chord = (id, conf, data, rules, backgrounds) ->
+  track = new circosJS.Chord()
+  track.build(@, conf, data, rules, backgrounds)
+  @tracks.chords[id] = track
   return @
 
 circosJS.Core.prototype.scatter = (id, conf, data, rules, backgrounds) ->

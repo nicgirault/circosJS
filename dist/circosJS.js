@@ -253,8 +253,7 @@ circosJS.parsePositionValueData = function(data, layoutSummary) {
   }).map(function(datum) {
     return {
       block_id: datum[0],
-      position: parseFloat(datum[1]),
-      value: parseFloat(datum[2])
+      position: Math.min(layoutSummary[datum[0]], parseFloat(datum[1]))
     };
   });
   groups = d3.nest().key(function(datum) {
@@ -276,22 +275,22 @@ circosJS.parsePositionValueData = function(data, layoutSummary) {
 circosJS.parseChordData = function(data, layoutSummary) {
   var header;
   header = ['source_id', 'source_start', 'source_end', 'target_id', 'target_start', 'target_end', 'value'];
-  return _(data).filter(function(datum, index) {
+  data = data.filter(function(datum, index) {
     if (!(datum[0] in layoutSummary)) {
       circosJS.log(1, 'datum', 'unknown parent id', {
         line: index + 1,
-        value: element,
+        value: datum[0],
         header: header[0],
-        expected: layoutIds
+        layoutSummary: layoutSummary
       });
       return false;
     }
     if (!(datum[3] in layoutSummary)) {
       circosJS.log(1, 'datum', 'unknown parent id', {
         line: index + 1,
-        value: element,
+        value: datum[3],
         header: header[3],
-        expected: layoutIds
+        layoutSummary: layoutSummary
       });
       return false;
     }
@@ -315,17 +314,28 @@ circosJS.parseChordData = function(data, layoutSummary) {
     return {
       source: {
         id: datum[0],
-        start: parseFloat(datum[1]),
-        end: parseFloat(datum[2])
+        start: Math.max(0, parseFloat(datum[1])),
+        end: Math.min(layoutSummary[datum[0]], parseFloat(datum[2]))
       },
       target: {
         id: datum[3],
-        start: parseFloat(datum[4]),
-        end: parseFloat(datum[5])
+        start: Math.max(0, parseFloat(datum[4])),
+        end: Math.min(layoutSummary[datum[0]], parseFloat(datum[5]))
       },
       value: parseFloat(datum[6])
     };
-  }).value();
+  });
+  return {
+    data: data,
+    meta: {
+      min: d3.min(data, function(d) {
+        return d.value;
+      }),
+      max: d3.max(data, function(d) {
+        return d.value;
+      })
+    }
+  };
 };
 
 circosJS.Layout = function(conf, data) {
@@ -423,11 +433,11 @@ circosJS.Core.prototype.histogram = function(id, conf, data, rules, backgrounds)
   return this;
 };
 
-circosJS.Core.prototype.chord = function(id, conf, data, rules) {
+circosJS.Core.prototype.chord = function(id, conf, data, rules, backgrounds) {
   var track;
-  track = new circosJS.Chord(this, conf, data, rules, this._layout);
-  track.computeMinMax();
-  this._chords[id] = track;
+  track = new circosJS.Chord();
+  track.build(this, conf, data, rules, backgrounds);
+  this.tracks.chords[id] = track;
   return this;
 };
 
@@ -458,14 +468,15 @@ circosJS.Core.prototype.stack = function(id, conf, data, rules, backgrounds) {
   return this;
 };
 
-circosJS.Chord = function(instance, conf, data, rules, layout) {
-  this._conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-  circosJS.Track.call(this, instance, conf, data, rules);
+circosJS.Chord = function() {
+  circosJS.Track.call(this);
+  this.parseData = circosJS.parseChordData;
+  this.render = circosJS.renderChord;
   this.getSource = (function(_this) {
-    return function(d) {
+    return function(d, layout) {
       var block, endAngle, result, startAngle;
       d = d.source;
-      block = layout.getBlock(d.id);
+      block = layout.blocks[d.id];
       startAngle = block.start + d.start / block.len * (block.end - block.start);
       endAngle = block.start + d.end / block.len * (block.end - block.start);
       return result = {
@@ -476,10 +487,10 @@ circosJS.Chord = function(instance, conf, data, rules, layout) {
     };
   })(this);
   this.getTarget = (function(_this) {
-    return function(d) {
+    return function(d, layout) {
       var block, endAngle, result, startAngle;
       d = d.target;
-      block = layout.getBlock(d.id);
+      block = layout.blocks[d.id];
       startAngle = block.start + d.start / block.len * (block.end - block.start);
       endAngle = block.start + d.end / block.len * (block.end - block.start);
       return result = {
@@ -489,77 +500,6 @@ circosJS.Chord = function(instance, conf, data, rules, layout) {
       };
     };
   })(this);
-  this.computeMinMax = function() {
-    var datum, values;
-    values = (function() {
-      var _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = data.length; _i < _len; _i++) {
-        datum = data[_i];
-        _results.push(datum.value);
-      }
-      return _results;
-    })();
-    if (this._conf.min === 'smart') {
-      this._conf.cmin = Math.min.apply(null, values);
-    } else {
-      this._conf.cmin = this._conf.min;
-    }
-    if (this._conf.max === 'smart') {
-      return this._conf.cmax = Math.max.apply(null, values);
-    } else {
-      return this._conf.cmax = this._conf.max;
-    }
-  };
-  this.isLayoutCompliant = function(instance, id) {
-    var d, datum, layout_ids, layout_lengths, _i, _j, _len, _len1, _ref, _ref1, _ref2;
-    if (instance._layout == null) {
-      circosJS.log(1, 'No layout defined', 'Circos cannot add or update a chord track without layout', {
-        'chord_id': id
-      });
-      return false;
-    }
-    layout_ids = (function() {
-      var _i, _len, _ref, _results;
-      _ref = instance._layout.getData();
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        d = _ref[_i];
-        _results.push(d.id);
-      }
-      return _results;
-    })();
-    layout_lengths = {};
-    _ref = instance._layout.getData();
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      d = _ref[_i];
-      layout_lengths[d.id] = d.len;
-    }
-    for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
-      datum = data[_j];
-      if (!((_ref1 = datum.source.id, __indexOf.call(layout_ids, _ref1) >= 0) && (_ref2 = datum.target.id, __indexOf.call(layout_ids, _ref2) >= 0))) {
-        circosJS.log(2, 'No layout block id match', 'Link data has a source or tagret id that does not correspond to any layout block id', {
-          'chord_id': id,
-          'datum': datum
-        });
-      }
-      if (datum.source.start < 0 || datum.source.end > layout_lengths[datum.source.id]) {
-        circosJS.log(2, 'Track data inconsistency', 'Track data has a start < 0 or a end above the block length', {
-          'track_id': id,
-          'datum': datum,
-          'layout block': instance._layout.getBlock(datum.source.id)
-        });
-      }
-      if (datum.target.start < 0 || datum.target.end > layout_lengths[datum.target.id]) {
-        circosJS.log(2, 'Track data inconsistency', 'Track data has a start < 0 or a end above the block length', {
-          'track_id': id,
-          'datum': datum,
-          'layout block': instance._layout.getBlock(datum.target.id)
-        });
-      }
-    }
-    return true;
-  };
   return this;
 };
 
@@ -882,20 +822,27 @@ circosJS.Track = function() {
   return this;
 };
 
-circosJS.renderChord = function(track, chord, conf, data, instance, d3) {
-  var link;
-  if (conf.usePalette) {
-    track = track.classed(conf.colorPalette, true);
-  }
-  link = track.selectAll('path').data(chord.getData()).enter().append('path');
-  link = link.attr('d', d3.svg.chord().source(chord.getSource).target(chord.getTarget)).attr('opacity', conf.opacity);
-  if (conf.usePalette) {
-    return link.attr('class', function(d) {
-      return 'q' + chord.colorScale(d.value, conf.logScale) + '-' + conf.colorPaletteSize;
-    }, true);
-  } else {
-    return link.attr('fill', conf.color);
-  }
+circosJS.renderChord = function(instance, parentElement, name) {
+  var colorClass, renderDatum, track;
+  colorClass = this.conf.usePalette ? this.conf.colorPalette : '';
+  track = parentElement.append('g').attr('class', name + ' ' + colorClass);
+  renderDatum = function(parentElement, conf, data, layout, ratio, getSource, getTarget) {
+    var link;
+    link = parentElement.selectAll('path').data(data).enter().append('path');
+    link = link.attr('d', d3.svg.chord().source(function(d) {
+      return getSource(d, layout);
+    }).target(function(d) {
+      return getTarget(d, layout);
+    })).attr('opacity', conf.opacity);
+    if (conf.usePalette) {
+      return link.attr('class', function(d) {
+        return 'q' + ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize;
+      }, true);
+    } else {
+      return link.attr('fill', conf.color);
+    }
+  };
+  return renderDatum(track, this.conf, this.data, instance._layout, this.ratio, this.getSource, this.getTarget);
 };
 
 circosJS.renderHeatmap = function(instance, parentElement, name) {

@@ -1,20 +1,30 @@
-circosJS.renderChord = (track, chord, conf, data, instance, d3) ->
-    track = track.classed(conf.colorPalette, true) if conf.usePalette
+circosJS.renderChord = (instance, parentElement, name) ->
+  colorClass = if @conf.usePalette then @conf.colorPalette else ''
+  track = parentElement.append('g').attr('class', name + ' ' + colorClass)
 
-    link = track.selectAll('path')
-        .data(chord.getData())
-        .enter().append('path')
+  renderDatum = (parentElement, conf, data, layout, ratio, getSource, getTarget) ->
+    link = parentElement.selectAll 'path'
+      .data data
+      .enter().append('path')
 
     link = link.attr('d',
-        d3.svg.chord()
-        .source(chord.getSource)
-        .target(chord.getTarget)
+      d3.svg.chord()
+        .source (d) -> getSource d, layout
+        .target (d) -> getTarget d, layout
     ).attr('opacity', conf.opacity)
 
     if conf.usePalette
-        link.attr('class', (d) ->
-            'q' + chord.colorScale(d.value, conf.logScale) + '-' + conf.colorPaletteSize
-        true)
+      link.attr('class', (d) ->
+        'q' + ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize
+      true)
     else
-        link.attr('fill', conf.color)
+      link.attr('fill', conf.color)
+
+  renderDatum track, @conf, @data, instance._layout, @ratio, @getSource, @getTarget
+
+
+
+
+
+
 
