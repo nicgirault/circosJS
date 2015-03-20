@@ -5,3 +5,4 @@ src/circosJS.coffee
 demo/generateHeatmap.py
 build
 vendors
+*.log
