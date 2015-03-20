@@ -1,4 +1,4 @@
-circosJS.Heatmap = () ->
+circosJS.Heatmap = ->
   circosJS.Track.call(@)
   @parseData = circosJS.parseSpanValueData
   @render = circosJS.renderHeatmap

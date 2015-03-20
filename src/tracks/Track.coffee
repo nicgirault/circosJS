@@ -1,4 +1,4 @@
-circosJS.Track = () ->
+circosJS.Track = ->
   # this refers the track instance
 
   @build = (instance, conf, data, rules, backgrounds) ->
@@ -68,28 +68,28 @@ circosJS.Track = () ->
     @_rules
 
   @renderBlock = (parentElement, data, layout) ->
-    parentElement.selectAll('.block')
-      .data(data)
-      .enter().append('g')
-      .attr('class', 'block')
-      .attr('transform', (d) -> 'rotate(' + layout.blocks[d.key].start*360/(2*Math.PI) + ')')
+    parentElement.selectAll '.block'
+      .data data
+      .enter().append 'g'
+      .attr 'class', 'block'
+      .attr 'transform', (d) -> 'rotate(' + layout.blocks[d.key].start*360/(2*Math.PI) + ')'
 
-  @theta = (d) =>
-    block = instance._layout.getBlock(d.block_id)
-    block.start + d.position / block.len * (block.end - block.start)
-  @x = (d) =>
-    if @_conf.direction == 'in'
-      r = @_conf.outerRadius - @height d.value, @_conf.logScale
+  @theta = (position, block) -> position / block.len * (block.end - block.start)
+  @x = (d, layout, conf) =>
+    height = @ratio(d.value, conf.cmin, conf.cmax, conf.outerRadius - conf.innerRadius, false, conf.logscale)
+    if conf.direction == 'in'
+      r = conf.outerRadius - height
     else
-      r = @_conf.innerRadius + @height d.value, @_conf.logScale
-    angle = @theta(d) - Math.PI/2
+      r = conf.innerRadius + height
+    angle = @theta(d.position, layout.blocks[d.block_id]) - Math.PI/2
     r * Math.cos angle
-  @y = (d) =>
-    if @_conf.direction == 'in'
-      r = @_conf.outerRadius - @height d.value, @_conf.logScale
+  @y = (d, layout, conf) =>
+    height = @ratio(d.value, conf.cmin, conf.cmax, conf.outerRadius - conf.innerRadius, false, conf.logscale)
+    if conf.direction == 'in'
+      r = conf.outerRadius - height
     else
-      r = @_conf.innerRadius + @height d.value, @_conf.logScale
-    angle = @theta(d) - Math.PI/2
+      r = conf.innerRadius + height
+    angle = @theta(d.position, layout.blocks[d.block_id]) - Math.PI/2
     r * Math.sin angle
 
   @

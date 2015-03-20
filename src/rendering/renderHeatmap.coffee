@@ -11,12 +11,8 @@ circosJS.renderHeatmap = (instance, parentElement, name) ->
         d3.svg.arc()
           .innerRadius conf.innerRadius
           .outerRadius conf.outerRadius
-          .startAngle (d, i) ->
-            block = layout.blocks[d.block_id]
-            d.start / block.len * (block.end - block.start)
-          .endAngle (d, i) ->
-            block = layout.blocks[d.block_id]
-            d.end / block.len * (block.end - block.start)
+          .startAngle (d, i) -> @theta d.start, layout.blocks[d.block_id]
+          .endAngle (d, i) -> @theta d.end, layout.blocks[d.block_id]
       .attr 'class', (d) =>
         'q' + ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize
 
