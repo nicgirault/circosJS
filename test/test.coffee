@@ -67,13 +67,13 @@ describe 'Heatmap', ->
     c = new circosJS({})
     h = c
         .layout({}, [{len: 10, color: '#333333', label: '1', id: '1'}])
-        .heatmap('h1', conf, [{parent: '1', data: {start: 1, end: 5, value: 1}}])
+        .heatmap('h1', conf, [['1', 1, 5, 1]])
 
     it 'should return the circos object', ->
         expect(h).to.equal(c)
 
     it 'should create an instance of Heatmap', ->
-        expect(c._heatmaps['h1']).to.be.an.instanceOf(circosJS.Heatmap)
+        expect(c.tracks.heatmaps['h1']).to.be.an.instanceOf(circosJS.Heatmap)
 
     # it 'should log an error when adding a heatmap when no layout is defined', ->
     #     log.reset()
@@ -95,14 +95,14 @@ describe 'Heatmap', ->
     #     expect(log).to.have.been.calledWith(2, 'Track data inconsistency')
 
     it 'should create a new heatmap instance when id is unknown', ->
-        count = Object.keys(c._heatmaps).length
-        c.heatmap('h4', conf, [{ parent: '1', data: [{start: 1, end: 11, value: 1}]}])
-        expect(Object.keys(c._heatmaps).length).to.equal(count+1)
+        count = Object.keys(c.tracks.heatmaps).length
+        c.heatmap('h4', conf, [['1', 1, 11, 1]])
+        expect(Object.keys(c.tracks.heatmaps).length).to.equal(count+1)
 
     it 'should not create a new heatmap instance when id is known', ->
-        count = Object.keys(c._heatmaps).length
-        c.heatmap('h4', conf, [{ parent: '1', data: [{start: 1, end: 11, value: 1}]}])
-        expect(Object.keys(c._heatmaps).length).to.equal(count)
+        count = Object.keys(c.tracks.heatmaps).length
+        c.heatmap('h4', conf, [['1', 1, 11, 1]])
+        expect(Object.keys(c.tracks.heatmaps).length).to.equal(count)
 
     it 'should return data min/max when conf.min/conf.max value are "smart"', ->
         return true

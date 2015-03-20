@@ -6,7 +6,7 @@ circosJS = (conf) ->
 # Circos instance
 circosJS.Core = (conf) ->
   @tracks =
-    heatmap: {}
+    heatmaps: {}
     histograms: {}
     chords: {}
     scatters: {}

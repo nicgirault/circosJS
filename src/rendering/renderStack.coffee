@@ -1,14 +1,9 @@
-circosJS.renderStack = (track, stack, conf, data, instance, d3) ->
-  track = track.classed conf.colorPalette, true
+circosJS.renderStack = (instance, parentElement, name) ->
+  track = parentElement.append('g').attr('class', name)
+  group = @renderBlock track, @data, instance._layout
 
-  block = track.selectAll '.block'
-    .data data
-    .enter().append 'g'
-    .classed 'block', true
-    .attr 'transform', (d) ->
-      'rotate(' + instance._layout.getBlock(d.key).start * 360 / (2 * Math.PI) + ')'
-
-    layer = block.selectAll '.layer'
+  renderDatum = (parentElement, conf, layout, ratio) =>
+    layer = parentElement.selectAll '.layer'
       .data (d) -> d.layers
       .enter().append 'g'
       .attr 'class', 'layer'
@@ -18,10 +13,10 @@ circosJS.renderStack = (track, stack, conf, data, instance, d3) ->
       .enter().append 'path'
       .attr 'd',
         d3.svg.arc()
-        .innerRadius stack.datumInnerRadius
-        .outerRadius stack.datumOuterRadius
-        .startAngle stack.datumStartAngle
-        .endAngle stack.datumEndAngle
+        .innerRadius @datumInnerRadius
+        .outerRadius @datumOuterRadius
+        .startAngle (d) => @theta d.start, layout.blocks[d.block_id]
+        .endAngle (d) => @theta d.end, layout.blocks[d.block_id]
 
     tile.attr 'stroke-width', (d) -> d.strokeWidth || conf.strokeWidth
     tile.attr 'stroke', (d) -> d.strokeColor || conf.strokeColor
@@ -29,6 +24,6 @@ circosJS.renderStack = (track, stack, conf, data, instance, d3) ->
     tile.attr 'class', (d) ->
       usePalette = d.usePalette || conf.usePalette
       if usePalette
-        'q' + stack.colorScale(d.value, conf.logScale) + '-' + conf.colorPaletteSize
+        'q' + ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize
 
-
+  renderDatum group, @conf, instance._layout, @ratio

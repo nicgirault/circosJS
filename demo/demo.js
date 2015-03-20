@@ -481,17 +481,12 @@ scatter = [
 ]
 
 stack = [
-  {
-    parent: 'january',
-    data: [
-      {start: 1, end: 10, value: 8},
-      {start: 1, end: 20, value: 7},
-      {start: 11, end: 23, value: 3},
-      {start: 2, end: 20, value: 4},
-      {start: 19, end: 25, value: 5},
-      {start: 21, end: 25, value: 6}
-    ]
-  }
+  ['january', 1, 10, 8],
+  ['january', 1, 20, 7],
+  ['january', 11, 23, 3],
+  ['january', 2, 20, 4],
+  ['january', 19, 25, 5],
+  ['january', 21, 25, 6]
 ]
 
 heatmap = [
@@ -542,8 +537,8 @@ circos
   // .histogram('hist1', {innerRadius: 200, outerRadius: 220}, heatmap)
   // .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter)
   // .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
-  .chord('l1', {}, links)
-  // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 190, outerRadius: 240}, stack, stack_rules)
+  // .chord('l1', {}, links)
+  .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 150, outerRadius: 240}, stack)
   // .line('line2', {innerRadius:100, outerRadius: 200}, [], {}, backgrounds2)
   .render();
 

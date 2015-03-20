@@ -6,7 +6,6 @@ circosJS.Track = ->
     @loadConf conf
     @loadBackgrounds backgrounds
     @applyRules rules
-    # @render instance, svg
 
   @loadData = (data, instance) ->
     layoutSummary = {}
@@ -36,7 +35,8 @@ circosJS.Track = ->
   #     )
 
 
-  @applyRules = ->
+  @applyRules = (rules) ->
+    rules = rules || []
     for k,v of @data
       for i, datum of v.data
         for rule in rules
