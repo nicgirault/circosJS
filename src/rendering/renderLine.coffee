@@ -1,5 +1,5 @@
 circosJS.renderLine = (instance, parentElement, name) ->
-  track = parentElement.append('g').attr('class', name)
+  track = parentElement.append('g').attr 'class', name
   group = @renderBlock track, @data, instance._layout
 
   renderDatum = (parentElement, conf, layout) ->

@@ -40,3 +40,19 @@ describe 'colorScale', ->
     min = max = 0
     result = track.ratio 9, min, max, colorPaletteSize, colorPaletteReverse, logScale
     expect(result).to.equal(0)
+
+describe 'rules', ->
+  rule = {parameter: 'color', value: 'blue', condition: (parent, datum, i) -> return datum.value > 5}
+  instance = new circosJS
+        width: 499
+        height: 500
+        container: '#chart'
+  instance
+    .layout({}, [{ "len": 31, "color": "#8dd3c7", "label": "January", "id": "january" }])
+    .histogram('my-histogram', {color: 'red'}, [['january',1,2,0],['january',3,4,10]],[rule])
+
+  it 'should by applied', ->
+    data = instance.tracks.histograms['my-histogram'].data
+    expect(data[0].values[0].color).to.be.undefined
+    expect(data[0].values[1].color).to.be.equal 'blue'
+

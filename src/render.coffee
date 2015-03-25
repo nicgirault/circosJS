@@ -4,14 +4,14 @@ circosJS.Core.prototype.render = (ids, removeTracks) ->
   if typeof ids == 'undefined'
     renderAll = true
 
-  svg = d3.select(this.getContainer())
+  svg = d3.select @conf.container
 
   if renderAll or 'layout' in ids
     circosJS.renderLayout d3, svg, this
 
-  tracks = svg.append('g')
-    .classed('tracks', true)
-    .attr('transform', 'translate(' + parseInt(this.getWidth()/2) + ',' + parseInt(this.getHeight()/2) + ')')
+  tracks = svg.append 'g'
+    .attr 'class', 'tracks'
+    .attr 'transform', 'translate(' + parseInt(@conf.width/2) + ',' + parseInt(@conf.height/2) + ')'
 
   for trackType, trackStore of @tracks
     for name, track of trackStore
@@ -97,6 +97,6 @@ circosJS.Core.prototype.render = (ids, removeTracks) ->
   #       track = trackType.store[ trackName ]
   #       preRender trackName, track, @, d3, svg, trackType.renderFunction
 
-  # return
+  return
 
 

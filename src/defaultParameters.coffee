@@ -1,5 +1,5 @@
 # Circos
-circosJS.Core.prototype._conf =
+circosJS.Core.prototype.defaultConf =
     width: 700
     height: 700
     container: 'circos'
@@ -112,7 +112,6 @@ circosJS.Line.prototype._defaultConf =
       spacing: 5
       color: '#000000'
       thickness: 2
-
 
 # Stack
 circosJS.Stack.prototype._defaultConf =

@@ -1,15 +1,16 @@
+# a retravailler
 circosJS.renderLayout = (d3, svg, instance) ->
     conf = instance._layout.getConf()
 
     svg.select('.cs-layout').remove()
 
     layout = svg
-        .attr('width', instance.getWidth())
-        .attr('height', instance.getHeight())
-        .append('g')
-        .classed('cs-layout', true)
-        .on('click', conf.clickCallback)
-        .attr('transform', 'translate(' + parseInt(instance.getWidth()/2) + ',' + parseInt(instance.getHeight()/2) + ')')
+        .attr 'width', instance.conf.width
+        .attr 'height', instance.conf.height
+        .append 'g'
+        .attr 'class', 'cs-layout'
+        .on 'click', conf.clickCallback
+        .attr 'transform', 'translate(' + parseInt(instance.conf.width/2) + ',' + parseInt(instance.conf.height/2) + ')'
 
     block = layout
         .selectAll 'path'

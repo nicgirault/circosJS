@@ -2,10 +2,8 @@ gulp = require 'gulp'
 coffee = require 'gulp-coffee'
 concat = require 'gulp-concat'
 gutil = require 'gulp-util'
-less = require 'gulp-less'
 path = require 'path'
 mocha = require 'gulp-mocha'
-watch = require 'gulp-watch'
 
 gulp.task 'concat', ->
   gulp.src [
