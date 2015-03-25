@@ -4,9 +4,10 @@ circosJS.renderHeatmap = (instance, parentElement, name) ->
   group = @renderBlock track, @data, instance._layout
 
   renderDatum = (parentElement, conf, layout, colorScale) ->
-    parentElement.selectAll 'path'
+    parentElement.selectAll 'tile'
       .data (d) -> d.values
       .enter().append 'path'
+      .attr 'class', 'tile'
       .attr 'd',
         d3.svg.arc()
           .innerRadius conf.innerRadius

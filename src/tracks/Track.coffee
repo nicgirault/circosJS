@@ -1,3 +1,4 @@
+# a retravailler
 circosJS.Track = ->
   # this refers the track instance
 
@@ -5,7 +6,7 @@ circosJS.Track = ->
     @loadData data, instance
     @loadConf conf
     @loadBackgrounds backgrounds
-    @applyRules rules
+    @applyRules rules, @data
 
   @loadData = (data, instance) ->
     layoutSummary = {}
@@ -24,6 +25,10 @@ circosJS.Track = ->
   # a rule look like this:
   # {parameter: color, value: 'blue', condition: function, flow: 'stop if true'}
   # @rules = rules
+  # if @_conf.innerRadius == 0 and @_conf.outerRadius == 0
+  #     smartBorders = instance.smartBorders()
+  #     @_conf.innerRadius = smartBorders.in
+  #     @_conf.outerRadius = smartBorders.out
 
   # if conf.innerRadius and conf.outerRadius
   #   if conf.innerRadius > conf.outerRadius
@@ -35,12 +40,12 @@ circosJS.Track = ->
   #     )
 
 
-  @applyRules = (rules) ->
+  @applyRules = (rules, data) ->
     rules = rules || []
-    for k,v of @data
-      for i, datum of v.data
+    for k,v of data
+      for i, datum of v.values
         for rule in rules
-          if rule.condition(v.parent, datum, i)
+          if rule.condition(v.key, datum, i)
             datum[rule.parameter] = rule.value
 
   @computeMinMax = ->
@@ -66,6 +71,11 @@ circosJS.Track = ->
     @_conf
   @getRules = ->
     @_rules
+
+  @render = (instance, parentElement, name) =>
+    # @preRender()
+    datumContainer = @renderDatumContainer instance, parentElement, name, @conf
+    @renderDatum datumContainer, @conf, @data, instance._layout, @ratio, @getSource, @getTarget
 
   @renderBlock = (parentElement, data, layout) ->
     parentElement.selectAll '.block'

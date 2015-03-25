@@ -1,5 +1,5 @@
 circosJS.Stack = ->
-  circosJS.Track.call(@)
+  circosJS.Track.call @
   @parseData = circosJS.parseSpanValueData
   @render = circosJS.renderStack
 
