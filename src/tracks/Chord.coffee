@@ -28,12 +28,11 @@ circosJS.Chord = ->
       startAngle: startAngle
       endAngle: endAngle
 
-  @renderDatumContainer = (instance, parentElement, name, conf) ->
+  @renderChords = (parentElement, name, conf, data, layout, ratio, getSource, getTarget) ->
     parentElement
       .append 'g'
       .attr 'class', name + ' ' + conf.colorPalette
 
-  @renderDatum = (parentElement, conf, data, layout, ratio, getSource, getTarget) ->
     link = parentElement.selectAll '.chord'
       .data data
       .enter().append 'path'
@@ -49,5 +48,8 @@ circosJS.Chord = ->
         'q' + ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize
     else
       link.attr 'fill', (d) -> d.color || conf.color
+
+  @render = (instance, parentElement, name) =>
+    @renderChords parentElement, name, @conf, @data, instance._layout, @ratio, @getSource, @getTarget
 
   @

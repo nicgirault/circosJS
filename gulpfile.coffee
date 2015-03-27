@@ -14,7 +14,7 @@ gulp.task 'concat', ->
     'src/layout.coffee'
     'src/tracks.coffee'
     'src/tracks/*.coffee'
-    'src/rendering/*.coffee'
+    'src/renderLayout.coffee'
     'src/render.coffee'
     'src/defaultParameters.coffee'
   ]

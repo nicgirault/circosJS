@@ -65,17 +65,10 @@ circosJS.Track = ->
     x = 1 - x if reverse
     return Math.floor(scope * x)
 
-  @getData = ->
-    @_data
-  @getConf = ->
-    @_conf
-  @getRules = ->
-    @_rules
-
   @render = (instance, parentElement, name) =>
-    # @preRender()
-    datumContainer = @renderDatumContainer instance, parentElement, name, @conf
-    @renderDatum datumContainer, @conf, @data, instance._layout, @ratio, @getSource, @getTarget
+    datumContainer = @renderDatumContainer instance, parentElement, name, @data, @conf
+    @renderAxes(datumContainer, @conf, instance._layout, @data) if @conf.axes?
+    @renderDatum datumContainer, @conf, instance._layout, @
 
   @renderBlock = (parentElement, data, layout) ->
     parentElement.selectAll '.block'
@@ -83,6 +76,27 @@ circosJS.Track = ->
       .enter().append 'g'
       .attr 'class', 'block'
       .attr 'transform', (d) -> 'rotate(' + layout.blocks[d.key].start*360/(2*Math.PI) + ')'
+
+  @renderAxes = (parentElement, conf, layout, data) ->
+    if conf.axes.minor.spacingType == 'pixel'
+      axes = (x for x in [conf.innerRadius..conf.outerRadius] by conf.axes.minor.spacing)
+
+    axis = d3.svg.arc()
+      .innerRadius (d) -> d
+      .outerRadius (d) -> d
+      .startAngle 0
+      .endAngle (d, i, j) ->
+        block = layout.blocks[data[j].key]
+        block.end - block.start
+
+    parentElement.selectAll '.axis'
+      .data axes
+      .enter().append 'path'
+      .attr 'class', 'axis'
+      .attr 'd', axis
+      .attr 'stroke-width', (d, i) -> if i % conf.axes.major.spacing == 0 then conf.axes.major.thickness else conf.axes.minor.thickness
+      .attr 'stroke', (d, i) -> if i % conf.axes.major.spacing == 0 then conf.axes.major.color else conf.axes.minor.color
+
 
   @theta = (position, block) -> position / block.len * (block.end - block.start)
   @x = (d, layout, conf) =>

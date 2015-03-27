@@ -43,6 +43,7 @@ circosJS.parsePositionValueData = (data, layoutSummary) ->
   .map (datum) ->
     block_id: datum[0]
     position: Math.min layoutSummary[datum[0]], parseFloat datum[1]
+    value: parseFloat datum[2]
 
   # group data by block id
   groups = d3.nest()
