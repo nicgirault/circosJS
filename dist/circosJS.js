@@ -948,6 +948,22 @@ circosJS.Track = function() {
       return r * Math.sin(angle);
     };
   })(this);
+  this.ratio = function(value, min, max, scope, reverse, logScale) {
+    var fraction, scaleLogBase, x;
+    scaleLogBase = logScale ? 2.3 : 1;
+    if (min === max || (value === min && !reverse) || (value === max && reverse)) {
+      return 0;
+    }
+    if (value === max || (value === min && reverse)) {
+      return scope - 1;
+    }
+    fraction = (value - min) / (max - min);
+    x = Math.exp(1 / scaleLogBase * Math.log(fraction));
+    if (reverse) {
+      x = 1 - x;
+    }
+    return Math.floor(scope * x);
+  };
   return this;
 };
 

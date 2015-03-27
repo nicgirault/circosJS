@@ -115,6 +115,15 @@ circosJS.Track = ->
       r = conf.innerRadius + height
     angle = @theta(d.position, layout.blocks[d.block_id]) - Math.PI/2
     r * Math.sin angle
+  @ratio = (value, min, max, scope, reverse, logScale) ->
+    scaleLogBase = if logScale then 2.3 else 1
 
+    return 0 if min == max or (value == min and not reverse) or (value == max and reverse)
+    return scope - 1 if value == max or (value == min and reverse)
+
+    fraction = (value - min) / (max - min)
+
+    x = Math.exp(1 / scaleLogBase * Math.log(fraction))
+    x = 1 - x if reverse
+    return Math.floor(scope * x)
   @
-
