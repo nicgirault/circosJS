@@ -871,9 +871,9 @@ circosJS.Track = function() {
   };
   this.render = (function(_this) {
     return function(instance, parentElement, name) {
-      var datumContainer;
+      var datumContainer, _ref;
       datumContainer = _this.renderDatumContainer(instance, parentElement, name, _this.data, _this.conf);
-      if (_this.conf.axes != null) {
+      if ((_ref = _this.conf.axes) != null ? _ref.display : void 0) {
         _this.renderAxes(datumContainer, _this.conf, instance._layout, _this.data);
       }
       return _this.renderDatum(datumContainer, _this.conf, instance._layout, _this);
@@ -1142,7 +1142,21 @@ circosJS.Histogram.prototype._defaultConf = {
   usePalette: true,
   colorPaletteReverse: false,
   color: '#fd6a62',
-  logScale: false
+  logScale: false,
+  axes: {
+    display: false,
+    minor: {
+      spacing: 5,
+      spacingType: 'pixel',
+      color: '#d3d3d3',
+      thickness: 2
+    },
+    major: {
+      spacing: 5,
+      color: '#000000',
+      thickness: 2
+    }
+  }
 };
 
 circosJS.Chord.prototype._defaultConf = {
@@ -1171,6 +1185,20 @@ circosJS.Scatter.prototype._defaultConf = {
     shape: 'circle',
     strokeColor: '#d3d3d3',
     strokeWidth: 2
+  },
+  axes: {
+    display: false,
+    minor: {
+      spacing: 5,
+      spacingType: 'pixel',
+      color: '#d3d3d3',
+      thickness: 2
+    },
+    major: {
+      spacing: 5,
+      color: '#000000',
+      thickness: 2
+    }
   }
 };
 
@@ -1188,6 +1216,7 @@ circosJS.Line.prototype._defaultConf = {
   max_gap: 10000000,
   interpolation: 'linear',
   axes: {
+    display: true,
     minor: {
       spacing: 5,
       spacingType: 'pixel',
@@ -1219,5 +1248,19 @@ circosJS.Stack.prototype._defaultConf = {
   radialMargin: 2,
   margin: 2,
   strokeWidth: 1,
-  strokeColor: '#000000'
+  strokeColor: '#000000',
+  axes: {
+    display: false,
+    minor: {
+      spacing: 5,
+      spacingType: 'pixel',
+      color: '#d3d3d3',
+      thickness: 2
+    },
+    major: {
+      spacing: 5,
+      color: '#000000',
+      thickness: 2
+    }
+  }
 };

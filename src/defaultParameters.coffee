@@ -59,6 +59,17 @@ circosJS.Histogram.prototype._defaultConf =
   colorPaletteReverse: false
   color: '#fd6a62'
   logScale: false
+  axes:
+    display: false
+    minor:
+      spacing: 5
+      spacingType: 'pixel'
+      color: '#d3d3d3'
+      thickness: 2
+    major:
+      spacing: 5
+      color: '#000000'
+      thickness: 2
 
 # Chord
 circosJS.Chord.prototype._defaultConf =
@@ -87,6 +98,17 @@ circosJS.Scatter.prototype._defaultConf =
     shape: 'circle'
     strokeColor: '#d3d3d3'
     strokeWidth: 2
+  axes:
+    display: false
+    minor:
+      spacing: 5
+      spacingType: 'pixel'
+      color: '#d3d3d3'
+      thickness: 2
+    major:
+      spacing: 5
+      color: '#000000'
+      thickness: 2
 
 # Line
 circosJS.Line.prototype._defaultConf =
@@ -103,6 +125,7 @@ circosJS.Line.prototype._defaultConf =
   max_gap: 10000000
   interpolation: 'linear'
   axes:
+    display: true
     minor:
       spacing: 5
       spacingType: 'pixel'
@@ -132,3 +155,14 @@ circosJS.Stack.prototype._defaultConf =
   margin: 2
   strokeWidth: 1
   strokeColor: '#000000'
+  axes:
+    display: false
+    minor:
+      spacing: 5
+      spacingType: 'pixel'
+      color: '#d3d3d3'
+      thickness: 2
+    major:
+      spacing: 5
+      color: '#000000'
+      thickness: 2

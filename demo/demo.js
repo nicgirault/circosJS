@@ -552,12 +552,12 @@ circos
     },
     layout_data
   )
-  .heatmap('h1', {innerRadius: 150, outerRadius: 200}, heatmap)
-  // .histogram('hist1', {innerRadius: 200, outerRadius: 220}, heatmap)
+  // .heatmap('h1', {innerRadius: 150, outerRadius: 200}, heatmap)
+  // .histogram('hist1', {innerRadius: 200, outerRadius: 220, axes: {display: true}}, heatmap)
   // .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter)
   // .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
   // .chord('l1', {usePalette: false, color: 'blue'}, links, linkRules)
-  .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 150, outerRadius: 240}, stack)
+  .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 150, outerRadius: 240, axes: {display: true}}, stack)
   // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 150, outerRadius: 240}, stack)
   // .line('line2', {innerRadius:100, outerRadius: 200}, [], {}, backgrounds2)
   .render();

@@ -67,7 +67,7 @@ circosJS.Track = ->
 
   @render = (instance, parentElement, name) =>
     datumContainer = @renderDatumContainer instance, parentElement, name, @data, @conf
-    @renderAxes(datumContainer, @conf, instance._layout, @data) if @conf.axes?
+    @renderAxes(datumContainer, @conf, instance._layout, @data) if @conf.axes?.display
     @renderDatum datumContainer, @conf, instance._layout, @
 
   @renderBlock = (parentElement, data, layout) ->
