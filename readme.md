@@ -10,7 +10,7 @@ It is based on d3 library.
 Documentation
 -------------
 
-The documentation is [here](http://nicgirault.gitbooks.io/circosjs/content/).
+The documentation is here: [http://nicgirault.github.io/circosJS/](http://nicgirault.github.io/circosJS/).
 
 Installation
 ------------
@@ -24,6 +24,10 @@ Layout
 Track
 Rule
 Backgroud
+
+To deploy the doc:
+
+`git subtree push --prefix doc/_book origin gh-pages`
 
 Author
 ------
