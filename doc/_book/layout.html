@@ -1,0 +1,536 @@
+<!DOCTYPE HTML>
+<html lang="en" >
+    
+    <head>
+        
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9; IE=8; IE=7; IE=EDGE" />
+        <title>Layout | CircosJS</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 2.0.0">
+        
+        
+        <meta name="HandheldFriendly" content="true"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+        <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+        
+    
+    
+    <link rel="next" href="./tracks/index.html" />
+    
+    
+    <link rel="prev" href="./layout/index.html" />
+    
+
+        <script src='https://cdn.rawgit.com/nicgirault/circosJS/master/dist/circosJS.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js'></script>
+<link rel='stylesheet' href='https://cdn.rawgit.com/nicgirault/circosJS/master/dist/colorBrewer.css'></link>
+    </head>
+    <body>
+        
+        
+    <link rel="stylesheet" href="gitbook/style.css">
+    
+    
+
+        
+    <div class="book" data-level="2" data-basepath="." data-revision="Fri Mar 27 2015 23:01:44 GMT+0100 (CET)">
+    
+
+<div class="book-summary">
+    <div class="book-search">
+        <input type="text" placeholder="Type to search" class="form-control" />
+    </div>
+    <ul class="summary">
+        
+        
+        
+        
+
+        
+
+        
+    
+        <li class="chapter " data-level="0" data-path="index.html">
+            
+                
+                    <a href="./index.html">
+                        <i class="fa fa-check"></i>
+                        
+                        Introduction
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="1" data-path="layout/index.html">
+            
+                
+                    <a href="./layout/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>1.</b>
+                        
+                        Get started
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter active" data-level="2" data-path="layout.html">
+            
+                
+                    <a href="./layout.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.</b>
+                        
+                        Layout
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="3" data-path="tracks/index.html">
+            
+                
+                    <a href="./tracks/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.</b>
+                        
+                        Tracks
+                    </a>
+                
+            
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.1" data-path="tracks/heatmap.html">
+            
+                
+                    <a href="./tracks/heatmap.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.1.</b>
+                        
+                        Heatmap
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2" data-path="tracks/chords.html">
+            
+                
+                    <a href="./tracks/chords.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.2.</b>
+                        
+                        Chords
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="3.3" data-path="tracks/tiles.html">
+            
+                
+                    <a href="./tracks/tiles.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.3.</b>
+                        
+                        Stack
+                    </a>
+                
+            
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4" data-path="track_configuration/index.html">
+            
+                
+                    <a href="./track_configuration/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>4.</b>
+                        
+                        Track configuration
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="5" data-path="data_formats/index.html">
+            
+                
+                    <a href="./data_formats/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>5.</b>
+                        
+                        Data formats
+                    </a>
+                
+            
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.1" data-path="data_formats/span-value.html">
+            
+                
+                    <a href="./data_formats/span-value.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>5.1.</b>
+                        
+                        Span-Value
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2" data-path="data_formats/point-value.html">
+            
+                
+                    <a href="./data_formats/point-value.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>5.2.</b>
+                        
+                        Point-Value
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3" data-path="data_formats/links-value.html">
+            
+                
+                    <a href="./data_formats/links-value.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>5.3.</b>
+                        
+                        Links-Value
+                    </a>
+                
+            
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="6" data-path="rendering/index.html">
+            
+                
+                    <a href="./rendering/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>6.</b>
+                        
+                        Rendering
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="7" data-path="backgrounds/index.html">
+            
+                
+                    <a href="./backgrounds/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>7.</b>
+                        
+                        Backgrounds
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="8" data-path="rules/index.html">
+            
+                
+                    <a href="./rules/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>8.</b>
+                        
+                        Rules
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="9" data-path="api_references/index.html">
+            
+                
+                    <a href="./api_references/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>9.</b>
+                        
+                        Deleting tracks
+                    </a>
+                
+            
+            
+        </li>
+    
+
+
+        
+        <li class="divider"></li>
+        <li>
+            <a href="https://www.gitbook.com" target="blank" class="gitbook-link">Published with GitBook</a>
+        </li>
+        
+    </ul>
+</div>
+
+    <div class="book-body">
+        <div class="body-inner">
+            <div class="book-header">
+    <!-- Actions Left -->
+    <a href="#" class="btn pull-left toggle-summary" aria-label="Table of Contents"><i class="fa fa-align-justify"></i></a>
+    <a href="#" class="btn pull-left toggle-search" aria-label="Search"><i class="fa fa-search"></i></a>
+    
+    <div id="font-settings-wrapper" class="dropdown pull-left">
+        <a href="#" class="btn toggle-dropdown" aria-label="Font Settings"><i class="fa fa-font"></i>
+        </a>
+        <div class="dropdown-menu font-settings">
+    <div class="dropdown-caret">
+        <span class="caret-outer"></span>
+        <span class="caret-inner"></span>
+    </div>
+
+    <div class="buttons">
+        <button type="button" id="reduce-font-size" class="button size-2">A</button>
+        <button type="button" id="enlarge-font-size" class="button size-2">A</button>
+    </div>
+
+    <div class="buttons font-family-list">
+        <button type="button" data-font="0" class="button">Serif</button>
+        <button type="button" data-font="1" class="button">Sans</button>
+    </div>
+
+    <div class="buttons color-theme-list">
+        <button type="button" id="color-theme-preview-0" class="button size-3" data-theme="0">White</button>
+        <button type="button" id="color-theme-preview-1" class="button size-3" data-theme="1">Sepia</button>
+        <button type="button" id="color-theme-preview-2" class="button size-3" data-theme="2">Night</button>
+    </div>
+</div>
+
+    </div>
+
+    <!-- Actions Right -->
+    
+    <div class="dropdown pull-right">
+        <a href="#" class="btn toggle-dropdown" aria-label="Share"><i class="fa fa-share-alt"></i>
+        </a>
+        <div class="dropdown-menu font-settings dropdown-left">
+            <div class="dropdown-caret">
+                <span class="caret-outer"></span>
+                <span class="caret-inner"></span>
+            </div>
+            <div class="buttons">
+                <button type="button" data-sharing="twitter" class="button">Share on Twitter</button>
+                <button type="button" data-sharing="google-plus" class="button">Share on Google</button>
+                <button type="button" data-sharing="facebook" class="button">Share on Facebook</button>
+                <button type="button" data-sharing="weibo" class="button">Share on Weibo</button>
+                <button type="button" data-sharing="instapaper" class="button">Share on Instapaper</button>
+            </div>
+        </div>
+    </div>
+    
+
+    
+    <a href="#" target="_blank" class="btn pull-right google-plus-sharing-link sharing-link" data-sharing="google-plus" aria-label="Google"><i class="fa fa-google-plus"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right facebook-sharing-link sharing-link" data-sharing="facebook" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right twitter-sharing-link sharing-link" data-sharing="twitter" aria-label="Twitter"><i class="fa fa-twitter"></i></a>
+    
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="./" >CircosJS</a>
+    </h1>
+</div>
+
+            <div class="page-wrapper" tabindex="-1">
+                <div class="page-inner">
+                
+                
+                    <section class="normal" id="section-">
+                    
+                        <h1 id="layout">Layout</h1>
+<svg id="chart" style="display: block; margin: auto;"/>
+
+<script type="text/javascript">
+    var buildCircos = function(){
+        var instance = new circosJS({
+            container:"#chart",
+            width: 400,
+            height: 400
+        });
+
+        var layout_data = [
+          { "len": 31, "color": "#8dd3c7", "label": "January", "id": "january" },
+          { "len": 28, "color": "#ffffb3", "label": "February", "id": "february" },
+          { "len": 31, "color": "#bebada", "label": "March", "id": "march" },
+          { "len": 30, "color": "#fb8072", "label": "April", "id": "april" },
+          { "len": 31, "color": "#80b1d3", "label": "May", "id": "may" },
+          { "len": 30, "color": "#fdb462", "label": "June", "id": "june" },
+          { "len": 31, "color": "#b3de69", "label": "July", "id": "july" },
+          { "len": 31, "color": "#fccde5", "label": "August", "id": "august" },
+          { "len": 30, "color": "#d9d9d9", "label": "September", "id": "september" },
+          { "len": 31, "color": "#bc80bd", "label": "October", "id": "october" },
+          { "len": 30, "color": "#ccebc5", "label": "November", "id": "november" },
+          { "len": 31, "color": "#ffed6f", "label": "December", "id": "december" }
+        ];
+
+        instance.layout(
+            {
+                innerRadius: 170,
+                outerRadius: 200,
+                labels: {
+                    display: true,
+                    size: '12px',
+                    radialOffset: 12
+                },
+                ticks: {
+                    display: false
+                }
+            },
+            layout_data
+        );
+
+        instance.render();
+    }();
+    window.addEventListener("load", buildCircos, false);
+</script>
+
+<p><a href="http://jsfiddle.net/nicgirault/b025s1r9/1" target="_blank">JsFiddle</a></p>
+<p>To build a circos image, you must specify a layout.</p>
+<pre><code class="lang-javascript">instance.layout(configuration, layout_data);
+</code></pre>
+<p>The first argument of the <code>layout</code> function is a configuration object.</p>
+<p>Here are the default parameters for a layout:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> configuration = {
+    innerRadius: <span class="hljs-number">250</span>,
+    outerRadius: <span class="hljs-number">300</span>,
+    cornerRadius: <span class="hljs-number">10</span>,
+    gap: <span class="hljs-number">0.04</span>, <span class="hljs-comment">// in radian</span>
+    labels: {
+        display: <span class="hljs-literal">true</span>,
+        position: <span class="hljs-string">&apos;center&apos;</span>,
+        size: <span class="hljs-string">&apos;14px&apos;</span>,
+        color: <span class="hljs-string">&apos;#000000&apos;</span>,
+        radialOffset: <span class="hljs-number">20</span>,
+    },
+    ticks: {
+        display: <span class="hljs-literal">true</span>,
+        color: <span class="hljs-string">&apos;grey&apos;</span>,
+        spacing: <span class="hljs-number">10000000</span>,
+        labels: <span class="hljs-literal">true</span>,
+        labelSpacing: <span class="hljs-number">10</span>,
+        labelSuffix: <span class="hljs-string">&apos;Mb&apos;</span>,
+        labelDenominator: <span class="hljs-number">1000000</span>,
+        labelDisplay0: <span class="hljs-literal">true</span>,
+        labelSize: <span class="hljs-string">&apos;10px&apos;</span>,
+        labelColor: <span class="hljs-string">&apos;#000000&apos;</span>,
+        labelFont: <span class="hljs-string">&apos;default&apos;</span>,
+        majorSpacing: <span class="hljs-number">5</span>,
+        size: {
+            minor: <span class="hljs-number">2</span>,
+            major: <span class="hljs-number">5</span>,
+        }
+    },
+    clickCallback: <span class="hljs-literal">null</span>
+}
+</code></pre>
+<p>The second argument of the <code>layout</code> function is an array of data. Its structure should look like this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> layout_data = [
+  { <span class="hljs-string">&quot;len&quot;</span>: <span class="hljs-number">31</span>, <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;#8dd3c7&quot;</span>, <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;January&quot;</span>, <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;january&quot;</span> },
+  { <span class="hljs-string">&quot;len&quot;</span>: <span class="hljs-number">28</span>, <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;#ffffb3&quot;</span>, <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;February&quot;</span>, <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;february&quot;</span> },
+  { <span class="hljs-string">&quot;len&quot;</span>: <span class="hljs-number">31</span>, <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;#bebada&quot;</span>, <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;March&quot;</span>, <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;march&quot;</span> },
+  { <span class="hljs-string">&quot;len&quot;</span>: <span class="hljs-number">30</span>, <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;#fb8072&quot;</span>, <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;April&quot;</span>, <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;april&quot;</span> },
+  { <span class="hljs-string">&quot;len&quot;</span>: <span class="hljs-number">31</span>, <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;#80b1d3&quot;</span>, <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;May&quot;</span>, <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;may&quot;</span> },
+  { <span class="hljs-string">&quot;len&quot;</span>: <span class="hljs-number">30</span>, <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;#fdb462&quot;</span>, <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;June&quot;</span>, <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;june&quot;</span> },
+  { <span class="hljs-string">&quot;len&quot;</span>: <span class="hljs-number">31</span>, <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;#b3de69&quot;</span>, <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;July&quot;</span>, <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;july&quot;</span> },
+  { <span class="hljs-string">&quot;len&quot;</span>: <span class="hljs-number">31</span>, <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;#fccde5&quot;</span>, <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;August&quot;</span>, <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;august&quot;</span> },
+  { <span class="hljs-string">&quot;len&quot;</span>: <span class="hljs-number">30</span>, <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;#d9d9d9&quot;</span>, <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;September&quot;</span>, <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;september&quot;</span> },
+  { <span class="hljs-string">&quot;len&quot;</span>: <span class="hljs-number">31</span>, <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;#bc80bd&quot;</span>, <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;October&quot;</span>, <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;october&quot;</span> },
+  { <span class="hljs-string">&quot;len&quot;</span>: <span class="hljs-number">30</span>, <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;#ccebc5&quot;</span>, <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;November&quot;</span>, <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;november&quot;</span> },
+  { <span class="hljs-string">&quot;len&quot;</span>: <span class="hljs-number">31</span>, <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;#ffed6f&quot;</span>, <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;December&quot;</span>, <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;december&quot;</span> }
+]
+</code></pre>
+<p>The <code>id</code> parameter will be used as reference in the track data.</p>
+<p>To visualize the result:</p>
+<pre><code class="lang-javascript">instance.render();
+</code></pre>
+
+                    
+                    </section>
+                
+                
+                </div>
+            </div>
+        </div>
+
+        
+        <a href="./layout/index.html" class="navigation navigation-prev " aria-label="Previous page: Get started"><i class="fa fa-angle-left"></i></a>
+        
+        
+        <a href="./tracks/index.html" class="navigation navigation-next " aria-label="Next page: Tracks"><i class="fa fa-angle-right"></i></a>
+        
+    </div>
+</div>
+
+        
+<script src="gitbook/app.js"></script>
+
+<script>
+require(["gitbook"], function(gitbook) {
+    var config = {"fontSettings":{"theme":null,"family":"sans","size":2},"circosjs":{}};
+    gitbook.start(config);
+});
+</script>
+
+        
+    </body>
+    
+</html>

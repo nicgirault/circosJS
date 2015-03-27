@@ -1,0 +1,465 @@
+<!DOCTYPE HTML>
+<html lang="en" >
+    
+    <head>
+        
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9; IE=8; IE=7; IE=EDGE" />
+        <title>Chords | CircosJS</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 2.0.0">
+        
+        
+        <meta name="HandheldFriendly" content="true"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+        <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+        
+    
+    
+    <link rel="next" href="../tracks/tiles.html" />
+    
+    
+    <link rel="prev" href="../tracks/heatmap.html" />
+    
+
+        <script src='https://cdn.rawgit.com/nicgirault/circosJS/master/dist/circosJS.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js'></script>
+<link rel='stylesheet' href='https://cdn.rawgit.com/nicgirault/circosJS/master/dist/colorBrewer.css'></link>
+    </head>
+    <body>
+        
+        
+    <link rel="stylesheet" href="../gitbook/style.css">
+    
+    
+
+        
+    <div class="book" data-level="3.2" data-basepath=".." data-revision="Fri Mar 27 2015 23:01:44 GMT+0100 (CET)">
+    
+
+<div class="book-summary">
+    <div class="book-search">
+        <input type="text" placeholder="Type to search" class="form-control" />
+    </div>
+    <ul class="summary">
+        
+        
+        
+        
+
+        
+
+        
+    
+        <li class="chapter " data-level="0" data-path="index.html">
+            
+                
+                    <a href="../index.html">
+                        <i class="fa fa-check"></i>
+                        
+                        Introduction
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="1" data-path="layout/index.html">
+            
+                
+                    <a href="../layout/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>1.</b>
+                        
+                        Get started
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="2" data-path="layout.html">
+            
+                
+                    <a href="../layout.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.</b>
+                        
+                        Layout
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="3" data-path="tracks/index.html">
+            
+                
+                    <a href="../tracks/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.</b>
+                        
+                        Tracks
+                    </a>
+                
+            
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.1" data-path="tracks/heatmap.html">
+            
+                
+                    <a href="../tracks/heatmap.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.1.</b>
+                        
+                        Heatmap
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter active" data-level="3.2" data-path="tracks/chords.html">
+            
+                
+                    <a href="../tracks/chords.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.2.</b>
+                        
+                        Chords
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="3.3" data-path="tracks/tiles.html">
+            
+                
+                    <a href="../tracks/tiles.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.3.</b>
+                        
+                        Stack
+                    </a>
+                
+            
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4" data-path="track_configuration/index.html">
+            
+                
+                    <a href="../track_configuration/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>4.</b>
+                        
+                        Track configuration
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="5" data-path="data_formats/index.html">
+            
+                
+                    <a href="../data_formats/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>5.</b>
+                        
+                        Data formats
+                    </a>
+                
+            
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.1" data-path="data_formats/span-value.html">
+            
+                
+                    <a href="../data_formats/span-value.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>5.1.</b>
+                        
+                        Span-Value
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2" data-path="data_formats/point-value.html">
+            
+                
+                    <a href="../data_formats/point-value.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>5.2.</b>
+                        
+                        Point-Value
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3" data-path="data_formats/links-value.html">
+            
+                
+                    <a href="../data_formats/links-value.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>5.3.</b>
+                        
+                        Links-Value
+                    </a>
+                
+            
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="6" data-path="rendering/index.html">
+            
+                
+                    <a href="../rendering/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>6.</b>
+                        
+                        Rendering
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="7" data-path="backgrounds/index.html">
+            
+                
+                    <a href="../backgrounds/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>7.</b>
+                        
+                        Backgrounds
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="8" data-path="rules/index.html">
+            
+                
+                    <a href="../rules/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>8.</b>
+                        
+                        Rules
+                    </a>
+                
+            
+            
+        </li>
+    
+        <li class="chapter " data-level="9" data-path="api_references/index.html">
+            
+                
+                    <a href="../api_references/index.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>9.</b>
+                        
+                        Deleting tracks
+                    </a>
+                
+            
+            
+        </li>
+    
+
+
+        
+        <li class="divider"></li>
+        <li>
+            <a href="https://www.gitbook.com" target="blank" class="gitbook-link">Published with GitBook</a>
+        </li>
+        
+    </ul>
+</div>
+
+    <div class="book-body">
+        <div class="body-inner">
+            <div class="book-header">
+    <!-- Actions Left -->
+    <a href="#" class="btn pull-left toggle-summary" aria-label="Table of Contents"><i class="fa fa-align-justify"></i></a>
+    <a href="#" class="btn pull-left toggle-search" aria-label="Search"><i class="fa fa-search"></i></a>
+    
+    <div id="font-settings-wrapper" class="dropdown pull-left">
+        <a href="#" class="btn toggle-dropdown" aria-label="Font Settings"><i class="fa fa-font"></i>
+        </a>
+        <div class="dropdown-menu font-settings">
+    <div class="dropdown-caret">
+        <span class="caret-outer"></span>
+        <span class="caret-inner"></span>
+    </div>
+
+    <div class="buttons">
+        <button type="button" id="reduce-font-size" class="button size-2">A</button>
+        <button type="button" id="enlarge-font-size" class="button size-2">A</button>
+    </div>
+
+    <div class="buttons font-family-list">
+        <button type="button" data-font="0" class="button">Serif</button>
+        <button type="button" data-font="1" class="button">Sans</button>
+    </div>
+
+    <div class="buttons color-theme-list">
+        <button type="button" id="color-theme-preview-0" class="button size-3" data-theme="0">White</button>
+        <button type="button" id="color-theme-preview-1" class="button size-3" data-theme="1">Sepia</button>
+        <button type="button" id="color-theme-preview-2" class="button size-3" data-theme="2">Night</button>
+    </div>
+</div>
+
+    </div>
+
+    <!-- Actions Right -->
+    
+    <div class="dropdown pull-right">
+        <a href="#" class="btn toggle-dropdown" aria-label="Share"><i class="fa fa-share-alt"></i>
+        </a>
+        <div class="dropdown-menu font-settings dropdown-left">
+            <div class="dropdown-caret">
+                <span class="caret-outer"></span>
+                <span class="caret-inner"></span>
+            </div>
+            <div class="buttons">
+                <button type="button" data-sharing="twitter" class="button">Share on Twitter</button>
+                <button type="button" data-sharing="google-plus" class="button">Share on Google</button>
+                <button type="button" data-sharing="facebook" class="button">Share on Facebook</button>
+                <button type="button" data-sharing="weibo" class="button">Share on Weibo</button>
+                <button type="button" data-sharing="instapaper" class="button">Share on Instapaper</button>
+            </div>
+        </div>
+    </div>
+    
+
+    
+    <a href="#" target="_blank" class="btn pull-right google-plus-sharing-link sharing-link" data-sharing="google-plus" aria-label="Google"><i class="fa fa-google-plus"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right facebook-sharing-link sharing-link" data-sharing="facebook" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right twitter-sharing-link sharing-link" data-sharing="twitter" aria-label="Twitter"><i class="fa fa-twitter"></i></a>
+    
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../" >CircosJS</a>
+    </h1>
+</div>
+
+            <div class="page-wrapper" tabindex="-1">
+                <div class="page-inner">
+                
+                
+                    <section class="normal" id="section-">
+                    
+                        <h1 id="chords">Chords</h1>
+<p><a href="http://jsfiddle.net/nicgirault/b025s1r9/2/" target="_blank">Demo</a></p>
+<p>Data should looks like this:</p>
+<pre><code class="lang-javascript">chords_data = [
+    {
+        source: {id: <span class="hljs-string">&apos;january&apos;</span>, start: <span class="hljs-number">1</span>, end: <span class="hljs-number">12</span>},
+        target: {id: <span class="hljs-string">&apos;april&apos;</span>, start: <span class="hljs-number">18</span>, end: <span class="hljs-number">20</span>},
+        value: <span class="hljs-number">2</span>
+    },
+    {
+        source: {id: <span class="hljs-string">&apos;february&apos;</span>, start: <span class="hljs-number">20</span>, end: <span class="hljs-number">28</span>},
+        target: {id: <span class="hljs-string">&apos;december&apos;</span>, start: <span class="hljs-number">1</span>, end: <span class="hljs-number">13</span>},
+        value: <span class="hljs-number">1</span>
+    }
+];
+</code></pre>
+<p>Note: the <code>value</code> parameter will be optional in a futur version of circosJS. It can be used to configure the track with <code>usePalette: true</code>.</p>
+<p>The default configuration is:</p>
+<pre><code class="lang-javascript">{
+    usePalette: <span class="hljs-literal">true</span>,
+    colorPaletteSize: <span class="hljs-number">9</span>,
+    colorPalette: <span class="hljs-string">&apos;PuBuGn&apos;</span>,
+    color: <span class="hljs-string">&apos;#fd6a62&apos;</span>,
+    opacity: <span class="hljs-number">0.7</span>,
+    min: <span class="hljs-string">&apos;smart&apos;</span>,
+    max: <span class="hljs-string">&apos;smart&apos;</span>,
+    logScale: <span class="hljs-literal">false</span>
+}
+</code></pre>
+<p>The color of the chords can be defined by</p>
+<ul>
+<li>a color palette from <a href="http://colorbrewer2.org" target="_blank">colorBrewer</a> (<code>usePalette: true</code>).Then you should define the <code>colorPalette</code> and the <code>colorPaletteSize</code> parameters. The color index of the palette is related to the value of the datum.</li>
+<li>a simple color (<code>usePalette: false</code>).</li>
+</ul>
+<p>If <code>usePalette: true</code>, you can specify the min and max values of the dataset. If <code>&apos;smart&apos;</code> is used, the minimum and maximum will fit the range of values of the dataset.</p>
+
+                    
+                    </section>
+                
+                
+                </div>
+            </div>
+        </div>
+
+        
+        <a href="../tracks/heatmap.html" class="navigation navigation-prev " aria-label="Previous page: Heatmap"><i class="fa fa-angle-left"></i></a>
+        
+        
+        <a href="../tracks/tiles.html" class="navigation navigation-next " aria-label="Next page: Stack"><i class="fa fa-angle-right"></i></a>
+        
+    </div>
+</div>
+
+        
+<script src="../gitbook/app.js"></script>
+
+<script>
+require(["gitbook"], function(gitbook) {
+    var config = {"fontSettings":{"theme":null,"family":"sans","size":2},"circosjs":{}};
+    gitbook.start(config);
+});
+</script>
+
+        
+    </body>
+    
+</html>
