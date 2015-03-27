@@ -6,3 +6,4 @@ demo/generateHeatmap.py
 build
 vendors
 *.log
+coverage.html

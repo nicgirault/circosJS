@@ -24,11 +24,11 @@ describe 'CircosJS', ->
         expect(c).to.be.an.instanceOf(circosJS.Core)
 
     it 'should return expected width and height', ->
-        expect(c.getWidth()).to.equal(499)
-        expect(c.getHeight()).to.equal(500)
+        expect(c.conf.width).to.equal(499)
+        expect(c.conf.height).to.equal(500)
 
     it 'should return expected container', ->
-        expect(c.getContainer()).to.equal('#chart')
+        expect(c.conf.container).to.equal('#chart')
 
 describe 'Layout', ->
     c = new circosJS

@@ -1,7 +1,6 @@
 circosJS.Stack = ->
-  circosJS.Track.call(@)
+  circosJS.Track.call @
   @parseData = circosJS.parseSpanValueData
-  @render = circosJS.renderStack
 
   # override the generic build method to build layers
   @build = (instance, conf, data, rules, backgrounds) ->
@@ -74,6 +73,37 @@ circosJS.Stack = ->
     @datumRadialPosition(d, i, j)[0]
   @datumOuterRadius = (d,i,j) =>
     @datumRadialPosition(d, i, j)[1]
+
+  @renderDatumContainer = (instance, parentElement, name, data, conf) =>
+    track = parentElement.append 'g'
+      .attr 'class', name + ' ' + conf.colorPalette
+    group = @renderBlock track, data, instance._layout
+
+  @renderDatum = (parentElement, conf, layout, utils) ->
+    layer = parentElement.selectAll '.layer'
+      .data (d) -> d.layers
+      .enter().append 'g'
+      .attr 'class', 'layer'
+
+    tile = layer.selectAll '.tile'
+      .data (d, i) -> d
+      .enter().append 'path'
+      .attr 'class', 'tile'
+      .attr 'd',
+        d3.svg.arc()
+        .innerRadius utils.datumInnerRadius
+        .outerRadius utils.datumOuterRadius
+        .startAngle (d) -> utils.theta d.start, layout.blocks[d.block_id]
+        .endAngle (d) -> utils.theta d.end, layout.blocks[d.block_id]
+
+    tile.attr 'stroke-width', (d) -> d.strokeWidth || conf.strokeWidth
+    tile.attr 'stroke', (d) -> d.strokeColor || conf.strokeColor
+    tile.attr 'fill', (d) -> d.color || conf.color
+    tile.attr 'class', (d) ->
+      usePalette = d.usePalette || conf.usePalette
+      if usePalette
+        'q' + utils.ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize
+
   return @
 
 

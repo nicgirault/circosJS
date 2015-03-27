@@ -1,28 +1,21 @@
-circosJS.parseData = (data, layoutIds) ->
-  unless data.length > 0
-    return data
-  sample = data[0]
+circosJS.checkParent = (key, index, layoutSummary, header) ->
+  unless key of layoutSummary
+    circosJS.log(1, 'datum', 'unknown parent id', {line: index+1, value: key, header: header, layoutSummary: layoutSummary})
+    return false
+  true
 
-  unless Array.isArray(sample)
-    return data
-
-  circosJS.parseSpanValueData(data, layoutIds)
+circosJS.checkNumber = (keys, index) ->
+  for header, value of keys
+    if isNaN value
+      circosJS.log(1, 'datum', 'not a number', {line: index+1, value: value, header: header})
+      return false
+  true
 
 circosJS.parseSpanValueData = (data, layoutSummary) ->
-  header = ['parent', 'start', 'end', 'value']
-
+  # ['parent', 'start', 'end', 'value']
   data = data
-  .filter (datum, index) ->
-    unless datum[0] of layoutSummary
-      circosJS.log(1, 'datum', 'unknown parent id', {line: index+1, value: datum[0], header: header[0], layoutSummary: layoutSummary})
-      return false
-    true
-  .filter (datum, index) ->
-    for element, i in datum.slice 1
-      if isNaN element
-        circosJS.log(1, 'datum', 'not a number', {line: index+1, value: element, header: header[i+1]})
-        return false
-    true
+  .filter (datum, index) -> circosJS.checkParent datum[0], index, layoutSummary, 'parent'
+  .filter (datum, index) -> circosJS.checkNumber {start: datum[1], end: datum[2], value: datum[3]}, index
   .map (datum) ->
     if datum.start < 0 or datum.end > layoutSummary[datum[0]]
       circosJS.log(2, 'position', 'position inconsistency', { datum: datum, layoutSummary: layoutSummary})
@@ -33,8 +26,7 @@ circosJS.parseSpanValueData = (data, layoutSummary) ->
 
   # group data by block id
   groups = d3.nest()
-    .key (datum) ->
-      datum.block_id
+    .key (datum) -> datum.block_id
     .entries data
   return {
     data: groups
@@ -44,28 +36,18 @@ circosJS.parseSpanValueData = (data, layoutSummary) ->
   }
 
 circosJS.parsePositionValueData = (data, layoutSummary) ->
-  header = ['parent', 'position', 'value']
-
+  # ['parent', 'position', 'value']
   data = data
-  .filter (datum, index) ->
-    unless datum[0] of layoutSummary
-      circosJS.log(1, 'datum', 'unknown parent id', {line: index+1, value: datum[0], header: header[0], layoutSummary: layoutSummary})
-      return false
-    true
-  .filter (datum, index) ->
-    for element, i in datum.slice 1
-      if isNaN element
-        circosJS.log(1, 'datum', 'not a number', {line: index+1, value: element, header: header[i+1]})
-        return false
-    true
+  .filter (datum, index) -> circosJS.checkParent datum[0], index, layoutSummary, 'parent'
+  .filter (datum, index) -> circosJS.checkNumber {position: datum[1], value: datum[2]}, index
   .map (datum) ->
     block_id: datum[0]
     position: Math.min layoutSummary[datum[0]], parseFloat datum[1]
+    value: parseFloat datum[2]
 
   # group data by block id
   groups = d3.nest()
-    .key (datum) ->
-      datum.block_id
+    .key (datum) -> datum.block_id
     .entries data
   return {
     data: groups
@@ -75,23 +57,17 @@ circosJS.parsePositionValueData = (data, layoutSummary) ->
   }
 
 circosJS.parseChordData = (data, layoutSummary) ->
-  header = ['source_id', 'source_start', 'source_end', 'target_id', 'target_start', 'target_end', 'value']
-
+  # ['source_id', 'source_start', 'source_end', 'target_id', 'target_start', 'target_end', 'value']
   data = data
-  .filter (datum, index) ->
-    unless datum[0] of layoutSummary
-      circosJS.log(1, 'datum', 'unknown parent id', {line: index+1, value: datum[0], header: header[0], layoutSummary: layoutSummary})
-      return false
-    unless datum[3] of layoutSummary
-      circosJS.log(1, 'datum', 'unknown parent id', {line: index+1, value: datum[3], header: header[3], layoutSummary: layoutSummary})
-      return false
-    true
-  .filter (datum, index) ->
-    for element, i in ['0', datum[1], datum[2], '0', datum[4], datum[5], datum[6]]
-      if isNaN element
-        circosJS.log(1, 'datum', 'not a number', {line: index+1, value: element, header: header[i]})
-        return false
-    true
+  .filter (datum, index) -> circosJS.checkParent datum[0], index, layoutSummary, 'source_id'
+  .filter (datum, index) -> circosJS.checkParent datum[3], index, layoutSummary, 'target_id'
+  .filter (datum, index) -> circosJS.checkNumber {
+      source_start: datum[1]
+      source_end: datum[2]
+      target_start: datum[4]
+      target_end: datum[5]
+      value: datum[6]
+    }, index
   .map (datum) ->
     source:
       id: datum[0]

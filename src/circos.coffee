@@ -1,6 +1,6 @@
+# a retravailler
 circosJS = (conf) ->
-  instance = new circosJS.Core(conf)
-  # instance.init()
+  instance = new circosJS.Core conf
   return instance
 
 # Circos instance
@@ -13,22 +13,12 @@ circosJS.Core = (conf) ->
     lines: {}
     stacks: {}
 
-  # conf override the default configuration. Conf not in default conf
-  # object are removed
-  for k,v of this._conf
-    this._conf[k] = if conf[k]? then conf[k] else v
-
-  this.getContainer = ->
-    this._conf.container
-  this.getWidth = ->
-    this._conf.width
-  this.getHeight = ->
-    this._conf.height
-  return this
+  @conf = circosJS.mixConf conf, @defaultConf
+  @
 
 circosJS.Core.prototype.removeTracks = (trackIds) ->
   # this refers the circos instance
-  svg = d3.select(this.getContainer())
+  svg = d3.select @conf.container
 
   for type, store of this.tracks
     if typeof(trackIds) == 'object'
@@ -44,7 +34,7 @@ circosJS.Core.prototype.removeTracks = (trackIds) ->
       for trackId of store
         svg.select('.' + trackId).remove()
         delete store[trackId]
-  return this
+  @
 
 circosJS.Core.prototype.layout = (conf, data) ->
   # this refers the circos instance
