@@ -10,7 +10,7 @@ circosJS.Track = ->
 
   @loadData = (data, instance) ->
     layoutSummary = {}
-    for d in instance._layout.getData()
+    for d in instance._layout.data
       layoutSummary[d.id] = d.len
     result = @parseData data, layoutSummary
     @data = result.data

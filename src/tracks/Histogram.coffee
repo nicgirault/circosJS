@@ -9,7 +9,7 @@ circosJS.Histogram = ->
 
   @renderDatum = (parentElement, conf, layout, utils) ->
     bin = parentElement.selectAll '.bin'
-      .data (d)->d.values
+      .data (d) -> d.values
       .enter().append 'path'
       .attr 'class', 'bin'
       .attr 'd',

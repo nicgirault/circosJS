@@ -6,11 +6,12 @@ circosJS.Core.prototype.defaultConf =
     defaultTrackWidth: 10
 
 # Layout
-circosJS.Layout.prototype._defaultConf =
+circosJS.Layout.prototype.defaultConf =
   innerRadius: 250
   outerRadius: 300
-  cornerRadius: 10
+  cornerRadius: 5
   gap: 0.04 # in radian
+  opacity: 1
   labels:
     position: 'center'
     display: true
@@ -33,10 +34,12 @@ circosJS.Layout.prototype._defaultConf =
     size:
       minor: 2
       major: 5
-  clickCallback: null
+  onClick: () -> console.log 'yolo'
+  onMouseOver: null
 
 # Heatmap
 circosJS.Heatmap.prototype.defaultConf =
+  details: 'blablabla'
   innerRadius: 0
   outerRadius: 0
   min: 'smart'

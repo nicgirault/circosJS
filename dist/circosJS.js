@@ -82,8 +82,8 @@ circosJS.Core.prototype.smartBorders = function() {
   var border, borders, currentBorder, layout, store, track, trackId, trackType, width, _i, _len, _ref;
   width = this.conf.defaultTrackWidth;
   layout = {
-    "in": this._layout._conf.innerRadius,
-    out: this._layout._conf.outerRadius
+    "in": this._layout.conf.innerRadius,
+    out: this._layout.conf.outerRadius
   };
   borders = [];
   _ref = this.tracks;
@@ -279,16 +279,16 @@ circosJS.parseChordData = function(data, layoutSummary) {
 };
 
 circosJS.Layout = function(conf, data) {
-  var block_nb, gap, k, offset, size, v, _ref, _ref1, _ref2;
+  var block_nb, gap, k, offset, size, v, _ref, _ref1;
   if (data == null) {
     circosJS.log(2, 'no layout data', '');
   }
-  this._conf = JSON.parse(JSON.stringify(this._defaultConf));
-  this._data = data;
+  this.conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this.defaultConf)));
+  this.data = data;
   this.blocks = {};
-  this._size = 0;
+  this.size = 0;
   offset = 0;
-  _ref = this._data;
+  _ref = this.data;
   for (k in _ref) {
     v = _ref[k];
     this.blocks[v.id] = {
@@ -300,33 +300,18 @@ circosJS.Layout = function(conf, data) {
     v.offset = offset;
     offset += v.len;
   }
-  this._size = offset;
-  _ref1 = this._conf;
+  this.size = offset;
+  gap = this.conf.gap;
+  size = this.size;
+  block_nb = this.data.length;
+  _ref1 = this.data;
   for (k in _ref1) {
     v = _ref1[k];
-    this._conf[k] = conf[k] != null ? conf[k] : v;
-  }
-  gap = this._conf.gap;
-  size = this._size;
-  block_nb = this._data.length;
-  _ref2 = this._data;
-  for (k in _ref2) {
-    v = _ref2[k];
     this.blocks[v.id].start = v.offset / size * (2 * Math.PI - block_nb * gap) + k * gap;
     this.blocks[v.id].end = (v.offset + v.len) / size * (2 * Math.PI - block_nb * gap) + k * gap;
     v.start = v.offset / size * (2 * Math.PI - block_nb * gap) + k * gap;
     v.end = (v.offset + v.len) / size * (2 * Math.PI - block_nb * gap) + k * gap;
   }
-  this.getData = function() {
-    return this._data;
-  };
-  this.getGap = function(unit) {
-    if (unit === 'rad') {
-      return this._conf.gap;
-    } else {
-      return null;
-    }
-  };
   this.getAngle = function(blockId, unit) {
     var block;
     block = this.blocks[blockId].start / this._size;
@@ -338,18 +323,12 @@ circosJS.Layout = function(conf, data) {
       return null;
     }
   };
-  this.getSize = function() {
-    return this._size;
-  };
-  this.getConf = function() {
-    return this._conf;
-  };
   this.summary = function() {
-    var d, layoutSummary, _i, _len, _ref3;
+    var d, layoutSummary, _i, _len, _ref2;
     layoutSummary = {};
-    _ref3 = this._data;
-    for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-      d = _ref3[_i];
+    _ref2 = this._data;
+    for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+      d = _ref2[_i];
       layoutSummary[d.id] = d.len;
     }
     return layoutSummary;
@@ -438,7 +417,7 @@ circosJS.Chord = function() {
       startAngle = block.start + d.start / block.len * (block.end - block.start);
       endAngle = block.start + d.end / block.len * (block.end - block.start);
       return result = {
-        radius: layout.getConf().innerRadius,
+        radius: layout.conf.innerRadius,
         startAngle: startAngle,
         endAngle: endAngle
       };
@@ -452,7 +431,7 @@ circosJS.Chord = function() {
       startAngle = block.start + d.start / block.len * (block.end - block.start);
       endAngle = block.start + d.end / block.len * (block.end - block.start);
       return result = {
-        radius: layout.getConf().innerRadius,
+        radius: layout.conf.innerRadius,
         startAngle: startAngle,
         endAngle: endAngle
       };
@@ -503,11 +482,9 @@ circosJS.Heatmap = function() {
       return utils.theta(d.start, layout.blocks[d.block_id]);
     }).endAngle(function(d, i) {
       return utils.theta(d.end, layout.blocks[d.block_id]);
-    })).attr('class', (function(_this) {
-      return function(d) {
-        return 'q' + utils.ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize;
-      };
-    })(this));
+    })).attr('class', function(d) {
+      return 'q' + utils.ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize;
+    });
   };
   return this;
 };
@@ -636,7 +613,7 @@ circosJS.Stack = function() {
   this.parseData = circosJS.parseSpanValueData;
   this.build = function(instance, conf, data, rules, backgrounds) {
     this.loadData(data, instance);
-    this.loadConf(conf);
+    this.conf = this.processConf(conf, this.defaultConf, this.meta, instance, this);
     this.buildLayers(this.data, this.conf.margin);
     this.loadBackgrounds(backgrounds);
     return this.applyRules(rules, this.data);
@@ -802,7 +779,7 @@ circosJS.Track = function() {
   this.loadData = function(data, instance) {
     var d, layoutSummary, result, _i, _len, _ref;
     layoutSummary = {};
-    _ref = instance._layout.getData();
+    _ref = instance._layout.data;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       d = _ref[_i];
       layoutSummary[d.id] = d.len;
@@ -977,13 +954,15 @@ circosJS.Track = function() {
 
 circosJS.renderLayout = function(d3, svg, instance) {
   var block, conf, entry, layout;
-  conf = instance._layout.getConf();
+  conf = instance._layout.conf;
   svg.select('.cs-layout').remove();
-  layout = svg.attr('width', instance.conf.width).attr('height', instance.conf.height).append('g').attr('class', 'cs-layout').on('click', conf.clickCallback).attr('transform', 'translate(' + parseInt(instance.conf.width / 2) + ',' + parseInt(instance.conf.height / 2) + ')');
-  block = layout.selectAll('path').data(instance._layout.getData()).enter().append('g');
-  entry = d3.svg.arc().innerRadius(conf.innerRadius).outerRadius(conf.outerRadius).startAngle(function(d, i) {
+  layout = svg.attr('width', instance.conf.width).attr('height', instance.conf.height).append('g').attr('class', 'cs-layout').attr('transform', 'translate(' + parseInt(instance.conf.width / 2) + ',' + parseInt(instance.conf.height / 2) + ')').on('click', conf.onClick);
+  block = layout.selectAll('g').data(instance._layout.data).enter().append('g').attr('class', function(d) {
+    return d.id;
+  }).attr('opacity', conf.opacity);
+  entry = d3.svg.arc().innerRadius(conf.innerRadius).outerRadius(conf.outerRadius).cornerRadius(conf.cornerRadius).startAngle(function(d) {
     return d.start;
-  }).endAngle(function(d, i) {
+  }).endAngle(function(d) {
     return d.end;
   });
   block.append('path').attr('d', entry).attr('fill', function(d) {
@@ -1041,23 +1020,23 @@ circosJS.renderLayoutTicks = function(conf, layout, d3, instance) {
       return v / conf.ticks.labelDenominator + conf.ticks.labelSuffix;
     }
   };
-  ticks = layout.append("g").selectAll("g").data(instance._layout.getData()).enter().append("g").selectAll("g").data(blockTicks).enter().append("g").attr("transform", function(d) {
-    return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")" + "translate(" + conf.outerRadius + ",0)";
+  ticks = layout.append("g").selectAll("g").data(instance._layout.data).enter().append('g').selectAll('g').data(blockTicks).enter().append('g').attr('transform', function(d) {
+    return 'rotate(' + (d.angle * 180 / Math.PI - 90) + ')' + 'translate(' + conf.outerRadius + ',0)';
   });
-  ticks.append("line").attr("x1", 0).attr("y1", 1).attr("x2", function(d, i) {
+  ticks.append('line').attr('x1', 0).attr('y1', 1).attr('x2', function(d, i) {
     if (i % conf.ticks.majorSpacing) {
       return conf.ticks.size.minor;
     } else {
       return conf.ticks.size.major;
     }
-  }).attr("y2", 1).style("stroke", conf.ticks.color);
-  return ticks.append("text").attr("x", 8).attr("dy", ".35em").attr("transform", function(d) {
+  }).attr('y2', 1).style('stroke', conf.ticks.color);
+  return ticks.append('text').attr('x', 8).attr('dy', '.35em').attr('transform', function(d) {
     if (d.angle > Math.PI) {
-      return "rotate(180)translate(-16)";
+      return 'rotate(180)translate(-16)';
     } else {
       return null;
     }
-  }).style("text-anchor", function(d) {
+  }).style('text-anchor', function(d) {
     if (d.angle > Math.PI) {
       return "end";
     } else {
@@ -1095,11 +1074,12 @@ circosJS.Core.prototype.defaultConf = {
   defaultTrackWidth: 10
 };
 
-circosJS.Layout.prototype._defaultConf = {
+circosJS.Layout.prototype.defaultConf = {
   innerRadius: 250,
   outerRadius: 300,
-  cornerRadius: 10,
+  cornerRadius: 5,
   gap: 0.04,
+  opacity: 1,
   labels: {
     position: 'center',
     display: true,
@@ -1125,10 +1105,14 @@ circosJS.Layout.prototype._defaultConf = {
       major: 5
     }
   },
-  clickCallback: null
+  onClick: function() {
+    return console.log('yolo');
+  },
+  onMouseOver: null
 };
 
 circosJS.Heatmap.prototype.defaultConf = {
+  details: 'blablabla',
   innerRadius: 0,
   outerRadius: 0,
   min: 'smart',

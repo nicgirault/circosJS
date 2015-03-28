@@ -15,7 +15,7 @@ circosJS.Chord = ->
     startAngle = block.start + d.start / block.len * (block.end - block.start)
     endAngle = block.start + d.end / block.len * (block.end - block.start)
     result =
-      radius: layout.getConf().innerRadius
+      radius: layout.conf.innerRadius
       startAngle: startAngle
       endAngle: endAngle
   @getTarget = (d, layout) =>
@@ -24,7 +24,7 @@ circosJS.Chord = ->
     startAngle = block.start + d.start / block.len * (block.end - block.start)
     endAngle = block.start + d.end / block.len * (block.end - block.start)
     result =
-      radius: layout.getConf().innerRadius
+      radius: layout.conf.innerRadius
       startAngle: startAngle
       endAngle: endAngle
 

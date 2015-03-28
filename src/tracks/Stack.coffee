@@ -5,7 +5,7 @@ circosJS.Stack = ->
   # override the generic build method to build layers
   @build = (instance, conf, data, rules, backgrounds) ->
     @loadData data, instance
-    @loadConf conf
+    @conf = @processConf conf, @defaultConf, @meta, instance, @
     @buildLayers @data, @conf.margin
     @loadBackgrounds backgrounds
     @applyRules rules, @data
@@ -105,5 +105,3 @@ circosJS.Stack = ->
         'q' + utils.ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize
 
   return @
-
-
