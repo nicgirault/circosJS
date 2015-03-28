@@ -4,7 +4,7 @@ circosJS.Track = ->
 
   @build = (instance, conf, data, rules, backgrounds) ->
     @loadData data, instance
-    @loadConf conf
+    @conf = @processConf conf, @defaultConf, @meta, instance, @
     @loadBackgrounds backgrounds
     @applyRules rules, @data
 
@@ -16,19 +16,21 @@ circosJS.Track = ->
     @data = result.data
     @meta = result.meta
 
-  @loadConf = (conf) ->
-    @conf = circosJS.mixConf conf, JSON.parse(JSON.stringify(@_defaultConf))
-    @computeMinMax()
+  @processConf = (conf, defaultConf, meta, instance, utils) ->
+    conf = circosJS.mixConf conf, JSON.parse(JSON.stringify(defaultConf))
+    conf = utils.computeMinMax conf, meta
+    if conf.innerRadius == 0 and conf.outerRadius == 0
+      smartBorders = instance.smartBorders()
+      conf.innerRadius = smartBorders.in
+      conf.outerRadius = smartBorders.out
+    return conf
 
   @loadBackgrounds = (backgrounds) ->
     @backgrounds = backgrounds || []
   # a rule look like this:
   # {parameter: color, value: 'blue', condition: function, flow: 'stop if true'}
   # @rules = rules
-  # if @_conf.innerRadius == 0 and @_conf.outerRadius == 0
-  #     smartBorders = instance.smartBorders()
-  #     @_conf.innerRadius = smartBorders.in
-  #     @_conf.outerRadius = smartBorders.out
+
 
   # if conf.innerRadius and conf.outerRadius
   #   if conf.innerRadius > conf.outerRadius
@@ -48,10 +50,10 @@ circosJS.Track = ->
           if rule.condition(v.key, datum, i)
             datum[rule.parameter] = rule.value
 
-  @computeMinMax = ->
-    # compute min and max values
-    @conf.cmin = if @conf.min == 'smart' then @meta.min else @conf.min
-    @conf.cmax = if @conf.max == 'smart' then @meta.max else @conf.max
+  @computeMinMax = (conf, meta) ->
+    conf.cmin = if conf.min == 'smart' then meta.min else conf.min
+    conf.cmax = if conf.max == 'smart' then meta.max else conf.max
+    return conf
 
   @ratio = (value, min, max, scope, reverse, logScale) ->
     scaleLogBase = if logScale then 2.3 else 1

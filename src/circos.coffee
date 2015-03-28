@@ -63,12 +63,12 @@ circosJS.mixConf = (conf, defaultConf) ->
   return newConf
 
 circosJS.Core.prototype.smartBorders = ->
-  width = @_conf.defaultTrackWidth
+  width = @conf.defaultTrackWidth
   layout = {in: @_layout._conf.innerRadius, out: @_layout._conf.outerRadius}
   borders = []
   for trackType, store of @tracks
     for trackId, track of store
-      borders.push {in: track._conf.innerRadius, out: track._conf.outerRadius} if track._conf.innerRadius
+      borders.push {in: track.conf.innerRadius, out: track.conf.outerRadius} if track.conf.innerRadius
 
   borders = borders.sort (a,b) ->
     1 if a.out > b.out
