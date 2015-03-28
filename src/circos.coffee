@@ -70,6 +70,7 @@ circosJS.Core.prototype.smartBorders = ->
     for trackId, track of store
       borders.push {in: track.conf.innerRadius, out: track.conf.outerRadius} if track.conf.innerRadius
 
+
   borders = borders.sort (a,b) ->
     1 if a.out > b.out
     -1 if a.out < b.out
