@@ -34,7 +34,7 @@ circosJS.Layout.prototype.defaultConf =
     size:
       minor: 2
       major: 5
-  onClick: () -> console.log 'yolo'
+  onClick: null
   onMouseOver: null
 
 # Heatmap
@@ -48,6 +48,8 @@ circosJS.Heatmap.prototype.defaultConf =
   colorPaletteSize: 9
   colorPaletteReverse: false
   logScale: false
+  rules: []
+  backgrounds: []
 
 # Histogram
 circosJS.Histogram.prototype.defaultConf =
@@ -73,6 +75,8 @@ circosJS.Histogram.prototype.defaultConf =
       spacing: 5
       color: '#000000'
       thickness: 2
+  rules: []
+  backgrounds: []
 
 # Chord
 circosJS.Chord.prototype.defaultConf =
@@ -85,6 +89,8 @@ circosJS.Chord.prototype.defaultConf =
   min: 'smart'
   max: 'smart'
   logScale: false
+  rules: []
+  backgrounds: []
 
 # Scatter
 circosJS.Scatter.prototype.defaultConf =
@@ -112,6 +118,8 @@ circosJS.Scatter.prototype.defaultConf =
       spacing: 5
       color: '#000000'
       thickness: 2
+  rules: []
+  backgrounds: []
 
 # Line
 circosJS.Line.prototype.defaultConf =
@@ -138,6 +146,8 @@ circosJS.Line.prototype.defaultConf =
       spacing: 5
       color: '#000000'
       thickness: 2
+  rules: []
+  backgrounds: []
 
 # Stack
 circosJS.Stack.prototype.defaultConf =
@@ -169,3 +179,5 @@ circosJS.Stack.prototype.defaultConf =
       spacing: 5
       color: '#000000'
       thickness: 2
+  rules: []
+  backgrounds: []

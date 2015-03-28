@@ -7,8 +7,8 @@ circosJS.Stack = ->
     @loadData data, instance
     @conf = @processConf conf, @defaultConf, @meta, instance, @
     @buildLayers @data, @conf.margin
-    @loadBackgrounds backgrounds
-    @applyRules rules, @data
+    @loadBackgrounds conf.backgrounds
+    @applyRules conf.rules, @data
 
   @buildLayers = (data, margin) ->
     layeredData = []

@@ -1,4 +1,5 @@
 # a retravailler
+# add palette ["#cd3d08", "#ec8f00", "#6dae29", "#683f92", "#b60275", "#2058a5", "#00a592", "#009d3c", "#378974", "#ffca00"]
 circosJS.renderLayout = (d3, svg, instance) ->
   conf = instance._layout.conf
 

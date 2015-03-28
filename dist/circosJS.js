@@ -336,50 +336,50 @@ circosJS.Layout = function(conf, data) {
   return this;
 };
 
-circosJS.Core.prototype.heatmap = function(id, conf, data, rules, backgrounds) {
+circosJS.Core.prototype.heatmap = function(id, conf, data) {
   var track;
   track = new circosJS.Heatmap();
-  track.build(this, conf, data, rules, backgrounds);
+  track.build(this, conf, data);
   this.tracks.heatmaps[id] = track;
   return this;
 };
 
-circosJS.Core.prototype.histogram = function(id, conf, data, rules, backgrounds) {
+circosJS.Core.prototype.histogram = function(id, conf, data) {
   var track;
   track = new circosJS.Histogram();
-  track.build(this, conf, data, rules, backgrounds);
+  track.build(this, conf, data);
   this.tracks.histograms[id] = track;
   return this;
 };
 
-circosJS.Core.prototype.chord = function(id, conf, data, rules, backgrounds) {
+circosJS.Core.prototype.chord = function(id, conf, data) {
   var track;
   track = new circosJS.Chord();
-  track.build(this, conf, data, rules, backgrounds);
+  track.build(this, conf, data);
   this.tracks.chords[id] = track;
   return this;
 };
 
-circosJS.Core.prototype.scatter = function(id, conf, data, rules, backgrounds) {
+circosJS.Core.prototype.scatter = function(id, conf, data) {
   var track;
   track = new circosJS.Scatter();
-  track.build(this, conf, data, rules, backgrounds);
+  track.build(this, conf, data);
   this.tracks.scatters[id] = track;
   return this;
 };
 
-circosJS.Core.prototype.line = function(id, conf, data, rules, backgrounds) {
+circosJS.Core.prototype.line = function(id, conf, data) {
   var track;
   track = new circosJS.Line();
-  track.build(this, conf, data, rules, backgrounds);
+  track.build(this, conf, data);
   this.tracks.lines[id] = track;
   return this;
 };
 
-circosJS.Core.prototype.stack = function(id, conf, data, rules, backgrounds) {
+circosJS.Core.prototype.stack = function(id, conf, data) {
   var track;
   track = new circosJS.Stack();
-  track.build(this, conf, data, rules, backgrounds);
+  track.build(this, conf, data);
   this.tracks.stacks[id] = track;
   return this;
 };
@@ -615,8 +615,8 @@ circosJS.Stack = function() {
     this.loadData(data, instance);
     this.conf = this.processConf(conf, this.defaultConf, this.meta, instance, this);
     this.buildLayers(this.data, this.conf.margin);
-    this.loadBackgrounds(backgrounds);
-    return this.applyRules(rules, this.data);
+    this.loadBackgrounds(conf.backgrounds);
+    return this.applyRules(conf.rules, this.data);
   };
   this.buildLayers = function(data, margin) {
     var block, datum, idx, lastDatumInLayer, layer, layeredData, layers, placed, _i, _j, _len, _len1, _ref, _results;
@@ -770,11 +770,11 @@ circosJS.Stack = function() {
 };
 
 circosJS.Track = function() {
-  this.build = function(instance, conf, data, rules, backgrounds) {
+  this.build = function(instance, conf, data) {
     this.loadData(data, instance);
     this.conf = this.processConf(conf, this.defaultConf, this.meta, instance, this);
-    this.loadBackgrounds(backgrounds);
-    return this.applyRules(rules, this.data);
+    this.loadBackgrounds(conf.backgrounds);
+    return this.applyRules(conf.rules, this.data);
   };
   this.loadData = function(data, instance) {
     var d, layoutSummary, result, _i, _len, _ref;
@@ -1105,9 +1105,7 @@ circosJS.Layout.prototype.defaultConf = {
       major: 5
     }
   },
-  onClick: function() {
-    return console.log('yolo');
-  },
+  onClick: null,
   onMouseOver: null
 };
 
@@ -1120,7 +1118,9 @@ circosJS.Heatmap.prototype.defaultConf = {
   colorPalette: 'YlGnBu',
   colorPaletteSize: 9,
   colorPaletteReverse: false,
-  logScale: false
+  logScale: false,
+  rules: [],
+  backgrounds: []
 };
 
 circosJS.Histogram.prototype.defaultConf = {
@@ -1148,7 +1148,9 @@ circosJS.Histogram.prototype.defaultConf = {
       color: '#000000',
       thickness: 2
     }
-  }
+  },
+  rules: [],
+  backgrounds: []
 };
 
 circosJS.Chord.prototype.defaultConf = {
@@ -1160,7 +1162,9 @@ circosJS.Chord.prototype.defaultConf = {
   opacity: 0.7,
   min: 'smart',
   max: 'smart',
-  logScale: false
+  logScale: false,
+  rules: [],
+  backgrounds: []
 };
 
 circosJS.Scatter.prototype.defaultConf = {
@@ -1191,7 +1195,9 @@ circosJS.Scatter.prototype.defaultConf = {
       color: '#000000',
       thickness: 2
     }
-  }
+  },
+  rules: [],
+  backgrounds: []
 };
 
 circosJS.Line.prototype.defaultConf = {
@@ -1220,7 +1226,9 @@ circosJS.Line.prototype.defaultConf = {
       color: '#000000',
       thickness: 2
     }
-  }
+  },
+  rules: [],
+  backgrounds: []
 };
 
 circosJS.Stack.prototype.defaultConf = {
@@ -1254,5 +1262,7 @@ circosJS.Stack.prototype.defaultConf = {
       color: '#000000',
       thickness: 2
     }
-  }
+  },
+  rules: [],
+  backgrounds: []
 };

@@ -2,11 +2,11 @@
 circosJS.Track = ->
   # this refers the track instance
 
-  @build = (instance, conf, data, rules, backgrounds) ->
+  @build = (instance, conf, data) ->
     @loadData data, instance
     @conf = @processConf conf, @defaultConf, @meta, instance, @
-    @loadBackgrounds backgrounds
-    @applyRules rules, @data
+    @loadBackgrounds conf.backgrounds
+    @applyRules conf.rules, @data
 
   @loadData = (data, instance) ->
     layoutSummary = {}
