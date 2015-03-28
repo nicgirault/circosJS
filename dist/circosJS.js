@@ -80,7 +80,7 @@ circosJS.mixConf = function(conf, defaultConf) {
 
 circosJS.Core.prototype.smartBorders = function() {
   var border, borders, currentBorder, layout, store, track, trackId, trackType, width, _i, _len, _ref;
-  width = this._conf.defaultTrackWidth;
+  width = this.conf.defaultTrackWidth;
   layout = {
     "in": this._layout._conf.innerRadius,
     out: this._layout._conf.outerRadius
@@ -795,7 +795,7 @@ circosJS.Stack = function() {
 circosJS.Track = function() {
   this.build = function(instance, conf, data, rules, backgrounds) {
     this.loadData(data, instance);
-    this.loadConf(conf);
+    this.conf = this.processConf(conf, this.defaultConf, this.meta, instance, this);
     this.loadBackgrounds(backgrounds);
     return this.applyRules(rules, this.data);
   };
@@ -811,9 +811,16 @@ circosJS.Track = function() {
     this.data = result.data;
     return this.meta = result.meta;
   };
-  this.loadConf = function(conf) {
-    this.conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(this._defaultConf)));
-    return this.computeMinMax();
+  this.processConf = function(conf, defaultConf, meta, instance, utils) {
+    var smartBorders;
+    conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(defaultConf)));
+    conf = utils.computeMinMax(conf, meta);
+    if (conf.innerRadius === 0 && conf.outerRadius === 0) {
+      smartBorders = instance.smartBorders();
+      conf.innerRadius = smartBorders["in"];
+      conf.outerRadius = smartBorders.out;
+    }
+    return conf;
   };
   this.loadBackgrounds = function(backgrounds) {
     return this.backgrounds = backgrounds || [];
@@ -849,9 +856,10 @@ circosJS.Track = function() {
     }
     return _results;
   };
-  this.computeMinMax = function() {
-    this.conf.cmin = this.conf.min === 'smart' ? this.meta.min : this.conf.min;
-    return this.conf.cmax = this.conf.max === 'smart' ? this.meta.max : this.conf.max;
+  this.computeMinMax = function(conf, meta) {
+    conf.cmin = conf.min === 'smart' ? meta.min : conf.min;
+    conf.cmax = conf.max === 'smart' ? meta.max : conf.max;
+    return conf;
   };
   this.ratio = function(value, min, max, scope, reverse, logScale) {
     var fraction, scaleLogBase, x;
@@ -1120,7 +1128,7 @@ circosJS.Layout.prototype._defaultConf = {
   clickCallback: null
 };
 
-circosJS.Heatmap.prototype._defaultConf = {
+circosJS.Heatmap.prototype.defaultConf = {
   innerRadius: 0,
   outerRadius: 0,
   min: 'smart',
@@ -1131,7 +1139,7 @@ circosJS.Heatmap.prototype._defaultConf = {
   logScale: false
 };
 
-circosJS.Histogram.prototype._defaultConf = {
+circosJS.Histogram.prototype.defaultConf = {
   innerRadius: 0,
   outerRadius: 0,
   min: 'smart',
@@ -1159,7 +1167,7 @@ circosJS.Histogram.prototype._defaultConf = {
   }
 };
 
-circosJS.Chord.prototype._defaultConf = {
+circosJS.Chord.prototype.defaultConf = {
   colorPaletteSize: 9,
   colorPalette: 'PuBuGn',
   usePalette: true,
@@ -1171,7 +1179,7 @@ circosJS.Chord.prototype._defaultConf = {
   logScale: false
 };
 
-circosJS.Scatter.prototype._defaultConf = {
+circosJS.Scatter.prototype.defaultConf = {
   innerRadius: 0,
   outerRadius: 0,
   min: 'smart',
@@ -1202,7 +1210,7 @@ circosJS.Scatter.prototype._defaultConf = {
   }
 };
 
-circosJS.Line.prototype._defaultConf = {
+circosJS.Line.prototype.defaultConf = {
   innerRadius: 0,
   outerRadius: 0,
   min: 'smart',
@@ -1231,7 +1239,7 @@ circosJS.Line.prototype._defaultConf = {
   }
 };
 
-circosJS.Stack.prototype._defaultConf = {
+circosJS.Stack.prototype.defaultConf = {
   innerRadius: 0,
   outerRadius: 0,
   colorPaletteSize: 9,
