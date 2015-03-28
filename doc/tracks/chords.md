@@ -1,5 +1,7 @@
 # Chords
 
+Chords tracks connect layout regions. It is one of the main reason to choose to display data in a circular layout.
+
 [Demo](http://jsfiddle.net/nicgirault/b025s1r9/2/)
 
 Data should looks like this:

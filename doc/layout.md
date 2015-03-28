@@ -1,6 +1,6 @@
 # Layout
 
-To instantiate a new graph:
+To instantiate a new circos:
 ```javascript
 var instance = new circosJS({
     container: '#chart',
@@ -9,19 +9,15 @@ var instance = new circosJS({
 });
 ```
 
-<svg id='chart' style='display: block; margin: auto;'></svg>
-<script src='_data/months.js'></script>
-<script src='_scripts/layout.js'></script>
+A circos graph is based on a circular axis **layout**. Data tracks appear inside and/or outside the circular layout.
 
-[JsFiddle](http://jsfiddle.net/nicgirault/b025s1r9/1)
-
-To build a circos image, you must first specify a layout.
+In order to place data on the circos graph, you must first specify a layout.
 
 ```javascript
 instance.layout(configuration, layout_data);
 ```
 
-The first argument of the `layout` function is a configuration object.
+The first argument of the `layout` function is a configuration object that control the format of the layout.
 
 Here are the default parameters for a layout:
 
@@ -60,7 +56,7 @@ var configuration = {
 }
 ```
 
-The second argument of the `layout` function is an array of data. Its structure should look like this:
+The second argument of the `layout` function is an array of data that describe the layout regions. Each layout region must have an id and a length. You can also specify a color and a label.
 
 ```javascript
 var layout_data = [
@@ -79,10 +75,15 @@ var layout_data = [
 ]
 ```
 
-The `id` parameter will be used as reference in the track data.
+The `id` parameter will be used to place data points on the layout.
 
 To visualize the result:
 ```javascript
 instance.render();
 ```
 
+<svg id='chart' style='display: block; margin: auto;'></svg>
+<script src='_data/months.js'></script>
+<script src='_scripts/layout.js'></script>
+
+[JsFiddle](http://jsfiddle.net/nicgirault/b025s1r9/1)

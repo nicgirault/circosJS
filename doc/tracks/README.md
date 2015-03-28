@@ -1,6 +1,6 @@
 # Tracks
 
-CircosJS has several types of tracks :
+A track is a series of data points. There are currently 6 ways to represent series of data points:
 * Chords
 * Heatmap
 * Histogram
@@ -31,5 +31,3 @@ About the track name:
 * Lowercase, a-z, can contain digits, 0-9, can contain dash or dot but not start/end with them.
 * Consecutive dashes or dots not allowed.
 * 50 characters or less.
-
-Note: As written just above, the track name is used as a class name so you should not use spaces and weird characters and first character should not be a digit.
