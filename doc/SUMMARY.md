@@ -1,7 +1,7 @@
 # Summary
 
 * [Introduction](README.md)
-* [Get started](layout/README.md)
+* [For noobs](layout/README.md)
 * [Layout](layout.md)
 * [Tracks](tracks/README.md)
    * [Heatmap](tracks/heatmap.md)

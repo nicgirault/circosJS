@@ -10,7 +10,7 @@ It is based on d3 library.
 Documentation
 -------------
 
-The documentation is here: [http://nicgirault.github.io/circosJS/](http://nicgirault.github.io/circosJS/).
+The documentation is here: [http://nicgirault.gitbooks.io/circosjs/content/](nicgirault.gitbooks.io/circosjs).
 
 Installation
 ------------

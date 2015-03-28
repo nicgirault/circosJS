@@ -1,6 +1,24 @@
 # Get started
 
-The code written in this document is based on this canvas.
+### Installation
+
+If you are not a noob but you are reading this section:
+
+```
+bower install circosjs
+```
+
+Otherwise you can pick one of these files in the
+[dist](https://github.com/nicgirault/circosJS/tree/master/dist) directory:
+* `circos.js` or `circos.min.js` (circos librairy **without d3.js**)
+* `circos.full.js` or `circos.full.min.js` (circos **librairy with d3.js**)
+
+You will also need the `colorBrewer.css` file if you use [color brewer palettes](http://colorbrewer2.org/).
+
+
+### Canvas
+
+The code written in the next sections will alway assume it is written in this context:
 
 ```html
 <!DOCTYPE html>
@@ -8,8 +26,7 @@ The code written in this document is based on this canvas.
 
 <head>
     <link rel='stylesheet' href='colorBrewer.css'></link>
-    <script src="d3/d3.min.js"></script>
-    <script src='circosJS.js'></script>
+    <script src='circos.full.min.js'></script>
 </head>
 
 <body>
@@ -23,13 +40,3 @@ The code written in this document is based on this canvas.
 </html>
 
 ```
-
-To instantiate a new graph:
-```javascript
-var instance = new circosJS({
-    container: '#chart',
-    width: 200,
-    height: 200
-});
-```
-

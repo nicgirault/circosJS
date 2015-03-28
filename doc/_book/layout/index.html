@@ -5,7 +5,7 @@
         
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9; IE=8; IE=7; IE=EDGE" />
-        <title>Get started | circos.js</title>
+        <title>For noobs | circos.js</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="generator" content="GitBook 2.0.0">
@@ -38,7 +38,7 @@
     
 
         
-    <div class="book" data-level="1" data-basepath=".." data-revision="Sat Mar 28 2015 10:34:26 GMT+0100 (CET)">
+    <div class="book" data-level="1" data-basepath=".." data-revision="Sat Mar 28 2015 12:13:54 GMT+0100 (CET)">
     
 
 <div class="book-summary">
@@ -76,7 +76,7 @@
                         
                             <b>1.</b>
                         
-                        Get started
+                        For noobs
                     </a>
                 
             
@@ -397,14 +397,24 @@
                     <section class="normal" id="section-">
                     
                         <h1 id="get-started">Get started</h1>
-<p>The code written in this document is based on this canvas.</p>
+<h3 id="installation">Installation</h3>
+<p>If you are not a noob but you are reading this section:</p>
+<pre><code>bower install circosjs
+</code></pre><p>Otherwise you can pick one of these files in the
+<a href="https://github.com/nicgirault/circosJS/tree/master/dist" target="_blank">dist</a> directory:</p>
+<ul>
+<li><code>circos.js</code> or <code>circos.min.js</code> (circos librairy <strong>without d3.js</strong>)</li>
+<li><code>circos.full.js</code> or <code>circos.full.min.js</code> (circos <strong>librairy with d3.js</strong>)</li>
+</ul>
+<p>You will also need the <code>colorBrewer.css</code> file if you use <a href="http://colorbrewer2.org/" target="_blank">color brewer palettes</a>.</p>
+<h3 id="canvas">Canvas</h3>
+<p>The code written in the next sections will alway assume it is written in this context:</p>
 <pre><code class="lang-html"><span class="hljs-doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-title">html</span>&gt;</span>
 
 <span class="hljs-tag">&lt;<span class="hljs-title">head</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-title">link</span> <span class="hljs-attribute">rel</span>=<span class="hljs-value">&apos;stylesheet&apos;</span> <span class="hljs-attribute">href</span>=<span class="hljs-value">&apos;colorBrewer.css&apos;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">link</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">src</span>=<span class="hljs-value">&quot;d3/d3.min.js&quot;</span>&gt;</span><span class="javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">src</span>=<span class="hljs-value">&apos;circosJS.js&apos;</span>&gt;</span><span class="javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">src</span>=<span class="hljs-value">&apos;circos.full.min.js&apos;</span>&gt;</span><span class="javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-title">head</span>&gt;</span>
 
 <span class="hljs-tag">&lt;<span class="hljs-title">body</span>&gt;</span>
@@ -416,13 +426,6 @@
 <span class="hljs-tag">&lt;/<span class="hljs-title">body</span>&gt;</span>
 
 <span class="hljs-tag">&lt;/<span class="hljs-title">html</span>&gt;</span>
-</code></pre>
-<p>To instantiate a new graph:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> instance = <span class="hljs-keyword">new</span> circosJS({
-    container: <span class="hljs-string">&apos;#chart&apos;</span>,
-    width: <span class="hljs-number">200</span>,
-    height: <span class="hljs-number">200</span>
-});
 </code></pre>
 
                     

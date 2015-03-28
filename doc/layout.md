@@ -1,54 +1,21 @@
 # Layout
 
+To instantiate a new graph:
+```javascript
+var instance = new circosJS({
+    container: '#chart',
+    width: 200,
+    height: 200
+});
+```
+
 <svg id='chart' style='display: block; margin: auto;'></svg>
-
-<script type='text/javascript'>
-    var buildCircos = function(){
-        var instance = new circosJS({
-            container:"#chart",
-            width: 400,
-            height: 400
-        });
-
-        var layout_data = [
-          { "len": 31, "color": "#8dd3c7", "label": "January", "id": "january" },
-          { "len": 28, "color": "#ffffb3", "label": "February", "id": "february" },
-          { "len": 31, "color": "#bebada", "label": "March", "id": "march" },
-          { "len": 30, "color": "#fb8072", "label": "April", "id": "april" },
-          { "len": 31, "color": "#80b1d3", "label": "May", "id": "may" },
-          { "len": 30, "color": "#fdb462", "label": "June", "id": "june" },
-          { "len": 31, "color": "#b3de69", "label": "July", "id": "july" },
-          { "len": 31, "color": "#fccde5", "label": "August", "id": "august" },
-          { "len": 30, "color": "#d9d9d9", "label": "September", "id": "september" },
-          { "len": 31, "color": "#bc80bd", "label": "October", "id": "october" },
-          { "len": 30, "color": "#ccebc5", "label": "November", "id": "november" },
-          { "len": 31, "color": "#ffed6f", "label": "December", "id": "december" }
-        ];
-
-        instance.layout(
-            {
-                innerRadius: 170,
-                outerRadius: 200,
-                labels: {
-                    display: true,
-                    size: '12px',
-                    radialOffset: 12
-                },
-                ticks: {
-                    display: false
-                }
-            },
-            layout_data
-        );
-
-        instance.render();
-    }();
-    window.addEventListener("load", buildCircos, false);
-</script>
+<script src='_data/months.js'></script>
+<script src='_scripts/layout.js'></script>
 
 [JsFiddle](http://jsfiddle.net/nicgirault/b025s1r9/1)
 
-To build a circos image, you must specify a layout.
+To build a circos image, you must first specify a layout.
 
 ```javascript
 instance.layout(configuration, layout_data);
