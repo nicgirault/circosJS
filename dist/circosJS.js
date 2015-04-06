@@ -438,9 +438,9 @@ circosJS.Chord = function() {
     };
   })(this);
   this.renderChords = function(parentElement, name, conf, data, layout, ratio, getSource, getTarget) {
-    var link;
-    parentElement.append('g').attr('class', name + ' ' + conf.colorPalette);
-    link = parentElement.selectAll('.chord').data(data).enter().append('path').attr('class', 'chord').attr('d', d3.svg.chord().source(function(d) {
+    var link, track;
+    track = parentElement.append('g').attr('class', name + ' ' + conf.colorPalette);
+    link = track.selectAll('.chord').data(data).enter().append('path').attr('class', 'chord').attr('d', d3.svg.chord().source(function(d) {
       return getSource(d, layout);
     }).target(function(d) {
       return getTarget(d, layout);

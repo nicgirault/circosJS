@@ -29,11 +29,12 @@ circosJS.Chord = ->
       endAngle: endAngle
 
   @renderChords = (parentElement, name, conf, data, layout, ratio, getSource, getTarget) ->
-    parentElement
+    track = parentElement
       .append 'g'
       .attr 'class', name + ' ' + conf.colorPalette
 
-    link = parentElement.selectAll '.chord'
+    link = track
+      .selectAll '.chord'
       .data data
       .enter().append 'path'
       .attr 'class', 'chord'
