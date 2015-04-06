@@ -7,23 +7,25 @@ circosJS.Core.prototype.render = (ids, removeTracks) ->
   svg = d3.select @conf.container
 
   if renderAll or 'layout' in ids
-    circosJS.renderLayout d3, svg, this
+    circosJS.renderLayout d3, svg, @
 
-  tracks = svg.append 'g'
-    .attr 'class', 'tracks'
-    .attr 'transform', 'translate(' + parseInt(@conf.width/2) + ',' + parseInt(@conf.height/2) + ')'
+  tracks = svg.select('.tracks')
+  if tracks.empty()
+    tracks = svg.append 'g'
+      .attr 'class', 'tracks'
+      .attr 'transform', 'translate(' + parseInt(@conf.width/2) + ',' + parseInt(@conf.height/2) + ')'
 
   for trackType, trackStore of @tracks
     for name, track of trackStore
-      track.render this, tracks, name
+      track.render @, tracks, name
 
-  # if removeTracks
-  #   # remove all tracks to be sure to keep consistent data
-  #   # TODO: a smarter strategy could be implemented:
-  #   # remove tracks only if layout data changes
-  #   for trackType in types
-  #     for trackName in Object.keys(trackType.store)
-  #       svg.select('.' + trackName).remove()
+  if removeTracks
+    # remove all tracks to be sure to keep consistent data
+    # TODO: a smarter strategy could be implemented:
+    # remove tracks only if layout data changes
+    for trackType, trackStore of @tracks
+      for name, track of trackStore
+        svg.select('.' + name).remove()
 
   # renderBackgrounds = (d3Track, track, instance, d3, svg) ->
   #   backgrounds = track._backgrounds
@@ -98,5 +100,3 @@ circosJS.Core.prototype.render = (ids, removeTracks) ->
   #       preRender trackName, track, @, d3, svg, trackType.renderFunction
 
   return
-
-

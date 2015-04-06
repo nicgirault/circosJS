@@ -68,7 +68,10 @@ circosJS.Track = ->
     return Math.floor(scope * x)
 
   @render = (instance, parentElement, name) =>
-    datumContainer = @renderDatumContainer instance, parentElement, name, @data, @conf
+    parentElement.select('.' + name).remove()
+    track = parentElement.append 'g'
+      .attr 'class', name
+    datumContainer = @renderDatumContainer instance, track, name, @data, @conf
     @renderAxes(datumContainer, @conf, instance._layout, @data) if @conf.axes?.display
     @renderDatum datumContainer, @conf, instance._layout, @
 

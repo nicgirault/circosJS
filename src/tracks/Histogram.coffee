@@ -4,7 +4,7 @@ circosJS.Histogram = ->
 
   @renderDatumContainer = (instance, parentElement, name, data, conf) =>
     track = parentElement.append 'g'
-      .attr 'class', name + ' ' + @conf.colorPalette
+      .attr 'class', @conf.colorPalette
     group = @renderBlock track, data, instance._layout
 
   @renderDatum = (parentElement, conf, layout, utils) ->

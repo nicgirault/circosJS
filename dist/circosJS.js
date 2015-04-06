@@ -439,7 +439,7 @@ circosJS.Chord = function() {
   })(this);
   this.renderChords = function(parentElement, name, conf, data, layout, ratio, getSource, getTarget) {
     var link, track;
-    track = parentElement.append('g').attr('class', name + ' ' + conf.colorPalette);
+    track = parentElement.append('g').attr('class', conf.colorPalette);
     link = track.selectAll('.chord').data(data).enter().append('path').attr('class', 'chord').attr('d', d3.svg.chord().source(function(d) {
       return getSource(d, layout);
     }).target(function(d) {
@@ -459,7 +459,10 @@ circosJS.Chord = function() {
   };
   this.render = (function(_this) {
     return function(instance, parentElement, name) {
-      return _this.renderChords(parentElement, name, _this.conf, _this.data, instance._layout, _this.ratio, _this.getSource, _this.getTarget);
+      var track;
+      parentElement.select('.' + name).remove();
+      track = parentElement.append('g').attr('class', name);
+      return _this.renderChords(track, name, _this.conf, _this.data, instance._layout, _this.ratio, _this.getSource, _this.getTarget);
     };
   })(this);
   return this;
@@ -471,7 +474,7 @@ circosJS.Heatmap = function() {
   this.renderDatumContainer = (function(_this) {
     return function(instance, parentElement, name, data, conf) {
       var group, track;
-      track = parentElement.append('g').attr('class', name + ' ' + conf.colorPalette);
+      track = parentElement.append('g').attr('class', conf.colorPalette);
       return group = _this.renderBlock(track, data, instance._layout);
     };
   })(this);
@@ -495,7 +498,7 @@ circosJS.Histogram = function() {
   this.renderDatumContainer = (function(_this) {
     return function(instance, parentElement, name, data, conf) {
       var group, track;
-      track = parentElement.append('g').attr('class', name + ' ' + _this.conf.colorPalette);
+      track = parentElement.append('g').attr('class', _this.conf.colorPalette);
       return group = _this.renderBlock(track, data, instance._layout);
     };
   })(this);
@@ -733,7 +736,7 @@ circosJS.Stack = function() {
   this.renderDatumContainer = (function(_this) {
     return function(instance, parentElement, name, data, conf) {
       var group, track;
-      track = parentElement.append('g').attr('class', name + ' ' + conf.colorPalette);
+      track = parentElement.append('g').attr('class', conf.colorPalette);
       return group = _this.renderBlock(track, data, instance._layout);
     };
   })(this);
@@ -856,8 +859,10 @@ circosJS.Track = function() {
   };
   this.render = (function(_this) {
     return function(instance, parentElement, name) {
-      var datumContainer, _ref;
-      datumContainer = _this.renderDatumContainer(instance, parentElement, name, _this.data, _this.conf);
+      var datumContainer, track, _ref;
+      parentElement.select('.' + name).remove();
+      track = parentElement.append('g').attr('class', name);
+      datumContainer = _this.renderDatumContainer(instance, track, name, _this.data, _this.conf);
       if ((_ref = _this.conf.axes) != null ? _ref.display : void 0) {
         _this.renderAxes(datumContainer, _this.conf, instance._layout, _this.data);
       }
@@ -1048,7 +1053,7 @@ circosJS.renderLayoutTicks = function(conf, layout, d3, instance) {
 };
 
 circosJS.Core.prototype.render = function(ids, removeTracks) {
-  var name, renderAll, svg, track, trackStore, trackType, tracks, _ref;
+  var name, renderAll, svg, track, trackStore, trackType, tracks, _ref, _ref1;
   if (typeof ids === 'undefined') {
     renderAll = true;
   }
@@ -1056,13 +1061,26 @@ circosJS.Core.prototype.render = function(ids, removeTracks) {
   if (renderAll || __indexOf.call(ids, 'layout') >= 0) {
     circosJS.renderLayout(d3, svg, this);
   }
-  tracks = svg.append('g').attr('class', 'tracks').attr('transform', 'translate(' + parseInt(this.conf.width / 2) + ',' + parseInt(this.conf.height / 2) + ')');
+  tracks = svg.select('.tracks');
+  if (tracks.empty()) {
+    tracks = svg.append('g').attr('class', 'tracks').attr('transform', 'translate(' + parseInt(this.conf.width / 2) + ',' + parseInt(this.conf.height / 2) + ')');
+  }
   _ref = this.tracks;
   for (trackType in _ref) {
     trackStore = _ref[trackType];
     for (name in trackStore) {
       track = trackStore[name];
       track.render(this, tracks, name);
+    }
+  }
+  if (removeTracks) {
+    _ref1 = this.tracks;
+    for (trackType in _ref1) {
+      trackStore = _ref1[trackType];
+      for (name in trackStore) {
+        track = trackStore[name];
+        svg.select('.' + name).remove();
+      }
     }
   }
 };

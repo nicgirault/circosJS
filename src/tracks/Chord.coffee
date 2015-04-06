@@ -31,7 +31,7 @@ circosJS.Chord = ->
   @renderChords = (parentElement, name, conf, data, layout, ratio, getSource, getTarget) ->
     track = parentElement
       .append 'g'
-      .attr 'class', name + ' ' + conf.colorPalette
+      .attr 'class', conf.colorPalette
 
     link = track
       .selectAll '.chord'
@@ -51,6 +51,10 @@ circosJS.Chord = ->
       link.attr 'fill', (d) -> d.color || conf.color
 
   @render = (instance, parentElement, name) =>
-    @renderChords parentElement, name, @conf, @data, instance._layout, @ratio, @getSource, @getTarget
+    parentElement.select('.' + name).remove()
+    track = parentElement.append 'g'
+      .attr 'class', name
+
+    @renderChords track, name, @conf, @data, instance._layout, @ratio, @getSource, @getTarget
 
   @
