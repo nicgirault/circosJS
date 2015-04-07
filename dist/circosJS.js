@@ -622,9 +622,7 @@ circosJS.Stack = function() {
     return this.applyRules(conf.rules, this.data);
   };
   this.buildLayers = function(data, margin) {
-    var block, datum, idx, lastDatumInLayer, layer, layeredData, layers, placed, _i, _j, _len, _len1, _ref, _results;
-    layeredData = [];
-    _results = [];
+    var block, datum, i, idx, lastDatumInLayer, layer, layers, placed, _i, _j, _len, _len1, _ref;
     for (idx in data) {
       block = data[idx];
       block.values = block.values.sort(function(a, b) {
@@ -644,22 +642,24 @@ circosJS.Stack = function() {
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         datum = _ref[_i];
         placed = false;
-        for (_j = 0, _len1 = layers.length; _j < _len1; _j++) {
-          layer = layers[_j];
+        for (i = _j = 0, _len1 = layers.length; _j < _len1; i = ++_j) {
+          layer = layers[i];
           lastDatumInLayer = layer.slice(0).pop();
           if (lastDatumInLayer.end + margin < datum.start) {
             layer.push(datum);
+            datum.layer = i;
             placed = true;
             break;
           }
         }
         if (!placed) {
+          datum.layer = layers.length;
+        }
+        if (!placed) {
           layers.push([datum]);
         }
       }
-      _results.push(block.layers = layers);
     }
-    return _results;
   };
   this.applyRules = function(rules, data) {
     var datum, i, k, layer, rule, v, _results;
@@ -701,9 +701,9 @@ circosJS.Stack = function() {
     return _results;
   };
   this.datumRadialPosition = (function(_this) {
-    return function(d, i, j) {
+    return function(d) {
       var origin, radialEnd, radialStart;
-      radialStart = (_this.conf.thickness + _this.conf.radialMargin) * j;
+      radialStart = (_this.conf.thickness + _this.conf.radialMargin) * d.layer;
       radialEnd = radialStart + _this.conf.thickness;
       if (_this.conf.direction === 'out') {
         return [_this.conf.innerRadius + radialStart, Math.min(_this.conf.innerRadius + radialEnd, _this.conf.outerRadius)];
@@ -713,9 +713,9 @@ circosJS.Stack = function() {
       }
       if (_this.conf.direction === 'center') {
         origin = Math.floor((_this.conf.outerRadius + _this.conf.innerRadius) / 2);
-        radialStart = (_this.conf.thickness + _this.conf.radialMargin) * Math.floor(j / 2);
+        radialStart = (_this.conf.thickness + _this.conf.radialMargin) * Math.floor(d.layer / 2);
         radialEnd = radialStart + _this.conf.thickness;
-        if (j % 2 === 0) {
+        if (d.layer % 2 === 0) {
           return [origin + radialStart, origin + radialEnd];
         } else {
           return [origin - radialStart - _this.conf.radialMargin, origin - radialEnd - _this.conf.radialMargin];
@@ -741,12 +741,9 @@ circosJS.Stack = function() {
     };
   })(this);
   this.renderDatum = function(parentElement, conf, layout, utils) {
-    var layer, tile;
-    layer = parentElement.selectAll('.layer').data(function(d) {
-      return d.layers;
-    }).enter().append('g').attr('class', 'layer');
-    tile = layer.selectAll('.tile').data(function(d, i) {
-      return d;
+    var tile;
+    tile = parentElement.selectAll('.tile').data(function(d) {
+      return d.values;
     }).enter().append('path').attr('class', 'tile').attr('d', d3.svg.arc().innerRadius(utils.datumInnerRadius).outerRadius(utils.datumOuterRadius).startAngle(function(d) {
       return utils.theta(d.start, layout.blocks[d.block_id]);
     }).endAngle(function(d) {
@@ -1127,6 +1124,21 @@ circosJS.Layout.prototype.defaultConf = {
   onMouseOver: null
 };
 
+circosJS.axes = {
+  display: false,
+  minor: {
+    spacing: 5,
+    spacingType: 'pixel',
+    color: '#d3d3d3',
+    thickness: 2
+  },
+  major: {
+    spacing: 5,
+    color: '#000000',
+    thickness: 2
+  }
+};
+
 circosJS.Heatmap.prototype.defaultConf = {
   details: 'blablabla',
   innerRadius: 0,
@@ -1153,20 +1165,7 @@ circosJS.Histogram.prototype.defaultConf = {
   colorPaletteReverse: false,
   color: '#fd6a62',
   logScale: false,
-  axes: {
-    display: false,
-    minor: {
-      spacing: 5,
-      spacingType: 'pixel',
-      color: '#d3d3d3',
-      thickness: 2
-    },
-    major: {
-      spacing: 5,
-      color: '#000000',
-      thickness: 2
-    }
-  },
+  axes: circosJS.axes,
   rules: [],
   backgrounds: []
 };
@@ -1200,20 +1199,7 @@ circosJS.Scatter.prototype.defaultConf = {
     strokeColor: '#d3d3d3',
     strokeWidth: 2
   },
-  axes: {
-    display: false,
-    minor: {
-      spacing: 5,
-      spacingType: 'pixel',
-      color: '#d3d3d3',
-      thickness: 2
-    },
-    major: {
-      spacing: 5,
-      color: '#000000',
-      thickness: 2
-    }
-  },
+  axes: circosJS.axes,
   rules: [],
   backgrounds: []
 };
@@ -1231,20 +1217,7 @@ circosJS.Line.prototype.defaultConf = {
   thickness: 2,
   max_gap: 10000000,
   interpolation: 'linear',
-  axes: {
-    display: true,
-    minor: {
-      spacing: 5,
-      spacingType: 'pixel',
-      color: '#d3d3d3',
-      thickness: 2
-    },
-    major: {
-      spacing: 5,
-      color: '#000000',
-      thickness: 2
-    }
-  },
+  axes: circosJS.axes,
   rules: [],
   backgrounds: []
 };
@@ -1267,20 +1240,7 @@ circosJS.Stack.prototype.defaultConf = {
   margin: 2,
   strokeWidth: 1,
   strokeColor: '#000000',
-  axes: {
-    display: false,
-    minor: {
-      spacing: 5,
-      spacingType: 'pixel',
-      color: '#d3d3d3',
-      thickness: 2
-    },
-    major: {
-      spacing: 5,
-      color: '#000000',
-      thickness: 2
-    }
-  },
+  axes: circosJS.axes,
   rules: [],
   backgrounds: []
 };

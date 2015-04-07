@@ -37,6 +37,18 @@ circosJS.Layout.prototype.defaultConf =
   onClick: null
   onMouseOver: null
 
+circosJS.axes =
+  display: false
+  minor:
+    spacing: 5
+    spacingType: 'pixel'
+    color: '#d3d3d3'
+    thickness: 2
+  major:
+    spacing: 5
+    color: '#000000'
+    thickness: 2
+
 # Heatmap
 circosJS.Heatmap.prototype.defaultConf =
   details: 'blablabla'
@@ -64,17 +76,7 @@ circosJS.Histogram.prototype.defaultConf =
   colorPaletteReverse: false
   color: '#fd6a62'
   logScale: false
-  axes:
-    display: false
-    minor:
-      spacing: 5
-      spacingType: 'pixel'
-      color: '#d3d3d3'
-      thickness: 2
-    major:
-      spacing: 5
-      color: '#000000'
-      thickness: 2
+  axes: circosJS.axes
   rules: []
   backgrounds: []
 
@@ -107,17 +109,7 @@ circosJS.Scatter.prototype.defaultConf =
     shape: 'circle'
     strokeColor: '#d3d3d3'
     strokeWidth: 2
-  axes:
-    display: false
-    minor:
-      spacing: 5
-      spacingType: 'pixel'
-      color: '#d3d3d3'
-      thickness: 2
-    major:
-      spacing: 5
-      color: '#000000'
-      thickness: 2
+  axes: circosJS.axes
   rules: []
   backgrounds: []
 
@@ -135,17 +127,7 @@ circosJS.Line.prototype.defaultConf =
   thickness: 2
   max_gap: 10000000
   interpolation: 'linear'
-  axes:
-    display: true
-    minor:
-      spacing: 5
-      spacingType: 'pixel'
-      color: '#d3d3d3'
-      thickness: 2
-    major:
-      spacing: 5
-      color: '#000000'
-      thickness: 2
+  axes: circosJS.axes
   rules: []
   backgrounds: []
 
@@ -168,16 +150,6 @@ circosJS.Stack.prototype.defaultConf =
   margin: 2
   strokeWidth: 1
   strokeColor: '#000000'
-  axes:
-    display: false
-    minor:
-      spacing: 5
-      spacingType: 'pixel'
-      color: '#d3d3d3'
-      thickness: 2
-    major:
-      spacing: 5
-      color: '#000000'
-      thickness: 2
+  axes: circosJS.axes
   rules: []
   backgrounds: []

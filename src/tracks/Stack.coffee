@@ -11,7 +11,6 @@ circosJS.Stack = ->
     @applyRules conf.rules, @data
 
   @buildLayers = (data, margin) ->
-    layeredData = []
     for idx, block of data
       block.values = block.values.sort (a,b) ->
         return -1 if a.start < b.start
@@ -21,15 +20,17 @@ circosJS.Stack = ->
       layers = []
       for datum in block.values
         placed = false
-        for layer in layers
+        for layer, i in layers
           # try to place datum
           lastDatumInLayer = layer[..].pop()
           if lastDatumInLayer.end + margin < datum.start
             layer.push datum
+            datum.layer = i
             placed = true
             break
+        datum.layer = layers.length unless placed
         layers.push [datum] unless placed
-      block.layers = layers
+    return
 
   @applyRules = (rules, data) ->
     rules = rules || []
@@ -40,8 +41,8 @@ circosJS.Stack = ->
             if rule.condition(v.parent, datum, i)
               datum[rule.parameter] = rule.value
 
-  @datumRadialPosition = (d, i, j) =>
-    radialStart = (@conf.thickness + @conf.radialMargin) * j
+  @datumRadialPosition = (d) =>
+    radialStart = (@conf.thickness + @conf.radialMargin) * d.layer
     radialEnd = radialStart + @conf.thickness
 
     if @conf.direction == 'out'
@@ -56,10 +57,10 @@ circosJS.Stack = ->
       ]
     if @conf.direction == 'center'
       origin = Math.floor (@conf.outerRadius + @conf.innerRadius) / 2
-      radialStart = (@conf.thickness + @conf.radialMargin) * Math.floor j / 2
+      radialStart = (@conf.thickness + @conf.radialMargin) * Math.floor d.layer / 2
       radialEnd = radialStart + @conf.thickness
 
-      if j % 2 == 0
+      if d.layer % 2 == 0
         return [
           origin + radialStart
           origin + radialEnd
@@ -80,13 +81,8 @@ circosJS.Stack = ->
     group = @renderBlock track, data, instance._layout
 
   @renderDatum = (parentElement, conf, layout, utils) ->
-    layer = parentElement.selectAll '.layer'
-      .data (d) -> d.layers
-      .enter().append 'g'
-      .attr 'class', 'layer'
-
-    tile = layer.selectAll '.tile'
-      .data (d, i) -> d
+    tile = parentElement.selectAll '.tile'
+      .data (d) -> d.values
       .enter().append 'path'
       .attr 'class', 'tile'
       .attr 'd',
