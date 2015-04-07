@@ -17,12 +17,37 @@ circosJS.parseSpanValueData = (data, layoutSummary) ->
   .filter (datum, index) -> circosJS.checkParent datum[0], index, layoutSummary, 'parent'
   .filter (datum, index) -> circosJS.checkNumber {start: datum[1], end: datum[2], value: datum[3]}, index
   .map (datum) ->
-    if datum.start < 0 or datum.end > layoutSummary[datum[0]]
+    if datum[1] < 0 or datum[2] > layoutSummary[datum[0]]
       circosJS.log(2, 'position', 'position inconsistency', { datum: datum, layoutSummary: layoutSummary})
     block_id: datum[0]
     start: Math.max 0, parseFloat datum[1]
     end: Math.min layoutSummary[datum[0]], parseFloat datum[2]
     value: parseFloat datum[3]
+
+  # group data by block id
+  groups = d3.nest()
+    .key (datum) -> datum.block_id
+    .entries data
+  return {
+    data: groups
+    meta:
+      min: d3.min data, (d) -> d.value
+      max: d3.max data, (d) -> d.value
+  }
+
+circosJS.parseSpanStringData = (data, layoutSummary) ->
+  # ['parent', 'start', 'end', 'string']
+  data = data
+  .filter (datum, index) -> circosJS.checkParent datum[0], index, layoutSummary, 'parent'
+  .filter (datum, index) -> circosJS.checkNumber {start: datum[1], end: datum[2]}, index
+  .map (datum) ->
+    if datum[1] < 0 or datum[2] > layoutSummary[datum[0]]
+      circosJS.log(2, 'position', 'position inconsistency', { datum: datum, layoutSummary: layoutSummary})
+    value = if datum[3]? then datum[3] else null
+    block_id: datum[0]
+    start: Math.max 0, parseFloat datum[1]
+    end: Math.min layoutSummary[datum[0]], parseFloat datum[2]
+    value: value
 
   # group data by block id
   groups = d3.nest()

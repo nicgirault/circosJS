@@ -153,3 +153,11 @@ circosJS.Stack.prototype.defaultConf =
   axes: circosJS.axes
   rules: []
   backgrounds: []
+
+# Highlight
+circosJS.Highlight.prototype.defaultConf =
+  innerRadius: 0
+  outerRadius: 0
+  defaultColor: '#fd6a62'
+  opacity: 0.5
+  rules: []

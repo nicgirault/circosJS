@@ -518,6 +518,16 @@ heatmap = [
   ['march', 1, 2,3]
 ];
 
+highlight = [
+  ['january', 1, 2,'blue'],
+  ['january', 1, 4,'red'],
+  ['january', 5, 10,'green'],
+  ['january', 11, 15,'yellow'],
+  ['february', 1, 28,'grey'],
+  ['march', 1, 2,'purple'],
+  ['march', 1, 2,'black']
+];
+
 var circos = new circosJS({
   container: '#chart'
 });
@@ -560,6 +570,7 @@ circos
   // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 150, outerRadius: 240, axes: {display: true}}, stack)
   // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 150, outerRadius: 240}, stack)
   // .line('line2', {innerRadius:100, outerRadius: 200}, [], {}, backgrounds2)
+  .highlight('highlight1', {innerRadius: 100, outerRadius: 200, opacity: 1}, highlight)
   .render();
 
 // circos.removeTracks(['l1'])

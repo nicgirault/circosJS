@@ -12,6 +12,7 @@ circosJS.Core = (conf) ->
     scatters: {}
     lines: {}
     stacks: {}
+    highlights: {}
 
   @conf = circosJS.mixConf conf, @defaultConf
   @

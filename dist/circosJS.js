@@ -14,7 +14,8 @@ circosJS.Core = function(conf) {
     chords: {},
     scatters: {},
     lines: {},
-    stacks: {}
+    stacks: {},
+    highlights: {}
   };
   this.conf = circosJS.mixConf(conf, this.defaultConf);
   return this;
@@ -176,7 +177,7 @@ circosJS.parseSpanValueData = function(data, layoutSummary) {
       value: datum[3]
     }, index);
   }).map(function(datum) {
-    if (datum.start < 0 || datum.end > layoutSummary[datum[0]]) {
+    if (datum[1] < 0 || datum[2] > layoutSummary[datum[0]]) {
       circosJS.log(2, 'position', 'position inconsistency', {
         datum: datum,
         layoutSummary: layoutSummary
@@ -187,6 +188,47 @@ circosJS.parseSpanValueData = function(data, layoutSummary) {
       start: Math.max(0, parseFloat(datum[1])),
       end: Math.min(layoutSummary[datum[0]], parseFloat(datum[2])),
       value: parseFloat(datum[3])
+    };
+  });
+  groups = d3.nest().key(function(datum) {
+    return datum.block_id;
+  }).entries(data);
+  return {
+    data: groups,
+    meta: {
+      min: d3.min(data, function(d) {
+        return d.value;
+      }),
+      max: d3.max(data, function(d) {
+        return d.value;
+      })
+    }
+  };
+};
+
+circosJS.parseSpanStringData = function(data, layoutSummary) {
+  var groups;
+  data = data.filter(function(datum, index) {
+    return circosJS.checkParent(datum[0], index, layoutSummary, 'parent');
+  }).filter(function(datum, index) {
+    return circosJS.checkNumber({
+      start: datum[1],
+      end: datum[2]
+    }, index);
+  }).map(function(datum) {
+    var value;
+    if (datum[1] < 0 || datum[2] > layoutSummary[datum[0]]) {
+      circosJS.log(2, 'position', 'position inconsistency', {
+        datum: datum,
+        layoutSummary: layoutSummary
+      });
+    }
+    value = datum[3] != null ? datum[3] : null;
+    return {
+      block_id: datum[0],
+      start: Math.max(0, parseFloat(datum[1])),
+      end: Math.min(layoutSummary[datum[0]], parseFloat(datum[2])),
+      value: value
     };
   });
   groups = d3.nest().key(function(datum) {
@@ -384,6 +426,14 @@ circosJS.Core.prototype.stack = function(id, conf, data) {
   return this;
 };
 
+circosJS.Core.prototype.highlight = function(id, conf, data) {
+  var track;
+  track = new circosJS.Highlight();
+  track.build(this, conf, data);
+  this.tracks.highlights[id] = track;
+  return this;
+};
+
 circosJS.Chord = function() {
   circosJS.Track.call(this);
   this.parseData = circosJS.parseChordData;
@@ -487,6 +537,31 @@ circosJS.Heatmap = function() {
       return utils.theta(d.end, layout.blocks[d.block_id]);
     })).attr('class', function(d) {
       return 'q' + utils.ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize;
+    });
+  };
+  return this;
+};
+
+circosJS.Highlight = function() {
+  circosJS.Track.call(this);
+  this.parseData = circosJS.parseSpanStringData;
+  this.renderDatumContainer = (function(_this) {
+    return function(instance, parentElement, name, data, conf) {
+      var group;
+      return group = _this.renderBlock(parentElement, data, instance._layout);
+    };
+  })(this);
+  this.renderDatum = function(parentElement, conf, layout, utils) {
+    return parentElement.selectAll('tile').data(function(d) {
+      return d.values;
+    }).enter().append('path').attr('class', 'tile').attr('d', d3.svg.arc().innerRadius(conf.innerRadius).outerRadius(conf.outerRadius).startAngle(function(d, i) {
+      return utils.theta(d.start, layout.blocks[d.block_id]);
+    }).endAngle(function(d, i) {
+      return utils.theta(d.end, layout.blocks[d.block_id]);
+    })).attr('fill', function(d) {
+      return d.value || conf.color;
+    }).attr('opacity', function(d) {
+      return d.opacity || conf.opacity;
     });
   };
   return this;
@@ -1243,4 +1318,12 @@ circosJS.Stack.prototype.defaultConf = {
   axes: circosJS.axes,
   rules: [],
   backgrounds: []
+};
+
+circosJS.Highlight.prototype.defaultConf = {
+  innerRadius: 0,
+  outerRadius: 0,
+  defaultColor: '#fd6a62',
+  opacity: 0.5,
+  rules: []
 };

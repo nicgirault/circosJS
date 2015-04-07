@@ -33,3 +33,9 @@ circosJS.Core.prototype.stack = (id, conf, data) ->
   track.build @, conf, data
   @tracks.stacks[id] = track
   return @
+
+circosJS.Core.prototype.highlight = (id, conf, data) ->
+  track = new circosJS.Highlight()
+  track.build @, conf, data
+  @tracks.highlights[id] = track
+  return @
