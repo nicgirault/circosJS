@@ -1,16 +1,14 @@
 # a retravailler
 # add palette ["#cd3d08", "#ec8f00", "#6dae29", "#683f92", "#b60275", "#2058a5", "#00a592", "#009d3c", "#378974", "#ffca00"]
-circosJS.renderLayout = (d3, svg, instance) ->
+circosJS.renderLayout = (d3, parentElement, instance) ->
   conf = instance._layout.conf
 
-  svg.select('.cs-layout').remove()
+  parentElement.select('.cs-layout').remove()
 
-  layout = svg
-    .attr 'width', instance.conf.width
-    .attr 'height', instance.conf.height
+  layout = parentElement
     .append 'g'
     .attr 'class', 'cs-layout'
-    .attr 'transform', 'translate(' + parseInt(instance.conf.width/2) + ',' + parseInt(instance.conf.height/2) + ')'
+    .attr 'z-index', conf.zIndex
     .on 'click', conf.onClick
 
   block = layout

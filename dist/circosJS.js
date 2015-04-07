@@ -511,7 +511,7 @@ circosJS.Chord = function() {
     return function(instance, parentElement, name) {
       var track;
       parentElement.select('.' + name).remove();
-      track = parentElement.append('g').attr('class', name);
+      track = parentElement.append('g').attr('class', name).attr('z-index', conf.zIndex);
       return _this.renderChords(track, name, _this.conf, _this.data, instance._layout, _this.ratio, _this.getSource, _this.getTarget);
     };
   })(this);
@@ -933,7 +933,7 @@ circosJS.Track = function() {
     return function(instance, parentElement, name) {
       var datumContainer, track, _ref;
       parentElement.select('.' + name).remove();
-      track = parentElement.append('g').attr('class', name);
+      track = parentElement.append('g').attr('class', name).attr('z-index', _this.conf.zIndex);
       datumContainer = _this.renderDatumContainer(instance, track, name, _this.data, _this.conf);
       if ((_ref = _this.conf.axes) != null ? _ref.display : void 0) {
         _this.renderAxes(datumContainer, _this.conf, instance._layout, _this.data);
@@ -1029,11 +1029,11 @@ circosJS.Track = function() {
   return this;
 };
 
-circosJS.renderLayout = function(d3, svg, instance) {
+circosJS.renderLayout = function(d3, parentElement, instance) {
   var block, conf, entry, layout;
   conf = instance._layout.conf;
-  svg.select('.cs-layout').remove();
-  layout = svg.attr('width', instance.conf.width).attr('height', instance.conf.height).append('g').attr('class', 'cs-layout').attr('transform', 'translate(' + parseInt(instance.conf.width / 2) + ',' + parseInt(instance.conf.height / 2) + ')').on('click', conf.onClick);
+  parentElement.select('.cs-layout').remove();
+  layout = parentElement.append('g').attr('class', 'cs-layout').attr('z-index', conf.zIndex).on('click', conf.onClick);
   block = layout.selectAll('g').data(instance._layout.data).enter().append('g').attr('class', function(d) {
     return d.id;
   }).attr('opacity', conf.opacity);
@@ -1125,36 +1125,52 @@ circosJS.renderLayoutTicks = function(conf, layout, d3, instance) {
 };
 
 circosJS.Core.prototype.render = function(ids, removeTracks) {
-  var name, renderAll, svg, track, trackStore, trackType, tracks, _ref, _ref1;
+  var name, renderAll, svg, track, trackStore, trackType, tracks, translated, _ref, _ref1;
   if (typeof ids === 'undefined') {
     renderAll = true;
-  }
-  svg = d3.select(this.conf.container);
-  if (renderAll || __indexOf.call(ids, 'layout') >= 0) {
-    circosJS.renderLayout(d3, svg, this);
-  }
-  tracks = svg.select('.tracks');
-  if (tracks.empty()) {
-    tracks = svg.append('g').attr('class', 'tracks').attr('transform', 'translate(' + parseInt(this.conf.width / 2) + ',' + parseInt(this.conf.height / 2) + ')');
-  }
-  _ref = this.tracks;
-  for (trackType in _ref) {
-    trackStore = _ref[trackType];
-    for (name in trackStore) {
-      track = trackStore[name];
-      track.render(this, tracks, name);
-    }
+    ids = [];
   }
   if (removeTracks) {
-    _ref1 = this.tracks;
-    for (trackType in _ref1) {
-      trackStore = _ref1[trackType];
+    _ref = this.tracks;
+    for (trackType in _ref) {
+      trackStore = _ref[trackType];
       for (name in trackStore) {
         track = trackStore[name];
         svg.select('.' + name).remove();
       }
     }
   }
+  svg = d3.select(this.conf.container).attr('width', this.conf.width).attr('height', this.conf.height);
+  translated = svg.select('.all');
+  if (translated.empty()) {
+    translated = svg.append('g').attr('class', 'all').attr('transform', 'translate(' + parseInt(this.conf.width / 2) + ',' + parseInt(this.conf.height / 2) + ')');
+  }
+  _ref1 = this.tracks;
+  for (trackType in _ref1) {
+    trackStore = _ref1[trackType];
+    for (name in trackStore) {
+      track = trackStore[name];
+      if (renderAll || __indexOf.call(ids, name) >= 0) {
+        track.render(this, translated, name);
+      }
+    }
+  }
+  if (renderAll || __indexOf.call(ids, 'layout') >= 0) {
+    circosJS.renderLayout(d3, translated, this);
+  }
+  tracks = svg.selectAll('.all > g').remove();
+  tracks[0].sort(function(a, b) {
+    if (parseInt(a.getAttribute('z-index')) < parseInt(b.getAttribute('z-index'))) {
+      return -1;
+    } else if (parseInt(a.getAttribute('z-index')) > parseInt(b.getAttribute('z-index'))) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+  svg.select('.all').selectAll('g').data(tracks[0]).enter().append(function(d) {
+    return d;
+  });
 };
 
 circosJS.Core.prototype.defaultConf = {
@@ -1196,7 +1212,8 @@ circosJS.Layout.prototype.defaultConf = {
     }
   },
   onClick: null,
-  onMouseOver: null
+  onMouseOver: null,
+  zIndex: 100
 };
 
 circosJS.axes = {
@@ -1225,7 +1242,8 @@ circosJS.Heatmap.prototype.defaultConf = {
   colorPaletteReverse: false,
   logScale: false,
   rules: [],
-  backgrounds: []
+  backgrounds: [],
+  zIndex: 1
 };
 
 circosJS.Histogram.prototype.defaultConf = {
@@ -1242,7 +1260,8 @@ circosJS.Histogram.prototype.defaultConf = {
   logScale: false,
   axes: circosJS.axes,
   rules: [],
-  backgrounds: []
+  backgrounds: [],
+  zIndex: 1
 };
 
 circosJS.Chord.prototype.defaultConf = {
@@ -1256,7 +1275,8 @@ circosJS.Chord.prototype.defaultConf = {
   max: 'smart',
   logScale: false,
   rules: [],
-  backgrounds: []
+  backgrounds: [],
+  zIndex: 1
 };
 
 circosJS.Scatter.prototype.defaultConf = {
@@ -1276,7 +1296,8 @@ circosJS.Scatter.prototype.defaultConf = {
   },
   axes: circosJS.axes,
   rules: [],
-  backgrounds: []
+  backgrounds: [],
+  zIndex: 1
 };
 
 circosJS.Line.prototype.defaultConf = {
@@ -1294,7 +1315,8 @@ circosJS.Line.prototype.defaultConf = {
   interpolation: 'linear',
   axes: circosJS.axes,
   rules: [],
-  backgrounds: []
+  backgrounds: [],
+  zIndex: 1
 };
 
 circosJS.Stack.prototype.defaultConf = {
@@ -1317,7 +1339,8 @@ circosJS.Stack.prototype.defaultConf = {
   strokeColor: '#000000',
   axes: circosJS.axes,
   rules: [],
-  backgrounds: []
+  backgrounds: [],
+  zIndex: 1
 };
 
 circosJS.Highlight.prototype.defaultConf = {
@@ -1325,5 +1348,6 @@ circosJS.Highlight.prototype.defaultConf = {
   outerRadius: 0,
   defaultColor: '#fd6a62',
   opacity: 0.5,
-  rules: []
+  rules: [],
+  zIndex: 101
 };

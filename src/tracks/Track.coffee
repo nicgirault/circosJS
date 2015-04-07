@@ -71,6 +71,7 @@ circosJS.Track = ->
     parentElement.select('.' + name).remove()
     track = parentElement.append 'g'
       .attr 'class', name
+      .attr 'z-index', @conf.zIndex
     datumContainer = @renderDatumContainer instance, track, name, @data, @conf
     @renderAxes(datumContainer, @conf, instance._layout, @data) if @conf.axes?.display
     @renderDatum datumContainer, @conf, instance._layout, @

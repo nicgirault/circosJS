@@ -3,21 +3,7 @@ circosJS.Core.prototype.render = (ids, removeTracks) ->
   # this refers the circos instance
   if typeof ids == 'undefined'
     renderAll = true
-
-  svg = d3.select @conf.container
-
-  if renderAll or 'layout' in ids
-    circosJS.renderLayout d3, svg, @
-
-  tracks = svg.select('.tracks')
-  if tracks.empty()
-    tracks = svg.append 'g'
-      .attr 'class', 'tracks'
-      .attr 'transform', 'translate(' + parseInt(@conf.width/2) + ',' + parseInt(@conf.height/2) + ')'
-
-  for trackType, trackStore of @tracks
-    for name, track of trackStore
-      track.render @, tracks, name
+    ids = []
 
   if removeTracks
     # remove all tracks to be sure to keep consistent data
@@ -26,6 +12,38 @@ circosJS.Core.prototype.render = (ids, removeTracks) ->
     for trackType, trackStore of @tracks
       for name, track of trackStore
         svg.select('.' + name).remove()
+
+  svg = d3.select @conf.container
+    .attr 'width', @conf.width
+    .attr 'height', @conf.height
+
+  translated = svg.select '.all'
+  if translated.empty()
+    translated = svg.append 'g'
+      .attr 'class', 'all'
+      .attr 'transform', 'translate(' + parseInt(@conf.width/2) + ',' + parseInt(@conf.height/2) + ')'
+
+  for trackType, trackStore of @tracks
+    for name, track of trackStore
+      if renderAll or name in ids
+        track.render @, translated, name
+  if renderAll or 'layout' in ids
+    circosJS.renderLayout d3, translated, @
+
+  # re-order tracks and layout according to z-index
+  # it looks like an anti-pattern. Is there an alternative?
+  tracks = svg.selectAll('.all > g').remove()
+  tracks[0].sort (a,b) ->
+    if parseInt(a.getAttribute('z-index')) < parseInt(b.getAttribute('z-index'))
+      return -1
+    else if parseInt(a.getAttribute('z-index')) > parseInt(b.getAttribute('z-index'))
+      return 1
+    else
+      return 0
+  svg.select('.all').selectAll 'g'
+    .data tracks[0]
+    .enter()
+    .append (d) -> d
 
   # renderBackgrounds = (d3Track, track, instance, d3, svg) ->
   #   backgrounds = track._backgrounds
