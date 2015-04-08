@@ -54,7 +54,7 @@ circosJS.Chord = ->
     parentElement.select('.' + name).remove()
     track = parentElement.append 'g'
       .attr 'class', name
-      .attr 'z-index', conf.zIndex
+      .attr 'z-index', @conf.zIndex
 
 
     @renderChords track, name, @conf, @data, instance._layout, @ratio, @getSource, @getTarget

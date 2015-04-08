@@ -52,7 +52,6 @@ circosJS.axes =
 
 # Heatmap
 circosJS.Heatmap.prototype.defaultConf =
-  details: 'blablabla'
   innerRadius: 0
   outerRadius: 0
   min: 'smart'

@@ -511,7 +511,7 @@ circosJS.Chord = function() {
     return function(instance, parentElement, name) {
       var track;
       parentElement.select('.' + name).remove();
-      track = parentElement.append('g').attr('class', name).attr('z-index', conf.zIndex);
+      track = parentElement.append('g').attr('class', name).attr('z-index', _this.conf.zIndex);
       return _this.renderChords(track, name, _this.conf, _this.data, instance._layout, _this.ratio, _this.getSource, _this.getTarget);
     };
   })(this);
@@ -1247,7 +1247,6 @@ circosJS.axes = {
 };
 
 circosJS.Heatmap.prototype.defaultConf = {
-  details: 'blablabla',
   innerRadius: 0,
   outerRadius: 0,
   min: 'smart',
