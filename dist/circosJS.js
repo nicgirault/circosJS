@@ -67,7 +67,9 @@ circosJS.mixConf = function(conf, defaultConf) {
   for (key in defaultConf) {
     value = defaultConf[key];
     if (key in conf) {
-      if (typeof value === 'object') {
+      if (Object.prototype.toString.call(value) === '[object Array]') {
+        newConf[key] = conf[key];
+      } else if (typeof value === 'object') {
         newConf[key] = circosJS.mixConf(conf[key], value);
       } else {
         newConf[key] = conf[key];
@@ -628,7 +630,7 @@ circosJS.Line = function() {
     return function(instance, parentElement, name, data, conf) {
       var group, track;
       track = parentElement.append('g').attr('class', name);
-      return group = _this.renderBlock(track, data, instance._layout);
+      return group = _this.renderBlock(track, data, instance._layout, conf);
     };
   })(this);
   this.renderDatum = function(parentElement, conf, layout, utils) {
@@ -705,7 +707,6 @@ circosJS.Stack = function() {
     this.loadData(data, instance);
     this.conf = this.processConf(conf, this.defaultConf, this.meta, instance, this);
     this.buildLayers(this.data, this.conf.margin);
-    this.loadBackgrounds(conf.backgrounds);
     return this.applyRules(conf.rules, this.data);
   };
   this.buildLayers = function(data, margin) {
@@ -824,7 +825,7 @@ circosJS.Stack = function() {
     return function(instance, parentElement, name, data, conf) {
       var group, track;
       track = parentElement.append('g').attr('class', conf.colorPalette);
-      return group = _this.renderBlock(track, data, instance._layout);
+      return group = _this.renderBlock(track, data, instance._layout, conf);
     };
   })(this);
   this.renderDatum = function(parentElement, conf, layout, utils) {
@@ -863,7 +864,6 @@ circosJS.Track = function() {
   this.build = function(instance, conf, data) {
     this.loadData(data, instance);
     this.conf = this.processConf(conf, this.defaultConf, this.meta, instance, this);
-    this.loadBackgrounds(conf.backgrounds);
     return this.applyRules(conf.rules, this.data);
   };
   this.loadData = function(data, instance) {
@@ -888,9 +888,6 @@ circosJS.Track = function() {
       conf.outerRadius = smartBorders.out;
     }
     return conf;
-  };
-  this.loadBackgrounds = function(backgrounds) {
-    return this.backgrounds = backgrounds || [];
   };
   this.applyRules = function(rules, data) {
     var datum, i, k, rule, v, _results;
@@ -956,10 +953,36 @@ circosJS.Track = function() {
       return _this.renderDatum(datumContainer, _this.conf, instance._layout, _this);
     };
   })(this);
-  this.renderBlock = function(parentElement, data, layout) {
-    return parentElement.selectAll('.block').data(data).enter().append('g').attr('class', 'block').attr('transform', function(d) {
+  this.renderBlock = function(parentElement, data, layout, conf) {
+    var block, scope;
+    scope = conf.outerRadius - conf.innerRadius;
+    block = parentElement.selectAll('.block').data(data).enter().append('g').attr('class', 'block').attr('transform', function(d) {
       return 'rotate(' + layout.blocks[d.key].start * 360 / (2 * Math.PI) + ')';
     });
+    if (conf.backgrounds) {
+      block.selectAll('.background').data(conf.backgrounds).enter().append('path').attr('class', 'background').attr('fill', function(background) {
+        return background.color;
+      }).attr('opacity', function(background) {
+        return background.opacity || 1;
+      }).attr('d', d3.svg.arc().innerRadius(function(background) {
+        if (conf.direction === 'in') {
+          return conf.outerRadius - scope * background.start;
+        } else {
+          return conf.innerRadius + scope * background.start;
+        }
+      }).outerRadius(function(background) {
+        if (conf.direction === 'in') {
+          return conf.outerRadius - scope * background.end;
+        } else {
+          return conf.innerRadius + scope * background.end;
+        }
+      }).startAngle(function(d, i, j) {
+        return 0;
+      }).endAngle(function(d, i, j) {
+        return layout.blocks[data[j].key].end - layout.blocks[data[j].key].start;
+      }));
+    }
+    return block;
   };
   this.renderAxes = function(parentElement, conf, layout, data) {
     var axes, axis, x;
@@ -1186,6 +1209,7 @@ circosJS.Core.prototype.render = function(ids, removeTracks) {
   svg.select('.all').selectAll('g').data(tracks[0]).enter().append(function(d) {
     return d;
   });
+  return this;
 };
 
 circosJS.Core.prototype.defaultConf = {

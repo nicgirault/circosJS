@@ -7,7 +7,6 @@ circosJS.Stack = ->
     @loadData data, instance
     @conf = @processConf conf, @defaultConf, @meta, instance, @
     @buildLayers @data, @conf.margin
-    @loadBackgrounds conf.backgrounds
     @applyRules conf.rules, @data
 
   @buildLayers = (data, margin) ->
@@ -78,7 +77,7 @@ circosJS.Stack = ->
   @renderDatumContainer = (instance, parentElement, name, data, conf) =>
     track = parentElement.append 'g'
       .attr 'class', conf.colorPalette
-    group = @renderBlock track, data, instance._layout
+    group = @renderBlock track, data, instance._layout, conf
 
   @renderDatum = (parentElement, conf, layout, utils) ->
     tile = parentElement.selectAll '.tile'

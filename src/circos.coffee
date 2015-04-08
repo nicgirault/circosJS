@@ -55,7 +55,9 @@ circosJS.mixConf = (conf, defaultConf) ->
   newConf = {}
   for key, value of defaultConf
     if key of conf
-      if typeof value == 'object'
+      if Object.prototype.toString.call( value ) == '[object Array]'
+        newConf[key] = conf[key]
+      else if typeof value == 'object'
         newConf[key] = circosJS.mixConf(conf[key], value)
       else
         newConf[key] = conf[key]

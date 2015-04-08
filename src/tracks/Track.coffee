@@ -5,7 +5,6 @@ circosJS.Track = ->
   @build = (instance, conf, data) ->
     @loadData data, instance
     @conf = @processConf conf, @defaultConf, @meta, instance, @
-    @loadBackgrounds conf.backgrounds
     @applyRules conf.rules, @data
 
   @loadData = (data, instance) ->
@@ -24,23 +23,6 @@ circosJS.Track = ->
       conf.innerRadius = smartBorders.in
       conf.outerRadius = smartBorders.out
     return conf
-
-  @loadBackgrounds = (backgrounds) ->
-    @backgrounds = backgrounds || []
-  # a rule look like this:
-  # {parameter: color, value: 'blue', condition: function, flow: 'stop if true'}
-  # @rules = rules
-
-
-  # if conf.innerRadius and conf.outerRadius
-  #   if conf.innerRadius > conf.outerRadius
-  #     circosJS.log(
-  #       2,
-  #       'radiusInconsitency',
-  #       'Inner radius greater than outer radius',
-  #       {'innerRadius': conf.innerRadius, 'outerRadius': conf.outerRadius}
-  #     )
-
 
   @applyRules = (rules, data) ->
     rules = rules || []
@@ -76,12 +58,36 @@ circosJS.Track = ->
     @renderAxes(datumContainer, @conf, instance._layout, @data) if @conf.axes?.display
     @renderDatum datumContainer, @conf, instance._layout, @
 
-  @renderBlock = (parentElement, data, layout) ->
-    parentElement.selectAll '.block'
+  @renderBlock = (parentElement, data, layout, conf) ->
+    scope = conf.outerRadius - conf.innerRadius
+    block = parentElement.selectAll '.block'
       .data data
       .enter().append 'g'
       .attr 'class', 'block'
       .attr 'transform', (d) -> 'rotate(' + layout.blocks[d.key].start*360/(2*Math.PI) + ')'
+
+    if conf.backgrounds
+      block.selectAll '.background'
+        .data conf.backgrounds
+        .enter().append 'path'
+        .attr 'class', 'background'
+        .attr 'fill', (background) -> background.color
+        .attr 'opacity', (background) -> background.opacity || 1
+        .attr('d', d3.svg.arc()
+          .innerRadius (background) ->
+            if conf.direction == 'in'
+              conf.outerRadius - scope * background.start
+            else
+              conf.innerRadius + scope * background.start
+          .outerRadius (background) ->
+            if conf.direction == 'in'
+              conf.outerRadius - scope * background.end
+            else
+              conf.innerRadius + scope * background.end
+          .startAngle (d,i,j) -> 0
+          .endAngle (d,i,j) -> layout.blocks[data[j].key].end - layout.blocks[data[j].key].start
+        )
+    block
 
   @renderAxes = (parentElement, conf, layout, data) ->
     if conf.axes.minor.spacingType == 'pixel'
@@ -103,6 +109,7 @@ circosJS.Track = ->
       .attr 'd', axis
       .attr 'stroke-width', (d, i) -> if i % conf.axes.major.spacing == 0 then conf.axes.major.thickness else conf.axes.minor.thickness
       .attr 'stroke', (d, i) -> if i % conf.axes.major.spacing == 0 then conf.axes.major.color else conf.axes.minor.color
+
 
 
   @theta = (position, block) -> position / block.len * (block.end - block.start)
