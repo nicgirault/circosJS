@@ -98,6 +98,7 @@ circosJS.Track = ->
     parentElement.selectAll '.axis'
       .data axes
       .enter().append 'path'
+      .attr 'opacity', conf.opacity
       .attr 'class', 'axis'
       .attr 'd', axis
       .attr 'stroke-width', (d, i) -> if i % conf.axes.major.spacing == 0 then conf.axes.major.thickness else conf.axes.minor.thickness

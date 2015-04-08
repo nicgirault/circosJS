@@ -982,7 +982,7 @@ circosJS.Track = function() {
       block = layout.blocks[data[j].key];
       return block.end - block.start;
     });
-    return parentElement.selectAll('.axis').data(axes).enter().append('path').attr('class', 'axis').attr('d', axis).attr('stroke-width', function(d, i) {
+    return parentElement.selectAll('.axis').data(axes).enter().append('path').attr('opacity', conf.opacity).attr('class', 'axis').attr('d', axis).attr('stroke-width', function(d, i) {
       if (i % conf.axes.major.spacing === 0) {
         return conf.axes.major.thickness;
       } else {
