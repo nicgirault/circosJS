@@ -12,6 +12,7 @@ circosJS.Scatter = ->
       .data (d) -> d.values
       .enter().append 'path'
       .attr 'class', 'point'
+      .attr 'opacity', (d) -> d.opacity || conf.opacity
       .attr 'd',
         d3.svg.symbol()
           .type conf.glyph.shape

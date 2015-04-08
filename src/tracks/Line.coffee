@@ -17,6 +17,7 @@ circosJS.Line = ->
       .datum (d) -> d.values
       .attr 'class', 'line'
       .attr 'd', line
+      .attr 'opacity', (d) -> d.opacity || conf.opacity
       .attr 'stroke-width', (d) -> d.thickness || conf.thickness
       .attr 'stroke', (d) -> d.color || conf.color
       .attr 'fill', (d) ->

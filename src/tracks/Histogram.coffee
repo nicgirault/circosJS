@@ -12,6 +12,7 @@ circosJS.Histogram = ->
       .data (d) -> d.values
       .enter().append 'path'
       .attr 'class', 'bin'
+      .attr 'opacity', (d) -> d.opacity || conf.opacity
       .attr 'd',
         d3.svg.arc()
           .innerRadius (d) ->

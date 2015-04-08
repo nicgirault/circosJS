@@ -13,6 +13,7 @@ circosJS.Heatmap = ->
       .data (d) -> d.values
       .enter().append 'path'
       .attr 'class', 'tile'
+      .attr 'opacity', (d) -> d.opacity || conf.opacity
       .attr 'd',
         d3.svg.arc()
           .innerRadius conf.innerRadius

@@ -531,7 +531,9 @@ circosJS.Heatmap = function() {
   this.renderDatum = function(parentElement, conf, layout, utils) {
     return parentElement.selectAll('tile').data(function(d) {
       return d.values;
-    }).enter().append('path').attr('class', 'tile').attr('d', d3.svg.arc().innerRadius(conf.innerRadius).outerRadius(conf.outerRadius).startAngle(function(d, i) {
+    }).enter().append('path').attr('class', 'tile').attr('opacity', function(d) {
+      return d.opacity || conf.opacity;
+    }).attr('d', d3.svg.arc().innerRadius(conf.innerRadius).outerRadius(conf.outerRadius).startAngle(function(d, i) {
       return utils.theta(d.start, layout.blocks[d.block_id]);
     }).endAngle(function(d, i) {
       return utils.theta(d.end, layout.blocks[d.block_id]);
@@ -562,6 +564,10 @@ circosJS.Highlight = function() {
       return d.value || conf.color;
     }).attr('opacity', function(d) {
       return d.opacity || conf.opacity;
+    }).attr('stroke-width', function(d) {
+      return d.strokeWidth || conf.strokeWidth;
+    }).attr('stroke', function(d) {
+      return d.strokeColor || conf.strokeColor;
     });
   };
   return this;
@@ -581,7 +587,9 @@ circosJS.Histogram = function() {
     var bin;
     bin = parentElement.selectAll('.bin').data(function(d) {
       return d.values;
-    }).enter().append('path').attr('class', 'bin').attr('d', d3.svg.arc().innerRadius(function(d) {
+    }).enter().append('path').attr('class', 'bin').attr('opacity', function(d) {
+      return d.opacity || conf.opacity;
+    }).attr('d', d3.svg.arc().innerRadius(function(d) {
       var height;
       if (conf.direction === 'in') {
         height = utils.ratio(d.value, conf.cmin, conf.cmax, conf.outerRadius - conf.innerRadius, false, conf.logscale);
@@ -632,7 +640,9 @@ circosJS.Line = function() {
     }).interpolate(conf.interpolation);
     return parentElement.append('path').datum(function(d) {
       return d.values;
-    }).attr('class', 'line').attr('d', line).attr('stroke-width', function(d) {
+    }).attr('class', 'line').attr('d', line).attr('opacity', function(d) {
+      return d.opacity || conf.opacity;
+    }).attr('stroke-width', function(d) {
       return d.thickness || conf.thickness;
     }).attr('stroke', function(d) {
       return d.color || conf.color;
@@ -664,7 +674,9 @@ circosJS.Scatter = function() {
     var point;
     return point = parentElement.selectAll('.point').data(function(d) {
       return d.values;
-    }).enter().append('path').attr('class', 'point').attr('d', d3.svg.symbol().type(conf.glyph.shape).size(conf.glyph.size)).attr('transform', (function(_this) {
+    }).enter().append('path').attr('class', 'point').attr('opacity', function(d) {
+      return d.opacity || conf.opacity;
+    }).attr('d', d3.svg.symbol().type(conf.glyph.shape).size(conf.glyph.size)).attr('transform', (function(_this) {
       return function(d) {
         return 'translate(' + utils.x(d, layout, conf) + ',' + utils.y(d, layout, conf) + ') rotate(' + utils.theta(d.position, layout.blocks[d.block_id]) * 360 / (2 * Math.PI) + ')';
       };
@@ -824,6 +836,9 @@ circosJS.Stack = function() {
     }).endAngle(function(d) {
       return utils.theta(d.end, layout.blocks[d.block_id]);
     }));
+    tile.attr('opacity', function(d) {
+      return d.opacity || conf.opacity;
+    });
     tile.attr('stroke-width', function(d) {
       return d.strokeWidth || conf.strokeWidth;
     });
@@ -1243,7 +1258,8 @@ circosJS.Heatmap.prototype.defaultConf = {
   logScale: false,
   rules: [],
   backgrounds: [],
-  zIndex: 1
+  zIndex: 1,
+  opacity: 1
 };
 
 circosJS.Histogram.prototype.defaultConf = {
@@ -1261,7 +1277,8 @@ circosJS.Histogram.prototype.defaultConf = {
   axes: circosJS.axes,
   rules: [],
   backgrounds: [],
-  zIndex: 1
+  zIndex: 1,
+  opacity: 1
 };
 
 circosJS.Chord.prototype.defaultConf = {
@@ -1297,7 +1314,8 @@ circosJS.Scatter.prototype.defaultConf = {
   axes: circosJS.axes,
   rules: [],
   backgrounds: [],
-  zIndex: 1
+  zIndex: 1,
+  opacity: 1
 };
 
 circosJS.Line.prototype.defaultConf = {
@@ -1316,7 +1334,8 @@ circosJS.Line.prototype.defaultConf = {
   axes: circosJS.axes,
   rules: [],
   backgrounds: [],
-  zIndex: 1
+  zIndex: 1,
+  opacity: 1
 };
 
 circosJS.Stack.prototype.defaultConf = {
@@ -1340,7 +1359,8 @@ circosJS.Stack.prototype.defaultConf = {
   axes: circosJS.axes,
   rules: [],
   backgrounds: [],
-  zIndex: 1
+  zIndex: 1,
+  opacity: 1
 };
 
 circosJS.Highlight.prototype.defaultConf = {
@@ -1349,5 +1369,7 @@ circosJS.Highlight.prototype.defaultConf = {
   defaultColor: '#fd6a62',
   opacity: 0.5,
   rules: [],
-  zIndex: 101
+  zIndex: 101,
+  strokeColor: '#d3d3d3',
+  strokeWidth: 0
 };

@@ -92,6 +92,7 @@ circosJS.Stack = ->
         .startAngle (d) -> utils.theta d.start, layout.blocks[d.block_id]
         .endAngle (d) -> utils.theta d.end, layout.blocks[d.block_id]
 
+    tile.attr 'opacity', (d) -> d.opacity || conf.opacity
     tile.attr 'stroke-width', (d) -> d.strokeWidth || conf.strokeWidth
     tile.attr 'stroke', (d) -> d.strokeColor || conf.strokeColor
     tile.attr 'fill', (d) -> d.color || conf.color
