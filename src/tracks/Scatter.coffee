@@ -5,7 +5,7 @@ circosJS.Scatter = ->
   @renderDatumContainer = (instance, parentElement, name, data, conf) =>
     track = parentElement.append 'g'
       .attr 'class', name
-    group = @renderBlock track, data, instance._layout
+    group = @renderBlock track, data, instance._layout, conf
 
   @renderDatum = (parentElement, conf, layout, utils) ->
     point = parentElement.selectAll '.point'

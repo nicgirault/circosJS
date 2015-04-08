@@ -3,7 +3,7 @@ circosJS.Highlight = ->
   @parseData = circosJS.parseSpanStringData
 
   @renderDatumContainer = (instance, parentElement, name, data, conf) =>
-    group = @renderBlock parentElement, data, instance._layout
+    group = @renderBlock parentElement, data, instance._layout, conf
 
   @renderDatum = (parentElement, conf, layout, utils) ->
     parentElement.selectAll 'tile'

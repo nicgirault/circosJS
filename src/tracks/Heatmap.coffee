@@ -6,7 +6,7 @@ circosJS.Heatmap = ->
     track = parentElement.append 'g'
       .attr 'class', conf.colorPalette
 
-    group = @renderBlock track, data, instance._layout
+    group = @renderBlock track, data, instance._layout, conf
 
   @renderDatum = (parentElement, conf, layout, utils) ->
     parentElement.selectAll 'tile'

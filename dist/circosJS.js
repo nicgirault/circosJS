@@ -527,7 +527,7 @@ circosJS.Heatmap = function() {
     return function(instance, parentElement, name, data, conf) {
       var group, track;
       track = parentElement.append('g').attr('class', conf.colorPalette);
-      return group = _this.renderBlock(track, data, instance._layout);
+      return group = _this.renderBlock(track, data, instance._layout, conf);
     };
   })(this);
   this.renderDatum = function(parentElement, conf, layout, utils) {
@@ -552,7 +552,7 @@ circosJS.Highlight = function() {
   this.renderDatumContainer = (function(_this) {
     return function(instance, parentElement, name, data, conf) {
       var group;
-      return group = _this.renderBlock(parentElement, data, instance._layout);
+      return group = _this.renderBlock(parentElement, data, instance._layout, conf);
     };
   })(this);
   this.renderDatum = function(parentElement, conf, layout, utils) {
@@ -582,7 +582,7 @@ circosJS.Histogram = function() {
     return function(instance, parentElement, name, data, conf) {
       var group, track;
       track = parentElement.append('g').attr('class', _this.conf.colorPalette);
-      return group = _this.renderBlock(track, data, instance._layout);
+      return group = _this.renderBlock(track, data, instance._layout, conf);
     };
   })(this);
   this.renderDatum = function(parentElement, conf, layout, utils) {
@@ -669,7 +669,7 @@ circosJS.Scatter = function() {
     return function(instance, parentElement, name, data, conf) {
       var group, track;
       track = parentElement.append('g').attr('class', name);
-      return group = _this.renderBlock(track, data, instance._layout);
+      return group = _this.renderBlock(track, data, instance._layout, conf);
     };
   })(this);
   this.renderDatum = function(parentElement, conf, layout, utils) {
