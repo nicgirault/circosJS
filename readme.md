@@ -7,7 +7,7 @@ CircosJS is a javascript library to easily build an interactive circos graphs. I
 Documentation
 -------------
 
-The documentation is here: [http://nicgirault.gitbooks.io/circosjs/content/](nicgirault.gitbooks.io/circosjs).
+The documentation is here: [http://nicgirault.gitbooks.io/circosjs/content/](http://nicgirault.gitbooks.io/circosjs/content/).
 
 Installation
 ------------
