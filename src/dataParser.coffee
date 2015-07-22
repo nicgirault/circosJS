@@ -101,9 +101,8 @@ circosJS.parseChordData = (data, layoutSummary) ->
     target:
       id: datum[3]
       start: Math.max 0, parseFloat datum[4]
-      end: Math.min layoutSummary[datum[0]], parseFloat datum[5]
+      end: Math.min layoutSummary[datum[3]], parseFloat datum[5]
     value: parseFloat datum[6]
-
   return {
     data: data
     meta:
