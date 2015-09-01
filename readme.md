@@ -20,7 +20,6 @@ Demo
 [easycircos](http://easycircos.org) is a user-friendly web interface to draw circos images.
 
 
-
 Contact
 -------
 Nicolas Girault
