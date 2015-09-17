@@ -5,7 +5,15 @@ var drawCircos = function(error, GRCh37, data) {
   });
 
   data = data.map(function(d){
-    return [d.source_id, d.source_start, d.source_end, d.target_id, d.target_start, d.target_end, 1];
+    return [
+      d.source_id,
+      parseInt(d.source_breakpoint) - 2000000,
+      parseInt(d.source_breakpoint) + 2000000,
+      d.target_id,
+      parseInt(d.target_breakpoint) - 2000000,
+      parseInt(d.target_breakpoint) + 2000000,
+      1
+    ];
   });
 
   circos
