@@ -12,7 +12,12 @@ circosJS.checkNumber = (keys, index) ->
   true
 
 circosJS.parseSpanValueData = (data, layoutSummary) ->
-  # ['parent', 'start', 'end', 'value']
+  # ['parent_id', 'start', 'end', 'value']
+  sample = data[0]
+  if 'parent_id' of sample and 'start' of sample and 'end' of sample and 'value' of sample
+    data = data.map (datum) ->
+      [datum.parent_id, datum.start, datum.end, datum.value]
+
   data = data
   .filter (datum, index) -> circosJS.checkParent datum[0], index, layoutSummary, 'parent'
   .filter (datum, index) -> circosJS.checkNumber {start: datum[1], end: datum[2], value: datum[3]}, index
@@ -22,7 +27,7 @@ circosJS.parseSpanValueData = (data, layoutSummary) ->
     block_id: datum[0]
     start: Math.max 0, parseFloat datum[1]
     end: Math.min layoutSummary[datum[0]], parseFloat datum[2]
-    value: parseFloat datum[3]
+    value: parseFloat(datum[3]) || 1
 
   # group data by block id
   groups = d3.nest()
@@ -36,7 +41,12 @@ circosJS.parseSpanValueData = (data, layoutSummary) ->
   }
 
 circosJS.parseSpanStringData = (data, layoutSummary) ->
-  # ['parent', 'start', 'end', 'string']
+  # ['parent_id', 'start', 'end', 'value']
+  sample = data[0]
+  if 'parent_id' of sample and 'start' of sample and 'end' of sample and 'value' of sample
+    data = data.map (datum) ->
+      [datum.parent_id, datum.start, datum.end, datum.value]
+
   data = data
   .filter (datum, index) -> circosJS.checkParent datum[0], index, layoutSummary, 'parent'
   .filter (datum, index) -> circosJS.checkNumber {start: datum[1], end: datum[2]}, index
@@ -61,14 +71,19 @@ circosJS.parseSpanStringData = (data, layoutSummary) ->
   }
 
 circosJS.parsePositionValueData = (data, layoutSummary) ->
-  # ['parent', 'position', 'value']
+  # ['parent_id', 'position', 'value']
+  sample = data[0]
+  if 'parent_id' of sample and 'position' of sample
+    data = data.map (datum) ->
+      [datum.parent_id, datum.position, datum.value]
+
   data = data
   .filter (datum, index) -> circosJS.checkParent datum[0], index, layoutSummary, 'parent'
   .filter (datum, index) -> circosJS.checkNumber {position: datum[1], value: datum[2]}, index
   .map (datum) ->
     block_id: datum[0]
     position: Math.min layoutSummary[datum[0]], parseFloat datum[1]
-    value: parseFloat datum[2]
+    value: parseFloat(datum[2]) || 1
 
   # group data by block id
   groups = d3.nest()
@@ -83,6 +98,13 @@ circosJS.parsePositionValueData = (data, layoutSummary) ->
 
 circosJS.parseChordData = (data, layoutSummary) ->
   # ['source_id', 'source_start', 'source_end', 'target_id', 'target_start', 'target_end', 'value']
+  sample = data[0]
+  if 'source_id' of sample and 'source_start' of sample and 'source_end' and 'target_id' of sample and 'target_start' of sample and 'target_end' of sample
+    data = data.map (datum) ->
+      elts = [datum.source_id, datum.source_start, datum.source_end, datum.target_id, datum.target_start, datum.target_end]
+      elts.push(datum.value) if datum.value?
+      return elts
+
   data = data
   .filter (datum, index) -> circosJS.checkParent datum[0], index, layoutSummary, 'source_id'
   .filter (datum, index) -> circosJS.checkParent datum[3], index, layoutSummary, 'target_id'
@@ -91,7 +113,7 @@ circosJS.parseChordData = (data, layoutSummary) ->
       source_end: datum[2]
       target_start: datum[4]
       target_end: datum[5]
-      value: datum[6]
+      value: datum[6] || 1
     }, index
   .map (datum) ->
     source:

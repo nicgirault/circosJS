@@ -169,7 +169,13 @@ circosJS.checkNumber = function(keys, index) {
 };
 
 circosJS.parseSpanValueData = function(data, layoutSummary) {
-  var groups;
+  var groups, sample;
+  sample = data[0];
+  if ('parent_id' in sample && 'start' in sample && 'end' in sample && 'value' in sample) {
+    data = data.map(function(datum) {
+      return [datum.parent_id, datum.start, datum.end, datum.value];
+    });
+  }
   data = data.filter(function(datum, index) {
     return circosJS.checkParent(datum[0], index, layoutSummary, 'parent');
   }).filter(function(datum, index) {
@@ -189,7 +195,7 @@ circosJS.parseSpanValueData = function(data, layoutSummary) {
       block_id: datum[0],
       start: Math.max(0, parseFloat(datum[1])),
       end: Math.min(layoutSummary[datum[0]], parseFloat(datum[2])),
-      value: parseFloat(datum[3])
+      value: parseFloat(datum[3]) || 1
     };
   });
   groups = d3.nest().key(function(datum) {
@@ -209,7 +215,13 @@ circosJS.parseSpanValueData = function(data, layoutSummary) {
 };
 
 circosJS.parseSpanStringData = function(data, layoutSummary) {
-  var groups;
+  var groups, sample;
+  sample = data[0];
+  if ('parent_id' in sample && 'start' in sample && 'end' in sample && 'value' in sample) {
+    data = data.map(function(datum) {
+      return [datum.parent_id, datum.start, datum.end, datum.value];
+    });
+  }
   data = data.filter(function(datum, index) {
     return circosJS.checkParent(datum[0], index, layoutSummary, 'parent');
   }).filter(function(datum, index) {
@@ -250,7 +262,13 @@ circosJS.parseSpanStringData = function(data, layoutSummary) {
 };
 
 circosJS.parsePositionValueData = function(data, layoutSummary) {
-  var groups;
+  var groups, sample;
+  sample = data[0];
+  if ('parent_id' in sample && 'position' in sample) {
+    data = data.map(function(datum) {
+      return [datum.parent_id, datum.position, datum.value];
+    });
+  }
   data = data.filter(function(datum, index) {
     return circosJS.checkParent(datum[0], index, layoutSummary, 'parent');
   }).filter(function(datum, index) {
@@ -262,7 +280,7 @@ circosJS.parsePositionValueData = function(data, layoutSummary) {
     return {
       block_id: datum[0],
       position: Math.min(layoutSummary[datum[0]], parseFloat(datum[1])),
-      value: parseFloat(datum[2])
+      value: parseFloat(datum[2]) || 1
     };
   });
   groups = d3.nest().key(function(datum) {
@@ -282,6 +300,18 @@ circosJS.parsePositionValueData = function(data, layoutSummary) {
 };
 
 circosJS.parseChordData = function(data, layoutSummary) {
+  var sample;
+  sample = data[0];
+  if ('source_id' in sample && 'source_start' in sample && 'source_end' && 'target_id' in sample && 'target_start' in sample && 'target_end' in sample) {
+    data = data.map(function(datum) {
+      var elts;
+      elts = [datum.source_id, datum.source_start, datum.source_end, datum.target_id, datum.target_start, datum.target_end];
+      if (datum.value != null) {
+        elts.push(datum.value);
+      }
+      return elts;
+    });
+  }
   data = data.filter(function(datum, index) {
     return circosJS.checkParent(datum[0], index, layoutSummary, 'source_id');
   }).filter(function(datum, index) {
@@ -292,7 +322,7 @@ circosJS.parseChordData = function(data, layoutSummary) {
       source_end: datum[2],
       target_start: datum[4],
       target_end: datum[5],
-      value: datum[6]
+      value: datum[6] || 1
     }, index);
   }).map(function(datum) {
     return {
