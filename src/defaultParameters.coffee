@@ -175,3 +175,12 @@ circosJS.Highlight.prototype.defaultConf =
   zIndex: 101
   strokeColor: '#d3d3d3'
   strokeWidth: 0
+
+# Text
+circosJS.Text.prototype.defaultConf =
+  innerRadius: 0
+  outerRadius: 0
+  rules: []
+  backgrounds: []
+  zIndex: 1
+  style: {}

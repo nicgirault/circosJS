@@ -110,8 +110,6 @@ circosJS.Track = ->
       .attr 'stroke-width', (d, i) -> if i % conf.axes.major.spacing == 0 then conf.axes.major.thickness else conf.axes.minor.thickness
       .attr 'stroke', (d, i) -> if i % conf.axes.major.spacing == 0 then conf.axes.major.color else conf.axes.minor.color
 
-
-
   @theta = (position, block) -> position / block.len * (block.end - block.start)
   @x = (d, layout, conf) =>
     height = @ratio(d.value, conf.cmin, conf.cmax, conf.outerRadius - conf.innerRadius, false, conf.logscale)

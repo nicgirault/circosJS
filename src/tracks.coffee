@@ -39,3 +39,9 @@ circosJS.Core.prototype.highlight = (id, conf, data) ->
   track.build @, conf, data
   @tracks.highlights[id] = track
   return @
+
+circosJS.Core.prototype.text = (id, conf, data) ->
+  track = new circosJS.Text()
+  track.build @, conf, data
+  @tracks.texts[id] = track
+  return @

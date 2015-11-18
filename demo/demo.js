@@ -554,6 +554,12 @@ backgrounds2 = [
   {start: 0.8, end: 1, color: '#2c7fb8', parent: 'march'}
 ];
 
+text = [
+  ['january', 10, 'toto'],
+  ['february', 3, 'titi'],
+  ['may', 25, 'tuti']
+]
+
 circos
   .layout(
     {
@@ -562,6 +568,7 @@ circos
     },
     layout_data
   )
+  .text('text1', {innerRadius: 180, style: {'font-size': '50px', 'font-family': 'Arial'}}, text)
   // .heatmap('h1', {}, heatmap)
   // .histogram('hist1', {innerRadius: 200, outerRadius: 220, axes: {display: true}}, heatmap)
   // .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter)
@@ -569,8 +576,8 @@ circos
   // .chord('l1', {usePalette: false, color: 'blue'}, links, linkRules)
   // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 150, outerRadius: 240, axes: {display: true}}, stack)
   // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 150, outerRadius: 240}, stack)
-  .line('line2', {innerRadius:100, outerRadius: 200}, [], {}, backgrounds2)
-  .highlight('highlight1', {innerRadius: 100, outerRadius: 200, opacity: 1}, highlight)
+  // .line('line2', {innerRadius:100, outerRadius: 200}, [], {}, backgrounds2)
+  // .highlight('highlight1', {innerRadius: 100, outerRadius: 200, opacity: 1}, highlight)
   .render();
 
 // circos.removeTracks(['l1'])

@@ -15,7 +15,8 @@ circosJS.Core = function(conf) {
     scatters: {},
     lines: {},
     stacks: {},
-    highlights: {}
+    highlights: {},
+    texts: {}
   };
   this.conf = circosJS.mixConf(conf, this.defaultConf);
   return this;
@@ -70,7 +71,11 @@ circosJS.mixConf = function(conf, defaultConf) {
       if (Object.prototype.toString.call(value) === '[object Array]') {
         newConf[key] = conf[key];
       } else if (typeof value === 'object') {
-        newConf[key] = circosJS.mixConf(conf[key], value);
+        if ((value != null) && Object.keys(value).length === 0) {
+          newConf[key] = conf[key];
+        } else {
+          newConf[key] = circosJS.mixConf(conf[key], value);
+        }
       } else {
         newConf[key] = conf[key];
       }
@@ -299,6 +304,43 @@ circosJS.parsePositionValueData = function(data, layoutSummary) {
   };
 };
 
+circosJS.parsePositionTextData = function(data, layoutSummary) {
+  var groups, sample;
+  sample = data[0];
+  if ('parent_id' in sample && 'position' in sample) {
+    data = data.map(function(datum) {
+      return [datum.parent_id, datum.position, datum.value];
+    });
+  }
+  data = data.filter(function(datum, index) {
+    return circosJS.checkParent(datum[0], index, layoutSummary, 'parent');
+  }).filter(function(datum, index) {
+    return circosJS.checkNumber({
+      position: datum[1]
+    }, index);
+  }).map(function(datum) {
+    return {
+      block_id: datum[0],
+      position: Math.min(layoutSummary[datum[0]], parseFloat(datum[1])),
+      value: datum[2]
+    };
+  });
+  groups = d3.nest().key(function(datum) {
+    return datum.block_id;
+  }).entries(data);
+  return {
+    data: groups,
+    meta: {
+      min: d3.min(data, function(d) {
+        return d.value;
+      }),
+      max: d3.max(data, function(d) {
+        return d.value;
+      })
+    }
+  };
+};
+
 circosJS.parseChordData = function(data, layoutSummary) {
   var sample;
   sample = data[0];
@@ -463,6 +505,14 @@ circosJS.Core.prototype.highlight = function(id, conf, data) {
   track = new circosJS.Highlight();
   track.build(this, conf, data);
   this.tracks.highlights[id] = track;
+  return this;
+};
+
+circosJS.Core.prototype.text = function(id, conf, data) {
+  var track;
+  track = new circosJS.Text();
+  track.build(this, conf, data);
+  this.tracks.texts[id] = track;
   return this;
 };
 
@@ -886,6 +936,40 @@ circosJS.Stack = function() {
         return 'q' + utils.ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize;
       }
     });
+  };
+  return this;
+};
+
+circosJS.Text = function() {
+  circosJS.Track.call(this);
+  this.parseData = circosJS.parsePositionTextData;
+  this.renderDatumContainer = (function(_this) {
+    return function(instance, parentElement, name, data, conf) {
+      var group, track;
+      track = parentElement.append('g').attr('class', name);
+      return group = _this.renderBlock(track, data, instance._layout, conf);
+    };
+  })(this);
+  this.renderDatum = function(parentElement, conf, layout, utils) {
+    var key, ref, results, text, value;
+    text = parentElement.selectAll('g').data(function(d) {
+      return d.values;
+    }).enter().append('g').append('text').text(function(d) {
+      return d.value;
+    }).attr('transform', function(d) {
+      var angle;
+      angle = utils.theta(d.position, layout.blocks[d.block_id]) * 360 / (2 * Math.PI) - 90;
+      return 'rotate(' + angle + ')' + 'translate(' + conf.innerRadius + ',0)';
+    });
+    console.log(conf);
+    ref = conf.style;
+    results = [];
+    for (key in ref) {
+      value = ref[key];
+      console.log(key, value);
+      results.push(text.style(key, value));
+    }
+    return results;
   };
   return this;
 };
@@ -1425,4 +1509,13 @@ circosJS.Highlight.prototype.defaultConf = {
   zIndex: 101,
   strokeColor: '#d3d3d3',
   strokeWidth: 0
+};
+
+circosJS.Text.prototype.defaultConf = {
+  innerRadius: 0,
+  outerRadius: 0,
+  rules: [],
+  backgrounds: [],
+  zIndex: 1,
+  style: {}
 };

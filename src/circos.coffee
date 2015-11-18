@@ -13,6 +13,7 @@ circosJS.Core = (conf) ->
     lines: {}
     stacks: {}
     highlights: {}
+    texts: {}
 
   @conf = circosJS.mixConf conf, @defaultConf
   @
@@ -58,7 +59,10 @@ circosJS.mixConf = (conf, defaultConf) ->
       if Object.prototype.toString.call( value ) == '[object Array]'
         newConf[key] = conf[key]
       else if typeof value == 'object'
-        newConf[key] = circosJS.mixConf(conf[key], value)
+        if value? and Object.keys(value).length is 0
+          newConf[key] = conf[key]
+        else
+          newConf[key] = circosJS.mixConf(conf[key], value)
       else
         newConf[key] = conf[key]
     else
