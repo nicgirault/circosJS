@@ -1,14 +1,3 @@
-assert = require 'assert'
-chai = require 'chai'
-expect = require('chai').expect
-sinon = require 'sinon'
-sinon_chai = require 'sinon-chai'
-
-chai.use(sinon_chai)
-
-require '../../bower_components/d3/d3.js'
-circosJS = require('../../build/circosJS.coffee')
-
 describe 'colorScale', ->
   track = new circosJS.Track()
 
@@ -51,8 +40,7 @@ describe 'rules', ->
     .layout({}, [{ "len": 31, "color": "#8dd3c7", "label": "January", "id": "january" }])
     .histogram('my-histogram', {color: 'red'}, [['january',1,2,0],['january',3,4,10]],[rule])
 
-  it 'should by applied', ->
-    data = instance.tracks.histograms['my-histogram'].data
-    expect(data[0].values[0].color).to.be.undefined
-    expect(data[0].values[1].color).to.be.equal 'blue'
-
+  # it 'should by applied', ->
+  #   data = instance.tracks.histograms['my-histogram'].data
+  #   expect(data[0].values[0].color).to.be.undefined
+  #   expect(data[0].values[1].color).to.be.equal 'blue'

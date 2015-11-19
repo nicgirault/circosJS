@@ -7,3 +7,4 @@ build
 vendors
 *.log
 coverage.html
+coverage

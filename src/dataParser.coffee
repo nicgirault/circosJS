@@ -13,6 +13,9 @@ circosJS.checkNumber = (keys, index) ->
 
 circosJS.parseSpanValueData = (data, layoutSummary) ->
   # ['parent_id', 'start', 'end', 'value']
+
+  return {data: [], meta: {min: null, max: null}} unless data.length > 0
+
   sample = data[0]
   if 'parent_id' of sample and 'start' of sample and 'end' of sample and 'value' of sample
     data = data.map (datum) ->

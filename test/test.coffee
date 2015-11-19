@@ -1,16 +1,3 @@
-assert = require 'assert'
-chai = require 'chai'
-expect = require('chai').expect
-sinon = require 'sinon'
-sinon_chai = require 'sinon-chai'
-
-chai.use(sinon_chai)
-
-require '../bower_components/d3/d3.js'
-circosJS = require('../build/circosJS.coffee')
-circosJS.log = () ->
-    return
-
 describe 'CircosJS', ->
     c = new circosJS
         width: 499
@@ -50,7 +37,7 @@ describe 'Layout', ->
         expect(c._layout).to.be.an.instanceOf(circosJS.Layout)
 
     it 'should return a data', ->
-        expect(c._layout.getData()).to.deep.equal([1,2,3])
+        expect(c._layout.data).to.deep.equal([1,2,3])
 
 
 
@@ -62,7 +49,7 @@ describe 'Heatmap', ->
         max: 13
         colorPalette: 'RgYn'
         colorPaletteSize: 9
-    log = sinon.spy(circosJS, 'log')
+    # log = sinon.spy(circosJS, 'log')
 
     c = new circosJS({})
     h = c
@@ -106,6 +93,3 @@ describe 'Heatmap', ->
 
     it 'should return data min/max when conf.min/conf.max value are "smart"', ->
         return true
-
-
-
