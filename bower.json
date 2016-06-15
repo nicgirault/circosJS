@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "d3": "~3.5.2",
-    "colorBrewer": "https://raw.githubusercontent.com/mbostock/d3/master/lib/colorbrewer/colorbrewer.css"
+    "colorBrewer": "https://github.com/d3/d3/blob/bower-metadata/lib/colorbrewer/colorbrewer.css"
   },
   "resolutions": {
     "d3": "~3.5.2"
