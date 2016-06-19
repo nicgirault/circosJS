@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "NODE_ENV=test karma start",
+    "tdd": "NODE_ENV=test karma start --no-single-run",
     "start": "gulp watch",
     "postinstall": "bower install"
   },

@@ -59,7 +59,7 @@ circosJS.Track = ->
     @renderAxes(datumContainer, @conf, instance._layout, @data) if @conf.axes?.display
     selection = @renderDatum datumContainer, @conf, instance._layout, @
     if @conf.tooltipContent?
-      circosJS.registerTooltip(instance, @, selection, @conf)
+      circosJS._registerTooltip(@, selection, @conf)
     selection.on 'mouseover', (d, i, j) =>
       @dispatch.mouseover(d, i, j)
     selection.on 'mouseout', (d, i, j) =>

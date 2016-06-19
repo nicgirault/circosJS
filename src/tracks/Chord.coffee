@@ -64,7 +64,7 @@ circosJS.Chord = ->
 
     selection = @renderChords track, name, @conf, @data, instance._layout, @ratio, @getSource, @getTarget
     if @conf.tooltipContent?
-      circosJS.registerTooltip(instance, @, selection, @conf)
+      circosJS._registerTooltip(@, selection, @conf)
 
 
   @
