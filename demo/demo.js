@@ -568,16 +568,26 @@ circos
     },
     layout_data
   )
-  .text('text1', {innerRadius: 180, style: {'font-size': '50px', 'font-family': 'Arial'}}, text)
-  // .heatmap('h1', {}, heatmap)
+  // .text('text1', {innerRadius: 180, style: {'font-size': '50px', 'font-family': 'Arial'}}, text)
+  .heatmap('h1', {
+    tooltipContent: function(d){
+      return 'From ' + d.start + ' to ' + d.end + ' ' + d.block_id + ': ' + d.value;
+    }
+  }, heatmap)
   // .histogram('hist1', {innerRadius: 200, outerRadius: 220, axes: {display: true}}, heatmap)
   // .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter)
   // .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
-  // .chord('l1', {usePalette: false, color: 'blue'}, links, linkRules)
+  .chord('l1', {usePalette: false, color: 'blue',
+    tooltipContent: function(d){
+      return d.source.id + ' -> ' + d.target.id + ': ' + d.value;
+    }
+  }, links, linkRules)
   // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 150, outerRadius: 240, axes: {display: true}}, stack)
   // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 150, outerRadius: 240}, stack)
   // .line('line2', {innerRadius:100, outerRadius: 200}, [], {}, backgrounds2)
-  // .highlight('highlight1', {innerRadius: 100, outerRadius: 200, opacity: 1}, highlight)
+  .highlight('highlight1', {
+    innerRadius: 100, outerRadius: 200, opacity: 1
+  }, highlight)
   .render();
 
 // circos.removeTracks(['l1'])

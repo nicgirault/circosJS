@@ -3,6 +3,8 @@ module.exports = (config) ->
     frameworks: ['mocha', 'chai', 'sinon']
     files: [
       'bower_components/d3/d3.js'
+      'bower_components/d3-tip/index.js'
+      'src/polyfill.coffee'
       'src/circos.coffee'
       'src/dataParser.coffee'
       'src/layout.coffee'
@@ -11,6 +13,7 @@ module.exports = (config) ->
       'src/tracks.coffee'
       'src/tracks/*.coffee'
       'src/defaultParameters.coffee'
+      'src/behaviors/*.coffee'
       'test/**/*.coffee'
     ]
     exclude: []

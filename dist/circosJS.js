@@ -1,6 +1,30 @@
 var circosJS,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
+if (typeof Object.assign !== 'function') {
+  Object.assign = function(target) {
+    'use strict';
+    var index, key, source;
+    if (target === null) {
+      throw new TypeError('Cannot convert undefined or null to object');
+    }
+    target = Object(target);
+    index = 1;
+    while (index < arguments.length) {
+      source = arguments[index];
+      if (source !== null) {
+        for (key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+      index++;
+    }
+    return target;
+  };
+}
+
 circosJS = function(conf) {
   var instance;
   instance = new circosJS.Core(conf);
@@ -70,7 +94,7 @@ circosJS.mixConf = function(conf, defaultConf) {
     if (key in conf) {
       if (Object.prototype.toString.call(value) === '[object Array]') {
         newConf[key] = conf[key];
-      } else if (typeof value === 'object') {
+      } else if (typeof value === 'object' && (value != null)) {
         if ((value != null) && Object.keys(value).length === 0) {
           newConf[key] = conf[key];
         } else {
@@ -175,6 +199,15 @@ circosJS.checkNumber = function(keys, index) {
 
 circosJS.parseSpanValueData = function(data, layoutSummary) {
   var groups, sample;
+  if (!(data.length > 0)) {
+    return {
+      data: [],
+      meta: {
+        min: null,
+        max: null
+      }
+    };
+  }
   sample = data[0];
   if ('parent_id' in sample && 'start' in sample && 'end' in sample && 'value' in sample) {
     data = data.map(function(datum) {
@@ -578,23 +611,35 @@ circosJS.Chord = function() {
       return getTarget(d, layout);
     })).attr('opacity', function(d) {
       return d.opacity || conf.opacity;
-    });
+    }).on('mouseover', (function(_this) {
+      return function(d, i, j) {
+        return _this.dispatch.mouseover(d, i, j);
+      };
+    })(this)).on('mouseout', (function(_this) {
+      return function(d, i, j) {
+        return _this.dispatch.mouseout(d, i, j);
+      };
+    })(this));
     if (conf.usePalette) {
-      return link.attr('class', function(d) {
+      link.attr('class', function(d) {
         return 'q' + ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize;
       });
     } else {
-      return link.attr('fill', function(d) {
+      link.attr('fill', function(d) {
         return d.color || conf.color;
       });
     }
+    return link;
   };
   this.render = (function(_this) {
     return function(instance, parentElement, name) {
-      var track;
+      var selection, track;
       parentElement.select('.' + name).remove();
       track = parentElement.append('g').attr('class', name).attr('z-index', _this.conf.zIndex);
-      return _this.renderChords(track, name, _this.conf, _this.data, instance._layout, _this.ratio, _this.getSource, _this.getTarget);
+      selection = _this.renderChords(track, name, _this.conf, _this.data, instance._layout, _this.ratio, _this.getSource, _this.getTarget);
+      if (_this.conf.tooltipContent != null) {
+        return circosJS.registerTooltip(instance, _this, selection, _this.conf);
+      }
     };
   })(this);
   return this;
@@ -693,12 +738,13 @@ circosJS.Histogram = function() {
       return utils.theta(d.end, layout.blocks[d.block_id]);
     }));
     if (conf.usePalette) {
-      return bin.attr('class', function(d) {
+      bin.attr('class', function(d) {
         return 'q' + utils.ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize;
       });
     } else {
-      return bin.attr('fill', d.color || conf.color);
+      bin.attr('fill', d.color || conf.color);
     }
+    return bin;
   };
   return this;
 };
@@ -754,7 +800,7 @@ circosJS.Scatter = function() {
   })(this);
   this.renderDatum = function(parentElement, conf, layout, utils) {
     var point;
-    return point = parentElement.selectAll('.point').data(function(d) {
+    point = parentElement.selectAll('.point').data(function(d) {
       return d.values;
     }).enter().append('path').attr('class', 'point').attr('opacity', function(d) {
       return d.opacity || conf.opacity;
@@ -776,6 +822,7 @@ circosJS.Scatter = function() {
         return 'none';
       }
     });
+    return point;
   };
   return this;
 };
@@ -929,13 +976,14 @@ circosJS.Stack = function() {
     tile.attr('fill', function(d) {
       return d.color || conf.color;
     });
-    return tile.attr('class', function(d) {
+    tile.attr('class', function(d) {
       var usePalette;
       usePalette = d.usePalette || conf.usePalette;
       if (usePalette) {
         return 'q' + utils.ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize;
       }
     });
+    return tile;
   };
   return this;
 };
@@ -951,7 +999,7 @@ circosJS.Text = function() {
     };
   })(this);
   this.renderDatum = function(parentElement, conf, layout, utils) {
-    var key, ref, results, text, value;
+    var key, ref, text, value;
     text = parentElement.selectAll('g').data(function(d) {
       return d.values;
     }).enter().append('g').append('text').text(function(d) {
@@ -961,21 +1009,19 @@ circosJS.Text = function() {
       angle = utils.theta(d.position, layout.blocks[d.block_id]) * 360 / (2 * Math.PI) - 90;
       return 'rotate(' + angle + ')' + 'translate(' + conf.innerRadius + ',0)';
     });
-    console.log(conf);
     ref = conf.style;
-    results = [];
     for (key in ref) {
       value = ref[key];
-      console.log(key, value);
-      results.push(text.style(key, value));
+      text.style(key, value);
     }
-    return results;
+    return text;
   };
   return this;
 };
 
 circosJS.Track = function() {
   this.build = function(instance, conf, data) {
+    this.dispatch = d3.dispatch('mouseover', 'mouseout');
     this.loadData(data, instance);
     this.conf = this.processConf(conf, this.defaultConf, this.meta, instance, this);
     return this.applyRules(conf.rules, this.data);
@@ -994,7 +1040,7 @@ circosJS.Track = function() {
   };
   this.processConf = function(conf, defaultConf, meta, instance, utils) {
     var smartBorders;
-    conf = circosJS.mixConf(conf, JSON.parse(JSON.stringify(defaultConf)));
+    conf = circosJS.mixConf(conf, Object.assign({}, defaultConf));
     conf = utils.computeMinMax(conf, meta);
     if (conf.innerRadius === 0 && conf.outerRadius === 0) {
       smartBorders = instance.smartBorders();
@@ -1057,14 +1103,23 @@ circosJS.Track = function() {
   };
   this.render = (function(_this) {
     return function(instance, parentElement, name) {
-      var datumContainer, ref, track;
+      var datumContainer, ref, selection, track;
       parentElement.select('.' + name).remove();
       track = parentElement.append('g').attr('class', name).attr('z-index', _this.conf.zIndex);
       datumContainer = _this.renderDatumContainer(instance, track, name, _this.data, _this.conf);
       if ((ref = _this.conf.axes) != null ? ref.display : void 0) {
         _this.renderAxes(datumContainer, _this.conf, instance._layout, _this.data);
       }
-      return _this.renderDatum(datumContainer, _this.conf, instance._layout, _this);
+      selection = _this.renderDatum(datumContainer, _this.conf, instance._layout, _this);
+      if (_this.conf.tooltipContent != null) {
+        circosJS.registerTooltip(instance, _this, selection, _this.conf);
+      }
+      selection.on('mouseover', function(d, i, j) {
+        return _this.dispatch.mouseover(d, i, j);
+      });
+      return selection.on('mouseout', function(d, i, j) {
+        return _this.dispatch.mouseout(d, i, j);
+      });
     };
   })(this);
   this.renderBlock = function(parentElement, data, layout, conf) {
@@ -1396,7 +1451,8 @@ circosJS.Heatmap.prototype.defaultConf = {
   rules: [],
   backgrounds: [],
   zIndex: 1,
-  opacity: 1
+  opacity: 1,
+  tooltipContent: null
 };
 
 circosJS.Histogram.prototype.defaultConf = {
@@ -1415,7 +1471,8 @@ circosJS.Histogram.prototype.defaultConf = {
   rules: [],
   backgrounds: [],
   zIndex: 1,
-  opacity: 1
+  opacity: 1,
+  tooltipContent: null
 };
 
 circosJS.Chord.prototype.defaultConf = {
@@ -1430,7 +1487,8 @@ circosJS.Chord.prototype.defaultConf = {
   logScale: false,
   rules: [],
   backgrounds: [],
-  zIndex: 1
+  zIndex: 1,
+  tooltipContent: null
 };
 
 circosJS.Scatter.prototype.defaultConf = {
@@ -1452,7 +1510,8 @@ circosJS.Scatter.prototype.defaultConf = {
   rules: [],
   backgrounds: [],
   zIndex: 1,
-  opacity: 1
+  opacity: 1,
+  tooltipContent: null
 };
 
 circosJS.Line.prototype.defaultConf = {
@@ -1472,7 +1531,8 @@ circosJS.Line.prototype.defaultConf = {
   rules: [],
   backgrounds: [],
   zIndex: 1,
-  opacity: 1
+  opacity: 1,
+  tooltipContent: null
 };
 
 circosJS.Stack.prototype.defaultConf = {
@@ -1497,7 +1557,8 @@ circosJS.Stack.prototype.defaultConf = {
   rules: [],
   backgrounds: [],
   zIndex: 1,
-  opacity: 1
+  opacity: 1,
+  tooltipContent: null
 };
 
 circosJS.Highlight.prototype.defaultConf = {
@@ -1508,7 +1569,8 @@ circosJS.Highlight.prototype.defaultConf = {
   rules: [],
   zIndex: 101,
   strokeColor: '#d3d3d3',
-  strokeWidth: 0
+  strokeWidth: 0,
+  tooltipContent: null
 };
 
 circosJS.Text.prototype.defaultConf = {
@@ -1517,5 +1579,18 @@ circosJS.Text.prototype.defaultConf = {
   rules: [],
   backgrounds: [],
   zIndex: 1,
-  style: {}
+  style: {},
+  tooltipContent: null
+};
+
+circosJS.registerTooltip = function(instance, track, element, trackParams) {
+  track.tip = d3.tip().direction('s').offset([20, 0]).html(trackParams.tooltipContent);
+  element.call(track.tip);
+  track.dispatch.on('mouseover', function(d, i, j) {
+    return track.tip.attr('class', 'd3-tip appear').show(d);
+  });
+  return track.dispatch.on('mouseout', function(d, i, j) {
+    track.tip.attr('class', 'd3-tip').show(d);
+    return track.tip.hide();
+  });
 };

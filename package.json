@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "NODE_ENV=test karma start",
+    "tdd": "NODE_ENV=test karma start --no-single-run",
     "start": "gulp watch",
     "postinstall": "bower install"
   },
@@ -42,6 +43,7 @@
     "gulp-concat": "~2.4.2",
     "gulp-copy": "0.0.2",
     "gulp-jade": "~0.10.0",
+    "gulp-mocha": "~2.2.0",
     "gulp-util": "~3.0.1",
     "mocha": "~2.5.3",
     "sinon": "~1.17.4"

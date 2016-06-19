@@ -34,5 +34,6 @@ circosJS.Histogram = ->
         'q' + utils.ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize
     else
       bin.attr 'fill', d.color || conf.color
+    bin
 
   return @

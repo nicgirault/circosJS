@@ -64,6 +64,7 @@ circosJS.Heatmap.prototype.defaultConf =
   backgrounds: []
   zIndex: 1
   opacity: 1
+  tooltipContent: null
 
 # Histogram
 circosJS.Histogram.prototype.defaultConf =
@@ -83,6 +84,7 @@ circosJS.Histogram.prototype.defaultConf =
   backgrounds: []
   zIndex: 1
   opacity: 1
+  tooltipContent: null
 
 # Chord
 circosJS.Chord.prototype.defaultConf =
@@ -98,6 +100,7 @@ circosJS.Chord.prototype.defaultConf =
   rules: []
   backgrounds: []
   zIndex: 1
+  tooltipContent: null
 
 # Scatter
 circosJS.Scatter.prototype.defaultConf =
@@ -119,6 +122,7 @@ circosJS.Scatter.prototype.defaultConf =
   backgrounds: []
   zIndex: 1
   opacity: 1
+  tooltipContent: null
 
 # Line
 circosJS.Line.prototype.defaultConf =
@@ -139,6 +143,7 @@ circosJS.Line.prototype.defaultConf =
   backgrounds: []
   zIndex: 1
   opacity: 1
+  tooltipContent: null
 
 # Stack
 circosJS.Stack.prototype.defaultConf =
@@ -164,6 +169,7 @@ circosJS.Stack.prototype.defaultConf =
   backgrounds: []
   zIndex: 1
   opacity: 1
+  tooltipContent: null
 
 # Highlight
 circosJS.Highlight.prototype.defaultConf =
@@ -175,6 +181,7 @@ circosJS.Highlight.prototype.defaultConf =
   zIndex: 101
   strokeColor: '#d3d3d3'
   strokeWidth: 0
+  tooltipContent: null
 
 # Text
 circosJS.Text.prototype.defaultConf =
@@ -184,3 +191,4 @@ circosJS.Text.prototype.defaultConf =
   backgrounds: []
   zIndex: 1
   style: {}
+  tooltipContent: null

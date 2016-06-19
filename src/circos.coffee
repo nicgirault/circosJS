@@ -1,4 +1,3 @@
-# a retravailler
 circosJS = (conf) ->
   instance = new circosJS.Core conf
   return instance
@@ -58,7 +57,7 @@ circosJS.mixConf = (conf, defaultConf) ->
     if key of conf
       if Object.prototype.toString.call( value ) == '[object Array]'
         newConf[key] = conf[key]
-      else if typeof value == 'object'
+      else if typeof value == 'object' and value?
         if value? and Object.keys(value).length is 0
           newConf[key] = conf[key]
         else
