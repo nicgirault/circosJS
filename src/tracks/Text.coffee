@@ -16,8 +16,6 @@ circosJS.Text = ->
       .attr 'transform', (d) ->
         angle = utils.theta(d.position, layout.blocks[d.block_id])*360/(2*Math.PI) - 90
         'rotate(' + angle + ')' + 'translate(' + conf.innerRadius + ',0)'
-    console.log conf
     for key, value of conf.style
-      console.log key, value
       text.style key, value
   return @
