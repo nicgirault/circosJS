@@ -3,6 +3,7 @@ circosJS.Track = ->
   # this refers the track instance
 
   @build = (instance, conf, data) ->
+    @dispatch = d3.dispatch 'mouseover',  'mouseout'
     @loadData data, instance
     @conf = @processConf conf, @defaultConf, @meta, instance, @
     @applyRules conf.rules, @data
@@ -16,7 +17,7 @@ circosJS.Track = ->
     @meta = result.meta
 
   @processConf = (conf, defaultConf, meta, instance, utils) ->
-    conf = circosJS.mixConf conf, JSON.parse(JSON.stringify(defaultConf))
+    conf = circosJS.mixConf conf, Object.assign({}, defaultConf)
     conf = utils.computeMinMax conf, meta
     if conf.innerRadius == 0 and conf.outerRadius == 0
       smartBorders = instance.smartBorders()
@@ -56,7 +57,13 @@ circosJS.Track = ->
       .attr 'z-index', @conf.zIndex
     datumContainer = @renderDatumContainer instance, track, name, @data, @conf
     @renderAxes(datumContainer, @conf, instance._layout, @data) if @conf.axes?.display
-    @renderDatum datumContainer, @conf, instance._layout, @
+    selection = @renderDatum datumContainer, @conf, instance._layout, @
+    if @conf.tooltipContent?
+      circosJS.registerTooltip(instance, @, selection, @conf)
+    selection.on 'mouseover', (d, i, j) =>
+      @dispatch.mouseover(d, i, j)
+    selection.on 'mouseout', (d, i, j) =>
+      @dispatch.mouseout(d, i, j)
 
   @renderBlock = (parentElement, data, layout, conf) ->
     scope = conf.outerRadius - conf.innerRadius

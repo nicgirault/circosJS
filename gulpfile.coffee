@@ -7,6 +7,7 @@ mocha = require 'gulp-mocha'
 
 gulp.task 'concat', ->
   gulp.src [
+    'src/polyfill.coffee'
     'src/circos.coffee'
     'src/dataParser.coffee'
     'src/layout.coffee'
@@ -15,6 +16,7 @@ gulp.task 'concat', ->
     'src/renderLayout.coffee'
     'src/render.coffee'
     'src/defaultParameters.coffee'
+    'src/behaviors/*.coffee'
   ]
   .pipe concat 'circosJS.coffee'
   .pipe gulp.dest 'build'

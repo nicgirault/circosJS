@@ -25,5 +25,6 @@ circosJS.Scatter = ->
         fill = d.glyph_fill || conf.glyph.fill
         color = d.glyph_color || conf.glyph.color
         if fill then color else 'none'
+    point
 
   return @

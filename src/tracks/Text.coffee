@@ -18,4 +18,5 @@ circosJS.Text = ->
         'rotate(' + angle + ')' + 'translate(' + conf.innerRadius + ',0)'
     for key, value of conf.style
       text.style key, value
+    text
   return @

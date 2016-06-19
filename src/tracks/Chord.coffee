@@ -43,12 +43,17 @@ circosJS.Chord = ->
           .source (d) -> getSource d, layout
           .target (d) -> getTarget d, layout
       .attr 'opacity', (d) -> d.opacity || conf.opacity
+      .on 'mouseover', (d, i, j) =>
+        @dispatch.mouseover(d, i, j)
+      .on 'mouseout', (d, i, j) =>
+        @dispatch.mouseout(d, i, j)
 
     if conf.usePalette
       link.attr 'class', (d) ->
         'q' + ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize
     else
       link.attr 'fill', (d) -> d.color || conf.color
+    link
 
   @render = (instance, parentElement, name) =>
     parentElement.select('.' + name).remove()
@@ -57,6 +62,9 @@ circosJS.Chord = ->
       .attr 'z-index', @conf.zIndex
 
 
-    @renderChords track, name, @conf, @data, instance._layout, @ratio, @getSource, @getTarget
+    selection = @renderChords track, name, @conf, @data, instance._layout, @ratio, @getSource, @getTarget
+    if @conf.tooltipContent?
+      circosJS.registerTooltip(instance, @, selection, @conf)
+
 
   @

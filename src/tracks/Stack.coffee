@@ -99,5 +99,5 @@ circosJS.Stack = ->
       usePalette = d.usePalette || conf.usePalette
       if usePalette
         'q' + utils.ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize
-
+    tile
   return @
