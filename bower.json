@@ -36,7 +36,7 @@
   "dependencies": {
     "d3": "~3.5.2",
     "colorBrewer": "https://raw.githubusercontent.com/d3/d3/bower-metadata/lib/colorbrewer/colorbrewer.css",
-    "d3-tip": "0.6.7"
+    "d3-tip": "~0.6.8"
   },
   "resolutions": {
     "d3": "~3.5.2"
