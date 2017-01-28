@@ -1,6 +1,6 @@
 {
   "name": "circosJS",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "description": "A d3js library to build circos graphs",
   "main": "app.js",
   "scripts": {
