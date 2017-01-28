@@ -1,10 +1,13 @@
-var path = require('path');
+const path = require('path');
+
+const filename = process.env.NODE_ENV === 'prod' ?
+  'circos.min.js' : 'circos.js';
 
 module.exports = {
   entry: './src/circos.js',
   output: {
     path: './dist',
-    filename: 'circos.js',
+    filename: filename,
     library: 'Circos',
     libraryTarget: 'var',
   },
@@ -21,7 +24,7 @@ module.exports = {
       {
         test: /\.css$/,
         loader: 'style-loader!css-loader',
-      }
-    ]
-  }
-}
+      },
+    ],
+  },
+};

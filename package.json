@@ -7,7 +7,7 @@
     "test": "NODE_ENV=test karma start",
     "tdd": "NODE_ENV=test mocha --compilers js:babel-register --reporter nyan --watch src/**/*.test.js",
     "start": "webpack --watch",
-    "build": "webpack --optimize-minimize"
+    "build": "NODE_ENV=prod webpack --optimize-minimize --optimize-dedupe"
   },
   "repository": {
     "type": "git",
