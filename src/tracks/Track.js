@@ -71,10 +71,10 @@ export default class Track {
       registerTooltip(this, instance, selection, this.conf)
     }
     selection.on('mouseover', (d, i, j) => {
-      this.dispatch.call('mouseover', d)
+      this.dispatch.call('mouseover', this, d)
     })
     selection.on('mouseout', (d, i, j) => {
-      this.dispatch.call('mouseout', d)
+      this.dispatch.call('mouseout', this, d)
     })
 
     return this

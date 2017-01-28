@@ -7164,8 +7164,6 @@ var Circos =
 
 	var _sortBy2 = _interopRequireDefault(_sortBy);
 
-	var _d3Selection = __webpack_require__(108);
-
 	var _renderLayout = __webpack_require__(187);
 
 	var _renderLayout2 = _interopRequireDefault(_renderLayout);
@@ -7189,7 +7187,7 @@ var Circos =
 
 	  var translated = svg.select('.all');
 	  if (translated.empty()) {
-	    translated = svg.append('g').attr('class', 'all').attr('transform', 'translate(' + parseInt(circos.conf.width / 2) + ',' + parseInt(circos.conf.height / 2) + ')');
+	    translated = svg.append('g').attr('class', 'all').attr('transform', 'translate(\n          ' + parseInt(circos.conf.width / 2) + ',\n          ' + parseInt(circos.conf.height / 2) + '\n        )');
 	  }
 
 	  (0, _forEach2.default)(circos.tracks, function (track, trackId) {
@@ -10271,10 +10269,10 @@ var Circos =
 	        (0, _tooltip.registerTooltip)(this, instance, selection, this.conf);
 	      }
 	      selection.on('mouseover', function (d, i, j) {
-	        _this.dispatch.call('mouseover', d);
+	        _this.dispatch.call('mouseover', _this, d);
 	      });
 	      selection.on('mouseout', function (d, i, j) {
-	        _this.dispatch.call('mouseout', d);
+	        _this.dispatch.call('mouseout', _this, d);
 	      });
 
 	      return this;
@@ -16848,7 +16846,7 @@ var Circos =
 	  }
 
 	  var preParsedData = normalize(data, ['parent_id', 'position', 'value']);
-	  var filteredData = data.filter(function (datum, index) {
+	  var filteredData = preParsedData.filter(function (datum, index) {
 	    return checkParent(datum[0], index, layoutSummary, 'parent');
 	  }).filter(function (datum, index) {
 	    return checkNumber({ position: datum[1] }, index);
