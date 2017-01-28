@@ -2,24 +2,22 @@ module.exports = (config) ->
   config.set
     frameworks: ['mocha', 'chai', 'sinon']
     files: [
-      'bower_components/d3/d3.js'
-      'bower_components/d3-tip/index.js'
-      'src/polyfill.coffee'
-      'src/circos.coffee'
-      'src/dataParser.coffee'
-      'src/layout.coffee'
-      'src/render.coffee'
-      'src/renderLayout.coffee'
-      'src/tracks.coffee'
-      'src/tracks/*.coffee'
-      'src/defaultParameters.coffee'
-      'src/behaviors/*.coffee'
-      'test/**/*.coffee'
+      'src/utils.js'
+      'src/utils.test.js'
     ]
     exclude: []
     preprocessors:
       '**/*.coffee': ['coffee']
       'src/**/*.coffee': ['coverage']
+      'src/*.js': ['babel']
+      'src/**/*.js': ['babel']
+    babelPreprocessor: {
+      options: {
+        presets: ['es2015'],
+        plugins: ["transform-es2015-modules-umd"]
+        sourceMap: 'inline'
+      },
+    }
     coverageReporter:
       dir: 'coverage'
       reporters: [

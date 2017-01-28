@@ -491,6 +491,7 @@ scatter = [
   ['january', 7, 5],
   ['january', 8, 4],
   ['january', 9, 6],
+  ['january', 31, 13],
   ['february', 1, 6],
   ['february', 2, 3],
   ['february', 3, 4],
@@ -509,7 +510,7 @@ stack = [
 ]
 
 heatmap = [
-  ['january', 'a', 2,3],
+  // ['january', 'a', 2,3],
   ['january', 1, 4,2],
   ['january', 5, 10,10],
   ['january', 11, 15,13],
@@ -528,13 +529,9 @@ highlight = [
   ['march', 1, 2,'black']
 ];
 
-var circos = new circosJS({
+var circos = new Circos({
   container: '#chart'
 });
-
-var rules = [
-  {parameter: 'glyph_strokeColor', value: 'blue', condition: function(datum){ return datum.value > 5;}}
-]
 
 var backgrounds = [
   {start: 0, end: 0.5, color: '#d3d3d3', opacity: 1},
@@ -568,26 +565,26 @@ circos
     },
     layout_data
   )
-  // .text('text1', {innerRadius: 180, style: {'font-size': '50px', 'font-family': 'Arial'}}, text)
+  .text('text1', {innerRadius: 180, style: {'font-size': '50px', 'font-family': 'Arial'}}, text)
   .heatmap('h1', {
     tooltipContent: function(d){
       return 'From ' + d.start + ' to ' + d.end + ' ' + d.block_id + ': ' + d.value;
     }
   }, heatmap)
-  // .histogram('hist1', {innerRadius: 200, outerRadius: 220, axes: {display: true}}, heatmap)
-  // .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'cross', size: 50, fill: true}}, scatter)
-  // .line('line1', {innerRadius: 150, outerRadius: 200, interpolation: 'cardinal'}, scatter)
-  .chord('l1', {usePalette: false, color: 'blue',
+  .histogram('hist1', {innerRadius: 200, outerRadius: 220, axes: {display: true}}, heatmap)
+  .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'circle', size: 50, fill: true}}, scatter)
+  .line('line1', {innerRadius: 150, outerRadius: 200, direction: 'in', fill: true}, scatter)
+  .chords('l1', {usePalette: false, color: 'blue',
     tooltipContent: function(d){
       return d.source.id + ' -> ' + d.target.id + ': ' + d.value;
     }
   }, links, linkRules)
-  // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 150, outerRadius: 240, axes: {display: true}}, stack)
+  // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'center', innerRadius: 150, outerRadius: 240, axes: {display: true}}, stack)
   // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 150, outerRadius: 240}, stack)
   // .line('line2', {innerRadius:100, outerRadius: 200}, [], {}, backgrounds2)
-  .highlight('highlight1', {
-    innerRadius: 100, outerRadius: 200, opacity: 1
-  }, highlight)
+  // .highlight('highlight1', {
+  //   innerRadius: 100, outerRadius: 200, opacity: 1
+  // }, highlight)
   .render();
 
 // circos.removeTracks(['l1'])
