@@ -1,40 +1,21 @@
-import { computeMinMax, smartBorders } from '../utils'
-import { registerTooltip } from '../behaviors/tooltip'
-import range from 'lodash/range'
-import defaultsDeep from 'lodash/defaultsDeep'
-import cloneDeep from 'lodash/cloneDeep'
-import {dispatch} from 'd3-dispatch'
-import {arc} from 'd3-shape'
+import {registerTooltip} from '../behaviors/tooltip';
+import range from 'lodash/range';
+import {dispatch} from 'd3-dispatch';
+import {arc} from 'd3-shape';
+import {getConf} from '../config-utils';
 
 export default class Track {
   constructor(instance, conf, defaultConf, data, dataParser) {
-    this.dispatch = dispatch('mouseover',  'mouseout')
-    this.parseData = dataParser
-    this.loadData(data, instance)
-    this.conf = this.processConf(conf, defaultConf, this.meta, instance)
-  }
-  build(instance, conf, data) {
-    this.dispatch = dispatch('mouseover',  'mouseout')
-    this.loadData(data, instance)
-    this.conf = this.processConf(conf, this.defaultConf, this.meta, instance)
+    this.dispatch = dispatch('mouseover', 'mouseout');
+    this.parseData = dataParser;
+    this.loadData(data, instance);
+    this.conf = getConf(conf, defaultConf, this.meta, instance);
   }
 
   loadData(data, instance) {
-    const result = this.parseData(data, instance._layout.summary())
-    this.data = result.data
-    this.meta = result.meta
-  }
-
-  processConf(conf, defaultConf, meta, instance) {
-    var filedConf = defaultsDeep(conf, cloneDeep(defaultConf))
-    filedConf.cmin = filedConf.min === 'smart' ? meta.min : filedConf.min
-    filedConf.cmax = filedConf.max === 'smart' ? meta.max : filedConf.max
-    if (filedConf.innerRadius === 0 && filedConf.outerRadius === 0) {
-      const borders = smartBorders(filedConf, instance._layout, instance.tracks)
-      filedConf.innerRadius = borders.in
-      filedConf.outerRadius = borders.out
-    }
-    return conf
+    const result = this.parseData(data, instance._layout.summary());
+    this.data = result.data;
+    this.meta = result.meta;
   }
 
   ratio(value, min, max, scope, reverse, logScale) {

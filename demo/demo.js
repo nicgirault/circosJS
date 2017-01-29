@@ -565,20 +565,80 @@ circos
     },
     layout_data
   )
-  .text('text1', {innerRadius: 180, style: {'font-size': '50px', 'font-family': 'Arial'}}, text)
-  .heatmap('h1', {
-    tooltipContent: function(d){
-      return 'From ' + d.start + ' to ' + d.end + ' ' + d.block_id + ': ' + d.value;
-    }
-  }, heatmap)
-  .histogram('hist1', {innerRadius: 200, outerRadius: 220, axes: {display: true}}, heatmap)
-  .scatter('c1', {innerRadius: 150, outerRadius: 200, glyph: {shape: 'circle', size: 50, fill: true}}, scatter)
-  .line('line1', {innerRadius: 150, outerRadius: 200, direction: 'in', fill: true}, scatter)
-  .chords('l1', {usePalette: false, color: 'blue',
-    tooltipContent: function(d){
-      return d.source.id + ' -> ' + d.target.id + ': ' + d.value;
-    }
-  }, links, linkRules)
+  // .text('text1', {innerRadius: 180, style: function(d, i){
+  //   var color = i%2 === 0 ? 'blue' : 'green';
+  //   return {'font-size': '50px', 'font-family': 'Arial', 'color': color};
+  // }}, text)
+  // .heatmap('h1', {
+  //   usePalette: false,
+  //   color: function(d, i){
+  //     if (i%2 == 0) {
+  //       return 'green';
+  //     }
+  //   },
+  //   tooltipContent: function(d){
+  //     return 'From ' + d.start + ' to ' + d.end + ' ' + d.block_id + ': ' + d.value;
+  //   }
+  // }, heatmap)
+  // .histogram(
+  //   'hist1',
+  //   {
+  //     innerRadius: 200,
+  //     outerRadius: 220,
+  //     axes: {display: true},
+  //     usePalette: false,
+  //     color: function(d, i) {
+  //       return i % 2 === 0 ? 'blue' : 'red';
+  //     },
+  //   }, heatmap)
+  // .scatter(
+  //   'c1',
+  //   {
+  //     innerRadius: 150,
+  //     outerRadius: 200,
+  //     glyph: {
+  //       shape: function(d, i) {
+  //         if (d.block_id === 'january') {
+  //           return 'cross'
+  //         }
+  //         return 'circle'
+  //       },
+  //       size: 50,
+  //       fill: true,
+  //       color: function(d, i) {
+  //         return i % 2 === 0 ? 'blue' : 'red'
+  //       }
+  //     }
+  //   },
+  //   scatter
+  // )
+  // .line(
+  //   'line1',
+  //   {
+  //     innerRadius: 150,
+  //     outerRadius: 200,
+  //     direction: 'in',
+  //     fill: true,
+  //     fill_color: function(blockId, i) {
+  //       return blockId === 'january' ? 'blue' : 'red';
+  //     }
+  //   },
+  //   scatter
+  // )
+  .chords(
+    'l1',
+    {
+      usePalette: false,
+      opacity: 0.7,
+      color: function(d, i) {
+        return i % 2 === 0 ? 'blue' : 'red';
+      },
+      tooltipContent: function(d) {
+        return d.source.id + ' -> ' + d.target.id + ': ' + d.value;
+      },
+    },
+    links
+  )
   // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'center', innerRadius: 150, outerRadius: 240, axes: {display: true}}, stack)
   // .stack('stack1', {thickness: 10, usePalette: true, margin: 0, direction: 'out', innerRadius: 150, outerRadius: 240}, stack)
   // .line('line2', {innerRadius:100, outerRadius: 200}, [], {}, backgrounds2)

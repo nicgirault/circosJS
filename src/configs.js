@@ -1,34 +1,104 @@
 const axes = {
   axes: {
-    display: false,
+    display: {
+      value: false,
+      iteratee: false,
+    },
     minor: {
-      spacing: 5,
-      spacingType: 'pixel',
-      color: '#d3d3d3',
-      thickness: 2,
+      spacing: {
+        value: 5,
+        iteratee: false,
+      },
+      color: {
+        value: '#d3d3d3',
+        iteratee: false,
+      },
+      thickness: {
+        value: 2,
+        iteratee: false,
+      },
     },
     major: {
-      spacing: 5,
-      color: '#000000',
-      thickness: 2,
+      spacing: {
+        value: 5,
+        iteratee: false,
+      },
+      color: {
+        value: '#000000',
+        iteratee: false,
+      },
+      thickness: {
+        value: 2,
+        iteratee: false,
+      },
     },
   },
-}
+};
 
 const palette = {
-  colorPaletteSize: 9,
-  colorPalette: 'YlGnBu',
-  usePalette: true,
-  colorPaletteReverse: true,
-}
+  colorPaletteSize: {
+    value: 9,
+    iteratee: false,
+  },
+  colorPalette: {
+    value: 'YlGnBu',
+    iteratee: false,
+  },
+  usePalette: {
+    value: true,
+    iteratee: false,
+  },
+  colorPaletteReverse: {
+    value: true,
+    iteratee: false,
+  },
+};
 
 const radial = {
-  innerRadius: 0,
-  outerRadius: 0,
-}
+  innerRadius: {
+    value: 0,
+    iteratee: false,
+  },
+  outerRadius: {
+    value: 0,
+    iteratee: false,
+  },
+};
+
+const values = {
+  min: {
+    value: 'smart',
+    iteratee: false,
+  },
+  max: {
+    value: 'smart',
+    iteratee: false,
+  },
+  logScale: {
+    value: false,
+    iteratee: false,
+  },
+};
+
+const common = {
+  zIndex: {
+    value: false,
+    iteratee: false,
+  },
+  opacity: {
+    value: false,
+    iteratee: true,
+  },
+  tooltipContent: {
+    value: null,
+    iteratee: true,
+  },
+};
 
 export {
   axes,
   palette,
   radial,
-}
+  values,
+  common,
+};

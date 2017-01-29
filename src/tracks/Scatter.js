@@ -1,9 +1,9 @@
-import Track from './Track'
-import {parsePositionValueData} from '../dataParser'
-import {symbol} from 'd3-shape'
-import assign from 'lodash/assign'
-import {radial, axes} from '../configs'
+import Track from './Track';
+import {parsePositionValueData} from '../dataParser';
+import assign from 'lodash/assign';
+import {radial, axes, common, values} from '../configs';
 import {
+  symbol,
   symbolCircle,
   symbolCross,
   symbolDiamond,
@@ -11,47 +11,65 @@ import {
   symbolTriangle,
   symbolStar,
   symbolWye,
-} from 'd3-shape'
+} from 'd3-shape';
 
 const defaultConf = assign({
-  min: 'smart',
-  max: 'smart',
-  direction: 'out',
-  logScale: false,
-  glyph: {
-    color: '#fd6a62',
-    fill: true,
-    size: 15,
-    shape: 'circle',
-    strokeColor: '#d3d3d3',
-    strokeWidth: 2,
+  direction: {
+    value: 'out',
+    iteratee: false,
   },
-  backgrounds: [],
-  zIndex: 1,
-  opacity: 1,
-  tooltipContent: null,
-}, axes, radial)
+  glyph: {
+    color: {
+      value: '#fd6a62',
+      iteratee: true,
+    },
+    fill: {
+      value: true,
+      iteratee: true,
+    },
+    size: {
+      value: 15,
+      iteratee: true,
+    },
+    shape: {
+      value: 'circle',
+      iteratee: true,
+    },
+    strokeColor: {
+      value: '#d3d3d3',
+      iteratee: true,
+    },
+    strokeWidth: {
+      value: 2,
+      iteratee: true,
+    },
+  },
+  backgrounds: {
+    value: [],
+    iteratee: false,
+  },
+}, axes, radial, common, values);
 
-const getSymbol = key => {
+const getSymbol = (key) => {
   switch (key) {
     case 'circle':
-      return symbolCircle
+      return symbolCircle;
     case 'cross':
-      return symbolCross
+      return symbolCross;
     case 'diamond':
-      return symbolDiamond
+      return symbolDiamond;
     case 'square':
-      return symbolSquare
+      return symbolSquare;
     case 'triangle':
-      return symbolTriangle
+      return symbolTriangle;
     case 'star':
-      return symbolStar
+      return symbolStar;
     case 'wye':
-      return symbolWye
+      return symbolWye;
     default:
-      return symbolCross
+      return symbolCross;
   }
-}
+};
 
 export default class Scatter extends Track {
   constructor(instance, conf, data) {
@@ -60,30 +78,43 @@ export default class Scatter extends Track {
 
   renderDatumContainer(instance, parentElement, name, data, conf) {
     const track = parentElement.append('g')
-      .attr('class', name)
-    return this.renderBlock(track, data, instance._layout, conf)
+      .attr('class', name);
+    return this.renderBlock(track, data, instance._layout, conf);
   }
 
   renderDatum(parentElement, conf, layout, utils) {
     const point = parentElement.selectAll('.point')
-      .data(d => d.values)
+      .data((d) => {
+        d.values.forEach((item, i) => {
+          item.symbol = symbol()
+            .type(getSymbol(conf.glyph.shape(item, i)))
+            .size(conf.glyph.size(item, i));
+        });
+        return d.values;
+      })
       .enter().append('path')
       .attr('class', 'point')
-      .attr('opacity', d => d.opacity || conf.opacity)
-      .attr('d', symbol()
-        .type(getSymbol(conf.glyph.shape))
-        .size(conf.glyph.size)
-      )
-      .attr('transform', d => {
-        return 'translate(' + utils.x(d, layout, conf) + ',' + utils.y(d, layout, conf) + ') rotate(' + utils.theta(d.position, layout.blocks[d.block_id])*360/(2*Math.PI) + ')'
+      .attr('opacity', conf.opacity)
+      .attr('d', (d, i, j) => d.symbol(d, i, j))
+      .attr('transform', (d) => {
+        return `
+          translate(
+            ${utils.x(d, layout, conf)},
+            ${utils.y(d, layout, conf)}
+          ) rotate(
+            ${utils.theta(
+              d.position,
+              layout.blocks[d.block_id]
+            ) * 360 / (2 * Math.PI)}
+          )`;
       })
-      .attr('stroke', d => d.glyph_strokeColor || conf.glyph.strokeColor)
-      .attr('stroke-width', d => d.glyph_strokeWidth || conf.glyph.strokeWidth)
-      .attr('fill', d => {
-        const fill = d.glyph_fill || conf.glyph.fill
-        const color = d.glyph_color || conf.glyph.color
-        return fill ? color : 'none'
-      })
-    return point
+      .attr('stroke', conf.glyph.strokeColor)
+      .attr('stroke-width', conf.glyph.strokeWidth)
+      .attr('fill', (d, i) => {
+        const fill = conf.glyph.fill(d, i);
+        const color = conf.glyph.color(d, i);
+        return fill ? color : 'none';
+      });
+    return point;
   }
 }
