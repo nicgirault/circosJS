@@ -10,7 +10,7 @@ const defaultConf = assign({
     value: '#fd6a62',
     iteratee: true,
   },
-}, palette, common, values);
+}, palette, common, values, {usePalette: {value: false, iteratee: false}});
 
 export default class Chords extends Track {
   constructor(instance, conf, data) {

@@ -189,28 +189,27 @@ export function parseChordData(data, layoutSummary) {
   const preParsedData = normalize(
     data,
     [
-      'source_id',
-      'source_start',
-      'source_end',
-      'target_id',
-      'target_start',
-      'target_end',
-      'value',
+      'sourceId',
+      'sourceStart',
+      'sourceEnd',
+      'targetId',
+      'targetStart',
+      'targetEnd',
     ]
   );
 
   const formatedData = preParsedData
   .filter((datum, index) =>
-    checkParent(datum[0], index, layoutSummary, 'source_id')
+    checkParent(datum[0], index, layoutSummary, 'sourceId')
   )
   .filter((datum, index) =>
-    checkParent(datum[3], index, layoutSummary, 'target_id')
+    checkParent(datum[3], index, layoutSummary, 'targetId')
   )
   .filter((datum, index) => checkNumber({
-      source_start: datum[1],
-      source_end: datum[2],
-      target_start: datum[4],
-      target_end: datum[5],
+      sourceStart: datum[1],
+      sourceEnd: datum[2],
+      targetStart: datum[4],
+      targetEnd: datum[5],
       value: datum[6] || 1,
     }, index)
   ).map((datum) => {
@@ -225,7 +224,7 @@ export function parseChordData(data, layoutSummary) {
         start: Math.max(0, parseFloat(datum[4])),
         end: Math.min(layoutSummary[datum[3]], parseFloat(datum[5])),
       },
-      value: parseFloat(datum[6]),
+      value: parseFloat(datum[6]) || 1,
     };
   });
 

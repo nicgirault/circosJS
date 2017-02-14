@@ -567,7 +567,7 @@ text = [
 circos
   .layout(
     {
-      ticks: {display: true},
+      ticks: {display: false},
       onClick: function(){console.log('You clicked on the layout layer!');}
     },
     layout_data
@@ -635,7 +635,7 @@ circos
   .chords(
     'l1',
     {
-      usePalette: true,
+      usePalette: false,
       opacity: 0.7,
       color: function(d, i) {
         return i % 2 === 0 ? 'blue' : 'red';
