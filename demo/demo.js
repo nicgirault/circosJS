@@ -641,7 +641,7 @@ circos
         return i % 2 === 0 ? 'blue' : 'red';
       },
       tooltipContent: function(d) {
-        return d.source.id + ' -> ' + d.target.id + ': ' + d.value;
+        return d.source.id + ' ➤ ' + d.target.id + ': ' + d.value;
       },
     },
     links
