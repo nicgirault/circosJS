@@ -3,39 +3,48 @@ import range from 'lodash/range';
 import {dispatch} from 'd3-dispatch';
 import {arc} from 'd3-shape';
 import {getConf} from '../config-utils';
+import {buildScale} from '../utils';
 
+/**
+ * Abstract class used by all tracks
+**/
 export default class Track {
   constructor(instance, conf, defaultConf, data, dataParser) {
     this.dispatch = dispatch('mouseover', 'mouseout');
     this.parseData = dataParser;
     this.loadData(data, instance);
     this.conf = getConf(conf, defaultConf, this.meta, instance);
+    const reverse = this.conf.colorPaletteReverse ?
+      this.conf.colorPaletteReverse : false;
+    const colorScale = buildScale(
+      this.conf.cmin,
+      this.conf.cmax,
+      this.conf.colorPaletteSize,
+      reverse,
+      this.conf.logScale,
+      this.conf.logScaleBase
+    );
+    this.colorScale = (value) => {
+      const result = Math.floor(colorScale(value));
+      if (result === this.conf.colorPaletteSize) {
+        return this.conf.colorPaletteSize - 1;
+      }
+      return result;
+    };
+    this.scale = buildScale(
+      this.conf.cmin,
+      this.conf.cmax,
+      this.conf.outerRadius - this.conf.innerRadius,
+      false,
+      this.conf.logScale,
+      this.conf.logScaleBase
+    );
   }
 
   loadData(data, instance) {
     const result = this.parseData(data, instance._layout.summary());
     this.data = result.data;
     this.meta = result.meta;
-  }
-
-  ratio(value, min, max, scope, reverse, logScale) {
-    const scaleLogBase = logScale ? 2.3 : 1
-
-    if (min === max || (value === min && !reverse) || (value === max && reverse)) {
-      return 0
-    }
-    if (value === max || (value === min && reverse)) {
-      return scope - 1
-    }
-
-    const fraction = (value - min) / (max - min)
-
-    var x = Math.exp(1 / scaleLogBase * Math.log(fraction))
-
-    if (reverse) {
-      x = 1 - x
-    }
-    return Math.floor(scope * x)
   }
 
   render(instance, parentElement, name) {
@@ -121,7 +130,7 @@ export default class Track {
             height: height,
             length: block.end - block.start,
           };
-        })
+        });
       })
       .enter().append('path')
       .attr('opacity', conf.opacity)
@@ -136,7 +145,7 @@ export default class Track {
         'stroke',
         (d, i) => i % conf.axes.major.spacing === 0 ?
           conf.axes.major.color : conf.axes.minor.color
-      )
+      );
   }
 
   theta(position, block) {
@@ -144,7 +153,7 @@ export default class Track {
   }
 
   x(d, layout, conf) {
-    const height = this.ratio(d.value, conf.cmin, conf.cmax, conf.outerRadius - conf.innerRadius, false, conf.logscale)
+    const height = this.scale(d.value);
     const r = conf.direction === 'in' ?
       conf.outerRadius - height : conf.innerRadius + height
 
@@ -153,7 +162,7 @@ export default class Track {
   }
 
   y(d, layout, conf) {
-    const height = this.ratio(d.value, conf.cmin, conf.cmax, conf.outerRadius - conf.innerRadius, false, conf.logscale)
+    const height = this.scale(d.value);
     const r = conf.direction === 'in' ?
       conf.outerRadius - height : conf.innerRadius + height
 

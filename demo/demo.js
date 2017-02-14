@@ -459,10 +459,17 @@ var heatmap = [
 
 links = [
   ['january', 1, 10, 'february', 20, 25, 0],
-  ['november', 1, 10, 'february', 3, 7, 0],
-  ['october', 1, 10, 'march', 20, 25, 10],
-  ['december', 1, 10, 'april', 20, 25, 10],
-  ['december', 13, 20, 'august', 20, 25, 10]
+  ['february', 1, 10, 'march', 20, 25, 1],
+  ['march', 1, 10, 'april', 3, 7, 2],
+  ['april', 1, 10, 'may', 20, 25, 3],
+  ['may', 1, 10, 'june', 20, 25, 4],
+  ['june', 1, 10, 'july', 20, 25, 5],
+  ['july', 1, 10, 'august', 20, 25, 6],
+  ['august', 1, 10, 'september', 20, 25, 7],
+  ['september', 1, 10, 'october', 20, 25, 8],
+  ['october', 1, 10, 'november', 20, 25, 9],
+  ['november', 1, 10, 'december', 20, 25, 10],
+  ['december', 1, 10, 'january', 20, 25, 11],
 ];
 linkRules = [
   {
@@ -628,7 +635,7 @@ circos
   .chords(
     'l1',
     {
-      usePalette: false,
+      usePalette: true,
       opacity: 0.7,
       color: function(d, i) {
         return i % 2 === 0 ? 'blue' : 'red';

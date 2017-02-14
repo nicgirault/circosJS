@@ -232,8 +232,8 @@ export function parseChordData(data, layoutSummary) {
   return {
     data: formatedData,
     meta: {
-      min: min(data, (d) => d.value),
-      max: max(data, (d) => d.value),
+      min: min(formatedData, (d) => d.value),
+      max: max(formatedData, (d) => d.value),
     },
   };
 }

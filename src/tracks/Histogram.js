@@ -40,29 +40,13 @@ export default class Histogram extends Track {
       .attr('d', arc()
         .innerRadius((d) => {
           if (conf.direction == 'in') {
-            const height = utils.ratio(
-              d.value,
-              conf.cmin,
-              conf.cmax,
-              conf.outerRadius - conf.innerRadius,
-              false,
-              conf.logscale
-            );
-            return conf.outerRadius - height;
+            return conf.outerRadius - this.scale(d.value);
           }
           return conf.innerRadius;
         })
         .outerRadius((d) => {
           if (conf.direction == 'out') {
-            const height = utils.ratio(
-              d.value,
-              conf.cmin,
-              conf.cmax,
-              conf.outerRadius - conf.innerRadius,
-              false,
-              conf.logscale
-            );
-            return conf.innerRadius + height;
+            return conf.innerRadius + this.scale(d.value);
           }
           return conf.outerRadius;
         })
@@ -71,14 +55,7 @@ export default class Histogram extends Track {
       );
     if (conf.usePalette) {
       bin.attr('class', (d) => {
-        return 'q' + utils.ratio(
-          d.value,
-          conf.cmin,
-          conf.cmax,
-          conf.colorPaletteSize,
-          conf.colorPaletteReverse,
-          conf.logScale
-        ) + '-' + conf.colorPaletteSize;
+        return `q${this.colorScale(d.value)}-${conf.colorPaletteSize}`;
       });
     } else {
       bin.attr('fill', conf.color);

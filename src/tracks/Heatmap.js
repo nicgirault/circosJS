@@ -24,7 +24,7 @@ export default class Heatmap extends Track {
     return this.renderBlock(track, data, instance._layout, conf);
   }
 
-  renderDatum(parentElement, conf, layout, utils) {
+  renderDatum(parentElement, conf, layout) {
     return parentElement.selectAll('tile')
       .data((d) => d.values)
       .enter().append('path')
@@ -33,18 +33,11 @@ export default class Heatmap extends Track {
       .attr('d', arc()
         .innerRadius(conf.innerRadius)
         .outerRadius(conf.outerRadius)
-        .startAngle((d, i) => utils.theta(d.start, layout.blocks[d.block_id]))
-        .endAngle((d, i) => utils.theta(d.end, layout.blocks[d.block_id]))
+        .startAngle((d, i) => this.theta(d.start, layout.blocks[d.block_id]))
+        .endAngle((d, i) => this.theta(d.end, layout.blocks[d.block_id]))
       )
       .attr('class', (d) => {
-        return 'q' + utils.ratio(
-          d.value,
-          conf.cmin,
-          conf.cmax,
-          conf.colorPaletteSize,
-          conf.colorPaletteReverse,
-          conf.logScale
-        ) + '-' + conf.colorPaletteSize;
+        return `q${this.colorScale(d.value)}-${conf.colorPaletteSize}`;
       });
   }
 }

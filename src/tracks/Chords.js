@@ -31,7 +31,7 @@ export default class Chords extends Track {
     };
   }
 
-  renderChords(parentElement, name, conf, data, layout, ratio, getCoordinates) {
+  renderChords(parentElement, name, conf, data, layout, getCoordinates) {
     const track = parentElement
       .append('g')
       .attr('class', conf.colorPalette);
@@ -56,14 +56,7 @@ export default class Chords extends Track {
 
     if (conf.usePalette) {
       link.attr('class', (d) => {
-        return 'q' + ratio(
-          d.value,
-          conf.cmin,
-          conf.cmax,
-          conf.colorPaletteSize,
-          conf.colorPaletteReverse,
-          conf.logScale
-        ) + '-' + conf.colorPaletteSize;
+        return `q${this.colorScale(d.value)}-${conf.colorPaletteSize}`;
       });
     } else {
       link.attr('fill', conf.color);
@@ -84,7 +77,6 @@ export default class Chords extends Track {
       this.conf,
       this.data,
       instance._layout,
-      this.ratio,
       this.getCoordinates
     );
     if (this.conf.tooltipContent) {

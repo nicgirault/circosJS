@@ -78,6 +78,10 @@ const values = {
     value: false,
     iteratee: false,
   },
+  logScaleBase: {
+    value: Math.E,
+    iteratee: false,
+  },
 };
 
 const common = {

@@ -31,24 +31,25 @@ const buildConf = (userConf = {}, defaultConf) => {
 };
 
 const computeMinMax = (conf, meta) => {
-  conf.cmin = conf.min === 'smart' ? meta.min : conf.min;
-  conf.cmax = conf.max === 'smart' ? meta.max : conf.max;
-  return;
+  return {
+    cmin: conf.min === 'smart' ? meta.min : conf.min,
+    cmax: conf.max === 'smart' ? meta.max : conf.max,
+  };
 };
 
 const computeRadius = (conf, instance) => {
   if (conf.innerRadius === 0 && conf.outerRadius === 0) {
     const borders = smartBorders(conf, instance._layout, instance.tracks);
-    conf.innerRadius = borders.in;
-    conf.outerRadius = borders.out;
+    return {
+      innerRadius: borders.in,
+      outerRadius: borders.out,
+    };
   }
   return;
 };
 
 const getConf = (userConf, defaultConf, meta, instance) => {
   let conf = buildConf(userConf, cloneDeep(defaultConf));
-  console.log(userConf)
-  console.log(conf)
   assign(conf, computeMinMax(conf, meta), computeRadius(conf, instance));
   return conf;
 };
