@@ -1,4 +1,4 @@
-![chords example](doc/chords.png)
+![chords example](chords.png)
 
 *Gene fusions in human karyotype [source](http://cancer.sanger.ac.uk/cosmic/download)*
 
