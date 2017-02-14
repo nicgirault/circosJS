@@ -2,11 +2,11 @@
 
 ## table of contents
 
-- [Introduction](#Introduction)
-- [Installation](#Installation)
-- [Layout](#Layout)
-- [Tracks](#Tracks)
-  - [Chords](#Chords)
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Layout](#layout)
+- [Tracks](#tracks)
+  - [Chords](#chords)
 
 ## Introduction
 
