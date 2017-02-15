@@ -4,7 +4,7 @@
   "description": "A d3js library to build circos graphs",
   "main": "app.js",
   "scripts": {
-    "test": "NODE_ENV=test karma start",
+    "test": "NODE_ENV=test mocha --compilers js:babel-register  --reporter spec src/**/*.test.js",
     "test:tdd": "NODE_ENV=test mocha --compilers js:babel-register --reporter nyan --watch src/**/*.test.js",
     "start": "webpack --watch",
     "build": "NODE_ENV=prod webpack --optimize-minimize --optimize-dedupe"
@@ -34,18 +34,7 @@
     "eslint": "^3.14.1",
     "eslint-config-google": "^0.7.1",
     "eslint-plugin-import": "^2.2.0",
-    "karma": "~0.13.15",
-    "karma-babel-preprocessor": "^6.0.1",
-    "karma-chai": "~0.1.0",
-    "karma-coffee-preprocessor": "~0.3.0",
-    "karma-coverage": "~0.5.3",
-    "karma-mocha": "~0.2.1",
-    "karma-phantomjs-launcher": "~0.2.1",
-    "karma-sinon": "~1.0.4",
-    "karma-sourcemap-loader": "^0.3.7",
-    "karma-webpack": "^2.0.1",
     "mocha": "~2.5.3",
-    "phantomjs": "~1.9.18",
     "sinon": "~1.17.4",
     "style-loader": "^0.13.1",
     "webpack": "^1.14.0"

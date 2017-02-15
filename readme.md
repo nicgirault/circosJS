@@ -1,4 +1,4 @@
-# Circos [![Circle CI](https://circleci.com/gh/nicgirault/circosJS.svg?style=shield)](https://circleci.com/gh/nicgirault/circosJS)
+# Circos [![Circle CI](https://circleci.com/gh/nicgirault/circosJS.svg?style=shield)](https://circleci.com/gh/nicgirault/circosJS) [![Coverage Status](https://coveralls.io/repos/github/nicgirault/circosJS/badge.svg?branch=master)](https://coveralls.io/github/nicgirault/circosJS?branch=master)
 
 ## table of contents
 
