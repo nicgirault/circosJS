@@ -7,6 +7,7 @@
 - [Layout](#layout)
 - [Tracks](#tracks)
   - [Chords](#chords)
+  - [Heatmap](#heatmap)
 
 ## Introduction
 
@@ -183,6 +184,48 @@ The default configuration is:
 ```
 
 ### Heatmap
+
+![heatmap example](doc/heatmap.png)
+
+*Electrical comsumption in France in 2014*
+
+To add a heatmap to your circos instance:
+
+```javascript
+instance.heatmap('electrical-consumption', {}, data);
+```
+
+Configuration:
+
+```javascript
+{
+  innerRadius: null,
+  outerRadius: null,
+  min: null,
+  max: null,
+  color: 'YlGnBu',
+  logScale: false,
+  tooltipContent: null,
+}
+```
+
+Data format:
+
+```javascript
+var data = [
+    // each datum should be
+    // layout_block_id, start, end, value
+    ['january', 0, 1, 1368001],
+    ['january', 1, 2, 1458583],
+    ['january', 2, 3, 1481633],
+    ['january', 3, 4, 1408424]
+    ...
+    ['february', 0, 1, 1577419],
+    ['february', 1, 2, 1509311],
+    ['february', 2, 3, 1688266],
+    ...
+]
+```
 
 ### Stack
 

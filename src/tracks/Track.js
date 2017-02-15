@@ -138,24 +138,24 @@ export default class Track {
   }
 
   theta(position, block) {
-    return position / block.len * (block.end - block.start)
+    return position / block.len * (block.end - block.start);
   }
 
   x(d, layout, conf) {
     const height = this.scale(d.value);
     const r = conf.direction === 'in' ?
-      conf.outerRadius - height : conf.innerRadius + height
+      conf.outerRadius - height : conf.innerRadius + height;
 
-    const angle = this.theta(d.position, layout.blocks[d.block_id]) - Math.PI/2
-    return r * Math.cos(angle)
+    const angle = this.theta(d.position, layout.blocks[d.block_id]) - Math.PI/2;
+    return r * Math.cos(angle);
   }
 
   y(d, layout, conf) {
     const height = this.scale(d.value);
     const r = conf.direction === 'in' ?
-      conf.outerRadius - height : conf.innerRadius + height
+      conf.outerRadius - height : conf.innerRadius + height;
 
-    const angle = this.theta(d.position, layout.blocks[d.block_id]) - Math.PI/2
-    return r * Math.sin(angle)
+    const angle = this.theta(d.position, layout.blocks[d.block_id]) - Math.PI/2;
+    return r * Math.sin(angle);
   }
 }
