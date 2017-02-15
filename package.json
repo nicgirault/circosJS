@@ -6,6 +6,7 @@
   "scripts": {
     "test": "NODE_ENV=test mocha --compilers js:babel-register  --reporter spec src/**/*.test.js",
     "test:tdd": "NODE_ENV=test mocha --compilers js:babel-register --reporter nyan --watch src/**/*.test.js",
+    "coveralls": "CIRCOSJS_COVERAGE=1 mocha test --reporter mocha-lcov-reporter src/**/*.test.js | ./node_modules/coveralls/bin/coveralls.js",
     "start": "webpack --watch",
     "build": "NODE_ENV=prod webpack --optimize-minimize --optimize-dedupe"
   },
@@ -30,11 +31,13 @@
     "chai": "~1.10.0",
     "coffee-coverage": "~0.4.5",
     "coffee-script": "~1.8.0",
+    "coveralls": "^2.11.16",
     "css-loader": "^0.26.1",
     "eslint": "^3.14.1",
     "eslint-config-google": "^0.7.1",
     "eslint-plugin-import": "^2.2.0",
     "mocha": "~2.5.3",
+    "mocha-lcov-reporter": "^1.2.0",
     "sinon": "~1.17.4",
     "style-loader": "^0.13.1",
     "webpack": "^1.14.0"
