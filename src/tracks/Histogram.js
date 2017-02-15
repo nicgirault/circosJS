@@ -2,7 +2,7 @@ import Track from './Track';
 import {parseSpanValueData} from '../dataParser';
 import {arc} from 'd3-shape';
 import assign from 'lodash/assign';
-import {axes, palette, radial, values, common} from '../configs';
+import {axes, radial, values, common} from '../configs';
 
 
 const defaultConf = assign({
@@ -18,7 +18,7 @@ const defaultConf = assign({
     value: [],
     iteratee: false,
   },
-}, axes, palette, radial, common, values);
+}, axes, radial, common, values);
 
 export default class Histogram extends Track {
   constructor(instance, conf, data) {
@@ -26,8 +26,7 @@ export default class Histogram extends Track {
   }
 
   renderDatumContainer(instance, parentElement, name, data, conf) {
-    const track = parentElement.append('g')
-      .attr('class', this.conf.colorPalette);
+    const track = parentElement.append('g');
     return this.renderBlock(track, data, instance._layout, conf);
   }
 
@@ -53,13 +52,7 @@ export default class Histogram extends Track {
         .startAngle((d) => utils.theta(d.start, layout.blocks[d.block_id]))
         .endAngle((d) => utils.theta(d.end, layout.blocks[d.block_id]))
       );
-    if (conf.usePalette) {
-      bin.attr('class', (d) => {
-        return `q${this.colorScale(d.value)}-${conf.colorPaletteSize}`;
-      });
-    } else {
-      bin.attr('fill', conf.color);
-    }
+    bin.attr('fill', conf.color);
     return bin;
   }
 }

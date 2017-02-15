@@ -2,7 +2,7 @@ import Track from './Track';
 import {parseSpanValueData} from '../dataParser';
 import {arc} from 'd3-shape';
 import assign from 'lodash/assign';
-import {radial, palette, values, common} from '../configs';
+import {radial, values, common} from '../configs';
 
 
 const defaultConf = assign({
@@ -10,7 +10,7 @@ const defaultConf = assign({
     value: [],
     iteratee: false,
   },
-}, radial, palette, values, common);
+}, radial, values, common);
 
 export default class Heatmap extends Track {
   constructor(instance, conf, data) {
@@ -18,8 +18,7 @@ export default class Heatmap extends Track {
   }
 
   renderDatumContainer(instance, parentElement, name, data, conf) {
-    const track = parentElement.append('g')
-      .attr('class', conf.colorPalette);
+    const track = parentElement.append('g');
 
     return this.renderBlock(track, data, instance._layout, conf);
   }
@@ -36,8 +35,6 @@ export default class Heatmap extends Track {
         .startAngle((d, i) => this.theta(d.start, layout.blocks[d.block_id]))
         .endAngle((d, i) => this.theta(d.end, layout.blocks[d.block_id]))
       )
-      .attr('class', (d) => {
-        return `q${this.colorScale(d.value)}-${conf.colorPaletteSize}`;
-      });
+      .attr('fill', conf.color);
   }
 }

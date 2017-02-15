@@ -175,10 +175,6 @@ The default configuration is:
   opacity: 0.7,
   zIndex: 1,
   tooltipContent: null,
-  usePalette: false,
-  colorPaletteSize: 9,
-  colorPalette: 'PuBuGn',
-  colorPaletteReverse: false,
   min: 'smart',
   max: 'smart',
   logScale: false,
@@ -200,9 +196,79 @@ The default configuration is:
 
 ### Text
 
-## Palettes
+## Colors
 
-https://github.com/d3/d3-scale-chromatic
+You can specify the color of the track in the track configuration:
+
+```javascript
+{
+  color: '#d3d3d3'
+}
+```
+
+You can specify:
+
+- any css color code e.g `#d3d3d3`, `blue`, `rgb(0, 0, 0)`
+- a palette name from the list below (it comes from [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic)). In this case the color will be computed dynamically according to the datum value. If you prefix the palette name with a `-` (e.g `-BrBG`), the palette will be reversed.
+- a function with this signature: `function(datum, index) { return colorCode}`
+
+**BrBG**:
+<img src="doc/palettes/BrBG.png" width="100%" height="10">
+**PRGn**:
+<img src="doc/palettes/PRGn.png" width="100%" height="10">
+**PiYG**:
+<img src="doc/palettes/PiYG.png" width="100%" height="10">
+**PuOr**:
+<img src="doc/palettes/PuOr.png" width="100%" height="10">
+**RdBu**:
+<img src="doc/palettes/RdBu.png" width="100%" height="10">
+**RdGy**:
+<img src="doc/palettes/RdGy.png" width="100%" height="10">
+**RdYlBu**:
+<img src="doc/palettes/RdYlBu.png" width="100%" height="10">
+**RdYlGn**:
+<img src="doc/palettes/RdYlGn.png" width="100%" height="10">
+**Spectral**:
+<img src="doc/palettes/Spectral.png" width="100%" height="10">
+**Blues**:
+<img src="doc/palettes/Blues.png" width="100%" height="10">
+**Greens**:
+<img src="doc/palettes/Greens.png" width="100%" height="10">
+**Greys**:
+<img src="doc/palettes/Greys.png" width="100%" height="10">
+**Oranges**:
+<img src="doc/palettes/Oranges.png" width="100%" height="10">
+**Purples**:
+<img src="doc/palettes/Purples.png" width="100%" height="10">
+**Reds**:
+<img src="doc/palettes/Reds.png" width="100%" height="10">
+**BuGn**:
+<img src="doc/palettes/BuGn.png" width="100%" height="10">
+**BuPu**:
+<img src="doc/palettes/BuPu.png" width="100%" height="10">
+**GnBu**:
+<img src="doc/palettes/GnBu.png" width="100%" height="10">
+**OrRd**:
+<img src="doc/palettes/OrRd.png" width="100%" height="10">
+**PuBuGn**:
+<img src="doc/palettes/PuBuGn.png" width="100%" height="10">
+**PuBu**:
+<img src="doc/palettes/PuBu.png" width="100%" height="10">
+**PuRd**:
+<img src="doc/palettes/PuRd.png" width="100%" height="10">
+**RdPu**:
+<img src="doc/palettes/RdPu.png" width="100%" height="10">
+**YlGnBu**:
+<img src="doc/palettes/YlGnBu.png" width="100%" height="10">
+**YlGn**:
+<img src="doc/palettes/YlGn.png" width="100%" height="10">
+**YlOrBr**:
+<img src="doc/palettes/YlOrBr.png" width="100%" height="10">
+**YlOrRd**:
+<img src="doc/palettes/YlOrRd.png" width="100%" height="10">
+
+
+
 
 ## Min/Max
 

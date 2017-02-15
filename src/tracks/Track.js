@@ -3,7 +3,7 @@ import range from 'lodash/range';
 import {dispatch} from 'd3-dispatch';
 import {arc} from 'd3-shape';
 import {getConf} from '../config-utils';
-import {buildScale} from '../utils';
+import {buildScale, buildColorIteratee} from '../utils';
 
 /**
  * Abstract class used by all tracks
@@ -14,28 +14,17 @@ export default class Track {
     this.parseData = dataParser;
     this.loadData(data, instance);
     this.conf = getConf(conf, defaultConf, this.meta, instance);
-    const reverse = this.conf.colorPaletteReverse ?
-      this.conf.colorPaletteReverse : false;
-    const colorScale = buildScale(
+    this.conf.colorIteratee = buildColorIteratee(
+      this.conf.color,
       this.conf.cmin,
       this.conf.cmax,
-      this.conf.colorPaletteSize,
-      reverse,
       this.conf.logScale,
       this.conf.logScaleBase
     );
-    this.colorScale = (value) => {
-      const result = Math.floor(colorScale(value));
-      if (result === this.conf.colorPaletteSize) {
-        return this.conf.colorPaletteSize - 1;
-      }
-      return result;
-    };
     this.scale = buildScale(
       this.conf.cmin,
       this.conf.cmax,
       this.conf.outerRadius - this.conf.innerRadius,
-      false,
       this.conf.logScale,
       this.conf.logScaleBase
     );

@@ -458,7 +458,7 @@ var heatmap = [
 ]
 
 links = [
-  ['january', 1, 10, 'february', 20, 25, 0],
+  ['january', 1, 10, 'february', 20, 25, 1],
   ['february', 1, 10, 'march', 20, 25, 1],
   ['march', 1, 10, 'april', 3, 7, 2],
   ['april', 1, 10, 'may', 20, 25, 3],
@@ -568,6 +568,7 @@ circos
   .layout(
     {
       ticks: {display: false},
+      cornerRadius: 0,
       onClick: function(){console.log('You clicked on the layout layer!');}
     },
     layout_data
@@ -635,11 +636,9 @@ circos
   .chords(
     'l1',
     {
-      usePalette: false,
+      logScale: false,
       opacity: 0.7,
-      color: function(d, i) {
-        return i % 2 === 0 ? 'blue' : 'red';
-      },
+      color: 'Greens',
       tooltipContent: function(d) {
         return d.source.id + ' ➤ ' + d.target.id + ': ' + d.value;
       },

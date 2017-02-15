@@ -57,10 +57,6 @@ var Circos =
 
 	var _forEach2 = _interopRequireDefault(_forEach);
 
-	var _keys = __webpack_require__(103);
-
-	var _keys2 = _interopRequireDefault(_keys);
-
 	var _isArray = __webpack_require__(76);
 
 	var _isArray2 = _interopRequireDefault(_isArray);
@@ -79,35 +75,33 @@ var Circos =
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Highlight = __webpack_require__(292);
+	var _Highlight = __webpack_require__(293);
 
 	var _Highlight2 = _interopRequireDefault(_Highlight);
 
-	var _Histogram = __webpack_require__(293);
+	var _Histogram = __webpack_require__(294);
 
 	var _Histogram2 = _interopRequireDefault(_Histogram);
 
-	var _Chords = __webpack_require__(294);
+	var _Chords = __webpack_require__(295);
 
 	var _Chords2 = _interopRequireDefault(_Chords);
 
-	var _Heatmap = __webpack_require__(296);
+	var _Heatmap = __webpack_require__(297);
 
 	var _Heatmap2 = _interopRequireDefault(_Heatmap);
 
-	var _Line = __webpack_require__(297);
+	var _Line = __webpack_require__(298);
 
 	var _Line2 = _interopRequireDefault(_Line);
 
-	var _Scatter = __webpack_require__(298);
+	var _Scatter = __webpack_require__(299);
 
 	var _Scatter2 = _interopRequireDefault(_Scatter);
 
-	var _Stack = __webpack_require__(299);
+	var _Stack = __webpack_require__(300);
 
 	var _Stack2 = _interopRequireDefault(_Stack);
-
-	__webpack_require__(300);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10098,7 +10092,7 @@ var Circos =
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(282);
+	var _dataParser = __webpack_require__(283);
 
 	var _forEach = __webpack_require__(99);
 
@@ -10108,7 +10102,7 @@ var Circos =
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _configs = __webpack_require__(291);
+	var _configs = __webpack_require__(292);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10198,24 +10192,14 @@ var Circos =
 	**/
 	var Track = function () {
 	  function Track(instance, conf, defaultConf, data, dataParser) {
-	    var _this = this;
-
 	    _classCallCheck(this, Track);
 
 	    this.dispatch = (0, _d3Dispatch.dispatch)('mouseover', 'mouseout');
 	    this.parseData = dataParser;
 	    this.loadData(data, instance);
 	    this.conf = (0, _configUtils.getConf)(conf, defaultConf, this.meta, instance);
-	    var reverse = this.conf.colorPaletteReverse ? this.conf.colorPaletteReverse : false;
-	    var colorScale = (0, _utils.buildScale)(this.conf.cmin, this.conf.cmax, this.conf.colorPaletteSize, reverse, this.conf.logScale, this.conf.logScaleBase);
-	    this.colorScale = function (value) {
-	      var result = Math.floor(colorScale(value));
-	      if (result === _this.conf.colorPaletteSize) {
-	        return _this.conf.colorPaletteSize - 1;
-	      }
-	      return result;
-	    };
-	    this.scale = (0, _utils.buildScale)(this.conf.cmin, this.conf.cmax, this.conf.outerRadius - this.conf.innerRadius, false, this.conf.logScale, this.conf.logScaleBase);
+	    this.conf.colorIteratee = (0, _utils.buildColorIteratee)(this.conf.color, this.conf.cmin, this.conf.cmax, this.conf.logScale, this.conf.logScaleBase);
+	    this.scale = (0, _utils.buildScale)(this.conf.cmin, this.conf.cmax, this.conf.outerRadius - this.conf.innerRadius, this.conf.logScale, this.conf.logScaleBase);
 	  }
 
 	  _createClass(Track, [{
@@ -10228,7 +10212,7 @@ var Circos =
 	  }, {
 	    key: 'render',
 	    value: function render(instance, parentElement, name) {
-	      var _this2 = this;
+	      var _this = this;
 
 	      parentElement.select('.' + name).remove();
 	      var track = parentElement.append('g').attr('class', name).attr('z-index', this.conf.zIndex);
@@ -10241,10 +10225,10 @@ var Circos =
 	        (0, _tooltip.registerTooltip)(this, instance, selection, this.conf);
 	      }
 	      selection.on('mouseover', function (d, i, j) {
-	        _this2.dispatch.call('mouseover', _this2, d);
+	        _this.dispatch.call('mouseover', _this, d);
 	      });
 	      selection.on('mouseout', function (d, i, j) {
-	        _this2.dispatch.call('mouseout', _this2, d);
+	        _this.dispatch.call('mouseout', _this, d);
 	      });
 
 	      return this;
@@ -13400,9 +13384,7 @@ var Circos =
 	        if ((0, _isFunction2.default)(userConf[key])) {
 	          conf[key] = userConf[key];
 	        } else {
-	          conf[key] = function () {
-	            return userConf[key];
-	          };
+	          conf[key] = userConf[key];
 	        }
 	      } else {
 	        conf[key] = function () {
@@ -13517,9 +13499,14 @@ var Circos =
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 	exports.smartBorders = smartBorders;
 	exports.computeMinMax = computeMinMax;
+	exports.buildColorIteratee = buildColorIteratee;
 	exports.buildScale = buildScale;
+	exports.buildColorScale = buildColorScale;
 
 	var _sortBy = __webpack_require__(212);
 
@@ -13545,7 +13532,13 @@ var Circos =
 
 	var _reverse2 = _interopRequireDefault(_reverse);
 
+	var _isFunction = __webpack_require__(12);
+
+	var _isFunction2 = _interopRequireDefault(_isFunction);
+
 	var _d3Scale = __webpack_require__(277);
+
+	var _d3ScaleChromatic = __webpack_require__(282);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13566,7 +13559,73 @@ var Circos =
 	  return conf;
 	}
 
+	var palettes = {
+	  BrBG: _d3ScaleChromatic.interpolateBrBG,
+	  PRGn: _d3ScaleChromatic.interpolatePRGn,
+	  PiYG: _d3ScaleChromatic.interpolatePiYG,
+	  PuOr: _d3ScaleChromatic.interpolatePuOr,
+	  RdBu: _d3ScaleChromatic.interpolateRdBu,
+	  RdGy: _d3ScaleChromatic.interpolateRdGy,
+	  RdYlBu: _d3ScaleChromatic.interpolateRdYlBu,
+	  RdYlGn: _d3ScaleChromatic.interpolateRdYlGn,
+	  Spectral: _d3ScaleChromatic.interpolateSpectral,
+	  Blues: _d3ScaleChromatic.interpolateBlues,
+	  Greens: _d3ScaleChromatic.interpolateGreens,
+	  Greys: _d3ScaleChromatic.interpolateGreys,
+	  Oranges: _d3ScaleChromatic.interpolateOranges,
+	  Purples: _d3ScaleChromatic.interpolatePurples,
+	  Reds: _d3ScaleChromatic.interpolateReds,
+	  BuGn: _d3ScaleChromatic.interpolateBuGn,
+	  BuPu: _d3ScaleChromatic.interpolateBuPu,
+	  GnBu: _d3ScaleChromatic.interpolateGnBu,
+	  OrRd: _d3ScaleChromatic.interpolateOrRd,
+	  PuBuGn: _d3ScaleChromatic.interpolatePuBuGn,
+	  PuBu: _d3ScaleChromatic.interpolatePuBu,
+	  PuRd: _d3ScaleChromatic.interpolatePuRd,
+	  RdPu: _d3ScaleChromatic.interpolateRdPu,
+	  YlGnBu: _d3ScaleChromatic.interpolateYlGnBu,
+	  YlGn: _d3ScaleChromatic.interpolateYlGn,
+	  YlOrBr: _d3ScaleChromatic.interpolateYlOrBr,
+	  YlOrRd: _d3ScaleChromatic.interpolateYlOrRd
+	};
+
+	function buildColorIteratee(color, min, max) {
+	  var logScale = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+	  var logScaleBase = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : Math.E;
+
+	  if ((0, _isFunction2.default)(color)) {
+	    return color;
+	  }
+	  var reverse = color[0] === '-';
+	  var paletteName = color[0] === '-' ? color.slice(1) : color;
+	  if (palettes[paletteName]) {
+	    var _ret = function () {
+	      var scale = buildColorScale(palettes[paletteName], min, max, reverse, logScale, logScaleBase);
+	      return {
+	        v: function v(d) {
+	          return scale(d.value);
+	        }
+	      };
+	    }();
+
+	    if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	  }
+	  return color;
+	};
+
 	function buildScale(min, max, height) {
+	  var logScale = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+	  var logScaleBase = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : Math.E;
+
+	  if (logScale && min * max <= 0) {
+	    console.warn('As log(0) = -\u221E, a log scale domain must be\n      strictly-positive or strictly-negative. logscale ignored');
+	  }
+	  var scale = logScale && min * max > 0 ? (0, _d3Scale.scaleLog)().base(logScaleBase) : (0, _d3Scale.scaleLinear)();
+
+	  return scale.domain([min, max]).range([0, height]);
+	}
+
+	function buildColorScale(interpolator, min, max) {
 	  var reverse = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 	  var logScale = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
 	  var logScaleBase = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : Math.E;
@@ -13574,9 +13633,21 @@ var Circos =
 	  if (logScale && min * max <= 0) {
 	    console.warn('As log(0) = -\u221E, a log scale domain must be\n      strictly-positive or strictly-negative. logscale ignored');
 	  }
-	  var scale = logScale && min * max > 0 ? (0, _d3Scale.scaleLog)().base(logScaleBase) : (0, _d3Scale.scaleLinear)();
 
-	  return scale.domain(reverse ? [max, min] : [min, max]).range([0, height]);
+	  if (logScale && min * max > 0) {
+	    var _ret2 = function () {
+	      var scale = (0, _d3Scale.scaleLog)().base(logScaleBase).domain(reverse ? [max, min] : [min, max]).range([0, 1]);
+	      return {
+	        v: (0, _d3Scale.scaleSequential)(function (t) {
+	          return interpolator(scale(t));
+	        }).domain([0, 1])
+	      };
+	    }();
+
+	    if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
+	  }
+
+	  return (0, _d3Scale.scaleSequential)(interpolator).domain(reverse ? [max, min] : [min, max]);
 	}
 
 /***/ },
@@ -19259,6 +19330,453 @@ var Circos =
 /* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// https://d3js.org/d3-scale-chromatic/ Version 1.1.0. Copyright 2016 Mike Bostock.
+	(function (global, factory) {
+	   true ? factory(exports, __webpack_require__(197)) :
+	  typeof define === 'function' && define.amd ? define(['exports', 'd3-interpolate'], factory) :
+	  (factory((global.d3 = global.d3 || {}),global.d3));
+	}(this, (function (exports,d3Interpolate) { 'use strict';
+
+	var colors = function(specifier) {
+	  var n = specifier.length / 6 | 0, colors = new Array(n), i = 0;
+	  while (i < n) colors[i] = "#" + specifier.slice(i * 6, ++i * 6);
+	  return colors;
+	};
+
+	var Accent = colors("7fc97fbeaed4fdc086ffff99386cb0f0027fbf5b17666666");
+
+	var Dark2 = colors("1b9e77d95f027570b3e7298a66a61ee6ab02a6761d666666");
+
+	var Paired = colors("a6cee31f78b4b2df8a33a02cfb9a99e31a1cfdbf6fff7f00cab2d66a3d9affff99b15928");
+
+	var Pastel1 = colors("fbb4aeb3cde3ccebc5decbe4fed9a6ffffcce5d8bdfddaecf2f2f2");
+
+	var Pastel2 = colors("b3e2cdfdcdaccbd5e8f4cae4e6f5c9fff2aef1e2cccccccc");
+
+	var Set1 = colors("e41a1c377eb84daf4a984ea3ff7f00ffff33a65628f781bf999999");
+
+	var Set2 = colors("66c2a5fc8d628da0cbe78ac3a6d854ffd92fe5c494b3b3b3");
+
+	var Set3 = colors("8dd3c7ffffb3bebadafb807280b1d3fdb462b3de69fccde5d9d9d9bc80bdccebc5ffed6f");
+
+	var ramp = function(scheme) {
+	  return d3Interpolate.interpolateRgbBasis(scheme[scheme.length - 1]);
+	};
+
+	var scheme = new Array(3).concat(
+	  "d8b365f5f5f55ab4ac",
+	  "a6611adfc27d80cdc1018571",
+	  "a6611adfc27df5f5f580cdc1018571",
+	  "8c510ad8b365f6e8c3c7eae55ab4ac01665e",
+	  "8c510ad8b365f6e8c3f5f5f5c7eae55ab4ac01665e",
+	  "8c510abf812ddfc27df6e8c3c7eae580cdc135978f01665e",
+	  "8c510abf812ddfc27df6e8c3f5f5f5c7eae580cdc135978f01665e",
+	  "5430058c510abf812ddfc27df6e8c3c7eae580cdc135978f01665e003c30",
+	  "5430058c510abf812ddfc27df6e8c3f5f5f5c7eae580cdc135978f01665e003c30"
+	).map(colors);
+
+	var BrBG = ramp(scheme);
+
+	var scheme$1 = new Array(3).concat(
+	  "af8dc3f7f7f77fbf7b",
+	  "7b3294c2a5cfa6dba0008837",
+	  "7b3294c2a5cff7f7f7a6dba0008837",
+	  "762a83af8dc3e7d4e8d9f0d37fbf7b1b7837",
+	  "762a83af8dc3e7d4e8f7f7f7d9f0d37fbf7b1b7837",
+	  "762a839970abc2a5cfe7d4e8d9f0d3a6dba05aae611b7837",
+	  "762a839970abc2a5cfe7d4e8f7f7f7d9f0d3a6dba05aae611b7837",
+	  "40004b762a839970abc2a5cfe7d4e8d9f0d3a6dba05aae611b783700441b",
+	  "40004b762a839970abc2a5cfe7d4e8f7f7f7d9f0d3a6dba05aae611b783700441b"
+	).map(colors);
+
+	var PRGn = ramp(scheme$1);
+
+	var scheme$2 = new Array(3).concat(
+	  "e9a3c9f7f7f7a1d76a",
+	  "d01c8bf1b6dab8e1864dac26",
+	  "d01c8bf1b6daf7f7f7b8e1864dac26",
+	  "c51b7de9a3c9fde0efe6f5d0a1d76a4d9221",
+	  "c51b7de9a3c9fde0eff7f7f7e6f5d0a1d76a4d9221",
+	  "c51b7dde77aef1b6dafde0efe6f5d0b8e1867fbc414d9221",
+	  "c51b7dde77aef1b6dafde0eff7f7f7e6f5d0b8e1867fbc414d9221",
+	  "8e0152c51b7dde77aef1b6dafde0efe6f5d0b8e1867fbc414d9221276419",
+	  "8e0152c51b7dde77aef1b6dafde0eff7f7f7e6f5d0b8e1867fbc414d9221276419"
+	).map(colors);
+
+	var PiYG = ramp(scheme$2);
+
+	var scheme$3 = new Array(3).concat(
+	  "f1a340f7f7f7998ec3",
+	  "e66101fdb863b2abd25e3c99",
+	  "e66101fdb863f7f7f7b2abd25e3c99",
+	  "b35806f1a340fee0b6d8daeb998ec3542788",
+	  "b35806f1a340fee0b6f7f7f7d8daeb998ec3542788",
+	  "b35806e08214fdb863fee0b6d8daebb2abd28073ac542788",
+	  "b35806e08214fdb863fee0b6f7f7f7d8daebb2abd28073ac542788",
+	  "7f3b08b35806e08214fdb863fee0b6d8daebb2abd28073ac5427882d004b",
+	  "7f3b08b35806e08214fdb863fee0b6f7f7f7d8daebb2abd28073ac5427882d004b"
+	).map(colors);
+
+	var PuOr = ramp(scheme$3);
+
+	var scheme$4 = new Array(3).concat(
+	  "ef8a62f7f7f767a9cf",
+	  "ca0020f4a58292c5de0571b0",
+	  "ca0020f4a582f7f7f792c5de0571b0",
+	  "b2182bef8a62fddbc7d1e5f067a9cf2166ac",
+	  "b2182bef8a62fddbc7f7f7f7d1e5f067a9cf2166ac",
+	  "b2182bd6604df4a582fddbc7d1e5f092c5de4393c32166ac",
+	  "b2182bd6604df4a582fddbc7f7f7f7d1e5f092c5de4393c32166ac",
+	  "67001fb2182bd6604df4a582fddbc7d1e5f092c5de4393c32166ac053061",
+	  "67001fb2182bd6604df4a582fddbc7f7f7f7d1e5f092c5de4393c32166ac053061"
+	).map(colors);
+
+	var RdBu = ramp(scheme$4);
+
+	var scheme$5 = new Array(3).concat(
+	  "ef8a62ffffff999999",
+	  "ca0020f4a582bababa404040",
+	  "ca0020f4a582ffffffbababa404040",
+	  "b2182bef8a62fddbc7e0e0e09999994d4d4d",
+	  "b2182bef8a62fddbc7ffffffe0e0e09999994d4d4d",
+	  "b2182bd6604df4a582fddbc7e0e0e0bababa8787874d4d4d",
+	  "b2182bd6604df4a582fddbc7ffffffe0e0e0bababa8787874d4d4d",
+	  "67001fb2182bd6604df4a582fddbc7e0e0e0bababa8787874d4d4d1a1a1a",
+	  "67001fb2182bd6604df4a582fddbc7ffffffe0e0e0bababa8787874d4d4d1a1a1a"
+	).map(colors);
+
+	var RdGy = ramp(scheme$5);
+
+	var scheme$6 = new Array(3).concat(
+	  "fc8d59ffffbf91bfdb",
+	  "d7191cfdae61abd9e92c7bb6",
+	  "d7191cfdae61ffffbfabd9e92c7bb6",
+	  "d73027fc8d59fee090e0f3f891bfdb4575b4",
+	  "d73027fc8d59fee090ffffbfe0f3f891bfdb4575b4",
+	  "d73027f46d43fdae61fee090e0f3f8abd9e974add14575b4",
+	  "d73027f46d43fdae61fee090ffffbfe0f3f8abd9e974add14575b4",
+	  "a50026d73027f46d43fdae61fee090e0f3f8abd9e974add14575b4313695",
+	  "a50026d73027f46d43fdae61fee090ffffbfe0f3f8abd9e974add14575b4313695"
+	).map(colors);
+
+	var RdYlBu = ramp(scheme$6);
+
+	var scheme$7 = new Array(3).concat(
+	  "fc8d59ffffbf91cf60",
+	  "d7191cfdae61a6d96a1a9641",
+	  "d7191cfdae61ffffbfa6d96a1a9641",
+	  "d73027fc8d59fee08bd9ef8b91cf601a9850",
+	  "d73027fc8d59fee08bffffbfd9ef8b91cf601a9850",
+	  "d73027f46d43fdae61fee08bd9ef8ba6d96a66bd631a9850",
+	  "d73027f46d43fdae61fee08bffffbfd9ef8ba6d96a66bd631a9850",
+	  "a50026d73027f46d43fdae61fee08bd9ef8ba6d96a66bd631a9850006837",
+	  "a50026d73027f46d43fdae61fee08bffffbfd9ef8ba6d96a66bd631a9850006837"
+	).map(colors);
+
+	var RdYlGn = ramp(scheme$7);
+
+	var scheme$8 = new Array(3).concat(
+	  "fc8d59ffffbf99d594",
+	  "d7191cfdae61abdda42b83ba",
+	  "d7191cfdae61ffffbfabdda42b83ba",
+	  "d53e4ffc8d59fee08be6f59899d5943288bd",
+	  "d53e4ffc8d59fee08bffffbfe6f59899d5943288bd",
+	  "d53e4ff46d43fdae61fee08be6f598abdda466c2a53288bd",
+	  "d53e4ff46d43fdae61fee08bffffbfe6f598abdda466c2a53288bd",
+	  "9e0142d53e4ff46d43fdae61fee08be6f598abdda466c2a53288bd5e4fa2",
+	  "9e0142d53e4ff46d43fdae61fee08bffffbfe6f598abdda466c2a53288bd5e4fa2"
+	).map(colors);
+
+	var Spectral = ramp(scheme$8);
+
+	var scheme$9 = new Array(3).concat(
+	  "e5f5f999d8c92ca25f",
+	  "edf8fbb2e2e266c2a4238b45",
+	  "edf8fbb2e2e266c2a42ca25f006d2c",
+	  "edf8fbccece699d8c966c2a42ca25f006d2c",
+	  "edf8fbccece699d8c966c2a441ae76238b45005824",
+	  "f7fcfde5f5f9ccece699d8c966c2a441ae76238b45005824",
+	  "f7fcfde5f5f9ccece699d8c966c2a441ae76238b45006d2c00441b"
+	).map(colors);
+
+	var BuGn = ramp(scheme$9);
+
+	var scheme$10 = new Array(3).concat(
+	  "e0ecf49ebcda8856a7",
+	  "edf8fbb3cde38c96c688419d",
+	  "edf8fbb3cde38c96c68856a7810f7c",
+	  "edf8fbbfd3e69ebcda8c96c68856a7810f7c",
+	  "edf8fbbfd3e69ebcda8c96c68c6bb188419d6e016b",
+	  "f7fcfde0ecf4bfd3e69ebcda8c96c68c6bb188419d6e016b",
+	  "f7fcfde0ecf4bfd3e69ebcda8c96c68c6bb188419d810f7c4d004b"
+	).map(colors);
+
+	var BuPu = ramp(scheme$10);
+
+	var scheme$11 = new Array(3).concat(
+	  "e0f3dba8ddb543a2ca",
+	  "f0f9e8bae4bc7bccc42b8cbe",
+	  "f0f9e8bae4bc7bccc443a2ca0868ac",
+	  "f0f9e8ccebc5a8ddb57bccc443a2ca0868ac",
+	  "f0f9e8ccebc5a8ddb57bccc44eb3d32b8cbe08589e",
+	  "f7fcf0e0f3dbccebc5a8ddb57bccc44eb3d32b8cbe08589e",
+	  "f7fcf0e0f3dbccebc5a8ddb57bccc44eb3d32b8cbe0868ac084081"
+	).map(colors);
+
+	var GnBu = ramp(scheme$11);
+
+	var scheme$12 = new Array(3).concat(
+	  "fee8c8fdbb84e34a33",
+	  "fef0d9fdcc8afc8d59d7301f",
+	  "fef0d9fdcc8afc8d59e34a33b30000",
+	  "fef0d9fdd49efdbb84fc8d59e34a33b30000",
+	  "fef0d9fdd49efdbb84fc8d59ef6548d7301f990000",
+	  "fff7ecfee8c8fdd49efdbb84fc8d59ef6548d7301f990000",
+	  "fff7ecfee8c8fdd49efdbb84fc8d59ef6548d7301fb300007f0000"
+	).map(colors);
+
+	var OrRd = ramp(scheme$12);
+
+	var scheme$13 = new Array(3).concat(
+	  "ece2f0a6bddb1c9099",
+	  "f6eff7bdc9e167a9cf02818a",
+	  "f6eff7bdc9e167a9cf1c9099016c59",
+	  "f6eff7d0d1e6a6bddb67a9cf1c9099016c59",
+	  "f6eff7d0d1e6a6bddb67a9cf3690c002818a016450",
+	  "fff7fbece2f0d0d1e6a6bddb67a9cf3690c002818a016450",
+	  "fff7fbece2f0d0d1e6a6bddb67a9cf3690c002818a016c59014636"
+	).map(colors);
+
+	var PuBuGn = ramp(scheme$13);
+
+	var scheme$14 = new Array(3).concat(
+	  "ece7f2a6bddb2b8cbe",
+	  "f1eef6bdc9e174a9cf0570b0",
+	  "f1eef6bdc9e174a9cf2b8cbe045a8d",
+	  "f1eef6d0d1e6a6bddb74a9cf2b8cbe045a8d",
+	  "f1eef6d0d1e6a6bddb74a9cf3690c00570b0034e7b",
+	  "fff7fbece7f2d0d1e6a6bddb74a9cf3690c00570b0034e7b",
+	  "fff7fbece7f2d0d1e6a6bddb74a9cf3690c00570b0045a8d023858"
+	).map(colors);
+
+	var PuBu = ramp(scheme$14);
+
+	var scheme$15 = new Array(3).concat(
+	  "e7e1efc994c7dd1c77",
+	  "f1eef6d7b5d8df65b0ce1256",
+	  "f1eef6d7b5d8df65b0dd1c77980043",
+	  "f1eef6d4b9dac994c7df65b0dd1c77980043",
+	  "f1eef6d4b9dac994c7df65b0e7298ace125691003f",
+	  "f7f4f9e7e1efd4b9dac994c7df65b0e7298ace125691003f",
+	  "f7f4f9e7e1efd4b9dac994c7df65b0e7298ace125698004367001f"
+	).map(colors);
+
+	var PuRd = ramp(scheme$15);
+
+	var scheme$16 = new Array(3).concat(
+	  "fde0ddfa9fb5c51b8a",
+	  "feebe2fbb4b9f768a1ae017e",
+	  "feebe2fbb4b9f768a1c51b8a7a0177",
+	  "feebe2fcc5c0fa9fb5f768a1c51b8a7a0177",
+	  "feebe2fcc5c0fa9fb5f768a1dd3497ae017e7a0177",
+	  "fff7f3fde0ddfcc5c0fa9fb5f768a1dd3497ae017e7a0177",
+	  "fff7f3fde0ddfcc5c0fa9fb5f768a1dd3497ae017e7a017749006a"
+	).map(colors);
+
+	var RdPu = ramp(scheme$16);
+
+	var scheme$17 = new Array(3).concat(
+	  "edf8b17fcdbb2c7fb8",
+	  "ffffcca1dab441b6c4225ea8",
+	  "ffffcca1dab441b6c42c7fb8253494",
+	  "ffffccc7e9b47fcdbb41b6c42c7fb8253494",
+	  "ffffccc7e9b47fcdbb41b6c41d91c0225ea80c2c84",
+	  "ffffd9edf8b1c7e9b47fcdbb41b6c41d91c0225ea80c2c84",
+	  "ffffd9edf8b1c7e9b47fcdbb41b6c41d91c0225ea8253494081d58"
+	).map(colors);
+
+	var YlGnBu = ramp(scheme$17);
+
+	var scheme$18 = new Array(3).concat(
+	  "f7fcb9addd8e31a354",
+	  "ffffccc2e69978c679238443",
+	  "ffffccc2e69978c67931a354006837",
+	  "ffffccd9f0a3addd8e78c67931a354006837",
+	  "ffffccd9f0a3addd8e78c67941ab5d238443005a32",
+	  "ffffe5f7fcb9d9f0a3addd8e78c67941ab5d238443005a32",
+	  "ffffe5f7fcb9d9f0a3addd8e78c67941ab5d238443006837004529"
+	).map(colors);
+
+	var YlGn = ramp(scheme$18);
+
+	var scheme$19 = new Array(3).concat(
+	  "fff7bcfec44fd95f0e",
+	  "ffffd4fed98efe9929cc4c02",
+	  "ffffd4fed98efe9929d95f0e993404",
+	  "ffffd4fee391fec44ffe9929d95f0e993404",
+	  "ffffd4fee391fec44ffe9929ec7014cc4c028c2d04",
+	  "ffffe5fff7bcfee391fec44ffe9929ec7014cc4c028c2d04",
+	  "ffffe5fff7bcfee391fec44ffe9929ec7014cc4c02993404662506"
+	).map(colors);
+
+	var YlOrBr = ramp(scheme$19);
+
+	var scheme$20 = new Array(3).concat(
+	  "ffeda0feb24cf03b20",
+	  "ffffb2fecc5cfd8d3ce31a1c",
+	  "ffffb2fecc5cfd8d3cf03b20bd0026",
+	  "ffffb2fed976feb24cfd8d3cf03b20bd0026",
+	  "ffffb2fed976feb24cfd8d3cfc4e2ae31a1cb10026",
+	  "ffffccffeda0fed976feb24cfd8d3cfc4e2ae31a1cb10026",
+	  "ffffccffeda0fed976feb24cfd8d3cfc4e2ae31a1cbd0026800026"
+	).map(colors);
+
+	var YlOrRd = ramp(scheme$20);
+
+	var scheme$21 = new Array(3).concat(
+	  "deebf79ecae13182bd",
+	  "eff3ffbdd7e76baed62171b5",
+	  "eff3ffbdd7e76baed63182bd08519c",
+	  "eff3ffc6dbef9ecae16baed63182bd08519c",
+	  "eff3ffc6dbef9ecae16baed64292c62171b5084594",
+	  "f7fbffdeebf7c6dbef9ecae16baed64292c62171b5084594",
+	  "f7fbffdeebf7c6dbef9ecae16baed64292c62171b508519c08306b"
+	).map(colors);
+
+	var Blues = ramp(scheme$21);
+
+	var scheme$22 = new Array(3).concat(
+	  "e5f5e0a1d99b31a354",
+	  "edf8e9bae4b374c476238b45",
+	  "edf8e9bae4b374c47631a354006d2c",
+	  "edf8e9c7e9c0a1d99b74c47631a354006d2c",
+	  "edf8e9c7e9c0a1d99b74c47641ab5d238b45005a32",
+	  "f7fcf5e5f5e0c7e9c0a1d99b74c47641ab5d238b45005a32",
+	  "f7fcf5e5f5e0c7e9c0a1d99b74c47641ab5d238b45006d2c00441b"
+	).map(colors);
+
+	var Greens = ramp(scheme$22);
+
+	var scheme$23 = new Array(3).concat(
+	  "f0f0f0bdbdbd636363",
+	  "f7f7f7cccccc969696525252",
+	  "f7f7f7cccccc969696636363252525",
+	  "f7f7f7d9d9d9bdbdbd969696636363252525",
+	  "f7f7f7d9d9d9bdbdbd969696737373525252252525",
+	  "fffffff0f0f0d9d9d9bdbdbd969696737373525252252525",
+	  "fffffff0f0f0d9d9d9bdbdbd969696737373525252252525000000"
+	).map(colors);
+
+	var Greys = ramp(scheme$23);
+
+	var scheme$24 = new Array(3).concat(
+	  "efedf5bcbddc756bb1",
+	  "f2f0f7cbc9e29e9ac86a51a3",
+	  "f2f0f7cbc9e29e9ac8756bb154278f",
+	  "f2f0f7dadaebbcbddc9e9ac8756bb154278f",
+	  "f2f0f7dadaebbcbddc9e9ac8807dba6a51a34a1486",
+	  "fcfbfdefedf5dadaebbcbddc9e9ac8807dba6a51a34a1486",
+	  "fcfbfdefedf5dadaebbcbddc9e9ac8807dba6a51a354278f3f007d"
+	).map(colors);
+
+	var Purples = ramp(scheme$24);
+
+	var scheme$25 = new Array(3).concat(
+	  "fee0d2fc9272de2d26",
+	  "fee5d9fcae91fb6a4acb181d",
+	  "fee5d9fcae91fb6a4ade2d26a50f15",
+	  "fee5d9fcbba1fc9272fb6a4ade2d26a50f15",
+	  "fee5d9fcbba1fc9272fb6a4aef3b2ccb181d99000d",
+	  "fff5f0fee0d2fcbba1fc9272fb6a4aef3b2ccb181d99000d",
+	  "fff5f0fee0d2fcbba1fc9272fb6a4aef3b2ccb181da50f1567000d"
+	).map(colors);
+
+	var Reds = ramp(scheme$25);
+
+	var scheme$26 = new Array(3).concat(
+	  "fee6cefdae6be6550d",
+	  "feeddefdbe85fd8d3cd94701",
+	  "feeddefdbe85fd8d3ce6550da63603",
+	  "feeddefdd0a2fdae6bfd8d3ce6550da63603",
+	  "feeddefdd0a2fdae6bfd8d3cf16913d948018c2d04",
+	  "fff5ebfee6cefdd0a2fdae6bfd8d3cf16913d948018c2d04",
+	  "fff5ebfee6cefdd0a2fdae6bfd8d3cf16913d94801a636037f2704"
+	).map(colors);
+
+	var Oranges = ramp(scheme$26);
+
+	exports.schemeAccent = Accent;
+	exports.schemeDark2 = Dark2;
+	exports.schemePaired = Paired;
+	exports.schemePastel1 = Pastel1;
+	exports.schemePastel2 = Pastel2;
+	exports.schemeSet1 = Set1;
+	exports.schemeSet2 = Set2;
+	exports.schemeSet3 = Set3;
+	exports.interpolateBrBG = BrBG;
+	exports.schemeBrBG = scheme;
+	exports.interpolatePRGn = PRGn;
+	exports.schemePRGn = scheme$1;
+	exports.interpolatePiYG = PiYG;
+	exports.schemePiYG = scheme$2;
+	exports.interpolatePuOr = PuOr;
+	exports.schemePuOr = scheme$3;
+	exports.interpolateRdBu = RdBu;
+	exports.schemeRdBu = scheme$4;
+	exports.interpolateRdGy = RdGy;
+	exports.schemeRdGy = scheme$5;
+	exports.interpolateRdYlBu = RdYlBu;
+	exports.schemeRdYlBu = scheme$6;
+	exports.interpolateRdYlGn = RdYlGn;
+	exports.schemeRdYlGn = scheme$7;
+	exports.interpolateSpectral = Spectral;
+	exports.schemeSpectral = scheme$8;
+	exports.interpolateBuGn = BuGn;
+	exports.schemeBuGn = scheme$9;
+	exports.interpolateBuPu = BuPu;
+	exports.schemeBuPu = scheme$10;
+	exports.interpolateGnBu = GnBu;
+	exports.schemeGnBu = scheme$11;
+	exports.interpolateOrRd = OrRd;
+	exports.schemeOrRd = scheme$12;
+	exports.interpolatePuBuGn = PuBuGn;
+	exports.schemePuBuGn = scheme$13;
+	exports.interpolatePuBu = PuBu;
+	exports.schemePuBu = scheme$14;
+	exports.interpolatePuRd = PuRd;
+	exports.schemePuRd = scheme$15;
+	exports.interpolateRdPu = RdPu;
+	exports.schemeRdPu = scheme$16;
+	exports.interpolateYlGnBu = YlGnBu;
+	exports.schemeYlGnBu = scheme$17;
+	exports.interpolateYlGn = YlGn;
+	exports.schemeYlGn = scheme$18;
+	exports.interpolateYlOrBr = YlOrBr;
+	exports.schemeYlOrBr = scheme$19;
+	exports.interpolateYlOrRd = YlOrRd;
+	exports.schemeYlOrRd = scheme$20;
+	exports.interpolateBlues = Blues;
+	exports.schemeBlues = scheme$21;
+	exports.interpolateGreens = Greens;
+	exports.schemeGreens = scheme$22;
+	exports.interpolateGreys = Greys;
+	exports.schemeGreys = scheme$23;
+	exports.interpolatePurples = Purples;
+	exports.schemePurples = scheme$24;
+	exports.interpolateReds = Reds;
+	exports.schemeReds = scheme$25;
+	exports.interpolateOranges = Oranges;
+	exports.schemeOranges = scheme$26;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	})));
+
+
+/***/ },
+/* 283 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -19274,15 +19792,15 @@ var Circos =
 
 	var _keys2 = _interopRequireDefault(_keys);
 
-	var _includes = __webpack_require__(283);
+	var _includes = __webpack_require__(284);
 
 	var _includes2 = _interopRequireDefault(_includes);
 
-	var _every = __webpack_require__(287);
+	var _every = __webpack_require__(288);
 
 	var _every2 = _interopRequireDefault(_every);
 
-	var _map = __webpack_require__(290);
+	var _map = __webpack_require__(291);
 
 	var _map2 = _interopRequireDefault(_map);
 
@@ -19451,18 +19969,18 @@ var Circos =
 	    return { data: [], meta: { min: null, max: null } };
 	  }
 
-	  var preParsedData = normalize(data, ['source_id', 'source_start', 'source_end', 'target_id', 'target_start', 'target_end', 'value']);
+	  var preParsedData = normalize(data, ['sourceId', 'sourceStart', 'sourceEnd', 'targetId', 'targetStart', 'targetEnd']);
 
 	  var formatedData = preParsedData.filter(function (datum, index) {
-	    return checkParent(datum[0], index, layoutSummary, 'source_id');
+	    return checkParent(datum[0], index, layoutSummary, 'sourceId');
 	  }).filter(function (datum, index) {
-	    return checkParent(datum[3], index, layoutSummary, 'target_id');
+	    return checkParent(datum[3], index, layoutSummary, 'targetId');
 	  }).filter(function (datum, index) {
 	    return checkNumber({
-	      source_start: datum[1],
-	      source_end: datum[2],
-	      target_start: datum[4],
-	      target_end: datum[5],
+	      sourceStart: datum[1],
+	      sourceEnd: datum[2],
+	      targetStart: datum[4],
+	      targetEnd: datum[5],
 	      value: datum[6] || 1
 	    }, index);
 	  }).map(function (datum) {
@@ -19477,7 +19995,7 @@ var Circos =
 	        start: Math.max(0, parseFloat(datum[4])),
 	        end: Math.min(layoutSummary[datum[3]], parseFloat(datum[5]))
 	      },
-	      value: parseFloat(datum[6])
+	      value: parseFloat(datum[6]) || 1
 	    };
 	  });
 
@@ -19495,14 +20013,14 @@ var Circos =
 	}
 
 /***/ },
-/* 283 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseIndexOf = __webpack_require__(246),
 	    isArrayLike = __webpack_require__(78),
-	    isString = __webpack_require__(284),
+	    isString = __webpack_require__(285),
 	    toInteger = __webpack_require__(255),
-	    values = __webpack_require__(285);
+	    values = __webpack_require__(286);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -19554,7 +20072,7 @@ var Circos =
 
 
 /***/ },
-/* 284 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(13),
@@ -19590,10 +20108,10 @@ var Circos =
 
 
 /***/ },
-/* 285 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseValues = __webpack_require__(286),
+	var baseValues = __webpack_require__(287),
 	    keys = __webpack_require__(103);
 
 	/**
@@ -19630,7 +20148,7 @@ var Circos =
 
 
 /***/ },
-/* 286 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayMap = __webpack_require__(169);
@@ -19655,11 +20173,11 @@ var Circos =
 
 
 /***/ },
-/* 287 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayEvery = __webpack_require__(288),
-	    baseEvery = __webpack_require__(289),
+	var arrayEvery = __webpack_require__(289),
+	    baseEvery = __webpack_require__(290),
 	    baseIteratee = __webpack_require__(142),
 	    isArray = __webpack_require__(76),
 	    isIterateeCall = __webpack_require__(98);
@@ -19717,7 +20235,7 @@ var Circos =
 
 
 /***/ },
-/* 288 */
+/* 289 */
 /***/ function(module, exports) {
 
 	/**
@@ -19746,7 +20264,7 @@ var Circos =
 
 
 /***/ },
-/* 289 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseEach = __webpack_require__(101);
@@ -19773,7 +20291,7 @@ var Circos =
 
 
 /***/ },
-/* 290 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayMap = __webpack_require__(169),
@@ -19832,7 +20350,7 @@ var Circos =
 
 
 /***/ },
-/* 291 */
+/* 292 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -19948,7 +20466,7 @@ var Circos =
 	exports.common = common;
 
 /***/ },
-/* 292 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19963,13 +20481,13 @@ var Circos =
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(282);
+	var _dataParser = __webpack_require__(283);
 
 	var _assign = __webpack_require__(210);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _configs = __webpack_require__(291);
+	var _configs = __webpack_require__(292);
 
 	var _d3Shape = __webpack_require__(188);
 
@@ -20029,7 +20547,7 @@ var Circos =
 	exports.default = Highlight;
 
 /***/ },
-/* 293 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20044,7 +20562,7 @@ var Circos =
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(282);
+	var _dataParser = __webpack_require__(283);
 
 	var _d3Shape = __webpack_require__(188);
 
@@ -20052,7 +20570,7 @@ var Circos =
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _configs = __webpack_require__(291);
+	var _configs = __webpack_require__(292);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20075,7 +20593,7 @@ var Circos =
 	    value: [],
 	    iteratee: false
 	  }
-	}, _configs.axes, _configs.palette, _configs.radial, _configs.common, _configs.values);
+	}, _configs.axes, _configs.radial, _configs.common, _configs.values);
 
 	var Histogram = function (_Track) {
 	  _inherits(Histogram, _Track);
@@ -20089,7 +20607,7 @@ var Circos =
 	  _createClass(Histogram, [{
 	    key: 'renderDatumContainer',
 	    value: function renderDatumContainer(instance, parentElement, name, data, conf) {
-	      var track = parentElement.append('g').attr('class', this.conf.colorPalette);
+	      var track = parentElement.append('g');
 	      return this.renderBlock(track, data, instance._layout, conf);
 	    }
 	  }, {
@@ -20116,13 +20634,7 @@ var Circos =
 	      }).endAngle(function (d) {
 	        return utils.theta(d.end, layout.blocks[d.block_id]);
 	      }));
-	      if (conf.usePalette) {
-	        bin.attr('class', function (d) {
-	          return 'q' + _this2.colorScale(d.value) + '-' + conf.colorPaletteSize;
-	        });
-	      } else {
-	        bin.attr('fill', conf.color);
-	      }
+	      bin.attr('fill', conf.color);
 	      return bin;
 	    }
 	  }]);
@@ -20133,7 +20645,7 @@ var Circos =
 	exports.default = Histogram;
 
 /***/ },
-/* 294 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20148,17 +20660,17 @@ var Circos =
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(282);
+	var _dataParser = __webpack_require__(283);
 
 	var _tooltip = __webpack_require__(193);
 
-	var _d3Chord = __webpack_require__(295);
+	var _d3Chord = __webpack_require__(296);
 
 	var _assign = __webpack_require__(210);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _configs = __webpack_require__(291);
+	var _configs = __webpack_require__(292);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20173,7 +20685,7 @@ var Circos =
 	    value: '#fd6a62',
 	    iteratee: true
 	  }
-	}, _configs.palette, _configs.common, _configs.values);
+	}, _configs.common, _configs.values);
 
 	var Chords = function (_Track) {
 	  _inherits(Chords, _Track);
@@ -20202,7 +20714,7 @@ var Circos =
 	    value: function renderChords(parentElement, name, conf, data, layout, getCoordinates) {
 	      var _this2 = this;
 
-	      var track = parentElement.append('g').attr('class', conf.colorPalette);
+	      var track = parentElement.append('g');
 
 	      var that = this;
 	      var link = track.selectAll('.chord').data(data).enter().append('path').attr('class', 'chord').attr('d', (0, _d3Chord.ribbon)().source(function (d) {
@@ -20215,13 +20727,8 @@ var Circos =
 	        return that.dispatch.call('mouseout', _this2, d);
 	      });
 
-	      if (conf.usePalette) {
-	        link.attr('class', function (d) {
-	          return 'q' + _this2.colorScale(d.value) + '-' + conf.colorPaletteSize;
-	        });
-	      } else {
-	        link.attr('fill', conf.color);
-	      }
+	      link.attr('fill', conf.colorIteratee);
+
 	      return link;
 	    }
 	  }, {
@@ -20245,7 +20752,7 @@ var Circos =
 	exports.default = Chords;
 
 /***/ },
-/* 295 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-chord/ Version 1.0.3. Copyright 2016 Mike Bostock.
@@ -20481,85 +20988,6 @@ var Circos =
 
 
 /***/ },
-/* 296 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _Track2 = __webpack_require__(192);
-
-	var _Track3 = _interopRequireDefault(_Track2);
-
-	var _dataParser = __webpack_require__(282);
-
-	var _d3Shape = __webpack_require__(188);
-
-	var _assign = __webpack_require__(210);
-
-	var _assign2 = _interopRequireDefault(_assign);
-
-	var _configs = __webpack_require__(291);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var defaultConf = (0, _assign2.default)({
-	  backgrounds: {
-	    value: [],
-	    iteratee: false
-	  }
-	}, _configs.radial, _configs.palette, _configs.values, _configs.common);
-
-	var Heatmap = function (_Track) {
-	  _inherits(Heatmap, _Track);
-
-	  function Heatmap(instance, conf, data) {
-	    _classCallCheck(this, Heatmap);
-
-	    return _possibleConstructorReturn(this, (Heatmap.__proto__ || Object.getPrototypeOf(Heatmap)).call(this, instance, conf, defaultConf, data, _dataParser.parseSpanValueData));
-	  }
-
-	  _createClass(Heatmap, [{
-	    key: 'renderDatumContainer',
-	    value: function renderDatumContainer(instance, parentElement, name, data, conf) {
-	      var track = parentElement.append('g').attr('class', conf.colorPalette);
-
-	      return this.renderBlock(track, data, instance._layout, conf);
-	    }
-	  }, {
-	    key: 'renderDatum',
-	    value: function renderDatum(parentElement, conf, layout) {
-	      var _this2 = this;
-
-	      return parentElement.selectAll('tile').data(function (d) {
-	        return d.values;
-	      }).enter().append('path').attr('class', 'tile').attr('opacity', conf.opacity).attr('d', (0, _d3Shape.arc)().innerRadius(conf.innerRadius).outerRadius(conf.outerRadius).startAngle(function (d, i) {
-	        return _this2.theta(d.start, layout.blocks[d.block_id]);
-	      }).endAngle(function (d, i) {
-	        return _this2.theta(d.end, layout.blocks[d.block_id]);
-	      })).attr('class', function (d) {
-	        return 'q' + _this2.colorScale(d.value) + '-' + conf.colorPaletteSize;
-	      });
-	    }
-	  }]);
-
-	  return Heatmap;
-	}(_Track3.default);
-
-	exports.default = Heatmap;
-
-/***/ },
 /* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -20575,13 +21003,90 @@ var Circos =
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(282);
+	var _dataParser = __webpack_require__(283);
+
+	var _d3Shape = __webpack_require__(188);
 
 	var _assign = __webpack_require__(210);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _configs = __webpack_require__(291);
+	var _configs = __webpack_require__(292);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var defaultConf = (0, _assign2.default)({
+	  backgrounds: {
+	    value: [],
+	    iteratee: false
+	  }
+	}, _configs.radial, _configs.values, _configs.common);
+
+	var Heatmap = function (_Track) {
+	  _inherits(Heatmap, _Track);
+
+	  function Heatmap(instance, conf, data) {
+	    _classCallCheck(this, Heatmap);
+
+	    return _possibleConstructorReturn(this, (Heatmap.__proto__ || Object.getPrototypeOf(Heatmap)).call(this, instance, conf, defaultConf, data, _dataParser.parseSpanValueData));
+	  }
+
+	  _createClass(Heatmap, [{
+	    key: 'renderDatumContainer',
+	    value: function renderDatumContainer(instance, parentElement, name, data, conf) {
+	      var track = parentElement.append('g');
+
+	      return this.renderBlock(track, data, instance._layout, conf);
+	    }
+	  }, {
+	    key: 'renderDatum',
+	    value: function renderDatum(parentElement, conf, layout) {
+	      var _this2 = this;
+
+	      return parentElement.selectAll('tile').data(function (d) {
+	        return d.values;
+	      }).enter().append('path').attr('class', 'tile').attr('opacity', conf.opacity).attr('d', (0, _d3Shape.arc)().innerRadius(conf.innerRadius).outerRadius(conf.outerRadius).startAngle(function (d, i) {
+	        return _this2.theta(d.start, layout.blocks[d.block_id]);
+	      }).endAngle(function (d, i) {
+	        return _this2.theta(d.end, layout.blocks[d.block_id]);
+	      })).attr('fill', conf.color);
+	    }
+	  }]);
+
+	  return Heatmap;
+	}(_Track3.default);
+
+	exports.default = Heatmap;
+
+/***/ },
+/* 298 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _Track2 = __webpack_require__(192);
+
+	var _Track3 = _interopRequireDefault(_Track2);
+
+	var _dataParser = __webpack_require__(283);
+
+	var _assign = __webpack_require__(210);
+
+	var _assign2 = _interopRequireDefault(_assign);
+
+	var _configs = __webpack_require__(292);
 
 	var _d3Shape = __webpack_require__(188);
 
@@ -20690,7 +21195,7 @@ var Circos =
 	exports.default = Line;
 
 /***/ },
-/* 298 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20705,13 +21210,13 @@ var Circos =
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(282);
+	var _dataParser = __webpack_require__(283);
 
 	var _assign = __webpack_require__(210);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _configs = __webpack_require__(291);
+	var _configs = __webpack_require__(292);
 
 	var _d3Shape = __webpack_require__(188);
 
@@ -20823,7 +21328,7 @@ var Circos =
 	exports.default = Scatter;
 
 /***/ },
-/* 299 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20838,7 +21343,7 @@ var Circos =
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(282);
+	var _dataParser = __webpack_require__(283);
 
 	var _d3Shape = __webpack_require__(188);
 
@@ -20850,7 +21355,7 @@ var Circos =
 
 	var _forEach2 = _interopRequireDefault(_forEach);
 
-	var _configs = __webpack_require__(291);
+	var _configs = __webpack_require__(292);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20893,7 +21398,7 @@ var Circos =
 	    value: [],
 	    iteratee: false
 	  }
-	}, _configs.palette, _configs.axes, _configs.radial, _configs.values, _configs.common);
+	}, _configs.axes, _configs.radial, _configs.values, _configs.common);
 
 	var Stack = function (_Track) {
 	  _inherits(Stack, _Track);
@@ -20972,7 +21477,7 @@ var Circos =
 	  }, {
 	    key: 'renderDatumContainer',
 	    value: function renderDatumContainer(instance, parentElement, name, data, conf) {
-	      var track = parentElement.append('g').attr('class', conf.colorPalette);
+	      var track = parentElement.append('g');
 	      return this.renderBlock(track, data, instance._layout, conf);
 	    }
 	  }, {
@@ -20990,11 +21495,7 @@ var Circos =
 	            endAngle: utils.theta(datum.end, layout.blocks[datum.block_id])
 	          };
 	        });
-	      }).enter().append('path').attr('class', 'tile').attr('d', (0, _d3Shape.arc)()).attr('opacity', conf.opacity).attr('stroke-width', conf.strokeWidth).attr('stroke', conf.strokeColor).attr('fill', conf.color).attr('class', function (d) {
-	        if (conf.usePalette) {
-	          return 'q' + utils.ratio(d.value, conf.cmin, conf.cmax, conf.colorPaletteSize, conf.colorPaletteReverse, conf.logScale) + '-' + conf.colorPaletteSize;
-	        }
-	      });
+	      }).enter().append('path').attr('class', 'tile').attr('d', (0, _d3Shape.arc)()).attr('opacity', conf.opacity).attr('stroke-width', conf.strokeWidth).attr('stroke', conf.strokeColor).attr('fill', conf.color);
 	    }
 	  }]);
 
@@ -21002,46 +21503,6 @@ var Circos =
 	}(_Track3.default);
 
 	exports.default = Stack;
-
-/***/ },
-/* 300 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(301);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(203)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./colorBrewer.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./colorBrewer.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 301 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(202)();
-	// imports
-
-
-	// module
-	exports.push([module.id, "/* This product includes color specifications and designs developed by Cynthia Brewer (http://colorbrewer.org/). */\n.YlGn .q0-3{fill:rgb(247,252,185)}\n.YlGn .q1-3{fill:rgb(173,221,142)}\n.YlGn .q2-3{fill:rgb(49,163,84)}\n.YlGn .q0-4{fill:rgb(255,255,204)}\n.YlGn .q1-4{fill:rgb(194,230,153)}\n.YlGn .q2-4{fill:rgb(120,198,121)}\n.YlGn .q3-4{fill:rgb(35,132,67)}\n.YlGn .q0-5{fill:rgb(255,255,204)}\n.YlGn .q1-5{fill:rgb(194,230,153)}\n.YlGn .q2-5{fill:rgb(120,198,121)}\n.YlGn .q3-5{fill:rgb(49,163,84)}\n.YlGn .q4-5{fill:rgb(0,104,55)}\n.YlGn .q0-6{fill:rgb(255,255,204)}\n.YlGn .q1-6{fill:rgb(217,240,163)}\n.YlGn .q2-6{fill:rgb(173,221,142)}\n.YlGn .q3-6{fill:rgb(120,198,121)}\n.YlGn .q4-6{fill:rgb(49,163,84)}\n.YlGn .q5-6{fill:rgb(0,104,55)}\n.YlGn .q0-7{fill:rgb(255,255,204)}\n.YlGn .q1-7{fill:rgb(217,240,163)}\n.YlGn .q2-7{fill:rgb(173,221,142)}\n.YlGn .q3-7{fill:rgb(120,198,121)}\n.YlGn .q4-7{fill:rgb(65,171,93)}\n.YlGn .q5-7{fill:rgb(35,132,67)}\n.YlGn .q6-7{fill:rgb(0,90,50)}\n.YlGn .q0-8{fill:rgb(255,255,229)}\n.YlGn .q1-8{fill:rgb(247,252,185)}\n.YlGn .q2-8{fill:rgb(217,240,163)}\n.YlGn .q3-8{fill:rgb(173,221,142)}\n.YlGn .q4-8{fill:rgb(120,198,121)}\n.YlGn .q5-8{fill:rgb(65,171,93)}\n.YlGn .q6-8{fill:rgb(35,132,67)}\n.YlGn .q7-8{fill:rgb(0,90,50)}\n.YlGn .q0-9{fill:rgb(255,255,229)}\n.YlGn .q1-9{fill:rgb(247,252,185)}\n.YlGn .q2-9{fill:rgb(217,240,163)}\n.YlGn .q3-9{fill:rgb(173,221,142)}\n.YlGn .q4-9{fill:rgb(120,198,121)}\n.YlGn .q5-9{fill:rgb(65,171,93)}\n.YlGn .q6-9{fill:rgb(35,132,67)}\n.YlGn .q7-9{fill:rgb(0,104,55)}\n.YlGn .q8-9{fill:rgb(0,69,41)}\n.YlGnBu .q0-3{fill:rgb(237,248,177)}\n.YlGnBu .q1-3{fill:rgb(127,205,187)}\n.YlGnBu .q2-3{fill:rgb(44,127,184)}\n.YlGnBu .q0-4{fill:rgb(255,255,204)}\n.YlGnBu .q1-4{fill:rgb(161,218,180)}\n.YlGnBu .q2-4{fill:rgb(65,182,196)}\n.YlGnBu .q3-4{fill:rgb(34,94,168)}\n.YlGnBu .q0-5{fill:rgb(255,255,204)}\n.YlGnBu .q1-5{fill:rgb(161,218,180)}\n.YlGnBu .q2-5{fill:rgb(65,182,196)}\n.YlGnBu .q3-5{fill:rgb(44,127,184)}\n.YlGnBu .q4-5{fill:rgb(37,52,148)}\n.YlGnBu .q0-6{fill:rgb(255,255,204)}\n.YlGnBu .q1-6{fill:rgb(199,233,180)}\n.YlGnBu .q2-6{fill:rgb(127,205,187)}\n.YlGnBu .q3-6{fill:rgb(65,182,196)}\n.YlGnBu .q4-6{fill:rgb(44,127,184)}\n.YlGnBu .q5-6{fill:rgb(37,52,148)}\n.YlGnBu .q0-7{fill:rgb(255,255,204)}\n.YlGnBu .q1-7{fill:rgb(199,233,180)}\n.YlGnBu .q2-7{fill:rgb(127,205,187)}\n.YlGnBu .q3-7{fill:rgb(65,182,196)}\n.YlGnBu .q4-7{fill:rgb(29,145,192)}\n.YlGnBu .q5-7{fill:rgb(34,94,168)}\n.YlGnBu .q6-7{fill:rgb(12,44,132)}\n.YlGnBu .q0-8{fill:rgb(255,255,217)}\n.YlGnBu .q1-8{fill:rgb(237,248,177)}\n.YlGnBu .q2-8{fill:rgb(199,233,180)}\n.YlGnBu .q3-8{fill:rgb(127,205,187)}\n.YlGnBu .q4-8{fill:rgb(65,182,196)}\n.YlGnBu .q5-8{fill:rgb(29,145,192)}\n.YlGnBu .q6-8{fill:rgb(34,94,168)}\n.YlGnBu .q7-8{fill:rgb(12,44,132)}\n.YlGnBu .q0-9{fill:rgb(255,255,217)}\n.YlGnBu .q1-9{fill:rgb(237,248,177)}\n.YlGnBu .q2-9{fill:rgb(199,233,180)}\n.YlGnBu .q3-9{fill:rgb(127,205,187)}\n.YlGnBu .q4-9{fill:rgb(65,182,196)}\n.YlGnBu .q5-9{fill:rgb(29,145,192)}\n.YlGnBu .q6-9{fill:rgb(34,94,168)}\n.YlGnBu .q7-9{fill:rgb(37,52,148)}\n.YlGnBu .q8-9{fill:rgb(8,29,88)}\n.GnBu .q0-3{fill:rgb(224,243,219)}\n.GnBu .q1-3{fill:rgb(168,221,181)}\n.GnBu .q2-3{fill:rgb(67,162,202)}\n.GnBu .q0-4{fill:rgb(240,249,232)}\n.GnBu .q1-4{fill:rgb(186,228,188)}\n.GnBu .q2-4{fill:rgb(123,204,196)}\n.GnBu .q3-4{fill:rgb(43,140,190)}\n.GnBu .q0-5{fill:rgb(240,249,232)}\n.GnBu .q1-5{fill:rgb(186,228,188)}\n.GnBu .q2-5{fill:rgb(123,204,196)}\n.GnBu .q3-5{fill:rgb(67,162,202)}\n.GnBu .q4-5{fill:rgb(8,104,172)}\n.GnBu .q0-6{fill:rgb(240,249,232)}\n.GnBu .q1-6{fill:rgb(204,235,197)}\n.GnBu .q2-6{fill:rgb(168,221,181)}\n.GnBu .q3-6{fill:rgb(123,204,196)}\n.GnBu .q4-6{fill:rgb(67,162,202)}\n.GnBu .q5-6{fill:rgb(8,104,172)}\n.GnBu .q0-7{fill:rgb(240,249,232)}\n.GnBu .q1-7{fill:rgb(204,235,197)}\n.GnBu .q2-7{fill:rgb(168,221,181)}\n.GnBu .q3-7{fill:rgb(123,204,196)}\n.GnBu .q4-7{fill:rgb(78,179,211)}\n.GnBu .q5-7{fill:rgb(43,140,190)}\n.GnBu .q6-7{fill:rgb(8,88,158)}\n.GnBu .q0-8{fill:rgb(247,252,240)}\n.GnBu .q1-8{fill:rgb(224,243,219)}\n.GnBu .q2-8{fill:rgb(204,235,197)}\n.GnBu .q3-8{fill:rgb(168,221,181)}\n.GnBu .q4-8{fill:rgb(123,204,196)}\n.GnBu .q5-8{fill:rgb(78,179,211)}\n.GnBu .q6-8{fill:rgb(43,140,190)}\n.GnBu .q7-8{fill:rgb(8,88,158)}\n.GnBu .q0-9{fill:rgb(247,252,240)}\n.GnBu .q1-9{fill:rgb(224,243,219)}\n.GnBu .q2-9{fill:rgb(204,235,197)}\n.GnBu .q3-9{fill:rgb(168,221,181)}\n.GnBu .q4-9{fill:rgb(123,204,196)}\n.GnBu .q5-9{fill:rgb(78,179,211)}\n.GnBu .q6-9{fill:rgb(43,140,190)}\n.GnBu .q7-9{fill:rgb(8,104,172)}\n.GnBu .q8-9{fill:rgb(8,64,129)}\n.BuGn .q0-3{fill:rgb(229,245,249)}\n.BuGn .q1-3{fill:rgb(153,216,201)}\n.BuGn .q2-3{fill:rgb(44,162,95)}\n.BuGn .q0-4{fill:rgb(237,248,251)}\n.BuGn .q1-4{fill:rgb(178,226,226)}\n.BuGn .q2-4{fill:rgb(102,194,164)}\n.BuGn .q3-4{fill:rgb(35,139,69)}\n.BuGn .q0-5{fill:rgb(237,248,251)}\n.BuGn .q1-5{fill:rgb(178,226,226)}\n.BuGn .q2-5{fill:rgb(102,194,164)}\n.BuGn .q3-5{fill:rgb(44,162,95)}\n.BuGn .q4-5{fill:rgb(0,109,44)}\n.BuGn .q0-6{fill:rgb(237,248,251)}\n.BuGn .q1-6{fill:rgb(204,236,230)}\n.BuGn .q2-6{fill:rgb(153,216,201)}\n.BuGn .q3-6{fill:rgb(102,194,164)}\n.BuGn .q4-6{fill:rgb(44,162,95)}\n.BuGn .q5-6{fill:rgb(0,109,44)}\n.BuGn .q0-7{fill:rgb(237,248,251)}\n.BuGn .q1-7{fill:rgb(204,236,230)}\n.BuGn .q2-7{fill:rgb(153,216,201)}\n.BuGn .q3-7{fill:rgb(102,194,164)}\n.BuGn .q4-7{fill:rgb(65,174,118)}\n.BuGn .q5-7{fill:rgb(35,139,69)}\n.BuGn .q6-7{fill:rgb(0,88,36)}\n.BuGn .q0-8{fill:rgb(247,252,253)}\n.BuGn .q1-8{fill:rgb(229,245,249)}\n.BuGn .q2-8{fill:rgb(204,236,230)}\n.BuGn .q3-8{fill:rgb(153,216,201)}\n.BuGn .q4-8{fill:rgb(102,194,164)}\n.BuGn .q5-8{fill:rgb(65,174,118)}\n.BuGn .q6-8{fill:rgb(35,139,69)}\n.BuGn .q7-8{fill:rgb(0,88,36)}\n.BuGn .q0-9{fill:rgb(247,252,253)}\n.BuGn .q1-9{fill:rgb(229,245,249)}\n.BuGn .q2-9{fill:rgb(204,236,230)}\n.BuGn .q3-9{fill:rgb(153,216,201)}\n.BuGn .q4-9{fill:rgb(102,194,164)}\n.BuGn .q5-9{fill:rgb(65,174,118)}\n.BuGn .q6-9{fill:rgb(35,139,69)}\n.BuGn .q7-9{fill:rgb(0,109,44)}\n.BuGn .q8-9{fill:rgb(0,68,27)}\n.PuBuGn .q0-3{fill:rgb(236,226,240)}\n.PuBuGn .q1-3{fill:rgb(166,189,219)}\n.PuBuGn .q2-3{fill:rgb(28,144,153)}\n.PuBuGn .q0-4{fill:rgb(246,239,247)}\n.PuBuGn .q1-4{fill:rgb(189,201,225)}\n.PuBuGn .q2-4{fill:rgb(103,169,207)}\n.PuBuGn .q3-4{fill:rgb(2,129,138)}\n.PuBuGn .q0-5{fill:rgb(246,239,247)}\n.PuBuGn .q1-5{fill:rgb(189,201,225)}\n.PuBuGn .q2-5{fill:rgb(103,169,207)}\n.PuBuGn .q3-5{fill:rgb(28,144,153)}\n.PuBuGn .q4-5{fill:rgb(1,108,89)}\n.PuBuGn .q0-6{fill:rgb(246,239,247)}\n.PuBuGn .q1-6{fill:rgb(208,209,230)}\n.PuBuGn .q2-6{fill:rgb(166,189,219)}\n.PuBuGn .q3-6{fill:rgb(103,169,207)}\n.PuBuGn .q4-6{fill:rgb(28,144,153)}\n.PuBuGn .q5-6{fill:rgb(1,108,89)}\n.PuBuGn .q0-7{fill:rgb(246,239,247)}\n.PuBuGn .q1-7{fill:rgb(208,209,230)}\n.PuBuGn .q2-7{fill:rgb(166,189,219)}\n.PuBuGn .q3-7{fill:rgb(103,169,207)}\n.PuBuGn .q4-7{fill:rgb(54,144,192)}\n.PuBuGn .q5-7{fill:rgb(2,129,138)}\n.PuBuGn .q6-7{fill:rgb(1,100,80)}\n.PuBuGn .q0-8{fill:rgb(255,247,251)}\n.PuBuGn .q1-8{fill:rgb(236,226,240)}\n.PuBuGn .q2-8{fill:rgb(208,209,230)}\n.PuBuGn .q3-8{fill:rgb(166,189,219)}\n.PuBuGn .q4-8{fill:rgb(103,169,207)}\n.PuBuGn .q5-8{fill:rgb(54,144,192)}\n.PuBuGn .q6-8{fill:rgb(2,129,138)}\n.PuBuGn .q7-8{fill:rgb(1,100,80)}\n.PuBuGn .q0-9{fill:rgb(255,247,251)}\n.PuBuGn .q1-9{fill:rgb(236,226,240)}\n.PuBuGn .q2-9{fill:rgb(208,209,230)}\n.PuBuGn .q3-9{fill:rgb(166,189,219)}\n.PuBuGn .q4-9{fill:rgb(103,169,207)}\n.PuBuGn .q5-9{fill:rgb(54,144,192)}\n.PuBuGn .q6-9{fill:rgb(2,129,138)}\n.PuBuGn .q7-9{fill:rgb(1,108,89)}\n.PuBuGn .q8-9{fill:rgb(1,70,54)}\n.PuBu .q0-3{fill:rgb(236,231,242)}\n.PuBu .q1-3{fill:rgb(166,189,219)}\n.PuBu .q2-3{fill:rgb(43,140,190)}\n.PuBu .q0-4{fill:rgb(241,238,246)}\n.PuBu .q1-4{fill:rgb(189,201,225)}\n.PuBu .q2-4{fill:rgb(116,169,207)}\n.PuBu .q3-4{fill:rgb(5,112,176)}\n.PuBu .q0-5{fill:rgb(241,238,246)}\n.PuBu .q1-5{fill:rgb(189,201,225)}\n.PuBu .q2-5{fill:rgb(116,169,207)}\n.PuBu .q3-5{fill:rgb(43,140,190)}\n.PuBu .q4-5{fill:rgb(4,90,141)}\n.PuBu .q0-6{fill:rgb(241,238,246)}\n.PuBu .q1-6{fill:rgb(208,209,230)}\n.PuBu .q2-6{fill:rgb(166,189,219)}\n.PuBu .q3-6{fill:rgb(116,169,207)}\n.PuBu .q4-6{fill:rgb(43,140,190)}\n.PuBu .q5-6{fill:rgb(4,90,141)}\n.PuBu .q0-7{fill:rgb(241,238,246)}\n.PuBu .q1-7{fill:rgb(208,209,230)}\n.PuBu .q2-7{fill:rgb(166,189,219)}\n.PuBu .q3-7{fill:rgb(116,169,207)}\n.PuBu .q4-7{fill:rgb(54,144,192)}\n.PuBu .q5-7{fill:rgb(5,112,176)}\n.PuBu .q6-7{fill:rgb(3,78,123)}\n.PuBu .q0-8{fill:rgb(255,247,251)}\n.PuBu .q1-8{fill:rgb(236,231,242)}\n.PuBu .q2-8{fill:rgb(208,209,230)}\n.PuBu .q3-8{fill:rgb(166,189,219)}\n.PuBu .q4-8{fill:rgb(116,169,207)}\n.PuBu .q5-8{fill:rgb(54,144,192)}\n.PuBu .q6-8{fill:rgb(5,112,176)}\n.PuBu .q7-8{fill:rgb(3,78,123)}\n.PuBu .q0-9{fill:rgb(255,247,251)}\n.PuBu .q1-9{fill:rgb(236,231,242)}\n.PuBu .q2-9{fill:rgb(208,209,230)}\n.PuBu .q3-9{fill:rgb(166,189,219)}\n.PuBu .q4-9{fill:rgb(116,169,207)}\n.PuBu .q5-9{fill:rgb(54,144,192)}\n.PuBu .q6-9{fill:rgb(5,112,176)}\n.PuBu .q7-9{fill:rgb(4,90,141)}\n.PuBu .q8-9{fill:rgb(2,56,88)}\n.BuPu .q0-3{fill:rgb(224,236,244)}\n.BuPu .q1-3{fill:rgb(158,188,218)}\n.BuPu .q2-3{fill:rgb(136,86,167)}\n.BuPu .q0-4{fill:rgb(237,248,251)}\n.BuPu .q1-4{fill:rgb(179,205,227)}\n.BuPu .q2-4{fill:rgb(140,150,198)}\n.BuPu .q3-4{fill:rgb(136,65,157)}\n.BuPu .q0-5{fill:rgb(237,248,251)}\n.BuPu .q1-5{fill:rgb(179,205,227)}\n.BuPu .q2-5{fill:rgb(140,150,198)}\n.BuPu .q3-5{fill:rgb(136,86,167)}\n.BuPu .q4-5{fill:rgb(129,15,124)}\n.BuPu .q0-6{fill:rgb(237,248,251)}\n.BuPu .q1-6{fill:rgb(191,211,230)}\n.BuPu .q2-6{fill:rgb(158,188,218)}\n.BuPu .q3-6{fill:rgb(140,150,198)}\n.BuPu .q4-6{fill:rgb(136,86,167)}\n.BuPu .q5-6{fill:rgb(129,15,124)}\n.BuPu .q0-7{fill:rgb(237,248,251)}\n.BuPu .q1-7{fill:rgb(191,211,230)}\n.BuPu .q2-7{fill:rgb(158,188,218)}\n.BuPu .q3-7{fill:rgb(140,150,198)}\n.BuPu .q4-7{fill:rgb(140,107,177)}\n.BuPu .q5-7{fill:rgb(136,65,157)}\n.BuPu .q6-7{fill:rgb(110,1,107)}\n.BuPu .q0-8{fill:rgb(247,252,253)}\n.BuPu .q1-8{fill:rgb(224,236,244)}\n.BuPu .q2-8{fill:rgb(191,211,230)}\n.BuPu .q3-8{fill:rgb(158,188,218)}\n.BuPu .q4-8{fill:rgb(140,150,198)}\n.BuPu .q5-8{fill:rgb(140,107,177)}\n.BuPu .q6-8{fill:rgb(136,65,157)}\n.BuPu .q7-8{fill:rgb(110,1,107)}\n.BuPu .q0-9{fill:rgb(247,252,253)}\n.BuPu .q1-9{fill:rgb(224,236,244)}\n.BuPu .q2-9{fill:rgb(191,211,230)}\n.BuPu .q3-9{fill:rgb(158,188,218)}\n.BuPu .q4-9{fill:rgb(140,150,198)}\n.BuPu .q5-9{fill:rgb(140,107,177)}\n.BuPu .q6-9{fill:rgb(136,65,157)}\n.BuPu .q7-9{fill:rgb(129,15,124)}\n.BuPu .q8-9{fill:rgb(77,0,75)}\n.RdPu .q0-3{fill:rgb(253,224,221)}\n.RdPu .q1-3{fill:rgb(250,159,181)}\n.RdPu .q2-3{fill:rgb(197,27,138)}\n.RdPu .q0-4{fill:rgb(254,235,226)}\n.RdPu .q1-4{fill:rgb(251,180,185)}\n.RdPu .q2-4{fill:rgb(247,104,161)}\n.RdPu .q3-4{fill:rgb(174,1,126)}\n.RdPu .q0-5{fill:rgb(254,235,226)}\n.RdPu .q1-5{fill:rgb(251,180,185)}\n.RdPu .q2-5{fill:rgb(247,104,161)}\n.RdPu .q3-5{fill:rgb(197,27,138)}\n.RdPu .q4-5{fill:rgb(122,1,119)}\n.RdPu .q0-6{fill:rgb(254,235,226)}\n.RdPu .q1-6{fill:rgb(252,197,192)}\n.RdPu .q2-6{fill:rgb(250,159,181)}\n.RdPu .q3-6{fill:rgb(247,104,161)}\n.RdPu .q4-6{fill:rgb(197,27,138)}\n.RdPu .q5-6{fill:rgb(122,1,119)}\n.RdPu .q0-7{fill:rgb(254,235,226)}\n.RdPu .q1-7{fill:rgb(252,197,192)}\n.RdPu .q2-7{fill:rgb(250,159,181)}\n.RdPu .q3-7{fill:rgb(247,104,161)}\n.RdPu .q4-7{fill:rgb(221,52,151)}\n.RdPu .q5-7{fill:rgb(174,1,126)}\n.RdPu .q6-7{fill:rgb(122,1,119)}\n.RdPu .q0-8{fill:rgb(255,247,243)}\n.RdPu .q1-8{fill:rgb(253,224,221)}\n.RdPu .q2-8{fill:rgb(252,197,192)}\n.RdPu .q3-8{fill:rgb(250,159,181)}\n.RdPu .q4-8{fill:rgb(247,104,161)}\n.RdPu .q5-8{fill:rgb(221,52,151)}\n.RdPu .q6-8{fill:rgb(174,1,126)}\n.RdPu .q7-8{fill:rgb(122,1,119)}\n.RdPu .q0-9{fill:rgb(255,247,243)}\n.RdPu .q1-9{fill:rgb(253,224,221)}\n.RdPu .q2-9{fill:rgb(252,197,192)}\n.RdPu .q3-9{fill:rgb(250,159,181)}\n.RdPu .q4-9{fill:rgb(247,104,161)}\n.RdPu .q5-9{fill:rgb(221,52,151)}\n.RdPu .q6-9{fill:rgb(174,1,126)}\n.RdPu .q7-9{fill:rgb(122,1,119)}\n.RdPu .q8-9{fill:rgb(73,0,106)}\n.PuRd .q0-3{fill:rgb(231,225,239)}\n.PuRd .q1-3{fill:rgb(201,148,199)}\n.PuRd .q2-3{fill:rgb(221,28,119)}\n.PuRd .q0-4{fill:rgb(241,238,246)}\n.PuRd .q1-4{fill:rgb(215,181,216)}\n.PuRd .q2-4{fill:rgb(223,101,176)}\n.PuRd .q3-4{fill:rgb(206,18,86)}\n.PuRd .q0-5{fill:rgb(241,238,246)}\n.PuRd .q1-5{fill:rgb(215,181,216)}\n.PuRd .q2-5{fill:rgb(223,101,176)}\n.PuRd .q3-5{fill:rgb(221,28,119)}\n.PuRd .q4-5{fill:rgb(152,0,67)}\n.PuRd .q0-6{fill:rgb(241,238,246)}\n.PuRd .q1-6{fill:rgb(212,185,218)}\n.PuRd .q2-6{fill:rgb(201,148,199)}\n.PuRd .q3-6{fill:rgb(223,101,176)}\n.PuRd .q4-6{fill:rgb(221,28,119)}\n.PuRd .q5-6{fill:rgb(152,0,67)}\n.PuRd .q0-7{fill:rgb(241,238,246)}\n.PuRd .q1-7{fill:rgb(212,185,218)}\n.PuRd .q2-7{fill:rgb(201,148,199)}\n.PuRd .q3-7{fill:rgb(223,101,176)}\n.PuRd .q4-7{fill:rgb(231,41,138)}\n.PuRd .q5-7{fill:rgb(206,18,86)}\n.PuRd .q6-7{fill:rgb(145,0,63)}\n.PuRd .q0-8{fill:rgb(247,244,249)}\n.PuRd .q1-8{fill:rgb(231,225,239)}\n.PuRd .q2-8{fill:rgb(212,185,218)}\n.PuRd .q3-8{fill:rgb(201,148,199)}\n.PuRd .q4-8{fill:rgb(223,101,176)}\n.PuRd .q5-8{fill:rgb(231,41,138)}\n.PuRd .q6-8{fill:rgb(206,18,86)}\n.PuRd .q7-8{fill:rgb(145,0,63)}\n.PuRd .q0-9{fill:rgb(247,244,249)}\n.PuRd .q1-9{fill:rgb(231,225,239)}\n.PuRd .q2-9{fill:rgb(212,185,218)}\n.PuRd .q3-9{fill:rgb(201,148,199)}\n.PuRd .q4-9{fill:rgb(223,101,176)}\n.PuRd .q5-9{fill:rgb(231,41,138)}\n.PuRd .q6-9{fill:rgb(206,18,86)}\n.PuRd .q7-9{fill:rgb(152,0,67)}\n.PuRd .q8-9{fill:rgb(103,0,31)}\n.OrRd .q0-3{fill:rgb(254,232,200)}\n.OrRd .q1-3{fill:rgb(253,187,132)}\n.OrRd .q2-3{fill:rgb(227,74,51)}\n.OrRd .q0-4{fill:rgb(254,240,217)}\n.OrRd .q1-4{fill:rgb(253,204,138)}\n.OrRd .q2-4{fill:rgb(252,141,89)}\n.OrRd .q3-4{fill:rgb(215,48,31)}\n.OrRd .q0-5{fill:rgb(254,240,217)}\n.OrRd .q1-5{fill:rgb(253,204,138)}\n.OrRd .q2-5{fill:rgb(252,141,89)}\n.OrRd .q3-5{fill:rgb(227,74,51)}\n.OrRd .q4-5{fill:rgb(179,0,0)}\n.OrRd .q0-6{fill:rgb(254,240,217)}\n.OrRd .q1-6{fill:rgb(253,212,158)}\n.OrRd .q2-6{fill:rgb(253,187,132)}\n.OrRd .q3-6{fill:rgb(252,141,89)}\n.OrRd .q4-6{fill:rgb(227,74,51)}\n.OrRd .q5-6{fill:rgb(179,0,0)}\n.OrRd .q0-7{fill:rgb(254,240,217)}\n.OrRd .q1-7{fill:rgb(253,212,158)}\n.OrRd .q2-7{fill:rgb(253,187,132)}\n.OrRd .q3-7{fill:rgb(252,141,89)}\n.OrRd .q4-7{fill:rgb(239,101,72)}\n.OrRd .q5-7{fill:rgb(215,48,31)}\n.OrRd .q6-7{fill:rgb(153,0,0)}\n.OrRd .q0-8{fill:rgb(255,247,236)}\n.OrRd .q1-8{fill:rgb(254,232,200)}\n.OrRd .q2-8{fill:rgb(253,212,158)}\n.OrRd .q3-8{fill:rgb(253,187,132)}\n.OrRd .q4-8{fill:rgb(252,141,89)}\n.OrRd .q5-8{fill:rgb(239,101,72)}\n.OrRd .q6-8{fill:rgb(215,48,31)}\n.OrRd .q7-8{fill:rgb(153,0,0)}\n.OrRd .q0-9{fill:rgb(255,247,236)}\n.OrRd .q1-9{fill:rgb(254,232,200)}\n.OrRd .q2-9{fill:rgb(253,212,158)}\n.OrRd .q3-9{fill:rgb(253,187,132)}\n.OrRd .q4-9{fill:rgb(252,141,89)}\n.OrRd .q5-9{fill:rgb(239,101,72)}\n.OrRd .q6-9{fill:rgb(215,48,31)}\n.OrRd .q7-9{fill:rgb(179,0,0)}\n.OrRd .q8-9{fill:rgb(127,0,0)}\n.YlOrRd .q0-3{fill:rgb(255,237,160)}\n.YlOrRd .q1-3{fill:rgb(254,178,76)}\n.YlOrRd .q2-3{fill:rgb(240,59,32)}\n.YlOrRd .q0-4{fill:rgb(255,255,178)}\n.YlOrRd .q1-4{fill:rgb(254,204,92)}\n.YlOrRd .q2-4{fill:rgb(253,141,60)}\n.YlOrRd .q3-4{fill:rgb(227,26,28)}\n.YlOrRd .q0-5{fill:rgb(255,255,178)}\n.YlOrRd .q1-5{fill:rgb(254,204,92)}\n.YlOrRd .q2-5{fill:rgb(253,141,60)}\n.YlOrRd .q3-5{fill:rgb(240,59,32)}\n.YlOrRd .q4-5{fill:rgb(189,0,38)}\n.YlOrRd .q0-6{fill:rgb(255,255,178)}\n.YlOrRd .q1-6{fill:rgb(254,217,118)}\n.YlOrRd .q2-6{fill:rgb(254,178,76)}\n.YlOrRd .q3-6{fill:rgb(253,141,60)}\n.YlOrRd .q4-6{fill:rgb(240,59,32)}\n.YlOrRd .q5-6{fill:rgb(189,0,38)}\n.YlOrRd .q0-7{fill:rgb(255,255,178)}\n.YlOrRd .q1-7{fill:rgb(254,217,118)}\n.YlOrRd .q2-7{fill:rgb(254,178,76)}\n.YlOrRd .q3-7{fill:rgb(253,141,60)}\n.YlOrRd .q4-7{fill:rgb(252,78,42)}\n.YlOrRd .q5-7{fill:rgb(227,26,28)}\n.YlOrRd .q6-7{fill:rgb(177,0,38)}\n.YlOrRd .q0-8{fill:rgb(255,255,204)}\n.YlOrRd .q1-8{fill:rgb(255,237,160)}\n.YlOrRd .q2-8{fill:rgb(254,217,118)}\n.YlOrRd .q3-8{fill:rgb(254,178,76)}\n.YlOrRd .q4-8{fill:rgb(253,141,60)}\n.YlOrRd .q5-8{fill:rgb(252,78,42)}\n.YlOrRd .q6-8{fill:rgb(227,26,28)}\n.YlOrRd .q7-8{fill:rgb(177,0,38)}\n.YlOrRd .q0-9{fill:rgb(255,255,204)}\n.YlOrRd .q1-9{fill:rgb(255,237,160)}\n.YlOrRd .q2-9{fill:rgb(254,217,118)}\n.YlOrRd .q3-9{fill:rgb(254,178,76)}\n.YlOrRd .q4-9{fill:rgb(253,141,60)}\n.YlOrRd .q5-9{fill:rgb(252,78,42)}\n.YlOrRd .q6-9{fill:rgb(227,26,28)}\n.YlOrRd .q7-9{fill:rgb(189,0,38)}\n.YlOrRd .q8-9{fill:rgb(128,0,38)}\n.YlOrBr .q0-3{fill:rgb(255,247,188)}\n.YlOrBr .q1-3{fill:rgb(254,196,79)}\n.YlOrBr .q2-3{fill:rgb(217,95,14)}\n.YlOrBr .q0-4{fill:rgb(255,255,212)}\n.YlOrBr .q1-4{fill:rgb(254,217,142)}\n.YlOrBr .q2-4{fill:rgb(254,153,41)}\n.YlOrBr .q3-4{fill:rgb(204,76,2)}\n.YlOrBr .q0-5{fill:rgb(255,255,212)}\n.YlOrBr .q1-5{fill:rgb(254,217,142)}\n.YlOrBr .q2-5{fill:rgb(254,153,41)}\n.YlOrBr .q3-5{fill:rgb(217,95,14)}\n.YlOrBr .q4-5{fill:rgb(153,52,4)}\n.YlOrBr .q0-6{fill:rgb(255,255,212)}\n.YlOrBr .q1-6{fill:rgb(254,227,145)}\n.YlOrBr .q2-6{fill:rgb(254,196,79)}\n.YlOrBr .q3-6{fill:rgb(254,153,41)}\n.YlOrBr .q4-6{fill:rgb(217,95,14)}\n.YlOrBr .q5-6{fill:rgb(153,52,4)}\n.YlOrBr .q0-7{fill:rgb(255,255,212)}\n.YlOrBr .q1-7{fill:rgb(254,227,145)}\n.YlOrBr .q2-7{fill:rgb(254,196,79)}\n.YlOrBr .q3-7{fill:rgb(254,153,41)}\n.YlOrBr .q4-7{fill:rgb(236,112,20)}\n.YlOrBr .q5-7{fill:rgb(204,76,2)}\n.YlOrBr .q6-7{fill:rgb(140,45,4)}\n.YlOrBr .q0-8{fill:rgb(255,255,229)}\n.YlOrBr .q1-8{fill:rgb(255,247,188)}\n.YlOrBr .q2-8{fill:rgb(254,227,145)}\n.YlOrBr .q3-8{fill:rgb(254,196,79)}\n.YlOrBr .q4-8{fill:rgb(254,153,41)}\n.YlOrBr .q5-8{fill:rgb(236,112,20)}\n.YlOrBr .q6-8{fill:rgb(204,76,2)}\n.YlOrBr .q7-8{fill:rgb(140,45,4)}\n.YlOrBr .q0-9{fill:rgb(255,255,229)}\n.YlOrBr .q1-9{fill:rgb(255,247,188)}\n.YlOrBr .q2-9{fill:rgb(254,227,145)}\n.YlOrBr .q3-9{fill:rgb(254,196,79)}\n.YlOrBr .q4-9{fill:rgb(254,153,41)}\n.YlOrBr .q5-9{fill:rgb(236,112,20)}\n.YlOrBr .q6-9{fill:rgb(204,76,2)}\n.YlOrBr .q7-9{fill:rgb(153,52,4)}\n.YlOrBr .q8-9{fill:rgb(102,37,6)}\n.Purples .q0-3{fill:rgb(239,237,245)}\n.Purples .q1-3{fill:rgb(188,189,220)}\n.Purples .q2-3{fill:rgb(117,107,177)}\n.Purples .q0-4{fill:rgb(242,240,247)}\n.Purples .q1-4{fill:rgb(203,201,226)}\n.Purples .q2-4{fill:rgb(158,154,200)}\n.Purples .q3-4{fill:rgb(106,81,163)}\n.Purples .q0-5{fill:rgb(242,240,247)}\n.Purples .q1-5{fill:rgb(203,201,226)}\n.Purples .q2-5{fill:rgb(158,154,200)}\n.Purples .q3-5{fill:rgb(117,107,177)}\n.Purples .q4-5{fill:rgb(84,39,143)}\n.Purples .q0-6{fill:rgb(242,240,247)}\n.Purples .q1-6{fill:rgb(218,218,235)}\n.Purples .q2-6{fill:rgb(188,189,220)}\n.Purples .q3-6{fill:rgb(158,154,200)}\n.Purples .q4-6{fill:rgb(117,107,177)}\n.Purples .q5-6{fill:rgb(84,39,143)}\n.Purples .q0-7{fill:rgb(242,240,247)}\n.Purples .q1-7{fill:rgb(218,218,235)}\n.Purples .q2-7{fill:rgb(188,189,220)}\n.Purples .q3-7{fill:rgb(158,154,200)}\n.Purples .q4-7{fill:rgb(128,125,186)}\n.Purples .q5-7{fill:rgb(106,81,163)}\n.Purples .q6-7{fill:rgb(74,20,134)}\n.Purples .q0-8{fill:rgb(252,251,253)}\n.Purples .q1-8{fill:rgb(239,237,245)}\n.Purples .q2-8{fill:rgb(218,218,235)}\n.Purples .q3-8{fill:rgb(188,189,220)}\n.Purples .q4-8{fill:rgb(158,154,200)}\n.Purples .q5-8{fill:rgb(128,125,186)}\n.Purples .q6-8{fill:rgb(106,81,163)}\n.Purples .q7-8{fill:rgb(74,20,134)}\n.Purples .q0-9{fill:rgb(252,251,253)}\n.Purples .q1-9{fill:rgb(239,237,245)}\n.Purples .q2-9{fill:rgb(218,218,235)}\n.Purples .q3-9{fill:rgb(188,189,220)}\n.Purples .q4-9{fill:rgb(158,154,200)}\n.Purples .q5-9{fill:rgb(128,125,186)}\n.Purples .q6-9{fill:rgb(106,81,163)}\n.Purples .q7-9{fill:rgb(84,39,143)}\n.Purples .q8-9{fill:rgb(63,0,125)}\n.Blues .q0-3{fill:rgb(222,235,247)}\n.Blues .q1-3{fill:rgb(158,202,225)}\n.Blues .q2-3{fill:rgb(49,130,189)}\n.Blues .q0-4{fill:rgb(239,243,255)}\n.Blues .q1-4{fill:rgb(189,215,231)}\n.Blues .q2-4{fill:rgb(107,174,214)}\n.Blues .q3-4{fill:rgb(33,113,181)}\n.Blues .q0-5{fill:rgb(239,243,255)}\n.Blues .q1-5{fill:rgb(189,215,231)}\n.Blues .q2-5{fill:rgb(107,174,214)}\n.Blues .q3-5{fill:rgb(49,130,189)}\n.Blues .q4-5{fill:rgb(8,81,156)}\n.Blues .q0-6{fill:rgb(239,243,255)}\n.Blues .q1-6{fill:rgb(198,219,239)}\n.Blues .q2-6{fill:rgb(158,202,225)}\n.Blues .q3-6{fill:rgb(107,174,214)}\n.Blues .q4-6{fill:rgb(49,130,189)}\n.Blues .q5-6{fill:rgb(8,81,156)}\n.Blues .q0-7{fill:rgb(239,243,255)}\n.Blues .q1-7{fill:rgb(198,219,239)}\n.Blues .q2-7{fill:rgb(158,202,225)}\n.Blues .q3-7{fill:rgb(107,174,214)}\n.Blues .q4-7{fill:rgb(66,146,198)}\n.Blues .q5-7{fill:rgb(33,113,181)}\n.Blues .q6-7{fill:rgb(8,69,148)}\n.Blues .q0-8{fill:rgb(247,251,255)}\n.Blues .q1-8{fill:rgb(222,235,247)}\n.Blues .q2-8{fill:rgb(198,219,239)}\n.Blues .q3-8{fill:rgb(158,202,225)}\n.Blues .q4-8{fill:rgb(107,174,214)}\n.Blues .q5-8{fill:rgb(66,146,198)}\n.Blues .q6-8{fill:rgb(33,113,181)}\n.Blues .q7-8{fill:rgb(8,69,148)}\n.Blues .q0-9{fill:rgb(247,251,255)}\n.Blues .q1-9{fill:rgb(222,235,247)}\n.Blues .q2-9{fill:rgb(198,219,239)}\n.Blues .q3-9{fill:rgb(158,202,225)}\n.Blues .q4-9{fill:rgb(107,174,214)}\n.Blues .q5-9{fill:rgb(66,146,198)}\n.Blues .q6-9{fill:rgb(33,113,181)}\n.Blues .q7-9{fill:rgb(8,81,156)}\n.Blues .q8-9{fill:rgb(8,48,107)}\n.Greens .q0-3{fill:rgb(229,245,224)}\n.Greens .q1-3{fill:rgb(161,217,155)}\n.Greens .q2-3{fill:rgb(49,163,84)}\n.Greens .q0-4{fill:rgb(237,248,233)}\n.Greens .q1-4{fill:rgb(186,228,179)}\n.Greens .q2-4{fill:rgb(116,196,118)}\n.Greens .q3-4{fill:rgb(35,139,69)}\n.Greens .q0-5{fill:rgb(237,248,233)}\n.Greens .q1-5{fill:rgb(186,228,179)}\n.Greens .q2-5{fill:rgb(116,196,118)}\n.Greens .q3-5{fill:rgb(49,163,84)}\n.Greens .q4-5{fill:rgb(0,109,44)}\n.Greens .q0-6{fill:rgb(237,248,233)}\n.Greens .q1-6{fill:rgb(199,233,192)}\n.Greens .q2-6{fill:rgb(161,217,155)}\n.Greens .q3-6{fill:rgb(116,196,118)}\n.Greens .q4-6{fill:rgb(49,163,84)}\n.Greens .q5-6{fill:rgb(0,109,44)}\n.Greens .q0-7{fill:rgb(237,248,233)}\n.Greens .q1-7{fill:rgb(199,233,192)}\n.Greens .q2-7{fill:rgb(161,217,155)}\n.Greens .q3-7{fill:rgb(116,196,118)}\n.Greens .q4-7{fill:rgb(65,171,93)}\n.Greens .q5-7{fill:rgb(35,139,69)}\n.Greens .q6-7{fill:rgb(0,90,50)}\n.Greens .q0-8{fill:rgb(247,252,245)}\n.Greens .q1-8{fill:rgb(229,245,224)}\n.Greens .q2-8{fill:rgb(199,233,192)}\n.Greens .q3-8{fill:rgb(161,217,155)}\n.Greens .q4-8{fill:rgb(116,196,118)}\n.Greens .q5-8{fill:rgb(65,171,93)}\n.Greens .q6-8{fill:rgb(35,139,69)}\n.Greens .q7-8{fill:rgb(0,90,50)}\n.Greens .q0-9{fill:rgb(247,252,245)}\n.Greens .q1-9{fill:rgb(229,245,224)}\n.Greens .q2-9{fill:rgb(199,233,192)}\n.Greens .q3-9{fill:rgb(161,217,155)}\n.Greens .q4-9{fill:rgb(116,196,118)}\n.Greens .q5-9{fill:rgb(65,171,93)}\n.Greens .q6-9{fill:rgb(35,139,69)}\n.Greens .q7-9{fill:rgb(0,109,44)}\n.Greens .q8-9{fill:rgb(0,68,27)}\n.Oranges .q0-3{fill:rgb(254,230,206)}\n.Oranges .q1-3{fill:rgb(253,174,107)}\n.Oranges .q2-3{fill:rgb(230,85,13)}\n.Oranges .q0-4{fill:rgb(254,237,222)}\n.Oranges .q1-4{fill:rgb(253,190,133)}\n.Oranges .q2-4{fill:rgb(253,141,60)}\n.Oranges .q3-4{fill:rgb(217,71,1)}\n.Oranges .q0-5{fill:rgb(254,237,222)}\n.Oranges .q1-5{fill:rgb(253,190,133)}\n.Oranges .q2-5{fill:rgb(253,141,60)}\n.Oranges .q3-5{fill:rgb(230,85,13)}\n.Oranges .q4-5{fill:rgb(166,54,3)}\n.Oranges .q0-6{fill:rgb(254,237,222)}\n.Oranges .q1-6{fill:rgb(253,208,162)}\n.Oranges .q2-6{fill:rgb(253,174,107)}\n.Oranges .q3-6{fill:rgb(253,141,60)}\n.Oranges .q4-6{fill:rgb(230,85,13)}\n.Oranges .q5-6{fill:rgb(166,54,3)}\n.Oranges .q0-7{fill:rgb(254,237,222)}\n.Oranges .q1-7{fill:rgb(253,208,162)}\n.Oranges .q2-7{fill:rgb(253,174,107)}\n.Oranges .q3-7{fill:rgb(253,141,60)}\n.Oranges .q4-7{fill:rgb(241,105,19)}\n.Oranges .q5-7{fill:rgb(217,72,1)}\n.Oranges .q6-7{fill:rgb(140,45,4)}\n.Oranges .q0-8{fill:rgb(255,245,235)}\n.Oranges .q1-8{fill:rgb(254,230,206)}\n.Oranges .q2-8{fill:rgb(253,208,162)}\n.Oranges .q3-8{fill:rgb(253,174,107)}\n.Oranges .q4-8{fill:rgb(253,141,60)}\n.Oranges .q5-8{fill:rgb(241,105,19)}\n.Oranges .q6-8{fill:rgb(217,72,1)}\n.Oranges .q7-8{fill:rgb(140,45,4)}\n.Oranges .q0-9{fill:rgb(255,245,235)}\n.Oranges .q1-9{fill:rgb(254,230,206)}\n.Oranges .q2-9{fill:rgb(253,208,162)}\n.Oranges .q3-9{fill:rgb(253,174,107)}\n.Oranges .q4-9{fill:rgb(253,141,60)}\n.Oranges .q5-9{fill:rgb(241,105,19)}\n.Oranges .q6-9{fill:rgb(217,72,1)}\n.Oranges .q7-9{fill:rgb(166,54,3)}\n.Oranges .q8-9{fill:rgb(127,39,4)}\n.Reds .q0-3{fill:rgb(254,224,210)}\n.Reds .q1-3{fill:rgb(252,146,114)}\n.Reds .q2-3{fill:rgb(222,45,38)}\n.Reds .q0-4{fill:rgb(254,229,217)}\n.Reds .q1-4{fill:rgb(252,174,145)}\n.Reds .q2-4{fill:rgb(251,106,74)}\n.Reds .q3-4{fill:rgb(203,24,29)}\n.Reds .q0-5{fill:rgb(254,229,217)}\n.Reds .q1-5{fill:rgb(252,174,145)}\n.Reds .q2-5{fill:rgb(251,106,74)}\n.Reds .q3-5{fill:rgb(222,45,38)}\n.Reds .q4-5{fill:rgb(165,15,21)}\n.Reds .q0-6{fill:rgb(254,229,217)}\n.Reds .q1-6{fill:rgb(252,187,161)}\n.Reds .q2-6{fill:rgb(252,146,114)}\n.Reds .q3-6{fill:rgb(251,106,74)}\n.Reds .q4-6{fill:rgb(222,45,38)}\n.Reds .q5-6{fill:rgb(165,15,21)}\n.Reds .q0-7{fill:rgb(254,229,217)}\n.Reds .q1-7{fill:rgb(252,187,161)}\n.Reds .q2-7{fill:rgb(252,146,114)}\n.Reds .q3-7{fill:rgb(251,106,74)}\n.Reds .q4-7{fill:rgb(239,59,44)}\n.Reds .q5-7{fill:rgb(203,24,29)}\n.Reds .q6-7{fill:rgb(153,0,13)}\n.Reds .q0-8{fill:rgb(255,245,240)}\n.Reds .q1-8{fill:rgb(254,224,210)}\n.Reds .q2-8{fill:rgb(252,187,161)}\n.Reds .q3-8{fill:rgb(252,146,114)}\n.Reds .q4-8{fill:rgb(251,106,74)}\n.Reds .q5-8{fill:rgb(239,59,44)}\n.Reds .q6-8{fill:rgb(203,24,29)}\n.Reds .q7-8{fill:rgb(153,0,13)}\n.Reds .q0-9{fill:rgb(255,245,240)}\n.Reds .q1-9{fill:rgb(254,224,210)}\n.Reds .q2-9{fill:rgb(252,187,161)}\n.Reds .q3-9{fill:rgb(252,146,114)}\n.Reds .q4-9{fill:rgb(251,106,74)}\n.Reds .q5-9{fill:rgb(239,59,44)}\n.Reds .q6-9{fill:rgb(203,24,29)}\n.Reds .q7-9{fill:rgb(165,15,21)}\n.Reds .q8-9{fill:rgb(103,0,13)}\n.Greys .q0-3{fill:rgb(240,240,240)}\n.Greys .q1-3{fill:rgb(189,189,189)}\n.Greys .q2-3{fill:rgb(99,99,99)}\n.Greys .q0-4{fill:rgb(247,247,247)}\n.Greys .q1-4{fill:rgb(204,204,204)}\n.Greys .q2-4{fill:rgb(150,150,150)}\n.Greys .q3-4{fill:rgb(82,82,82)}\n.Greys .q0-5{fill:rgb(247,247,247)}\n.Greys .q1-5{fill:rgb(204,204,204)}\n.Greys .q2-5{fill:rgb(150,150,150)}\n.Greys .q3-5{fill:rgb(99,99,99)}\n.Greys .q4-5{fill:rgb(37,37,37)}\n.Greys .q0-6{fill:rgb(247,247,247)}\n.Greys .q1-6{fill:rgb(217,217,217)}\n.Greys .q2-6{fill:rgb(189,189,189)}\n.Greys .q3-6{fill:rgb(150,150,150)}\n.Greys .q4-6{fill:rgb(99,99,99)}\n.Greys .q5-6{fill:rgb(37,37,37)}\n.Greys .q0-7{fill:rgb(247,247,247)}\n.Greys .q1-7{fill:rgb(217,217,217)}\n.Greys .q2-7{fill:rgb(189,189,189)}\n.Greys .q3-7{fill:rgb(150,150,150)}\n.Greys .q4-7{fill:rgb(115,115,115)}\n.Greys .q5-7{fill:rgb(82,82,82)}\n.Greys .q6-7{fill:rgb(37,37,37)}\n.Greys .q0-8{fill:rgb(255,255,255)}\n.Greys .q1-8{fill:rgb(240,240,240)}\n.Greys .q2-8{fill:rgb(217,217,217)}\n.Greys .q3-8{fill:rgb(189,189,189)}\n.Greys .q4-8{fill:rgb(150,150,150)}\n.Greys .q5-8{fill:rgb(115,115,115)}\n.Greys .q6-8{fill:rgb(82,82,82)}\n.Greys .q7-8{fill:rgb(37,37,37)}\n.Greys .q0-9{fill:rgb(255,255,255)}\n.Greys .q1-9{fill:rgb(240,240,240)}\n.Greys .q2-9{fill:rgb(217,217,217)}\n.Greys .q3-9{fill:rgb(189,189,189)}\n.Greys .q4-9{fill:rgb(150,150,150)}\n.Greys .q5-9{fill:rgb(115,115,115)}\n.Greys .q6-9{fill:rgb(82,82,82)}\n.Greys .q7-9{fill:rgb(37,37,37)}\n.Greys .q8-9{fill:rgb(0,0,0)}\n.PuOr .q0-3{fill:rgb(241,163,64)}\n.PuOr .q1-3{fill:rgb(247,247,247)}\n.PuOr .q2-3{fill:rgb(153,142,195)}\n.PuOr .q0-4{fill:rgb(230,97,1)}\n.PuOr .q1-4{fill:rgb(253,184,99)}\n.PuOr .q2-4{fill:rgb(178,171,210)}\n.PuOr .q3-4{fill:rgb(94,60,153)}\n.PuOr .q0-5{fill:rgb(230,97,1)}\n.PuOr .q1-5{fill:rgb(253,184,99)}\n.PuOr .q2-5{fill:rgb(247,247,247)}\n.PuOr .q3-5{fill:rgb(178,171,210)}\n.PuOr .q4-5{fill:rgb(94,60,153)}\n.PuOr .q0-6{fill:rgb(179,88,6)}\n.PuOr .q1-6{fill:rgb(241,163,64)}\n.PuOr .q2-6{fill:rgb(254,224,182)}\n.PuOr .q3-6{fill:rgb(216,218,235)}\n.PuOr .q4-6{fill:rgb(153,142,195)}\n.PuOr .q5-6{fill:rgb(84,39,136)}\n.PuOr .q0-7{fill:rgb(179,88,6)}\n.PuOr .q1-7{fill:rgb(241,163,64)}\n.PuOr .q2-7{fill:rgb(254,224,182)}\n.PuOr .q3-7{fill:rgb(247,247,247)}\n.PuOr .q4-7{fill:rgb(216,218,235)}\n.PuOr .q5-7{fill:rgb(153,142,195)}\n.PuOr .q6-7{fill:rgb(84,39,136)}\n.PuOr .q0-8{fill:rgb(179,88,6)}\n.PuOr .q1-8{fill:rgb(224,130,20)}\n.PuOr .q2-8{fill:rgb(253,184,99)}\n.PuOr .q3-8{fill:rgb(254,224,182)}\n.PuOr .q4-8{fill:rgb(216,218,235)}\n.PuOr .q5-8{fill:rgb(178,171,210)}\n.PuOr .q6-8{fill:rgb(128,115,172)}\n.PuOr .q7-8{fill:rgb(84,39,136)}\n.PuOr .q0-9{fill:rgb(179,88,6)}\n.PuOr .q1-9{fill:rgb(224,130,20)}\n.PuOr .q2-9{fill:rgb(253,184,99)}\n.PuOr .q3-9{fill:rgb(254,224,182)}\n.PuOr .q4-9{fill:rgb(247,247,247)}\n.PuOr .q5-9{fill:rgb(216,218,235)}\n.PuOr .q6-9{fill:rgb(178,171,210)}\n.PuOr .q7-9{fill:rgb(128,115,172)}\n.PuOr .q8-9{fill:rgb(84,39,136)}\n.PuOr .q0-10{fill:rgb(127,59,8)}\n.PuOr .q1-10{fill:rgb(179,88,6)}\n.PuOr .q2-10{fill:rgb(224,130,20)}\n.PuOr .q3-10{fill:rgb(253,184,99)}\n.PuOr .q4-10{fill:rgb(254,224,182)}\n.PuOr .q5-10{fill:rgb(216,218,235)}\n.PuOr .q6-10{fill:rgb(178,171,210)}\n.PuOr .q7-10{fill:rgb(128,115,172)}\n.PuOr .q8-10{fill:rgb(84,39,136)}\n.PuOr .q9-10{fill:rgb(45,0,75)}\n.PuOr .q0-11{fill:rgb(127,59,8)}\n.PuOr .q1-11{fill:rgb(179,88,6)}\n.PuOr .q2-11{fill:rgb(224,130,20)}\n.PuOr .q3-11{fill:rgb(253,184,99)}\n.PuOr .q4-11{fill:rgb(254,224,182)}\n.PuOr .q5-11{fill:rgb(247,247,247)}\n.PuOr .q6-11{fill:rgb(216,218,235)}\n.PuOr .q7-11{fill:rgb(178,171,210)}\n.PuOr .q8-11{fill:rgb(128,115,172)}\n.PuOr .q9-11{fill:rgb(84,39,136)}\n.PuOr .q10-11{fill:rgb(45,0,75)}\n.BrBG .q0-3{fill:rgb(216,179,101)}\n.BrBG .q1-3{fill:rgb(245,245,245)}\n.BrBG .q2-3{fill:rgb(90,180,172)}\n.BrBG .q0-4{fill:rgb(166,97,26)}\n.BrBG .q1-4{fill:rgb(223,194,125)}\n.BrBG .q2-4{fill:rgb(128,205,193)}\n.BrBG .q3-4{fill:rgb(1,133,113)}\n.BrBG .q0-5{fill:rgb(166,97,26)}\n.BrBG .q1-5{fill:rgb(223,194,125)}\n.BrBG .q2-5{fill:rgb(245,245,245)}\n.BrBG .q3-5{fill:rgb(128,205,193)}\n.BrBG .q4-5{fill:rgb(1,133,113)}\n.BrBG .q0-6{fill:rgb(140,81,10)}\n.BrBG .q1-6{fill:rgb(216,179,101)}\n.BrBG .q2-6{fill:rgb(246,232,195)}\n.BrBG .q3-6{fill:rgb(199,234,229)}\n.BrBG .q4-6{fill:rgb(90,180,172)}\n.BrBG .q5-6{fill:rgb(1,102,94)}\n.BrBG .q0-7{fill:rgb(140,81,10)}\n.BrBG .q1-7{fill:rgb(216,179,101)}\n.BrBG .q2-7{fill:rgb(246,232,195)}\n.BrBG .q3-7{fill:rgb(245,245,245)}\n.BrBG .q4-7{fill:rgb(199,234,229)}\n.BrBG .q5-7{fill:rgb(90,180,172)}\n.BrBG .q6-7{fill:rgb(1,102,94)}\n.BrBG .q0-8{fill:rgb(140,81,10)}\n.BrBG .q1-8{fill:rgb(191,129,45)}\n.BrBG .q2-8{fill:rgb(223,194,125)}\n.BrBG .q3-8{fill:rgb(246,232,195)}\n.BrBG .q4-8{fill:rgb(199,234,229)}\n.BrBG .q5-8{fill:rgb(128,205,193)}\n.BrBG .q6-8{fill:rgb(53,151,143)}\n.BrBG .q7-8{fill:rgb(1,102,94)}\n.BrBG .q0-9{fill:rgb(140,81,10)}\n.BrBG .q1-9{fill:rgb(191,129,45)}\n.BrBG .q2-9{fill:rgb(223,194,125)}\n.BrBG .q3-9{fill:rgb(246,232,195)}\n.BrBG .q4-9{fill:rgb(245,245,245)}\n.BrBG .q5-9{fill:rgb(199,234,229)}\n.BrBG .q6-9{fill:rgb(128,205,193)}\n.BrBG .q7-9{fill:rgb(53,151,143)}\n.BrBG .q8-9{fill:rgb(1,102,94)}\n.BrBG .q0-10{fill:rgb(84,48,5)}\n.BrBG .q1-10{fill:rgb(140,81,10)}\n.BrBG .q2-10{fill:rgb(191,129,45)}\n.BrBG .q3-10{fill:rgb(223,194,125)}\n.BrBG .q4-10{fill:rgb(246,232,195)}\n.BrBG .q5-10{fill:rgb(199,234,229)}\n.BrBG .q6-10{fill:rgb(128,205,193)}\n.BrBG .q7-10{fill:rgb(53,151,143)}\n.BrBG .q8-10{fill:rgb(1,102,94)}\n.BrBG .q9-10{fill:rgb(0,60,48)}\n.BrBG .q0-11{fill:rgb(84,48,5)}\n.BrBG .q1-11{fill:rgb(140,81,10)}\n.BrBG .q2-11{fill:rgb(191,129,45)}\n.BrBG .q3-11{fill:rgb(223,194,125)}\n.BrBG .q4-11{fill:rgb(246,232,195)}\n.BrBG .q5-11{fill:rgb(245,245,245)}\n.BrBG .q6-11{fill:rgb(199,234,229)}\n.BrBG .q7-11{fill:rgb(128,205,193)}\n.BrBG .q8-11{fill:rgb(53,151,143)}\n.BrBG .q9-11{fill:rgb(1,102,94)}\n.BrBG .q10-11{fill:rgb(0,60,48)}\n.PRGn .q0-3{fill:rgb(175,141,195)}\n.PRGn .q1-3{fill:rgb(247,247,247)}\n.PRGn .q2-3{fill:rgb(127,191,123)}\n.PRGn .q0-4{fill:rgb(123,50,148)}\n.PRGn .q1-4{fill:rgb(194,165,207)}\n.PRGn .q2-4{fill:rgb(166,219,160)}\n.PRGn .q3-4{fill:rgb(0,136,55)}\n.PRGn .q0-5{fill:rgb(123,50,148)}\n.PRGn .q1-5{fill:rgb(194,165,207)}\n.PRGn .q2-5{fill:rgb(247,247,247)}\n.PRGn .q3-5{fill:rgb(166,219,160)}\n.PRGn .q4-5{fill:rgb(0,136,55)}\n.PRGn .q0-6{fill:rgb(118,42,131)}\n.PRGn .q1-6{fill:rgb(175,141,195)}\n.PRGn .q2-6{fill:rgb(231,212,232)}\n.PRGn .q3-6{fill:rgb(217,240,211)}\n.PRGn .q4-6{fill:rgb(127,191,123)}\n.PRGn .q5-6{fill:rgb(27,120,55)}\n.PRGn .q0-7{fill:rgb(118,42,131)}\n.PRGn .q1-7{fill:rgb(175,141,195)}\n.PRGn .q2-7{fill:rgb(231,212,232)}\n.PRGn .q3-7{fill:rgb(247,247,247)}\n.PRGn .q4-7{fill:rgb(217,240,211)}\n.PRGn .q5-7{fill:rgb(127,191,123)}\n.PRGn .q6-7{fill:rgb(27,120,55)}\n.PRGn .q0-8{fill:rgb(118,42,131)}\n.PRGn .q1-8{fill:rgb(153,112,171)}\n.PRGn .q2-8{fill:rgb(194,165,207)}\n.PRGn .q3-8{fill:rgb(231,212,232)}\n.PRGn .q4-8{fill:rgb(217,240,211)}\n.PRGn .q5-8{fill:rgb(166,219,160)}\n.PRGn .q6-8{fill:rgb(90,174,97)}\n.PRGn .q7-8{fill:rgb(27,120,55)}\n.PRGn .q0-9{fill:rgb(118,42,131)}\n.PRGn .q1-9{fill:rgb(153,112,171)}\n.PRGn .q2-9{fill:rgb(194,165,207)}\n.PRGn .q3-9{fill:rgb(231,212,232)}\n.PRGn .q4-9{fill:rgb(247,247,247)}\n.PRGn .q5-9{fill:rgb(217,240,211)}\n.PRGn .q6-9{fill:rgb(166,219,160)}\n.PRGn .q7-9{fill:rgb(90,174,97)}\n.PRGn .q8-9{fill:rgb(27,120,55)}\n.PRGn .q0-10{fill:rgb(64,0,75)}\n.PRGn .q1-10{fill:rgb(118,42,131)}\n.PRGn .q2-10{fill:rgb(153,112,171)}\n.PRGn .q3-10{fill:rgb(194,165,207)}\n.PRGn .q4-10{fill:rgb(231,212,232)}\n.PRGn .q5-10{fill:rgb(217,240,211)}\n.PRGn .q6-10{fill:rgb(166,219,160)}\n.PRGn .q7-10{fill:rgb(90,174,97)}\n.PRGn .q8-10{fill:rgb(27,120,55)}\n.PRGn .q9-10{fill:rgb(0,68,27)}\n.PRGn .q0-11{fill:rgb(64,0,75)}\n.PRGn .q1-11{fill:rgb(118,42,131)}\n.PRGn .q2-11{fill:rgb(153,112,171)}\n.PRGn .q3-11{fill:rgb(194,165,207)}\n.PRGn .q4-11{fill:rgb(231,212,232)}\n.PRGn .q5-11{fill:rgb(247,247,247)}\n.PRGn .q6-11{fill:rgb(217,240,211)}\n.PRGn .q7-11{fill:rgb(166,219,160)}\n.PRGn .q8-11{fill:rgb(90,174,97)}\n.PRGn .q9-11{fill:rgb(27,120,55)}\n.PRGn .q10-11{fill:rgb(0,68,27)}\n.PiYG .q0-3{fill:rgb(233,163,201)}\n.PiYG .q1-3{fill:rgb(247,247,247)}\n.PiYG .q2-3{fill:rgb(161,215,106)}\n.PiYG .q0-4{fill:rgb(208,28,139)}\n.PiYG .q1-4{fill:rgb(241,182,218)}\n.PiYG .q2-4{fill:rgb(184,225,134)}\n.PiYG .q3-4{fill:rgb(77,172,38)}\n.PiYG .q0-5{fill:rgb(208,28,139)}\n.PiYG .q1-5{fill:rgb(241,182,218)}\n.PiYG .q2-5{fill:rgb(247,247,247)}\n.PiYG .q3-5{fill:rgb(184,225,134)}\n.PiYG .q4-5{fill:rgb(77,172,38)}\n.PiYG .q0-6{fill:rgb(197,27,125)}\n.PiYG .q1-6{fill:rgb(233,163,201)}\n.PiYG .q2-6{fill:rgb(253,224,239)}\n.PiYG .q3-6{fill:rgb(230,245,208)}\n.PiYG .q4-6{fill:rgb(161,215,106)}\n.PiYG .q5-6{fill:rgb(77,146,33)}\n.PiYG .q0-7{fill:rgb(197,27,125)}\n.PiYG .q1-7{fill:rgb(233,163,201)}\n.PiYG .q2-7{fill:rgb(253,224,239)}\n.PiYG .q3-7{fill:rgb(247,247,247)}\n.PiYG .q4-7{fill:rgb(230,245,208)}\n.PiYG .q5-7{fill:rgb(161,215,106)}\n.PiYG .q6-7{fill:rgb(77,146,33)}\n.PiYG .q0-8{fill:rgb(197,27,125)}\n.PiYG .q1-8{fill:rgb(222,119,174)}\n.PiYG .q2-8{fill:rgb(241,182,218)}\n.PiYG .q3-8{fill:rgb(253,224,239)}\n.PiYG .q4-8{fill:rgb(230,245,208)}\n.PiYG .q5-8{fill:rgb(184,225,134)}\n.PiYG .q6-8{fill:rgb(127,188,65)}\n.PiYG .q7-8{fill:rgb(77,146,33)}\n.PiYG .q0-9{fill:rgb(197,27,125)}\n.PiYG .q1-9{fill:rgb(222,119,174)}\n.PiYG .q2-9{fill:rgb(241,182,218)}\n.PiYG .q3-9{fill:rgb(253,224,239)}\n.PiYG .q4-9{fill:rgb(247,247,247)}\n.PiYG .q5-9{fill:rgb(230,245,208)}\n.PiYG .q6-9{fill:rgb(184,225,134)}\n.PiYG .q7-9{fill:rgb(127,188,65)}\n.PiYG .q8-9{fill:rgb(77,146,33)}\n.PiYG .q0-10{fill:rgb(142,1,82)}\n.PiYG .q1-10{fill:rgb(197,27,125)}\n.PiYG .q2-10{fill:rgb(222,119,174)}\n.PiYG .q3-10{fill:rgb(241,182,218)}\n.PiYG .q4-10{fill:rgb(253,224,239)}\n.PiYG .q5-10{fill:rgb(230,245,208)}\n.PiYG .q6-10{fill:rgb(184,225,134)}\n.PiYG .q7-10{fill:rgb(127,188,65)}\n.PiYG .q8-10{fill:rgb(77,146,33)}\n.PiYG .q9-10{fill:rgb(39,100,25)}\n.PiYG .q0-11{fill:rgb(142,1,82)}\n.PiYG .q1-11{fill:rgb(197,27,125)}\n.PiYG .q2-11{fill:rgb(222,119,174)}\n.PiYG .q3-11{fill:rgb(241,182,218)}\n.PiYG .q4-11{fill:rgb(253,224,239)}\n.PiYG .q5-11{fill:rgb(247,247,247)}\n.PiYG .q6-11{fill:rgb(230,245,208)}\n.PiYG .q7-11{fill:rgb(184,225,134)}\n.PiYG .q8-11{fill:rgb(127,188,65)}\n.PiYG .q9-11{fill:rgb(77,146,33)}\n.PiYG .q10-11{fill:rgb(39,100,25)}\n.RdBu .q0-3{fill:rgb(239,138,98)}\n.RdBu .q1-3{fill:rgb(247,247,247)}\n.RdBu .q2-3{fill:rgb(103,169,207)}\n.RdBu .q0-4{fill:rgb(202,0,32)}\n.RdBu .q1-4{fill:rgb(244,165,130)}\n.RdBu .q2-4{fill:rgb(146,197,222)}\n.RdBu .q3-4{fill:rgb(5,113,176)}\n.RdBu .q0-5{fill:rgb(202,0,32)}\n.RdBu .q1-5{fill:rgb(244,165,130)}\n.RdBu .q2-5{fill:rgb(247,247,247)}\n.RdBu .q3-5{fill:rgb(146,197,222)}\n.RdBu .q4-5{fill:rgb(5,113,176)}\n.RdBu .q0-6{fill:rgb(178,24,43)}\n.RdBu .q1-6{fill:rgb(239,138,98)}\n.RdBu .q2-6{fill:rgb(253,219,199)}\n.RdBu .q3-6{fill:rgb(209,229,240)}\n.RdBu .q4-6{fill:rgb(103,169,207)}\n.RdBu .q5-6{fill:rgb(33,102,172)}\n.RdBu .q0-7{fill:rgb(178,24,43)}\n.RdBu .q1-7{fill:rgb(239,138,98)}\n.RdBu .q2-7{fill:rgb(253,219,199)}\n.RdBu .q3-7{fill:rgb(247,247,247)}\n.RdBu .q4-7{fill:rgb(209,229,240)}\n.RdBu .q5-7{fill:rgb(103,169,207)}\n.RdBu .q6-7{fill:rgb(33,102,172)}\n.RdBu .q0-8{fill:rgb(178,24,43)}\n.RdBu .q1-8{fill:rgb(214,96,77)}\n.RdBu .q2-8{fill:rgb(244,165,130)}\n.RdBu .q3-8{fill:rgb(253,219,199)}\n.RdBu .q4-8{fill:rgb(209,229,240)}\n.RdBu .q5-8{fill:rgb(146,197,222)}\n.RdBu .q6-8{fill:rgb(67,147,195)}\n.RdBu .q7-8{fill:rgb(33,102,172)}\n.RdBu .q0-9{fill:rgb(178,24,43)}\n.RdBu .q1-9{fill:rgb(214,96,77)}\n.RdBu .q2-9{fill:rgb(244,165,130)}\n.RdBu .q3-9{fill:rgb(253,219,199)}\n.RdBu .q4-9{fill:rgb(247,247,247)}\n.RdBu .q5-9{fill:rgb(209,229,240)}\n.RdBu .q6-9{fill:rgb(146,197,222)}\n.RdBu .q7-9{fill:rgb(67,147,195)}\n.RdBu .q8-9{fill:rgb(33,102,172)}\n.RdBu .q0-10{fill:rgb(103,0,31)}\n.RdBu .q1-10{fill:rgb(178,24,43)}\n.RdBu .q2-10{fill:rgb(214,96,77)}\n.RdBu .q3-10{fill:rgb(244,165,130)}\n.RdBu .q4-10{fill:rgb(253,219,199)}\n.RdBu .q5-10{fill:rgb(209,229,240)}\n.RdBu .q6-10{fill:rgb(146,197,222)}\n.RdBu .q7-10{fill:rgb(67,147,195)}\n.RdBu .q8-10{fill:rgb(33,102,172)}\n.RdBu .q9-10{fill:rgb(5,48,97)}\n.RdBu .q0-11{fill:rgb(103,0,31)}\n.RdBu .q1-11{fill:rgb(178,24,43)}\n.RdBu .q2-11{fill:rgb(214,96,77)}\n.RdBu .q3-11{fill:rgb(244,165,130)}\n.RdBu .q4-11{fill:rgb(253,219,199)}\n.RdBu .q5-11{fill:rgb(247,247,247)}\n.RdBu .q6-11{fill:rgb(209,229,240)}\n.RdBu .q7-11{fill:rgb(146,197,222)}\n.RdBu .q8-11{fill:rgb(67,147,195)}\n.RdBu .q9-11{fill:rgb(33,102,172)}\n.RdBu .q10-11{fill:rgb(5,48,97)}\n.RdGy .q0-3{fill:rgb(239,138,98)}\n.RdGy .q1-3{fill:rgb(255,255,255)}\n.RdGy .q2-3{fill:rgb(153,153,153)}\n.RdGy .q0-4{fill:rgb(202,0,32)}\n.RdGy .q1-4{fill:rgb(244,165,130)}\n.RdGy .q2-4{fill:rgb(186,186,186)}\n.RdGy .q3-4{fill:rgb(64,64,64)}\n.RdGy .q0-5{fill:rgb(202,0,32)}\n.RdGy .q1-5{fill:rgb(244,165,130)}\n.RdGy .q2-5{fill:rgb(255,255,255)}\n.RdGy .q3-5{fill:rgb(186,186,186)}\n.RdGy .q4-5{fill:rgb(64,64,64)}\n.RdGy .q0-6{fill:rgb(178,24,43)}\n.RdGy .q1-6{fill:rgb(239,138,98)}\n.RdGy .q2-6{fill:rgb(253,219,199)}\n.RdGy .q3-6{fill:rgb(224,224,224)}\n.RdGy .q4-6{fill:rgb(153,153,153)}\n.RdGy .q5-6{fill:rgb(77,77,77)}\n.RdGy .q0-7{fill:rgb(178,24,43)}\n.RdGy .q1-7{fill:rgb(239,138,98)}\n.RdGy .q2-7{fill:rgb(253,219,199)}\n.RdGy .q3-7{fill:rgb(255,255,255)}\n.RdGy .q4-7{fill:rgb(224,224,224)}\n.RdGy .q5-7{fill:rgb(153,153,153)}\n.RdGy .q6-7{fill:rgb(77,77,77)}\n.RdGy .q0-8{fill:rgb(178,24,43)}\n.RdGy .q1-8{fill:rgb(214,96,77)}\n.RdGy .q2-8{fill:rgb(244,165,130)}\n.RdGy .q3-8{fill:rgb(253,219,199)}\n.RdGy .q4-8{fill:rgb(224,224,224)}\n.RdGy .q5-8{fill:rgb(186,186,186)}\n.RdGy .q6-8{fill:rgb(135,135,135)}\n.RdGy .q7-8{fill:rgb(77,77,77)}\n.RdGy .q0-9{fill:rgb(178,24,43)}\n.RdGy .q1-9{fill:rgb(214,96,77)}\n.RdGy .q2-9{fill:rgb(244,165,130)}\n.RdGy .q3-9{fill:rgb(253,219,199)}\n.RdGy .q4-9{fill:rgb(255,255,255)}\n.RdGy .q5-9{fill:rgb(224,224,224)}\n.RdGy .q6-9{fill:rgb(186,186,186)}\n.RdGy .q7-9{fill:rgb(135,135,135)}\n.RdGy .q8-9{fill:rgb(77,77,77)}\n.RdGy .q0-10{fill:rgb(103,0,31)}\n.RdGy .q1-10{fill:rgb(178,24,43)}\n.RdGy .q2-10{fill:rgb(214,96,77)}\n.RdGy .q3-10{fill:rgb(244,165,130)}\n.RdGy .q4-10{fill:rgb(253,219,199)}\n.RdGy .q5-10{fill:rgb(224,224,224)}\n.RdGy .q6-10{fill:rgb(186,186,186)}\n.RdGy .q7-10{fill:rgb(135,135,135)}\n.RdGy .q8-10{fill:rgb(77,77,77)}\n.RdGy .q9-10{fill:rgb(26,26,26)}\n.RdGy .q0-11{fill:rgb(103,0,31)}\n.RdGy .q1-11{fill:rgb(178,24,43)}\n.RdGy .q2-11{fill:rgb(214,96,77)}\n.RdGy .q3-11{fill:rgb(244,165,130)}\n.RdGy .q4-11{fill:rgb(253,219,199)}\n.RdGy .q5-11{fill:rgb(255,255,255)}\n.RdGy .q6-11{fill:rgb(224,224,224)}\n.RdGy .q7-11{fill:rgb(186,186,186)}\n.RdGy .q8-11{fill:rgb(135,135,135)}\n.RdGy .q9-11{fill:rgb(77,77,77)}\n.RdGy .q10-11{fill:rgb(26,26,26)}\n.RdYlBu .q0-3{fill:rgb(252,141,89)}\n.RdYlBu .q1-3{fill:rgb(255,255,191)}\n.RdYlBu .q2-3{fill:rgb(145,191,219)}\n.RdYlBu .q0-4{fill:rgb(215,25,28)}\n.RdYlBu .q1-4{fill:rgb(253,174,97)}\n.RdYlBu .q2-4{fill:rgb(171,217,233)}\n.RdYlBu .q3-4{fill:rgb(44,123,182)}\n.RdYlBu .q0-5{fill:rgb(215,25,28)}\n.RdYlBu .q1-5{fill:rgb(253,174,97)}\n.RdYlBu .q2-5{fill:rgb(255,255,191)}\n.RdYlBu .q3-5{fill:rgb(171,217,233)}\n.RdYlBu .q4-5{fill:rgb(44,123,182)}\n.RdYlBu .q0-6{fill:rgb(215,48,39)}\n.RdYlBu .q1-6{fill:rgb(252,141,89)}\n.RdYlBu .q2-6{fill:rgb(254,224,144)}\n.RdYlBu .q3-6{fill:rgb(224,243,248)}\n.RdYlBu .q4-6{fill:rgb(145,191,219)}\n.RdYlBu .q5-6{fill:rgb(69,117,180)}\n.RdYlBu .q0-7{fill:rgb(215,48,39)}\n.RdYlBu .q1-7{fill:rgb(252,141,89)}\n.RdYlBu .q2-7{fill:rgb(254,224,144)}\n.RdYlBu .q3-7{fill:rgb(255,255,191)}\n.RdYlBu .q4-7{fill:rgb(224,243,248)}\n.RdYlBu .q5-7{fill:rgb(145,191,219)}\n.RdYlBu .q6-7{fill:rgb(69,117,180)}\n.RdYlBu .q0-8{fill:rgb(215,48,39)}\n.RdYlBu .q1-8{fill:rgb(244,109,67)}\n.RdYlBu .q2-8{fill:rgb(253,174,97)}\n.RdYlBu .q3-8{fill:rgb(254,224,144)}\n.RdYlBu .q4-8{fill:rgb(224,243,248)}\n.RdYlBu .q5-8{fill:rgb(171,217,233)}\n.RdYlBu .q6-8{fill:rgb(116,173,209)}\n.RdYlBu .q7-8{fill:rgb(69,117,180)}\n.RdYlBu .q0-9{fill:rgb(215,48,39)}\n.RdYlBu .q1-9{fill:rgb(244,109,67)}\n.RdYlBu .q2-9{fill:rgb(253,174,97)}\n.RdYlBu .q3-9{fill:rgb(254,224,144)}\n.RdYlBu .q4-9{fill:rgb(255,255,191)}\n.RdYlBu .q5-9{fill:rgb(224,243,248)}\n.RdYlBu .q6-9{fill:rgb(171,217,233)}\n.RdYlBu .q7-9{fill:rgb(116,173,209)}\n.RdYlBu .q8-9{fill:rgb(69,117,180)}\n.RdYlBu .q0-10{fill:rgb(165,0,38)}\n.RdYlBu .q1-10{fill:rgb(215,48,39)}\n.RdYlBu .q2-10{fill:rgb(244,109,67)}\n.RdYlBu .q3-10{fill:rgb(253,174,97)}\n.RdYlBu .q4-10{fill:rgb(254,224,144)}\n.RdYlBu .q5-10{fill:rgb(224,243,248)}\n.RdYlBu .q6-10{fill:rgb(171,217,233)}\n.RdYlBu .q7-10{fill:rgb(116,173,209)}\n.RdYlBu .q8-10{fill:rgb(69,117,180)}\n.RdYlBu .q9-10{fill:rgb(49,54,149)}\n.RdYlBu .q0-11{fill:rgb(165,0,38)}\n.RdYlBu .q1-11{fill:rgb(215,48,39)}\n.RdYlBu .q2-11{fill:rgb(244,109,67)}\n.RdYlBu .q3-11{fill:rgb(253,174,97)}\n.RdYlBu .q4-11{fill:rgb(254,224,144)}\n.RdYlBu .q5-11{fill:rgb(255,255,191)}\n.RdYlBu .q6-11{fill:rgb(224,243,248)}\n.RdYlBu .q7-11{fill:rgb(171,217,233)}\n.RdYlBu .q8-11{fill:rgb(116,173,209)}\n.RdYlBu .q9-11{fill:rgb(69,117,180)}\n.RdYlBu .q10-11{fill:rgb(49,54,149)}\n.Spectral .q0-3{fill:rgb(252,141,89)}\n.Spectral .q1-3{fill:rgb(255,255,191)}\n.Spectral .q2-3{fill:rgb(153,213,148)}\n.Spectral .q0-4{fill:rgb(215,25,28)}\n.Spectral .q1-4{fill:rgb(253,174,97)}\n.Spectral .q2-4{fill:rgb(171,221,164)}\n.Spectral .q3-4{fill:rgb(43,131,186)}\n.Spectral .q0-5{fill:rgb(215,25,28)}\n.Spectral .q1-5{fill:rgb(253,174,97)}\n.Spectral .q2-5{fill:rgb(255,255,191)}\n.Spectral .q3-5{fill:rgb(171,221,164)}\n.Spectral .q4-5{fill:rgb(43,131,186)}\n.Spectral .q0-6{fill:rgb(213,62,79)}\n.Spectral .q1-6{fill:rgb(252,141,89)}\n.Spectral .q2-6{fill:rgb(254,224,139)}\n.Spectral .q3-6{fill:rgb(230,245,152)}\n.Spectral .q4-6{fill:rgb(153,213,148)}\n.Spectral .q5-6{fill:rgb(50,136,189)}\n.Spectral .q0-7{fill:rgb(213,62,79)}\n.Spectral .q1-7{fill:rgb(252,141,89)}\n.Spectral .q2-7{fill:rgb(254,224,139)}\n.Spectral .q3-7{fill:rgb(255,255,191)}\n.Spectral .q4-7{fill:rgb(230,245,152)}\n.Spectral .q5-7{fill:rgb(153,213,148)}\n.Spectral .q6-7{fill:rgb(50,136,189)}\n.Spectral .q0-8{fill:rgb(213,62,79)}\n.Spectral .q1-8{fill:rgb(244,109,67)}\n.Spectral .q2-8{fill:rgb(253,174,97)}\n.Spectral .q3-8{fill:rgb(254,224,139)}\n.Spectral .q4-8{fill:rgb(230,245,152)}\n.Spectral .q5-8{fill:rgb(171,221,164)}\n.Spectral .q6-8{fill:rgb(102,194,165)}\n.Spectral .q7-8{fill:rgb(50,136,189)}\n.Spectral .q0-9{fill:rgb(213,62,79)}\n.Spectral .q1-9{fill:rgb(244,109,67)}\n.Spectral .q2-9{fill:rgb(253,174,97)}\n.Spectral .q3-9{fill:rgb(254,224,139)}\n.Spectral .q4-9{fill:rgb(255,255,191)}\n.Spectral .q5-9{fill:rgb(230,245,152)}\n.Spectral .q6-9{fill:rgb(171,221,164)}\n.Spectral .q7-9{fill:rgb(102,194,165)}\n.Spectral .q8-9{fill:rgb(50,136,189)}\n.Spectral .q0-10{fill:rgb(158,1,66)}\n.Spectral .q1-10{fill:rgb(213,62,79)}\n.Spectral .q2-10{fill:rgb(244,109,67)}\n.Spectral .q3-10{fill:rgb(253,174,97)}\n.Spectral .q4-10{fill:rgb(254,224,139)}\n.Spectral .q5-10{fill:rgb(230,245,152)}\n.Spectral .q6-10{fill:rgb(171,221,164)}\n.Spectral .q7-10{fill:rgb(102,194,165)}\n.Spectral .q8-10{fill:rgb(50,136,189)}\n.Spectral .q9-10{fill:rgb(94,79,162)}\n.Spectral .q0-11{fill:rgb(158,1,66)}\n.Spectral .q1-11{fill:rgb(213,62,79)}\n.Spectral .q2-11{fill:rgb(244,109,67)}\n.Spectral .q3-11{fill:rgb(253,174,97)}\n.Spectral .q4-11{fill:rgb(254,224,139)}\n.Spectral .q5-11{fill:rgb(255,255,191)}\n.Spectral .q6-11{fill:rgb(230,245,152)}\n.Spectral .q7-11{fill:rgb(171,221,164)}\n.Spectral .q8-11{fill:rgb(102,194,165)}\n.Spectral .q9-11{fill:rgb(50,136,189)}\n.Spectral .q10-11{fill:rgb(94,79,162)}\n.RdYlGn .q0-3{fill:rgb(252,141,89)}\n.RdYlGn .q1-3{fill:rgb(255,255,191)}\n.RdYlGn .q2-3{fill:rgb(145,207,96)}\n.RdYlGn .q0-4{fill:rgb(215,25,28)}\n.RdYlGn .q1-4{fill:rgb(253,174,97)}\n.RdYlGn .q2-4{fill:rgb(166,217,106)}\n.RdYlGn .q3-4{fill:rgb(26,150,65)}\n.RdYlGn .q0-5{fill:rgb(215,25,28)}\n.RdYlGn .q1-5{fill:rgb(253,174,97)}\n.RdYlGn .q2-5{fill:rgb(255,255,191)}\n.RdYlGn .q3-5{fill:rgb(166,217,106)}\n.RdYlGn .q4-5{fill:rgb(26,150,65)}\n.RdYlGn .q0-6{fill:rgb(215,48,39)}\n.RdYlGn .q1-6{fill:rgb(252,141,89)}\n.RdYlGn .q2-6{fill:rgb(254,224,139)}\n.RdYlGn .q3-6{fill:rgb(217,239,139)}\n.RdYlGn .q4-6{fill:rgb(145,207,96)}\n.RdYlGn .q5-6{fill:rgb(26,152,80)}\n.RdYlGn .q0-7{fill:rgb(215,48,39)}\n.RdYlGn .q1-7{fill:rgb(252,141,89)}\n.RdYlGn .q2-7{fill:rgb(254,224,139)}\n.RdYlGn .q3-7{fill:rgb(255,255,191)}\n.RdYlGn .q4-7{fill:rgb(217,239,139)}\n.RdYlGn .q5-7{fill:rgb(145,207,96)}\n.RdYlGn .q6-7{fill:rgb(26,152,80)}\n.RdYlGn .q0-8{fill:rgb(215,48,39)}\n.RdYlGn .q1-8{fill:rgb(244,109,67)}\n.RdYlGn .q2-8{fill:rgb(253,174,97)}\n.RdYlGn .q3-8{fill:rgb(254,224,139)}\n.RdYlGn .q4-8{fill:rgb(217,239,139)}\n.RdYlGn .q5-8{fill:rgb(166,217,106)}\n.RdYlGn .q6-8{fill:rgb(102,189,99)}\n.RdYlGn .q7-8{fill:rgb(26,152,80)}\n.RdYlGn .q0-9{fill:rgb(215,48,39)}\n.RdYlGn .q1-9{fill:rgb(244,109,67)}\n.RdYlGn .q2-9{fill:rgb(253,174,97)}\n.RdYlGn .q3-9{fill:rgb(254,224,139)}\n.RdYlGn .q4-9{fill:rgb(255,255,191)}\n.RdYlGn .q5-9{fill:rgb(217,239,139)}\n.RdYlGn .q6-9{fill:rgb(166,217,106)}\n.RdYlGn .q7-9{fill:rgb(102,189,99)}\n.RdYlGn .q8-9{fill:rgb(26,152,80)}\n.RdYlGn .q0-10{fill:rgb(165,0,38)}\n.RdYlGn .q1-10{fill:rgb(215,48,39)}\n.RdYlGn .q2-10{fill:rgb(244,109,67)}\n.RdYlGn .q3-10{fill:rgb(253,174,97)}\n.RdYlGn .q4-10{fill:rgb(254,224,139)}\n.RdYlGn .q5-10{fill:rgb(217,239,139)}\n.RdYlGn .q6-10{fill:rgb(166,217,106)}\n.RdYlGn .q7-10{fill:rgb(102,189,99)}\n.RdYlGn .q8-10{fill:rgb(26,152,80)}\n.RdYlGn .q9-10{fill:rgb(0,104,55)}\n.RdYlGn .q0-11{fill:rgb(165,0,38)}\n.RdYlGn .q1-11{fill:rgb(215,48,39)}\n.RdYlGn .q2-11{fill:rgb(244,109,67)}\n.RdYlGn .q3-11{fill:rgb(253,174,97)}\n.RdYlGn .q4-11{fill:rgb(254,224,139)}\n.RdYlGn .q5-11{fill:rgb(255,255,191)}\n.RdYlGn .q6-11{fill:rgb(217,239,139)}\n.RdYlGn .q7-11{fill:rgb(166,217,106)}\n.RdYlGn .q8-11{fill:rgb(102,189,99)}\n.RdYlGn .q9-11{fill:rgb(26,152,80)}\n.RdYlGn .q10-11{fill:rgb(0,104,55)}\n.Accent .q0-3{fill:rgb(127,201,127)}\n.Accent .q1-3{fill:rgb(190,174,212)}\n.Accent .q2-3{fill:rgb(253,192,134)}\n.Accent .q0-4{fill:rgb(127,201,127)}\n.Accent .q1-4{fill:rgb(190,174,212)}\n.Accent .q2-4{fill:rgb(253,192,134)}\n.Accent .q3-4{fill:rgb(255,255,153)}\n.Accent .q0-5{fill:rgb(127,201,127)}\n.Accent .q1-5{fill:rgb(190,174,212)}\n.Accent .q2-5{fill:rgb(253,192,134)}\n.Accent .q3-5{fill:rgb(255,255,153)}\n.Accent .q4-5{fill:rgb(56,108,176)}\n.Accent .q0-6{fill:rgb(127,201,127)}\n.Accent .q1-6{fill:rgb(190,174,212)}\n.Accent .q2-6{fill:rgb(253,192,134)}\n.Accent .q3-6{fill:rgb(255,255,153)}\n.Accent .q4-6{fill:rgb(56,108,176)}\n.Accent .q5-6{fill:rgb(240,2,127)}\n.Accent .q0-7{fill:rgb(127,201,127)}\n.Accent .q1-7{fill:rgb(190,174,212)}\n.Accent .q2-7{fill:rgb(253,192,134)}\n.Accent .q3-7{fill:rgb(255,255,153)}\n.Accent .q4-7{fill:rgb(56,108,176)}\n.Accent .q5-7{fill:rgb(240,2,127)}\n.Accent .q6-7{fill:rgb(191,91,23)}\n.Accent .q0-8{fill:rgb(127,201,127)}\n.Accent .q1-8{fill:rgb(190,174,212)}\n.Accent .q2-8{fill:rgb(253,192,134)}\n.Accent .q3-8{fill:rgb(255,255,153)}\n.Accent .q4-8{fill:rgb(56,108,176)}\n.Accent .q5-8{fill:rgb(240,2,127)}\n.Accent .q6-8{fill:rgb(191,91,23)}\n.Accent .q7-8{fill:rgb(102,102,102)}\n.Dark2 .q0-3{fill:rgb(27,158,119)}\n.Dark2 .q1-3{fill:rgb(217,95,2)}\n.Dark2 .q2-3{fill:rgb(117,112,179)}\n.Dark2 .q0-4{fill:rgb(27,158,119)}\n.Dark2 .q1-4{fill:rgb(217,95,2)}\n.Dark2 .q2-4{fill:rgb(117,112,179)}\n.Dark2 .q3-4{fill:rgb(231,41,138)}\n.Dark2 .q0-5{fill:rgb(27,158,119)}\n.Dark2 .q1-5{fill:rgb(217,95,2)}\n.Dark2 .q2-5{fill:rgb(117,112,179)}\n.Dark2 .q3-5{fill:rgb(231,41,138)}\n.Dark2 .q4-5{fill:rgb(102,166,30)}\n.Dark2 .q0-6{fill:rgb(27,158,119)}\n.Dark2 .q1-6{fill:rgb(217,95,2)}\n.Dark2 .q2-6{fill:rgb(117,112,179)}\n.Dark2 .q3-6{fill:rgb(231,41,138)}\n.Dark2 .q4-6{fill:rgb(102,166,30)}\n.Dark2 .q5-6{fill:rgb(230,171,2)}\n.Dark2 .q0-7{fill:rgb(27,158,119)}\n.Dark2 .q1-7{fill:rgb(217,95,2)}\n.Dark2 .q2-7{fill:rgb(117,112,179)}\n.Dark2 .q3-7{fill:rgb(231,41,138)}\n.Dark2 .q4-7{fill:rgb(102,166,30)}\n.Dark2 .q5-7{fill:rgb(230,171,2)}\n.Dark2 .q6-7{fill:rgb(166,118,29)}\n.Dark2 .q0-8{fill:rgb(27,158,119)}\n.Dark2 .q1-8{fill:rgb(217,95,2)}\n.Dark2 .q2-8{fill:rgb(117,112,179)}\n.Dark2 .q3-8{fill:rgb(231,41,138)}\n.Dark2 .q4-8{fill:rgb(102,166,30)}\n.Dark2 .q5-8{fill:rgb(230,171,2)}\n.Dark2 .q6-8{fill:rgb(166,118,29)}\n.Dark2 .q7-8{fill:rgb(102,102,102)}\n.Paired .q0-3{fill:rgb(166,206,227)}\n.Paired .q1-3{fill:rgb(31,120,180)}\n.Paired .q2-3{fill:rgb(178,223,138)}\n.Paired .q0-4{fill:rgb(166,206,227)}\n.Paired .q1-4{fill:rgb(31,120,180)}\n.Paired .q2-4{fill:rgb(178,223,138)}\n.Paired .q3-4{fill:rgb(51,160,44)}\n.Paired .q0-5{fill:rgb(166,206,227)}\n.Paired .q1-5{fill:rgb(31,120,180)}\n.Paired .q2-5{fill:rgb(178,223,138)}\n.Paired .q3-5{fill:rgb(51,160,44)}\n.Paired .q4-5{fill:rgb(251,154,153)}\n.Paired .q0-6{fill:rgb(166,206,227)}\n.Paired .q1-6{fill:rgb(31,120,180)}\n.Paired .q2-6{fill:rgb(178,223,138)}\n.Paired .q3-6{fill:rgb(51,160,44)}\n.Paired .q4-6{fill:rgb(251,154,153)}\n.Paired .q5-6{fill:rgb(227,26,28)}\n.Paired .q0-7{fill:rgb(166,206,227)}\n.Paired .q1-7{fill:rgb(31,120,180)}\n.Paired .q2-7{fill:rgb(178,223,138)}\n.Paired .q3-7{fill:rgb(51,160,44)}\n.Paired .q4-7{fill:rgb(251,154,153)}\n.Paired .q5-7{fill:rgb(227,26,28)}\n.Paired .q6-7{fill:rgb(253,191,111)}\n.Paired .q0-8{fill:rgb(166,206,227)}\n.Paired .q1-8{fill:rgb(31,120,180)}\n.Paired .q2-8{fill:rgb(178,223,138)}\n.Paired .q3-8{fill:rgb(51,160,44)}\n.Paired .q4-8{fill:rgb(251,154,153)}\n.Paired .q5-8{fill:rgb(227,26,28)}\n.Paired .q6-8{fill:rgb(253,191,111)}\n.Paired .q7-8{fill:rgb(255,127,0)}\n.Paired .q0-9{fill:rgb(166,206,227)}\n.Paired .q1-9{fill:rgb(31,120,180)}\n.Paired .q2-9{fill:rgb(178,223,138)}\n.Paired .q3-9{fill:rgb(51,160,44)}\n.Paired .q4-9{fill:rgb(251,154,153)}\n.Paired .q5-9{fill:rgb(227,26,28)}\n.Paired .q6-9{fill:rgb(253,191,111)}\n.Paired .q7-9{fill:rgb(255,127,0)}\n.Paired .q8-9{fill:rgb(202,178,214)}\n.Paired .q0-10{fill:rgb(166,206,227)}\n.Paired .q1-10{fill:rgb(31,120,180)}\n.Paired .q2-10{fill:rgb(178,223,138)}\n.Paired .q3-10{fill:rgb(51,160,44)}\n.Paired .q4-10{fill:rgb(251,154,153)}\n.Paired .q5-10{fill:rgb(227,26,28)}\n.Paired .q6-10{fill:rgb(253,191,111)}\n.Paired .q7-10{fill:rgb(255,127,0)}\n.Paired .q8-10{fill:rgb(202,178,214)}\n.Paired .q9-10{fill:rgb(106,61,154)}\n.Paired .q0-11{fill:rgb(166,206,227)}\n.Paired .q1-11{fill:rgb(31,120,180)}\n.Paired .q2-11{fill:rgb(178,223,138)}\n.Paired .q3-11{fill:rgb(51,160,44)}\n.Paired .q4-11{fill:rgb(251,154,153)}\n.Paired .q5-11{fill:rgb(227,26,28)}\n.Paired .q6-11{fill:rgb(253,191,111)}\n.Paired .q7-11{fill:rgb(255,127,0)}\n.Paired .q8-11{fill:rgb(202,178,214)}\n.Paired .q9-11{fill:rgb(106,61,154)}\n.Paired .q10-11{fill:rgb(255,255,153)}\n.Paired .q0-12{fill:rgb(166,206,227)}\n.Paired .q1-12{fill:rgb(31,120,180)}\n.Paired .q2-12{fill:rgb(178,223,138)}\n.Paired .q3-12{fill:rgb(51,160,44)}\n.Paired .q4-12{fill:rgb(251,154,153)}\n.Paired .q5-12{fill:rgb(227,26,28)}\n.Paired .q6-12{fill:rgb(253,191,111)}\n.Paired .q7-12{fill:rgb(255,127,0)}\n.Paired .q8-12{fill:rgb(202,178,214)}\n.Paired .q9-12{fill:rgb(106,61,154)}\n.Paired .q10-12{fill:rgb(255,255,153)}\n.Paired .q11-12{fill:rgb(177,89,40)}\n.Pastel1 .q0-3{fill:rgb(251,180,174)}\n.Pastel1 .q1-3{fill:rgb(179,205,227)}\n.Pastel1 .q2-3{fill:rgb(204,235,197)}\n.Pastel1 .q0-4{fill:rgb(251,180,174)}\n.Pastel1 .q1-4{fill:rgb(179,205,227)}\n.Pastel1 .q2-4{fill:rgb(204,235,197)}\n.Pastel1 .q3-4{fill:rgb(222,203,228)}\n.Pastel1 .q0-5{fill:rgb(251,180,174)}\n.Pastel1 .q1-5{fill:rgb(179,205,227)}\n.Pastel1 .q2-5{fill:rgb(204,235,197)}\n.Pastel1 .q3-5{fill:rgb(222,203,228)}\n.Pastel1 .q4-5{fill:rgb(254,217,166)}\n.Pastel1 .q0-6{fill:rgb(251,180,174)}\n.Pastel1 .q1-6{fill:rgb(179,205,227)}\n.Pastel1 .q2-6{fill:rgb(204,235,197)}\n.Pastel1 .q3-6{fill:rgb(222,203,228)}\n.Pastel1 .q4-6{fill:rgb(254,217,166)}\n.Pastel1 .q5-6{fill:rgb(255,255,204)}\n.Pastel1 .q0-7{fill:rgb(251,180,174)}\n.Pastel1 .q1-7{fill:rgb(179,205,227)}\n.Pastel1 .q2-7{fill:rgb(204,235,197)}\n.Pastel1 .q3-7{fill:rgb(222,203,228)}\n.Pastel1 .q4-7{fill:rgb(254,217,166)}\n.Pastel1 .q5-7{fill:rgb(255,255,204)}\n.Pastel1 .q6-7{fill:rgb(229,216,189)}\n.Pastel1 .q0-8{fill:rgb(251,180,174)}\n.Pastel1 .q1-8{fill:rgb(179,205,227)}\n.Pastel1 .q2-8{fill:rgb(204,235,197)}\n.Pastel1 .q3-8{fill:rgb(222,203,228)}\n.Pastel1 .q4-8{fill:rgb(254,217,166)}\n.Pastel1 .q5-8{fill:rgb(255,255,204)}\n.Pastel1 .q6-8{fill:rgb(229,216,189)}\n.Pastel1 .q7-8{fill:rgb(253,218,236)}\n.Pastel1 .q0-9{fill:rgb(251,180,174)}\n.Pastel1 .q1-9{fill:rgb(179,205,227)}\n.Pastel1 .q2-9{fill:rgb(204,235,197)}\n.Pastel1 .q3-9{fill:rgb(222,203,228)}\n.Pastel1 .q4-9{fill:rgb(254,217,166)}\n.Pastel1 .q5-9{fill:rgb(255,255,204)}\n.Pastel1 .q6-9{fill:rgb(229,216,189)}\n.Pastel1 .q7-9{fill:rgb(253,218,236)}\n.Pastel1 .q8-9{fill:rgb(242,242,242)}\n.Pastel2 .q0-3{fill:rgb(179,226,205)}\n.Pastel2 .q1-3{fill:rgb(253,205,172)}\n.Pastel2 .q2-3{fill:rgb(203,213,232)}\n.Pastel2 .q0-4{fill:rgb(179,226,205)}\n.Pastel2 .q1-4{fill:rgb(253,205,172)}\n.Pastel2 .q2-4{fill:rgb(203,213,232)}\n.Pastel2 .q3-4{fill:rgb(244,202,228)}\n.Pastel2 .q0-5{fill:rgb(179,226,205)}\n.Pastel2 .q1-5{fill:rgb(253,205,172)}\n.Pastel2 .q2-5{fill:rgb(203,213,232)}\n.Pastel2 .q3-5{fill:rgb(244,202,228)}\n.Pastel2 .q4-5{fill:rgb(230,245,201)}\n.Pastel2 .q0-6{fill:rgb(179,226,205)}\n.Pastel2 .q1-6{fill:rgb(253,205,172)}\n.Pastel2 .q2-6{fill:rgb(203,213,232)}\n.Pastel2 .q3-6{fill:rgb(244,202,228)}\n.Pastel2 .q4-6{fill:rgb(230,245,201)}\n.Pastel2 .q5-6{fill:rgb(255,242,174)}\n.Pastel2 .q0-7{fill:rgb(179,226,205)}\n.Pastel2 .q1-7{fill:rgb(253,205,172)}\n.Pastel2 .q2-7{fill:rgb(203,213,232)}\n.Pastel2 .q3-7{fill:rgb(244,202,228)}\n.Pastel2 .q4-7{fill:rgb(230,245,201)}\n.Pastel2 .q5-7{fill:rgb(255,242,174)}\n.Pastel2 .q6-7{fill:rgb(241,226,204)}\n.Pastel2 .q0-8{fill:rgb(179,226,205)}\n.Pastel2 .q1-8{fill:rgb(253,205,172)}\n.Pastel2 .q2-8{fill:rgb(203,213,232)}\n.Pastel2 .q3-8{fill:rgb(244,202,228)}\n.Pastel2 .q4-8{fill:rgb(230,245,201)}\n.Pastel2 .q5-8{fill:rgb(255,242,174)}\n.Pastel2 .q6-8{fill:rgb(241,226,204)}\n.Pastel2 .q7-8{fill:rgb(204,204,204)}\n.Set1 .q0-3{fill:rgb(228,26,28)}\n.Set1 .q1-3{fill:rgb(55,126,184)}\n.Set1 .q2-3{fill:rgb(77,175,74)}\n.Set1 .q0-4{fill:rgb(228,26,28)}\n.Set1 .q1-4{fill:rgb(55,126,184)}\n.Set1 .q2-4{fill:rgb(77,175,74)}\n.Set1 .q3-4{fill:rgb(152,78,163)}\n.Set1 .q0-5{fill:rgb(228,26,28)}\n.Set1 .q1-5{fill:rgb(55,126,184)}\n.Set1 .q2-5{fill:rgb(77,175,74)}\n.Set1 .q3-5{fill:rgb(152,78,163)}\n.Set1 .q4-5{fill:rgb(255,127,0)}\n.Set1 .q0-6{fill:rgb(228,26,28)}\n.Set1 .q1-6{fill:rgb(55,126,184)}\n.Set1 .q2-6{fill:rgb(77,175,74)}\n.Set1 .q3-6{fill:rgb(152,78,163)}\n.Set1 .q4-6{fill:rgb(255,127,0)}\n.Set1 .q5-6{fill:rgb(255,255,51)}\n.Set1 .q0-7{fill:rgb(228,26,28)}\n.Set1 .q1-7{fill:rgb(55,126,184)}\n.Set1 .q2-7{fill:rgb(77,175,74)}\n.Set1 .q3-7{fill:rgb(152,78,163)}\n.Set1 .q4-7{fill:rgb(255,127,0)}\n.Set1 .q5-7{fill:rgb(255,255,51)}\n.Set1 .q6-7{fill:rgb(166,86,40)}\n.Set1 .q0-8{fill:rgb(228,26,28)}\n.Set1 .q1-8{fill:rgb(55,126,184)}\n.Set1 .q2-8{fill:rgb(77,175,74)}\n.Set1 .q3-8{fill:rgb(152,78,163)}\n.Set1 .q4-8{fill:rgb(255,127,0)}\n.Set1 .q5-8{fill:rgb(255,255,51)}\n.Set1 .q6-8{fill:rgb(166,86,40)}\n.Set1 .q7-8{fill:rgb(247,129,191)}\n.Set1 .q0-9{fill:rgb(228,26,28)}\n.Set1 .q1-9{fill:rgb(55,126,184)}\n.Set1 .q2-9{fill:rgb(77,175,74)}\n.Set1 .q3-9{fill:rgb(152,78,163)}\n.Set1 .q4-9{fill:rgb(255,127,0)}\n.Set1 .q5-9{fill:rgb(255,255,51)}\n.Set1 .q6-9{fill:rgb(166,86,40)}\n.Set1 .q7-9{fill:rgb(247,129,191)}\n.Set1 .q8-9{fill:rgb(153,153,153)}\n.Set2 .q0-3{fill:rgb(102,194,165)}\n.Set2 .q1-3{fill:rgb(252,141,98)}\n.Set2 .q2-3{fill:rgb(141,160,203)}\n.Set2 .q0-4{fill:rgb(102,194,165)}\n.Set2 .q1-4{fill:rgb(252,141,98)}\n.Set2 .q2-4{fill:rgb(141,160,203)}\n.Set2 .q3-4{fill:rgb(231,138,195)}\n.Set2 .q0-5{fill:rgb(102,194,165)}\n.Set2 .q1-5{fill:rgb(252,141,98)}\n.Set2 .q2-5{fill:rgb(141,160,203)}\n.Set2 .q3-5{fill:rgb(231,138,195)}\n.Set2 .q4-5{fill:rgb(166,216,84)}\n.Set2 .q0-6{fill:rgb(102,194,165)}\n.Set2 .q1-6{fill:rgb(252,141,98)}\n.Set2 .q2-6{fill:rgb(141,160,203)}\n.Set2 .q3-6{fill:rgb(231,138,195)}\n.Set2 .q4-6{fill:rgb(166,216,84)}\n.Set2 .q5-6{fill:rgb(255,217,47)}\n.Set2 .q0-7{fill:rgb(102,194,165)}\n.Set2 .q1-7{fill:rgb(252,141,98)}\n.Set2 .q2-7{fill:rgb(141,160,203)}\n.Set2 .q3-7{fill:rgb(231,138,195)}\n.Set2 .q4-7{fill:rgb(166,216,84)}\n.Set2 .q5-7{fill:rgb(255,217,47)}\n.Set2 .q6-7{fill:rgb(229,196,148)}\n.Set2 .q0-8{fill:rgb(102,194,165)}\n.Set2 .q1-8{fill:rgb(252,141,98)}\n.Set2 .q2-8{fill:rgb(141,160,203)}\n.Set2 .q3-8{fill:rgb(231,138,195)}\n.Set2 .q4-8{fill:rgb(166,216,84)}\n.Set2 .q5-8{fill:rgb(255,217,47)}\n.Set2 .q6-8{fill:rgb(229,196,148)}\n.Set2 .q7-8{fill:rgb(179,179,179)}\n.Set3 .q0-3{fill:rgb(141,211,199)}\n.Set3 .q1-3{fill:rgb(255,255,179)}\n.Set3 .q2-3{fill:rgb(190,186,218)}\n.Set3 .q0-4{fill:rgb(141,211,199)}\n.Set3 .q1-4{fill:rgb(255,255,179)}\n.Set3 .q2-4{fill:rgb(190,186,218)}\n.Set3 .q3-4{fill:rgb(251,128,114)}\n.Set3 .q0-5{fill:rgb(141,211,199)}\n.Set3 .q1-5{fill:rgb(255,255,179)}\n.Set3 .q2-5{fill:rgb(190,186,218)}\n.Set3 .q3-5{fill:rgb(251,128,114)}\n.Set3 .q4-5{fill:rgb(128,177,211)}\n.Set3 .q0-6{fill:rgb(141,211,199)}\n.Set3 .q1-6{fill:rgb(255,255,179)}\n.Set3 .q2-6{fill:rgb(190,186,218)}\n.Set3 .q3-6{fill:rgb(251,128,114)}\n.Set3 .q4-6{fill:rgb(128,177,211)}\n.Set3 .q5-6{fill:rgb(253,180,98)}\n.Set3 .q0-7{fill:rgb(141,211,199)}\n.Set3 .q1-7{fill:rgb(255,255,179)}\n.Set3 .q2-7{fill:rgb(190,186,218)}\n.Set3 .q3-7{fill:rgb(251,128,114)}\n.Set3 .q4-7{fill:rgb(128,177,211)}\n.Set3 .q5-7{fill:rgb(253,180,98)}\n.Set3 .q6-7{fill:rgb(179,222,105)}\n.Set3 .q0-8{fill:rgb(141,211,199)}\n.Set3 .q1-8{fill:rgb(255,255,179)}\n.Set3 .q2-8{fill:rgb(190,186,218)}\n.Set3 .q3-8{fill:rgb(251,128,114)}\n.Set3 .q4-8{fill:rgb(128,177,211)}\n.Set3 .q5-8{fill:rgb(253,180,98)}\n.Set3 .q6-8{fill:rgb(179,222,105)}\n.Set3 .q7-8{fill:rgb(252,205,229)}\n.Set3 .q0-9{fill:rgb(141,211,199)}\n.Set3 .q1-9{fill:rgb(255,255,179)}\n.Set3 .q2-9{fill:rgb(190,186,218)}\n.Set3 .q3-9{fill:rgb(251,128,114)}\n.Set3 .q4-9{fill:rgb(128,177,211)}\n.Set3 .q5-9{fill:rgb(253,180,98)}\n.Set3 .q6-9{fill:rgb(179,222,105)}\n.Set3 .q7-9{fill:rgb(252,205,229)}\n.Set3 .q8-9{fill:rgb(217,217,217)}\n.Set3 .q0-10{fill:rgb(141,211,199)}\n.Set3 .q1-10{fill:rgb(255,255,179)}\n.Set3 .q2-10{fill:rgb(190,186,218)}\n.Set3 .q3-10{fill:rgb(251,128,114)}\n.Set3 .q4-10{fill:rgb(128,177,211)}\n.Set3 .q5-10{fill:rgb(253,180,98)}\n.Set3 .q6-10{fill:rgb(179,222,105)}\n.Set3 .q7-10{fill:rgb(252,205,229)}\n.Set3 .q8-10{fill:rgb(217,217,217)}\n.Set3 .q9-10{fill:rgb(188,128,189)}\n.Set3 .q0-11{fill:rgb(141,211,199)}\n.Set3 .q1-11{fill:rgb(255,255,179)}\n.Set3 .q2-11{fill:rgb(190,186,218)}\n.Set3 .q3-11{fill:rgb(251,128,114)}\n.Set3 .q4-11{fill:rgb(128,177,211)}\n.Set3 .q5-11{fill:rgb(253,180,98)}\n.Set3 .q6-11{fill:rgb(179,222,105)}\n.Set3 .q7-11{fill:rgb(252,205,229)}\n.Set3 .q8-11{fill:rgb(217,217,217)}\n.Set3 .q9-11{fill:rgb(188,128,189)}\n.Set3 .q10-11{fill:rgb(204,235,197)}\n.Set3 .q0-12{fill:rgb(141,211,199)}\n.Set3 .q1-12{fill:rgb(255,255,179)}\n.Set3 .q2-12{fill:rgb(190,186,218)}\n.Set3 .q3-12{fill:rgb(251,128,114)}\n.Set3 .q4-12{fill:rgb(128,177,211)}\n.Set3 .q5-12{fill:rgb(253,180,98)}\n.Set3 .q6-12{fill:rgb(179,222,105)}\n.Set3 .q7-12{fill:rgb(252,205,229)}\n.Set3 .q8-12{fill:rgb(217,217,217)}\n.Set3 .q9-12{fill:rgb(188,128,189)}\n.Set3 .q10-12{fill:rgb(204,235,197)}\n.Set3 .q11-12{fill:rgb(255,237,111)}", ""]);
-
-	// exports
-
 
 /***/ }
 /******/ ]);

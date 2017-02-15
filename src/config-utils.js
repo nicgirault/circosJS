@@ -16,7 +16,7 @@ const buildConf = (userConf = {}, defaultConf) => {
         if (isFunction(userConf[key])) {
           conf[key] = userConf[key];
         } else {
-          conf[key] = () => userConf[key];
+          conf[key] = userConf[key];
         }
       } else {
         conf[key] = () => item.value;

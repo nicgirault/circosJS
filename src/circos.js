@@ -1,8 +1,7 @@
 import defaultsDeep from 'lodash/defaultsDeep'
 import forEach from 'lodash/forEach'
-import keys from 'lodash/keys'
 import isArray from 'lodash/isArray'
-import { select } from 'd3-selection'
+import {select} from 'd3-selection'
 import Layout from './layout'
 import render from './render'
 import Text from './tracks/Text'
@@ -13,7 +12,6 @@ import Heatmap from './tracks/Heatmap'
 import Line from './tracks/Line'
 import Scatter from './tracks/Scatter'
 import Stack from './tracks/Stack'
-import './colorBrewer.css'
 
 const defaultConf = {
   width: 700,

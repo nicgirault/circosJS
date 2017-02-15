@@ -3,7 +3,7 @@ import {parseSpanValueData} from '../dataParser';
 import {arc} from 'd3-shape';
 import assign from 'lodash/assign';
 import forEach from 'lodash/forEach';
-import {palette, axes, radial, values, common} from '../configs';
+import {axes, radial, values, common} from '../configs';
 
 const defaultConf = assign({
   color: {
@@ -38,7 +38,7 @@ const defaultConf = assign({
     value: [],
     iteratee: false,
   },
-}, palette, axes, radial, values, common);
+}, axes, radial, values, common);
 
 export default class Stack extends Track {
   constructor(instance, conf, data) {
@@ -123,8 +123,7 @@ export default class Stack extends Track {
   }
 
   renderDatumContainer(instance, parentElement, name, data, conf) {
-    const track = parentElement.append('g')
-      .attr('class', conf.colorPalette);
+    const track = parentElement.append('g');
     return this.renderBlock(track, data, instance._layout, conf);
   }
 
@@ -149,18 +148,6 @@ export default class Stack extends Track {
       .attr('opacity', conf.opacity)
       .attr('stroke-width', conf.strokeWidth)
       .attr('stroke', conf.strokeColor)
-      .attr('fill', conf.color)
-      .attr('class', (d) => {
-        if (conf.usePalette) {
-          return 'q' + utils.ratio(
-            d.value,
-            conf.cmin,
-            conf.cmax,
-            conf.colorPaletteSize,
-            conf.colorPaletteReverse,
-            conf.logScale
-          ) + '-' + conf.colorPaletteSize;
-        }
-      });
+      .attr('fill', conf.color);
   }
 }

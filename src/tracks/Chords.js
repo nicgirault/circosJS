@@ -3,14 +3,14 @@ import {parseChordData} from '../dataParser';
 import {registerTooltip} from '../behaviors/tooltip';
 import {ribbon} from 'd3-chord';
 import assign from 'lodash/assign';
-import {palette, common, values} from '../configs';
+import {common, values} from '../configs';
 
 const defaultConf = assign({
   color: {
     value: '#fd6a62',
     iteratee: true,
   },
-}, palette, common, values, {usePalette: {value: false, iteratee: false}});
+}, common, values);
 
 export default class Chords extends Track {
   constructor(instance, conf, data) {
@@ -32,11 +32,9 @@ export default class Chords extends Track {
   }
 
   renderChords(parentElement, name, conf, data, layout, getCoordinates) {
-    const track = parentElement
-      .append('g')
-      .attr('class', conf.colorPalette);
+    const track = parentElement.append('g');
 
-    const that = this
+    const that = this;
     const link = track
       .selectAll('.chord')
       .data(data)
@@ -54,13 +52,8 @@ export default class Chords extends Track {
         that.dispatch.call('mouseout', this, d)
       );
 
-    if (conf.usePalette) {
-      link.attr('class', (d) => {
-        return `q${this.colorScale(d.value)}-${conf.colorPaletteSize}`;
-      });
-    } else {
-      link.attr('fill', conf.color);
-    }
+    link.attr('fill', conf.colorIteratee);
+
     return link;
   }
 
