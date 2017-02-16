@@ -18,7 +18,7 @@ You should consider using Circos to show:
 - relationships between entities
 - periodical data
 
-![temperatures](doc/temperatures.png)
+<img src="doc/temperatures.png" width="60%" alt="temperatures" style="margin: auto;">
 
 *Average temperatures in Paris from 2007 (inner) to 2014 (outer). The circular layout highlights seasonal effect.*
 
