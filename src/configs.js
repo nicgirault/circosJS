@@ -67,11 +67,11 @@ const radial = {
 
 const values = {
   min: {
-    value: 'smart',
+    value: null,
     iteratee: false,
   },
   max: {
-    value: 'smart',
+    value: null,
     iteratee: false,
   },
   logScale: {

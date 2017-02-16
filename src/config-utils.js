@@ -32,8 +32,8 @@ const buildConf = (userConf = {}, defaultConf) => {
 
 const computeMinMax = (conf, meta) => {
   return {
-    cmin: conf.min === 'smart' ? meta.min : conf.min,
-    cmax: conf.max === 'smart' ? meta.max : conf.max,
+    cmin: conf.min === null ? meta.min : conf.min,
+    cmax: conf.max === null ? meta.max : conf.max,
   };
 };
 

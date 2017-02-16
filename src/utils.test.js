@@ -50,12 +50,12 @@ describe('utils', () => {
         expected: {cmin: 3, cmax: 10},
       },
       {
-        conf: {min: 'smart', max: 'smart'},
+        conf: {min: null, max: null},
         meta: {min: 1, max: 13},
         expected: {cmin: 1, cmax: 13},
       },
     ], (dataset) => {
-      it('should handle the smart value in conf', () => {
+      it('should handle the null value in conf', () => {
         const conf = computeMinMax(dataset.conf, dataset.meta);
         forEach(dataset.expected, (value, key) => {
           expect(conf[key]).to.equal(value);

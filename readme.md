@@ -176,8 +176,8 @@ The default configuration is:
   opacity: 0.7,
   zIndex: 1,
   tooltipContent: null,
-  min: 'smart',
-  max: 'smart',
+  min: null,
+  max: null,
   logScale: false,
   logScaleBase: Math.E,
 }
@@ -310,12 +310,9 @@ You can specify:
 **YlOrRd**:
 <img src="doc/palettes/YlOrRd.png" width="100%" height="10">
 
-
-
-
 ## Min/Max
 
-You can specify the min and max values of the dataset. If `'smart'` is used, the minimum and maximum will fit the range of values of the dataset.
+The default min and max values are computed according to the dataset. You can override these values by specifying a `min` or `max` attribute in the configuration.
 
 ## Custom datum formatting
 

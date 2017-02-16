@@ -53,8 +53,8 @@ export function smartBorders(conf, layout, tracks) {
 }
 
 export function computeMinMax(conf, meta) {
-  conf.cmin = conf.min === 'smart' ? meta.min : conf.min;
-  conf.cmax = conf.max === 'smart' ? meta.max : conf.max;
+  conf.cmin = conf.min === null ? meta.min : conf.min;
+  conf.cmax = conf.max === null ? meta.max : conf.max;
   return conf;
 }
 
