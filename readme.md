@@ -18,9 +18,11 @@ You should consider using Circos to show:
 - relationships between entities
 - periodical data
 
-<img src="doc/temperatures.png" width="60%" alt="temperatures" style="margin: auto;">
-
-*Average temperatures in Paris from 2007 (inner) to 2014 (outer). The circular layout highlights seasonal effect.*
+<p align="center">
+  <img src="doc/temperatures.png" width="60%" alt="temperatures">
+  <br/>
+  <i>Average temperatures in Paris from 2007 (inner) to 2014 (outer). The circular layout highlights seasonal effect.</i>
+</p>
 
 ## Installation
 
@@ -152,9 +154,11 @@ myCircos.trackType('track-id', data, configuration);
 
 Chords tracks connect layout regions.
 
-<img src="doc/chords.png" width="60%" alt="chords">
-
-*Gene fusions in human karyotype [source](http://cancer.sanger.ac.uk/cosmic/download). [See full example](doc/chords.md)*
+<p align="center">
+  <img src="doc/chords.png" width="60%" alt="chords">
+  <br/>
+  <i>Gene fusions in human karyotype [source](http://cancer.sanger.ac.uk/cosmic/download). [See full example](doc/chords.md)</i>
+</p>
 
 Data should looks like this:
 
@@ -185,9 +189,11 @@ The default configuration is:
 
 ### Heatmap
 
-<img src="doc/heatmap.png" width="60%" alt="heatmap">
-
-*Electrical comsumption in France in 2014*
+<p align="center">
+  <img src="doc/heatmap.png" width="60%" alt="heatmap">
+  <br/>
+  <i>Electrical comsumption in France in 2014</i>
+</p>
 
 To add a heatmap to your circos instance:
 
@@ -233,9 +239,11 @@ var data = [
 
 ### Highlight
 
-<img src="doc/highlight.png" width="60%" alt="highlight">
-
-*Human karyotype with cytobands highlighted ([source](demo/highlight))*
+<p align="center">
+  <img src="doc/highlight.png" width="60%" alt="highlight">
+  <br/>
+  <i>Human karyotype with cytobands highlighted (<a href="demo/highlight">source</a>)</i>
+</p>
 
 To add a highlight to your circos instance:
 
