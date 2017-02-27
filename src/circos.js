@@ -56,40 +56,40 @@ class Core {
     return this
   }
 
-  layout(conf, data) {
+  layout(data, conf) {
     this._layout = new Layout(conf, data)
     return this
   }
 
-  chords(id, conf, data) {
+  chords(id, data, conf) {
     this.tracks[id] = new Chords(this, conf, data)
     return this
   }
-  heatmap(id, conf, data) {
+  heatmap(id, data, conf) {
     this.tracks[id] = new Heatmap(this, conf, data)
     return this
   }
-  highlight(id, conf, data) {
+  highlight(id, data, conf) {
     this.tracks[id] = new Highlight(this, conf, data)
     return this
   }
-  histogram(id, conf, data) {
+  histogram(id, data, conf) {
     this.tracks[id] = new Histogram(this, conf, data)
     return this
   }
-  line(id, conf, data) {
+  line(id, data, conf) {
     this.tracks[id] = new Line(this, conf, data)
     return this
   }
-  scatter(id, conf, data) {
+  scatter(id, data, conf) {
     this.tracks[id] = new Scatter(this, conf, data)
     return this
   }
-  stack(id, conf, data) {
+  stack(id, data, conf) {
     this.tracks[id] = new Stack(this, conf, data)
     return this
   }
-  text(id, conf, data) {
+  text(id, data, conf) {
     this.tracks[id] = new Text(this, conf, data)
     return this
   }

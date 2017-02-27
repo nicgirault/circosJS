@@ -4542,7 +4542,7 @@ var Circos =
 	var defaultConf = {
 	  innerRadius: 250,
 	  outerRadius: 300,
-	  cornerRadius: 5,
+	  cornerRadius: 0,
 	  gap: 0.04, // in radian
 	  opacity: 1,
 	  labels: {
@@ -10237,6 +10237,7 @@ var Circos =
 	    key: 'renderBlock',
 	    value: function renderBlock(parentElement, data, layout, conf) {
 	      var scope = conf.outerRadius - conf.innerRadius;
+	      console.log(parentElement, data);
 	      var block = parentElement.selectAll('.block').data(data).enter().append('g').attr('class', 'block').attr('transform', function (d) {
 	        return 'rotate(' + layout.blocks[d.key].start * 360 / (2 * Math.PI) + ')';
 	      });
@@ -13402,8 +13403,8 @@ var Circos =
 
 	var computeMinMax = function computeMinMax(conf, meta) {
 	  return {
-	    cmin: conf.min === 'smart' ? meta.min : conf.min,
-	    cmax: conf.max === 'smart' ? meta.max : conf.max
+	    cmin: conf.min === null ? meta.min : conf.min,
+	    cmax: conf.max === null ? meta.max : conf.max
 	  };
 	};
 
@@ -13554,8 +13555,8 @@ var Circos =
 	}
 
 	function computeMinMax(conf, meta) {
-	  conf.cmin = conf.min === 'smart' ? meta.min : conf.min;
-	  conf.cmax = conf.max === 'smart' ? meta.max : conf.max;
+	  conf.cmin = conf.min === null ? meta.min : conf.min;
+	  conf.cmax = conf.max === null ? meta.max : conf.max;
 	  return conf;
 	}
 
@@ -19896,23 +19897,16 @@ var Circos =
 	    return { data: [], meta: { min: null, max: null } };
 	  }
 
-	  var preParsedData = normalize(data, ['parent_id', 'start', 'end', 'value']);
-
-	  var filteredData = preParsedData.filter(function (datum, index) {
-	    return checkParent(datum[0], index, layoutSummary, 'parent');
+	  var filteredData = data.filter(function (datum, index) {
+	    return checkParent(datum.block_id, index, layoutSummary, 'parent');
 	  }).filter(function (datum, index) {
-	    return checkNumber({ start: datum[1], end: datum[2] }, index);
-	  }).map(function (datum) {
-	    if (datum[1] < 0 || datum[2] > layoutSummary[datum[0]]) {
+	    return checkNumber({ start: datum.start, end: datum.end }, index);
+	  }).filter(function (datum) {
+	    if (datum.start < 0 || datum.end > layoutSummary[datum.block_id]) {
 	      logger.log(2, 'position', 'position inconsistency', { datum: datum, layoutSummary: layoutSummary });
+	      return false;
 	    }
-
-	    return {
-	      block_id: datum[0],
-	      start: Math.max(0, parseFloat(datum[1])),
-	      end: Math.min(layoutSummary[datum[0]], parseFloat(datum[2])),
-	      value: datum[3] ? datum[3] : null
-	    };
+	    return true;
 	  });
 
 	  return buildOutput(filteredData);
@@ -20427,11 +20421,11 @@ var Circos =
 
 	var values = {
 	  min: {
-	    value: 'smart',
+	    value: null,
 	    iteratee: false
 	  },
 	  max: {
-	    value: 'smart',
+	    value: null,
 	    iteratee: false
 	  },
 	  logScale: {
@@ -21376,11 +21370,11 @@ var Circos =
 	  },
 	  thickness: {
 	    value: 10,
-	    iteratee: true
+	    iteratee: false
 	  },
 	  radialMargin: {
 	    value: 2,
-	    iteratee: true
+	    iteratee: false
 	  },
 	  margin: {
 	    value: 2,
@@ -21453,9 +21447,9 @@ var Circos =
 	    value: function datumRadialPosition(d) {
 	      var radialStart = (this.conf.thickness + this.conf.radialMargin) * d.layer;
 	      var radialEnd = radialStart + this.conf.thickness;
-
+	      console.log(this.conf.innerRadius + radialStart, Math.min(this.conf.innerRadius + radialEnd, this.conf.outerRadius));
 	      if (this.conf.direction === 'out') {
-	        return [this.conf.innerRadius + radialStart, Math.min(this.conf.innerRadius + radialEnd, this.conf.outerRadius)];
+	        return [Math.min(this.conf.innerRadius + radialStart, this.conf.outerRadius), Math.min(this.conf.innerRadius + radialEnd, this.conf.outerRadius)];
 	      }
 
 	      if (this.conf.direction === 'in') {

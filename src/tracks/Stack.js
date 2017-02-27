@@ -16,11 +16,11 @@ const defaultConf = assign({
   },
   thickness: {
     value: 10,
-    iteratee: true,
+    iteratee: false,
   },
   radialMargin: {
     value: 2,
-    iteratee: true,
+    iteratee: false,
   },
   margin: {
     value: 2,

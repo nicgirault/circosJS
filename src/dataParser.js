@@ -99,31 +99,24 @@ export function parseSpanStringData(data, layoutSummary) {
     return {data: [], meta: {min: null, max: null}};
   }
 
-  const preParsedData = normalize(data, ['parent_id', 'start', 'end', 'value']);
-
-  const filteredData = preParsedData
+  const filteredData = data
     .filter((datum, index) =>
-      checkParent(datum[0], index, layoutSummary, 'parent')
+      checkParent(datum.block_id, index, layoutSummary, 'parent')
     )
     .filter((datum, index) =>
-      checkNumber({start: datum[1], end: datum[2]}, index)
+      checkNumber({start: datum.start, end: datum.end}, index)
     )
-    .map((datum) => {
-      if (datum[1] < 0 || datum[2] > layoutSummary[datum[0]]) {
+    .filter((datum) => {
+      if (datum.start < 0 || datum.end > layoutSummary[datum.block_id]) {
         logger.log(
           2,
           'position',
           'position inconsistency',
           {datum: datum, layoutSummary: layoutSummary}
         );
+        return false;
       }
-
-      return {
-        block_id: datum[0],
-        start: Math.max(0, parseFloat(datum[1])),
-        end: Math.min(layoutSummary[datum[0]], parseFloat(datum[2])),
-        value: datum[3] ? datum[3] : null,
-      };
+      return true;
     });
 
   return buildOutput(filteredData);

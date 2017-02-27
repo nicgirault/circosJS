@@ -60,7 +60,7 @@ export default class Track {
   }
 
   renderBlock(parentElement, data, layout, conf) {
-    const scope = conf.outerRadius - conf.innerRadius
+    const scope = conf.outerRadius - conf.innerRadius;
     const block = parentElement.selectAll('.block')
       .data(data)
       .enter().append('g')

@@ -47,7 +47,7 @@ A circos graph is based on a circular axis **layout**. Data tracks appear inside
 In order to place data on the circos graph, you must first specify the layout.
 
 ```javascript
-myCircos.layout(configuration, data);
+myCircos.layout(data, configuration);
 ```
 
 The first argument of the `layout` function is a configuration object that control the format of the layout.
@@ -124,19 +124,19 @@ A track is a series of data points.
 To add a track to your graph you should write something like this:
 
 ```javascript
-instance.heatmap(
+myCircos.heatmap(
     'my-heatmap',
+    data,
     {
-        // your heatmap configuration
+        // your heatmap configuration (optional)
     },
-    data
 );
 ```
 
 This pattern is similar to all track types:
 
 ```javascript
-instance.trackType('track-id', configuration, data);
+myCircos.trackType('track-id', data, configuration);
 ```
 
 **Note**: The track name is used as a HTML class name so here are the format limitations.
@@ -152,7 +152,7 @@ instance.trackType('track-id', configuration, data);
 
 Chords tracks connect layout regions.
 
-![chords example](doc/chords.png)
+<img src="doc/chords.png" width="60%" alt="chords">
 
 *Gene fusions in human karyotype [source](http://cancer.sanger.ac.uk/cosmic/download). [See full example](doc/chords.md)*
 
@@ -185,14 +185,14 @@ The default configuration is:
 
 ### Heatmap
 
-![heatmap example](doc/heatmap.png)
+<img src="doc/heatmap.png" width="60%" alt="heatmap">
 
 *Electrical comsumption in France in 2014*
 
 To add a heatmap to your circos instance:
 
 ```javascript
-instance.heatmap('electrical-consumption', {}, data);
+myCircos.heatmap('electrical-consumption', data, configuration);
 ```
 
 Configuration:
@@ -229,7 +229,38 @@ var data = [
 
 ### Stack
 
+
+
 ### Highlight
+
+<img src="doc/highlight.png" width="60%" alt="highlight">
+
+*Human karyotype with cytobands highlighted ([source](demo/highlight))*
+
+To add a highlight to your circos instance:
+
+```javascript
+myCircos.highlight('cytobands', data, configuration);
+```
+
+The minimal datum should have `block_id`, `start` and `end` attributes.
+
+Configuration:
+
+```javascript
+{
+  innerRadius: null,
+  outerRadius: null,
+  min: null,
+  max: null,
+  color: 'd3d3d3',
+  strokeColor: null,
+  strokeWidth: 0,
+  opacity: 1,
+  logScale: false,
+  tooltipContent: null,
+}
+```
 
 ### Histogram
 
