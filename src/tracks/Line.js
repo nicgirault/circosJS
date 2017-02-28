@@ -16,10 +16,10 @@ const defaultConf = assign({
     iteratee: true,
   },
   fill: {
-    value: true,
+    value: false,
     iteratee: false,
   },
-  fill_color: {
+  fillColor: {
     value: '#d3d3d3',
     iteratee: true,
   },
@@ -90,7 +90,7 @@ export default class Line extends Track {
       }
     };
 
-    return parentElement.selectAll('.line')
+    const selection = parentElement.selectAll('.line')
       .data((d) => conf.maxGap ? splitByGap(d.values, conf.maxGap) : [d.values])
       .enter().append('g')
       .attr('class', 'line')
@@ -107,6 +107,11 @@ export default class Line extends Track {
       .attr('opacity', conf.opacity)
       .attr('stroke-width', conf.thickness)
       .attr('stroke', conf.color)
-      .attr('fill', (d, i) => conf.fill ? conf.fill_color(d, i) : 'none');
+      selection.attr('fill', 'none');
+
+    if (conf.fill)
+      selection.attr('fill', conf.fillColor);
+
+    return selection;
   }
 }

@@ -274,6 +274,39 @@ Configuration:
 
 ### Line
 
+<p align="center">
+  <img src="doc/lines.png" width="60%" alt="lines">
+  <br/>
+  <i>Some single nucleotide polymorphism on chromosomes 1, 2 and 3 (<a href="demo/line">source</a>)</i>
+</p>
+
+```javascript
+myCircos.line('line1', data, configuration);
+```
+
+The minimal datum should have `block_id`, `position` and `value` attributes.
+
+Configuration:
+
+```javascript
+{
+  innerRadius: null,
+  outerRadius: null,
+  min: null,
+  max: null,
+  color: 'd3d3d3',
+  strokeColor: null,
+  strokeWidth: 0,
+  direction: 'out',
+  fill: false,
+  fillColor: '#d3d3d3',
+  maxGap: null, // if the gap between two data points is bigger than this value, the line with be discontinued
+  opacity: 1,
+  logScale: false,
+  tooltipContent: null,
+}
+```
+
 ### Scatter
 
 ### Text

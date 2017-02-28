@@ -21100,10 +21100,10 @@ var Circos =
 	    iteratee: true
 	  },
 	  fill: {
-	    value: true,
+	    value: false,
 	    iteratee: false
 	  },
-	  fill_color: {
+	  fillColor: {
 	    value: '#d3d3d3',
 	    iteratee: true
 	  },
@@ -21181,7 +21181,7 @@ var Circos =
 	        }
 	      };
 
-	      return parentElement.selectAll('.line').data(function (d) {
+	      var selection = parentElement.selectAll('.line').data(function (d) {
 	        return conf.maxGap ? splitByGap(d.values, conf.maxGap) : [d.values];
 	      }).enter().append('g').attr('class', 'line').append('path').datum(function (d) {
 	        return d.map(function (datum) {
@@ -21190,9 +21190,12 @@ var Circos =
 	            angle: utils.theta(datum.position, layout.blocks[datum.block_id])
 	          }, buildRadius(height));
 	        });
-	      }).attr('d', generator).attr('opacity', conf.opacity).attr('stroke-width', conf.thickness).attr('stroke', conf.color).attr('fill', function (d, i) {
-	        return conf.fill ? conf.fill_color(d, i) : 'none';
-	      });
+	      }).attr('d', generator).attr('opacity', conf.opacity).attr('stroke-width', conf.thickness).attr('stroke', conf.color);
+	      selection.attr('fill', 'none');
+
+	      if (conf.fill) selection.attr('fill', conf.fillColor);
+
+	      return selection;
 	    }
 	  }]);
 

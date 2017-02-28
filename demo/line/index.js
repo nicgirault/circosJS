@@ -82,7 +82,6 @@ var drawCircos = function(error, GRCh37, cytobands, snp250, snp, snp1m) {
       maxGap: 1000000,
       min: 0,
       max: 0.015,
-      fill: null,
       color: '#222222',
       axes: [
         {
@@ -113,7 +112,6 @@ var drawCircos = function(error, GRCh37, cytobands, snp250, snp, snp1m) {
       maxGap: 1000000,
       min: 0,
       max: 0.015,
-      fill: null,
       color: '#222222',
       axes: [
         {
@@ -133,7 +131,6 @@ var drawCircos = function(error, GRCh37, cytobands, snp250, snp, snp1m) {
       maxGap: 1000000,
       min: 0,
       max: 0.015,
-      fill: null,
       color: '#f44336',
       tooltipContent: null,
     })
@@ -144,7 +141,6 @@ var drawCircos = function(error, GRCh37, cytobands, snp250, snp, snp1m) {
       direction: 'in',
       min: 0,
       max: 0.015,
-      fill: null,
       color: '#222222',
       axes: [
         {
@@ -173,7 +169,6 @@ var drawCircos = function(error, GRCh37, cytobands, snp250, snp, snp1m) {
       direction: 'in',
       min: 0,
       max: 0.015,
-      fill: null,
       color: '#f44336',
       tooltipContent: null,
     })

@@ -45,6 +45,18 @@ const computeRadius = (conf, instance) => {
       outerRadius: borders.out,
     };
   }
+  if (conf.innerRadius <= 1 && conf.outerRadius <= 1) {
+    return {
+      innerRadius: conf.innerRadius * instance._layout.conf.innerRadius,
+      outerRadius: conf.outerRadius * instance._layout.conf.innerRadius,
+    };
+  }
+  if (conf.innerRadius <= 10 && conf.outerRadius <= 10) {
+    return {
+      innerRadius: conf.innerRadius * instance._layout.conf.outerRadius,
+      outerRadius: conf.outerRadius * instance._layout.conf.outerRadius,
+    };
+  }
   return;
 };
 
