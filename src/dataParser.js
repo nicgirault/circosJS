@@ -132,16 +132,16 @@ export function parsePositionValueData(data, layoutSummary) {
 
   const filteredData = preParsedData
     .filter((datum, index) =>
-      checkParent(datum[0], index, layoutSummary, 'parent')
+      checkParent(datum.block_id, index, layoutSummary, 'parent')
     )
     .filter((datum, index) =>
-      checkNumber({position: datum[1], value: datum[2]}, index)
+      checkNumber({position: datum.position, value: datum.value}, index)
     )
     .map((datum) => {
       return {
-        block_id: datum[0],
-        position: Math.min(layoutSummary[datum[0]], parseFloat(datum[1])),
-        value: parseFloat(datum[2]) || 1,
+        block_id: datum.block_id,
+        position: Math.min(layoutSummary[datum.block_id], parseFloat(datum.position)),
+        value: parseFloat(datum.value) || 1,
       };
     });
 

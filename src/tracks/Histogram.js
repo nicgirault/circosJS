@@ -25,11 +25,6 @@ export default class Histogram extends Track {
     super(instance, conf, defaultConf, data, parseSpanValueData);
   }
 
-  renderDatumContainer(instance, parentElement, name, data, conf) {
-    const track = parentElement.append('g');
-    return this.renderBlock(track, data, instance._layout, conf);
-  }
-
   renderDatum(parentElement, conf, layout, utils) {
     const bin = parentElement.selectAll('.bin')
       .data((d) => d.values)

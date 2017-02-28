@@ -16,12 +16,6 @@ export default class Text extends Track {
     super(instance, conf, defaultConf, data, parsePositionTextData);
   }
 
-  renderDatumContainer(instance, parentElement, name, data, conf) {
-    const track = parentElement.append('g')
-      .attr('class', name);
-    return this.renderBlock(track, data, instance._layout, conf);
-  }
-
   renderDatum(parentElement, conf, layout, utils) {
     const text = parentElement.selectAll('g')
       .data((d) => d.values)

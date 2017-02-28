@@ -116,7 +116,8 @@ export function buildScale(
 
   return scale
     .domain([min, max])
-    .range([0, height]);
+    .range([0, height])
+    .clamp(true);
 }
 
 export function buildColorScale(

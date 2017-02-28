@@ -1,5 +1,6 @@
 import {registerTooltip} from '../behaviors/tooltip';
 import range from 'lodash/range';
+import reduce from 'lodash/reduce';
 import {dispatch} from 'd3-dispatch';
 import {arc} from 'd3-shape';
 import {getConf} from '../config-utils';
@@ -37,86 +38,120 @@ export default class Track {
   }
 
   render(instance, parentElement, name) {
-    parentElement.select('.' + name).remove()
+    parentElement.select('.' + name).remove();
     const track = parentElement.append('g')
       .attr('class', name)
-      .attr('z-index', this.conf.zIndex)
-    const datumContainer = this.renderDatumContainer(instance, track, name, this.data, this.conf)
-    if (this.conf.axes && this.conf.axes.display) {
-      this.renderAxes(datumContainer, this.conf, instance._layout, this.data)
+      .attr('z-index', this.conf.zIndex);
+    const datumContainer = this.renderBlock(track, this.data, instance._layout, this.conf);
+    if (this.conf.axes.length > 0) {
+      this.renderAxes(datumContainer, this.conf, instance._layout, this.data);
     }
     const selection = this.renderDatum(datumContainer, this.conf, instance._layout, this)
     if (this.conf.tooltipContent) {
-      registerTooltip(this, instance, selection, this.conf)
+      registerTooltip(this, instance, selection, this.conf);
     }
     selection.on('mouseover', (d, i, j) => {
-      this.dispatch.call('mouseover', this, d)
-    })
+      this.dispatch.call('mouseover', this, d);
+    });
     selection.on('mouseout', (d, i, j) => {
-      this.dispatch.call('mouseout', this, d)
-    })
+      this.dispatch.call('mouseout', this, d);
+    });
 
-    return this
+    return this;
   }
 
   renderBlock(parentElement, data, layout, conf) {
-    const scope = conf.outerRadius - conf.innerRadius;
     const block = parentElement.selectAll('.block')
       .data(data)
       .enter().append('g')
       .attr('class', 'block')
       .attr(
         'transform',
-        d => 'rotate(' + layout.blocks[d.key].start * 360 / (2 * Math.PI) + ')'
-      )
+        (d) => `rotate(${layout.blocks[d.key].start * 360 / (2 * Math.PI)})`
+      );
 
     if (conf.backgrounds) {
       block.selectAll('.background')
-        .data(conf.backgrounds)
+        .data((d) => {
+          return conf.backgrounds.map((background) => {
+            return {
+              start: background.start,
+              end: background.end,
+              angle: layout.blocks[d.key].end - layout.blocks[d.key].start,
+              color: background.color,
+              opacity: background.opacity,
+            };
+          });
+        })
         .enter().append('path')
         .attr('class', 'background')
-        .attr('fill', background => background.color)
-        .attr('opacity', background => background.opacity || 1)
+        .attr('fill', (background) => background.color)
+        .attr('opacity', (background) => background.opacity || 1)
         .attr('d', arc()
           .innerRadius((background) => {
-            if (conf.direction === 'in') {
-              return conf.outerRadius - scope * background.start
-            }
-            else {
-              return conf.innerRadius + scope * background.start
-            }
+            return conf.direction === 'in' ?
+              conf.outerRadius - this.scale(background.start) :
+              conf.innerRadius + this.scale(background.start);
           })
-          .outerRadius(background => {
-            if (conf.direction == 'in') {
-              return conf.outerRadius - scope * background.end
-            }
-            else {
-              return conf.innerRadius + scope * background.end
-            }
+          .outerRadius((background) => {
+            return conf.direction === 'in' ?
+              conf.outerRadius - this.scale(background.end) :
+              conf.innerRadius + this.scale(background.end);
           })
-          .startAngle((d,i,j) => 0)
-          .endAngle((d,i,j) => layout.blocks[data[j].key].end - layout.blocks[data[j].key].start)
-        )
+          .startAngle(0)
+          .endAngle((d) => d.angle)
+        );
     }
 
-    return block
+    return block;
   }
 
   renderAxes(parentElement, conf, layout, data) {
-    const axes = range(conf.innerRadius, conf.outerRadius, conf.axes.minor.spacing)
+    const axes = reduce(conf.axes, (aggregator, axesGroup) => {
+      if (axesGroup.position) {
+        aggregator.push({
+          value: axesGroup.position,
+          thickness: axesGroup.thickness || 1,
+          color: axesGroup.color || '#d3d3d3',
+        });
+      }
+      if (axesGroup.spacing) {
+        const builtAxes = range(conf.min, conf.max, axesGroup.spacing)
+          .map((value) => {
+            return {
+              value: value,
+              thickness: axesGroup.thickness || 1,
+              color: axesGroup.color || '#d3d3d3',
+            };
+          });
+        return aggregator.concat(builtAxes);
+      }
+      return aggregator;
+    }, []);
 
     const axis = arc()
-      .innerRadius(d => d.height)
-      .outerRadius(d => d.height)
+      .innerRadius((d) => {
+        return conf.direction === 'in' ?
+          conf.outerRadius - this.scale(d.value) :
+          conf.innerRadius + this.scale(d.value);
+      })
+      .outerRadius((d) => {
+        return conf.direction === 'in' ?
+          conf.outerRadius - this.scale(d.value) :
+          conf.innerRadius + this.scale(d.value);
+      })
       .startAngle(0)
-      .endAngle((d) => d.length)
+      .endAngle((d) => d.length);
 
     return parentElement.selectAll('.axis')
-      .data(blockData => {
-        const block = layout.blocks[blockData.key]
-        return axes.map(height => {
+      .data((blockData) => {
+        const block = layout.blocks[blockData.key];
+        return axes.map((d) => {
           return {
-            height: height,
+            value: d.value,
+            thickness: d.thickness,
+            color: d.color,
+            block_id: blockData.key,
             length: block.end - block.start,
           };
         });
@@ -125,16 +160,8 @@ export default class Track {
       .attr('opacity', conf.opacity)
       .attr('class', 'axis')
       .attr('d', axis)
-      .attr(
-        'stroke-width',
-        (d, i) => i % conf.axes.major.spacing === 0 ?
-          conf.axes.major.thickness : conf.axes.minor.thickness
-      )
-      .attr(
-        'stroke',
-        (d, i) => i % conf.axes.major.spacing === 0 ?
-          conf.axes.major.color : conf.axes.minor.color
-      );
+      .attr('stroke-width', (d) => d.thickness)
+      .attr('stroke', (d) => d.color);
   }
 
   theta(position, block) {

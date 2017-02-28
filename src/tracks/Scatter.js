@@ -76,12 +76,6 @@ export default class Scatter extends Track {
     super(instance, conf, defaultConf, data, parsePositionValueData)
   }
 
-  renderDatumContainer(instance, parentElement, name, data, conf) {
-    const track = parentElement.append('g')
-      .attr('class', name);
-    return this.renderBlock(track, data, instance._layout, conf);
-  }
-
   renderDatum(parentElement, conf, layout, utils) {
     const point = parentElement.selectAll('.point')
       .data((d) => {

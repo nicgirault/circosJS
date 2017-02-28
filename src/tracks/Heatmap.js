@@ -17,12 +17,6 @@ export default class Heatmap extends Track {
     super(instance, conf, defaultConf, data, parseSpanValueData);
   }
 
-  renderDatumContainer(instance, parentElement, name, data, conf) {
-    const track = parentElement.append('g');
-
-    return this.renderBlock(track, data, instance._layout, conf);
-  }
-
   renderDatum(parentElement, conf, layout) {
     return parentElement.selectAll('tile')
       .data((d) => d.values)

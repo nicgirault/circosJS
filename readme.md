@@ -353,6 +353,14 @@ You can specify:
 
 The default min and max values are computed according to the dataset. You can override these values by specifying a `min` or `max` attribute in the configuration.
 
+## Axes
+
+
+
+## Radius
+
+< 1, < 10,
+
 ## Custom datum formatting
 
 ## Contact

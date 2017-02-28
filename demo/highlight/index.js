@@ -30,22 +30,22 @@ var drawCircos = function(error, GRCh37, cytobands) {
 
   circos
     .layout(
+      GRCh37,
       {
         innerRadius: 200,
         outerRadius: 250,
         labels: {display: false},
         ticks: {display: false},
-      },
-      GRCh37
+      }
     )
-    .highlight('cytobands', {
+    .highlight('cytobands', data, {
       innerRadius: 200,
       outerRadius: 250,
       opacity: 0.5,
       color: function(d) {
         return gieStainColor[d.gieStain];
       },
-    }, data)
+    })
     .render();
 };
 

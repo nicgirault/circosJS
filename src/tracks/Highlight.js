@@ -17,15 +17,15 @@ const defaultConf = assign({
     value: 0,
     iteratee: true,
   },
+  axes: {
+    value: [],
+    iteratee: false,
+  },
 }, radial, common);
 
 export default class Highlight extends Track {
   constructor(instance, conf, data) {
     super(instance, conf, defaultConf, data, parseSpanStringData);
-  }
-
-  renderDatumContainer(instance, parentElement, name, data, conf) {
-    return this.renderBlock(parentElement, data, instance._layout, conf);
   }
 
   renderDatum(parentElement, conf, layout, utils) {

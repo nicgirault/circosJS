@@ -1,37 +1,7 @@
 const axes = {
   axes: {
-    display: {
-      value: false,
-      iteratee: false,
-    },
-    minor: {
-      spacing: {
-        value: 5,
-        iteratee: false,
-      },
-      color: {
-        value: '#d3d3d3',
-        iteratee: false,
-      },
-      thickness: {
-        value: 2,
-        iteratee: false,
-      },
-    },
-    major: {
-      spacing: {
-        value: 5,
-        iteratee: false,
-      },
-      color: {
-        value: '#000000',
-        iteratee: false,
-      },
-      thickness: {
-        value: 2,
-        iteratee: false,
-      },
-    },
+    value: [],
+    iteratee: false,
   },
 };
 
@@ -90,7 +60,7 @@ const common = {
     iteratee: false,
   },
   opacity: {
-    value: false,
+    value: 1,
     iteratee: true,
   },
   tooltipContent: {

@@ -85,10 +85,9 @@ export default class Stack extends Track {
     const radialStart = (this.conf.thickness + this.conf.radialMargin) *
       d.layer;
     const radialEnd = radialStart + this.conf.thickness;
-
     if (this.conf.direction === 'out') {
       return [
-        this.conf.innerRadius + radialStart,
+        Math.min(this.conf.innerRadius + radialStart,  this.conf.outerRadius),
         Math.min(this.conf.innerRadius + radialEnd, this.conf.outerRadius),
       ];
     }
@@ -120,11 +119,6 @@ export default class Stack extends Track {
         ];
       }
     }
-  }
-
-  renderDatumContainer(instance, parentElement, name, data, conf) {
-    const track = parentElement.append('g');
-    return this.renderBlock(track, data, instance._layout, conf);
   }
 
   renderDatum(parentElement, conf, layout, utils) {

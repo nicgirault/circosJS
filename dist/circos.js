@@ -150,55 +150,55 @@ var Circos =
 	    }
 	  }, {
 	    key: 'layout',
-	    value: function layout(conf, data) {
+	    value: function layout(data, conf) {
 	      this._layout = new _layout2.default(conf, data);
 	      return this;
 	    }
 	  }, {
 	    key: 'chords',
-	    value: function chords(id, conf, data) {
+	    value: function chords(id, data, conf) {
 	      this.tracks[id] = new _Chords2.default(this, conf, data);
 	      return this;
 	    }
 	  }, {
 	    key: 'heatmap',
-	    value: function heatmap(id, conf, data) {
+	    value: function heatmap(id, data, conf) {
 	      this.tracks[id] = new _Heatmap2.default(this, conf, data);
 	      return this;
 	    }
 	  }, {
 	    key: 'highlight',
-	    value: function highlight(id, conf, data) {
+	    value: function highlight(id, data, conf) {
 	      this.tracks[id] = new _Highlight2.default(this, conf, data);
 	      return this;
 	    }
 	  }, {
 	    key: 'histogram',
-	    value: function histogram(id, conf, data) {
+	    value: function histogram(id, data, conf) {
 	      this.tracks[id] = new _Histogram2.default(this, conf, data);
 	      return this;
 	    }
 	  }, {
 	    key: 'line',
-	    value: function line(id, conf, data) {
+	    value: function line(id, data, conf) {
 	      this.tracks[id] = new _Line2.default(this, conf, data);
 	      return this;
 	    }
 	  }, {
 	    key: 'scatter',
-	    value: function scatter(id, conf, data) {
+	    value: function scatter(id, data, conf) {
 	      this.tracks[id] = new _Scatter2.default(this, conf, data);
 	      return this;
 	    }
 	  }, {
 	    key: 'stack',
-	    value: function stack(id, conf, data) {
+	    value: function stack(id, data, conf) {
 	      this.tracks[id] = new _Stack2.default(this, conf, data);
 	      return this;
 	    }
 	  }, {
 	    key: 'text',
-	    value: function text(id, conf, data) {
+	    value: function text(id, data, conf) {
 	      this.tracks[id] = new _Text2.default(this, conf, data);
 	      return this;
 	    }
@@ -10129,12 +10129,6 @@ var Circos =
 	  }
 
 	  _createClass(Text, [{
-	    key: 'renderDatumContainer',
-	    value: function renderDatumContainer(instance, parentElement, name, data, conf) {
-	      var track = parentElement.append('g').attr('class', name);
-	      return this.renderBlock(track, data, instance._layout, conf);
-	    }
-	  }, {
 	    key: 'renderDatum',
 	    value: function renderDatum(parentElement, conf, layout, utils) {
 	      var text = parentElement.selectAll('g').data(function (d) {
@@ -10174,6 +10168,10 @@ var Circos =
 	var _range = __webpack_require__(204);
 
 	var _range2 = _interopRequireDefault(_range);
+
+	var _reduce = __webpack_require__(141);
+
+	var _reduce2 = _interopRequireDefault(_reduce);
 
 	var _d3Dispatch = __webpack_require__(195);
 
@@ -10216,8 +10214,8 @@ var Circos =
 
 	      parentElement.select('.' + name).remove();
 	      var track = parentElement.append('g').attr('class', name).attr('z-index', this.conf.zIndex);
-	      var datumContainer = this.renderDatumContainer(instance, track, name, this.data, this.conf);
-	      if (this.conf.axes && this.conf.axes.display) {
+	      var datumContainer = this.renderBlock(track, this.data, instance._layout, this.conf);
+	      if (this.conf.axes.length > 0) {
 	        this.renderAxes(datumContainer, this.conf, instance._layout, this.data);
 	      }
 	      var selection = this.renderDatum(datumContainer, this.conf, instance._layout, this);
@@ -10236,33 +10234,33 @@ var Circos =
 	  }, {
 	    key: 'renderBlock',
 	    value: function renderBlock(parentElement, data, layout, conf) {
-	      var scope = conf.outerRadius - conf.innerRadius;
-	      console.log(parentElement, data);
+	      var _this2 = this;
+
 	      var block = parentElement.selectAll('.block').data(data).enter().append('g').attr('class', 'block').attr('transform', function (d) {
 	        return 'rotate(' + layout.blocks[d.key].start * 360 / (2 * Math.PI) + ')';
 	      });
 
 	      if (conf.backgrounds) {
-	        block.selectAll('.background').data(conf.backgrounds).enter().append('path').attr('class', 'background').attr('fill', function (background) {
+	        block.selectAll('.background').data(function (d) {
+	          return conf.backgrounds.map(function (background) {
+	            return {
+	              start: background.start,
+	              end: background.end,
+	              angle: layout.blocks[d.key].end - layout.blocks[d.key].start,
+	              color: background.color,
+	              opacity: background.opacity
+	            };
+	          });
+	        }).enter().append('path').attr('class', 'background').attr('fill', function (background) {
 	          return background.color;
 	        }).attr('opacity', function (background) {
 	          return background.opacity || 1;
 	        }).attr('d', (0, _d3Shape.arc)().innerRadius(function (background) {
-	          if (conf.direction === 'in') {
-	            return conf.outerRadius - scope * background.start;
-	          } else {
-	            return conf.innerRadius + scope * background.start;
-	          }
+	          return conf.direction === 'in' ? conf.outerRadius - _this2.scale(background.start) : conf.innerRadius + _this2.scale(background.start);
 	        }).outerRadius(function (background) {
-	          if (conf.direction == 'in') {
-	            return conf.outerRadius - scope * background.end;
-	          } else {
-	            return conf.innerRadius + scope * background.end;
-	          }
-	        }).startAngle(function (d, i, j) {
-	          return 0;
-	        }).endAngle(function (d, i, j) {
-	          return layout.blocks[data[j].key].end - layout.blocks[data[j].key].start;
+	          return conf.direction === 'in' ? conf.outerRadius - _this2.scale(background.end) : conf.innerRadius + _this2.scale(background.end);
+	        }).startAngle(0).endAngle(function (d) {
+	          return d.angle;
 	        }));
 	      }
 
@@ -10271,28 +10269,52 @@ var Circos =
 	  }, {
 	    key: 'renderAxes',
 	    value: function renderAxes(parentElement, conf, layout, data) {
-	      var axes = (0, _range2.default)(conf.innerRadius, conf.outerRadius, conf.axes.minor.spacing);
+	      var _this3 = this;
+
+	      var axes = (0, _reduce2.default)(conf.axes, function (aggregator, axesGroup) {
+	        if (axesGroup.position) {
+	          aggregator.push({
+	            value: axesGroup.position,
+	            thickness: axesGroup.thickness || 1,
+	            color: axesGroup.color || '#d3d3d3'
+	          });
+	        }
+	        if (axesGroup.spacing) {
+	          var builtAxes = (0, _range2.default)(conf.min, conf.max, axesGroup.spacing).map(function (value) {
+	            return {
+	              value: value,
+	              thickness: axesGroup.thickness || 1,
+	              color: axesGroup.color || '#d3d3d3'
+	            };
+	          });
+	          return aggregator.concat(builtAxes);
+	        }
+	        return aggregator;
+	      }, []);
 
 	      var axis = (0, _d3Shape.arc)().innerRadius(function (d) {
-	        return d.height;
+	        return conf.direction === 'in' ? conf.outerRadius - _this3.scale(d.value) : conf.innerRadius + _this3.scale(d.value);
 	      }).outerRadius(function (d) {
-	        return d.height;
+	        return conf.direction === 'in' ? conf.outerRadius - _this3.scale(d.value) : conf.innerRadius + _this3.scale(d.value);
 	      }).startAngle(0).endAngle(function (d) {
 	        return d.length;
 	      });
 
 	      return parentElement.selectAll('.axis').data(function (blockData) {
 	        var block = layout.blocks[blockData.key];
-	        return axes.map(function (height) {
+	        return axes.map(function (d) {
 	          return {
-	            height: height,
+	            value: d.value,
+	            thickness: d.thickness,
+	            color: d.color,
+	            block_id: blockData.key,
 	            length: block.end - block.start
 	          };
 	        });
-	      }).enter().append('path').attr('opacity', conf.opacity).attr('class', 'axis').attr('d', axis).attr('stroke-width', function (d, i) {
-	        return i % conf.axes.major.spacing === 0 ? conf.axes.major.thickness : conf.axes.minor.thickness;
-	      }).attr('stroke', function (d, i) {
-	        return i % conf.axes.major.spacing === 0 ? conf.axes.major.color : conf.axes.minor.color;
+	      }).enter().append('path').attr('opacity', conf.opacity).attr('class', 'axis').attr('d', axis).attr('stroke-width', function (d) {
+	        return d.thickness;
+	      }).attr('stroke', function (d) {
+	        return d.color;
 	      });
 	    }
 	  }, {
@@ -13416,6 +13438,18 @@ var Circos =
 	      outerRadius: borders.out
 	    };
 	  }
+	  if (conf.innerRadius <= 1 && conf.outerRadius <= 1) {
+	    return {
+	      innerRadius: conf.innerRadius * instance._layout.conf.innerRadius,
+	      outerRadius: conf.outerRadius * instance._layout.conf.innerRadius
+	    };
+	  }
+	  if (conf.innerRadius <= 10 && conf.outerRadius <= 10) {
+	    return {
+	      innerRadius: conf.innerRadius * instance._layout.conf.outerRadius,
+	      outerRadius: conf.outerRadius * instance._layout.conf.outerRadius
+	    };
+	  }
 	  return;
 	};
 
@@ -13623,7 +13657,7 @@ var Circos =
 	  }
 	  var scale = logScale && min * max > 0 ? (0, _d3Scale.scaleLog)().base(logScaleBase) : (0, _d3Scale.scaleLinear)();
 
-	  return scale.domain([min, max]).range([0, height]);
+	  return scale.domain([min, max]).range([0, height]).clamp(true);
 	}
 
 	function buildColorScale(interpolator, min, max) {
@@ -19921,14 +19955,14 @@ var Circos =
 	  var preParsedData = normalize(data, ['parent_id', 'position', 'value']);
 
 	  var filteredData = preParsedData.filter(function (datum, index) {
-	    return checkParent(datum[0], index, layoutSummary, 'parent');
+	    return checkParent(datum.block_id, index, layoutSummary, 'parent');
 	  }).filter(function (datum, index) {
-	    return checkNumber({ position: datum[1], value: datum[2] }, index);
+	    return checkNumber({ position: datum.position, value: datum.value }, index);
 	  }).map(function (datum) {
 	    return {
-	      block_id: datum[0],
-	      position: Math.min(layoutSummary[datum[0]], parseFloat(datum[1])),
-	      value: parseFloat(datum[2]) || 1
+	      block_id: datum.block_id,
+	      position: Math.min(layoutSummary[datum.block_id], parseFloat(datum.position)),
+	      value: parseFloat(datum.value) || 1
 	    };
 	  });
 
@@ -20354,38 +20388,8 @@ var Circos =
 	});
 	var axes = {
 	  axes: {
-	    display: {
-	      value: false,
-	      iteratee: false
-	    },
-	    minor: {
-	      spacing: {
-	        value: 5,
-	        iteratee: false
-	      },
-	      color: {
-	        value: '#d3d3d3',
-	        iteratee: false
-	      },
-	      thickness: {
-	        value: 2,
-	        iteratee: false
-	      }
-	    },
-	    major: {
-	      spacing: {
-	        value: 5,
-	        iteratee: false
-	      },
-	      color: {
-	        value: '#000000',
-	        iteratee: false
-	      },
-	      thickness: {
-	        value: 2,
-	        iteratee: false
-	      }
-	    }
+	    value: [],
+	    iteratee: false
 	  }
 	};
 
@@ -20444,7 +20448,7 @@ var Circos =
 	    iteratee: false
 	  },
 	  opacity: {
-	    value: false,
+	    value: 1,
 	    iteratee: true
 	  },
 	  tooltipContent: {
@@ -20505,6 +20509,10 @@ var Circos =
 	  strokeWidth: {
 	    value: 0,
 	    iteratee: true
+	  },
+	  axes: {
+	    value: [],
+	    iteratee: false
 	  }
 	}, _configs.radial, _configs.common);
 
@@ -20518,11 +20526,6 @@ var Circos =
 	  }
 
 	  _createClass(Highlight, [{
-	    key: 'renderDatumContainer',
-	    value: function renderDatumContainer(instance, parentElement, name, data, conf) {
-	      return this.renderBlock(parentElement, data, instance._layout, conf);
-	    }
-	  }, {
 	    key: 'renderDatum',
 	    value: function renderDatum(parentElement, conf, layout, utils) {
 	      return parentElement.selectAll('tile').data(function (d) {
@@ -20599,12 +20602,6 @@ var Circos =
 	  }
 
 	  _createClass(Histogram, [{
-	    key: 'renderDatumContainer',
-	    value: function renderDatumContainer(instance, parentElement, name, data, conf) {
-	      var track = parentElement.append('g');
-	      return this.renderBlock(track, data, instance._layout, conf);
-	    }
-	  }, {
 	    key: 'renderDatum',
 	    value: function renderDatum(parentElement, conf, layout, utils) {
 	      var _this2 = this;
@@ -21032,13 +21029,6 @@ var Circos =
 	  }
 
 	  _createClass(Heatmap, [{
-	    key: 'renderDatumContainer',
-	    value: function renderDatumContainer(instance, parentElement, name, data, conf) {
-	      var track = parentElement.append('g');
-
-	      return this.renderBlock(track, data, instance._layout, conf);
-	    }
-	  }, {
 	    key: 'renderDatum',
 	    value: function renderDatum(parentElement, conf, layout) {
 	      var _this2 = this;
@@ -21080,6 +21070,14 @@ var Circos =
 
 	var _assign2 = _interopRequireDefault(_assign);
 
+	var _reduce = __webpack_require__(141);
+
+	var _reduce2 = _interopRequireDefault(_reduce);
+
+	var _sortBy = __webpack_require__(179);
+
+	var _sortBy2 = _interopRequireDefault(_sortBy);
+
 	var _configs = __webpack_require__(292);
 
 	var _d3Shape = __webpack_require__(188);
@@ -21110,18 +21108,35 @@ var Circos =
 	    iteratee: true
 	  },
 	  thickness: {
-	    value: 2,
+	    value: 1,
 	    iteratee: true
 	  },
-	  max_gap: {
-	    value: 10000000,
-	    iteratee: true
+	  maxGap: {
+	    value: null,
+	    iteratee: false
 	  },
 	  backgrounds: {
 	    value: [],
 	    iteratee: false
+	  },
+	  axes: {
+	    value: [],
+	    iteratee: false
 	  }
-	}, _configs.axes, _configs.radial, _configs.common, _configs.values);
+	}, _configs.radial, _configs.common, _configs.values);
+
+	var splitByGap = function splitByGap(points, maxGap) {
+	  return (0, _reduce2.default)((0, _sortBy2.default)(points, 'position'), function (aggregator, datum) {
+	    if (aggregator.position === null) return { position: datum.position, groups: [[datum]] };
+	    if (datum.position > aggregator.position + maxGap) {
+	      aggregator.groups.push([datum]);
+	    } else {
+	      aggregator.groups[aggregator.groups.length - 1].push(datum);
+	    }
+	    aggregator.position = datum.position;
+	    return aggregator;
+	  }, { position: null, groups: [] }).groups;
+	};
 
 	var Line = function (_Track) {
 	  _inherits(Line, _Track);
@@ -21133,14 +21148,10 @@ var Circos =
 	  }
 
 	  _createClass(Line, [{
-	    key: 'renderDatumContainer',
-	    value: function renderDatumContainer(instance, parentElement, name, data, conf) {
-	      var track = parentElement.append('g').attr('class', name);
-	      return this.renderBlock(track, data, instance._layout, conf);
-	    }
-	  }, {
 	    key: 'renderDatum',
 	    value: function renderDatum(parentElement, conf, layout, utils) {
+	      var _this2 = this;
+
 	      var line = (0, _d3Shape.radialLine)().angle(function (d) {
 	        return d.angle;
 	      }).radius(function (d) {
@@ -21170,14 +21181,16 @@ var Circos =
 	        }
 	      };
 
-	      return parentElement.append('path').datum(function (d) {
-	        return d.values.map(function (datum) {
-	          var height = utils.ratio(datum.value, conf.cmin, conf.cmax, conf.outerRadius - conf.innerRadius, false, conf.logscale);
+	      return parentElement.selectAll('.line').data(function (d) {
+	        return conf.maxGap ? splitByGap(d.values, conf.maxGap) : [d.values];
+	      }).enter().append('g').attr('class', 'line').append('path').datum(function (d) {
+	        return d.map(function (datum) {
+	          var height = _this2.scale(datum.value);
 	          return (0, _assign2.default)(datum, {
-	            angle: utils.theta(datum.position, layout.blocks[d.key])
+	            angle: utils.theta(datum.position, layout.blocks[datum.block_id])
 	          }, buildRadius(height));
 	        });
-	      }).attr('class', 'line').attr('d', generator).attr('opacity', conf.opacity).attr('stroke-width', conf.thickness).attr('stroke', conf.color).attr('fill', function (d, i) {
+	      }).attr('d', generator).attr('opacity', conf.opacity).attr('stroke-width', conf.thickness).attr('stroke', conf.color).attr('fill', function (d, i) {
 	        return conf.fill ? conf.fill_color(d, i) : 'none';
 	      });
 	    }
@@ -21290,12 +21303,6 @@ var Circos =
 	  }
 
 	  _createClass(Scatter, [{
-	    key: 'renderDatumContainer',
-	    value: function renderDatumContainer(instance, parentElement, name, data, conf) {
-	      var track = parentElement.append('g').attr('class', name);
-	      return this.renderBlock(track, data, instance._layout, conf);
-	    }
-	  }, {
 	    key: 'renderDatum',
 	    value: function renderDatum(parentElement, conf, layout, utils) {
 	      var point = parentElement.selectAll('.point').data(function (d) {
@@ -21447,7 +21454,6 @@ var Circos =
 	    value: function datumRadialPosition(d) {
 	      var radialStart = (this.conf.thickness + this.conf.radialMargin) * d.layer;
 	      var radialEnd = radialStart + this.conf.thickness;
-	      console.log(this.conf.innerRadius + radialStart, Math.min(this.conf.innerRadius + radialEnd, this.conf.outerRadius));
 	      if (this.conf.direction === 'out') {
 	        return [Math.min(this.conf.innerRadius + radialStart, this.conf.outerRadius), Math.min(this.conf.innerRadius + radialEnd, this.conf.outerRadius)];
 	      }
@@ -21467,12 +21473,6 @@ var Circos =
 	          return [origin - _radialStart - this.conf.radialMargin, origin - _radialEnd - this.conf.radialMargin];
 	        }
 	      }
-	    }
-	  }, {
-	    key: 'renderDatumContainer',
-	    value: function renderDatumContainer(instance, parentElement, name, data, conf) {
-	      var track = parentElement.append('g');
-	      return this.renderBlock(track, data, instance._layout, conf);
 	    }
 	  }, {
 	    key: 'renderDatum',

@@ -1,6 +1,8 @@
 import Track from './Track';
 import {parsePositionValueData} from '../dataParser';
 import assign from 'lodash/assign';
+import reduce from 'lodash/reduce';
+import sortBy from 'lodash/sortBy';
 import {axes, radial, common, values} from '../configs';
 import {curveLinear, radialLine, radialArea} from 'd3-shape';
 
@@ -22,28 +24,40 @@ const defaultConf = assign({
     iteratee: true,
   },
   thickness: {
-    value: 2,
+    value: 1,
     iteratee: true,
   },
-  max_gap: {
-    value: 10000000,
-    iteratee: true,
+  maxGap: {
+    value: null,
+    iteratee: false,
   },
   backgrounds: {
     value: [],
     iteratee: false,
   },
-}, axes, radial, common, values);
+  axes: {
+    value: [],
+    iteratee: false,
+  },
+}, radial, common, values);
+
+const splitByGap = (points, maxGap) => {
+  return reduce(sortBy(points, 'position'), (aggregator, datum) => {
+    if (aggregator.position === null)
+      return {position: datum.position, groups: [[datum]]};
+    if (datum.position > aggregator.position + maxGap) {
+      aggregator.groups.push([datum]);
+    } else {
+      aggregator.groups[aggregator.groups.length - 1].push(datum);
+    }
+    aggregator.position = datum.position;
+    return aggregator;
+  }, {position: null, groups: []}).groups;
+};
 
 export default class Line extends Track {
   constructor(instance, conf, data) {
     super(instance, conf, defaultConf, data, parsePositionValueData);
-  }
-
-  renderDatumContainer(instance, parentElement, name, data, conf) {
-    const track = parentElement.append('g')
-      .attr('class', name);
-    return this.renderBlock(track, data, instance._layout, conf);
   }
 
   renderDatum(parentElement, conf, layout, utils) {
@@ -76,29 +90,23 @@ export default class Line extends Track {
       }
     };
 
-    return parentElement.append('path')
+    return parentElement.selectAll('.line')
+      .data((d) => conf.maxGap ? splitByGap(d.values, conf.maxGap) : [d.values])
+      .enter().append('g')
+      .attr('class', 'line')
+      .append('path')
       .datum((d) => {
-        return d.values.map((datum) => {
-          const height = utils.ratio(
-            datum.value,
-            conf.cmin,
-            conf.cmax,
-            conf.outerRadius - conf.innerRadius,
-            false,
-            conf.logscale
-          );
+        return d.map((datum) => {
+          const height = this.scale(datum.value);
           return assign(datum, {
-            angle: utils.theta(datum.position, layout.blocks[d.key]),
+            angle: utils.theta(datum.position, layout.blocks[datum.block_id]),
           }, buildRadius(height));
         });
       })
-      .attr('class', 'line')
       .attr('d', generator)
       .attr('opacity', conf.opacity)
       .attr('stroke-width', conf.thickness)
       .attr('stroke', conf.color)
-      .attr('fill', (d, i) =>
-        conf.fill ? conf.fill_color(d, i) : 'none'
-      );
+      .attr('fill', (d, i) => conf.fill ? conf.fill_color(d, i) : 'none');
   }
 }
