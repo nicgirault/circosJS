@@ -106,6 +106,17 @@ var drawCircos = function(error, GRCh37, cytobands, snp250, snp, snp1m) {
       ],
       tooltipContent: null,
     })
+    .scatter('snp-250-tooltip', snp250, {
+      innerRadius: 0.5,
+      outerRadius: 0.8,
+      min: 0,
+      max: 0.015,
+      fill: false,
+      strokeWidth: 0,
+      tooltipContent: function(d, i) {
+        return `${d.block_id}:${Math.round(d.position)} ➤ ${d.value}`;
+      },
+    })
     .line('snp', snp, {
       innerRadius: 1.01,
       outerRadius: 1.15,

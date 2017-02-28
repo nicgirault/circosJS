@@ -10218,14 +10218,14 @@ var Circos =
 	      if (this.conf.axes.length > 0) {
 	        this.renderAxes(datumContainer, this.conf, instance._layout, this.data);
 	      }
-	      var selection = this.renderDatum(datumContainer, this.conf, instance._layout, this);
+	      var selection = this.renderDatum(datumContainer, this.conf, instance._layout);
 	      if (this.conf.tooltipContent) {
 	        (0, _tooltip.registerTooltip)(this, instance, selection, this.conf);
 	      }
-	      selection.on('mouseover', function (d, i, j) {
+	      selection.on('mouseover', function (d, i) {
 	        _this.dispatch.call('mouseover', _this, d);
 	      });
-	      selection.on('mouseout', function (d, i, j) {
+	      selection.on('mouseout', function (d, i) {
 	        _this.dispatch.call('mouseout', _this, d);
 	      });
 
@@ -20527,13 +20527,15 @@ var Circos =
 
 	  _createClass(Highlight, [{
 	    key: 'renderDatum',
-	    value: function renderDatum(parentElement, conf, layout, utils) {
+	    value: function renderDatum(parentElement, conf, layout) {
+	      var _this2 = this;
+
 	      return parentElement.selectAll('tile').data(function (d) {
 	        return d.values;
 	      }).enter().append('path').attr('class', 'tile').attr('d', (0, _d3Shape.arc)().innerRadius(conf.innerRadius).outerRadius(conf.outerRadius).startAngle(function (d, i) {
-	        return utils.theta(d.start, layout.blocks[d.block_id]);
+	        return _this2.theta(d.start, layout.blocks[d.block_id]);
 	      }).endAngle(function (d, i) {
-	        return utils.theta(d.end, layout.blocks[d.block_id]);
+	        return _this2.theta(d.end, layout.blocks[d.block_id]);
 	      })).attr('fill', conf.color).attr('opacity', conf.opacity).attr('stroke-width', conf.strokeWidth).attr('stroke', conf.strokeColor);
 	    }
 	  }]);
@@ -21066,6 +21068,8 @@ var Circos =
 
 	var _dataParser = __webpack_require__(283);
 
+	var _tooltip = __webpack_require__(193);
+
 	var _assign = __webpack_require__(210);
 
 	var _assign2 = _interopRequireDefault(_assign);
@@ -21149,7 +21153,7 @@ var Circos =
 
 	  _createClass(Line, [{
 	    key: 'renderDatum',
-	    value: function renderDatum(parentElement, conf, layout, utils) {
+	    value: function renderDatum(parentElement, conf, layout) {
 	      var _this2 = this;
 
 	      var line = (0, _d3Shape.radialLine)().angle(function (d) {
@@ -21187,11 +21191,10 @@ var Circos =
 	        return d.map(function (datum) {
 	          var height = _this2.scale(datum.value);
 	          return (0, _assign2.default)(datum, {
-	            angle: utils.theta(datum.position, layout.blocks[datum.block_id])
+	            angle: _this2.theta(datum.position, layout.blocks[datum.block_id])
 	          }, buildRadius(height));
 	        });
-	      }).attr('d', generator).attr('opacity', conf.opacity).attr('stroke-width', conf.thickness).attr('stroke', conf.color);
-	      selection.attr('fill', 'none');
+	      }).attr('d', generator).attr('opacity', conf.opacity).attr('stroke-width', conf.thickness).attr('stroke', conf.color).attr('fill', 'none');
 
 	      if (conf.fill) selection.attr('fill', conf.fillColor);
 
@@ -21243,31 +21246,29 @@ var Circos =
 	    value: 'out',
 	    iteratee: false
 	  },
-	  glyph: {
-	    color: {
-	      value: '#fd6a62',
-	      iteratee: true
-	    },
-	    fill: {
-	      value: true,
-	      iteratee: true
-	    },
-	    size: {
-	      value: 15,
-	      iteratee: true
-	    },
-	    shape: {
-	      value: 'circle',
-	      iteratee: true
-	    },
-	    strokeColor: {
-	      value: '#d3d3d3',
-	      iteratee: true
-	    },
-	    strokeWidth: {
-	      value: 2,
-	      iteratee: true
-	    }
+	  color: {
+	    value: '#fd6a62',
+	    iteratee: true
+	  },
+	  fill: {
+	    value: true,
+	    iteratee: false
+	  },
+	  size: {
+	    value: 15,
+	    iteratee: true
+	  },
+	  shape: {
+	    value: 'circle',
+	    iteratee: true
+	  },
+	  strokeColor: {
+	    value: '#d3d3d3',
+	    iteratee: true
+	  },
+	  strokeWidth: {
+	    value: 2,
+	    iteratee: true
 	  },
 	  backgrounds: {
 	    value: [],
@@ -21307,21 +21308,22 @@ var Circos =
 
 	  _createClass(Scatter, [{
 	    key: 'renderDatum',
-	    value: function renderDatum(parentElement, conf, layout, utils) {
+	    value: function renderDatum(parentElement, conf, layout) {
+	      var _this2 = this;
+
 	      var point = parentElement.selectAll('.point').data(function (d) {
 	        d.values.forEach(function (item, i) {
-	          item.symbol = (0, _d3Shape.symbol)().type(getSymbol(conf.glyph.shape(item, i))).size(conf.glyph.size(item, i));
+	          item.symbol = (0, _d3Shape.symbol)().type(getSymbol(conf.shape(item, i))).size(conf.size(item, i));
 	        });
 	        return d.values;
 	      }).enter().append('path').attr('class', 'point').attr('opacity', conf.opacity).attr('d', function (d, i, j) {
 	        return d.symbol(d, i, j);
 	      }).attr('transform', function (d) {
-	        return '\n          translate(\n            ' + utils.x(d, layout, conf) + ',\n            ' + utils.y(d, layout, conf) + '\n          ) rotate(\n            ' + utils.theta(d.position, layout.blocks[d.block_id]) * 360 / (2 * Math.PI) + '\n          )';
-	      }).attr('stroke', conf.glyph.strokeColor).attr('stroke-width', conf.glyph.strokeWidth).attr('fill', function (d, i) {
-	        var fill = conf.glyph.fill(d, i);
-	        var color = conf.glyph.color(d, i);
-	        return fill ? color : 'none';
-	      });
+	        return '\n          translate(\n            ' + _this2.x(d, layout, conf) + ',\n            ' + _this2.y(d, layout, conf) + '\n          ) rotate(\n            ' + _this2.theta(d.position, layout.blocks[d.block_id]) * 360 / (2 * Math.PI) + '\n          )';
+	      }).attr('stroke', conf.strokeColor).attr('stroke-width', conf.strokeWidth).attr('fill', 'none');
+
+	      if (conf.fill) point.attr('fill', conf.color);
+
 	      return point;
 	    }
 	  }]);

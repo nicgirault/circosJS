@@ -1,5 +1,6 @@
 import Track from './Track';
 import {parsePositionValueData} from '../dataParser';
+import {registerTooltip} from '../behaviors/tooltip';
 import assign from 'lodash/assign';
 import reduce from 'lodash/reduce';
 import sortBy from 'lodash/sortBy';
@@ -60,7 +61,7 @@ export default class Line extends Track {
     super(instance, conf, defaultConf, data, parsePositionValueData);
   }
 
-  renderDatum(parentElement, conf, layout, utils) {
+  renderDatum(parentElement, conf, layout) {
     const line = radialLine()
       .angle((d) => d.angle)
       .radius((d) => d.radius)
@@ -99,7 +100,7 @@ export default class Line extends Track {
         return d.map((datum) => {
           const height = this.scale(datum.value);
           return assign(datum, {
-            angle: utils.theta(datum.position, layout.blocks[datum.block_id]),
+            angle: this.theta(datum.position, layout.blocks[datum.block_id]),
           }, buildRadius(height));
         });
       })
@@ -107,7 +108,7 @@ export default class Line extends Track {
       .attr('opacity', conf.opacity)
       .attr('stroke-width', conf.thickness)
       .attr('stroke', conf.color)
-      selection.attr('fill', 'none');
+      .attr('fill', 'none');
 
     if (conf.fill)
       selection.attr('fill', conf.fillColor);

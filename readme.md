@@ -275,7 +275,7 @@ Configuration:
 ### Line
 
 <p align="center">
-  <img src="doc/lines.png" width="60%" alt="lines">
+  <img src="doc/line.png" width="60%" alt="line">
   <br/>
   <i>Some single nucleotide polymorphism on chromosomes 1, 2 and 3 (<a href="demo/line">source</a>)</i>
 </p>
@@ -303,9 +303,10 @@ Configuration:
   maxGap: null, // if the gap between two data points is bigger than this value, the line with be discontinued
   opacity: 1,
   logScale: false,
-  tooltipContent: null,
 }
 ```
+
+**Note**: The tooltip option is not available for line track. To display a tooltip, you should superimpose an invisble `scatter` track (`fill: false` and `strokeWidth: 0`) and set a tooltip for this track.
 
 ### Scatter
 

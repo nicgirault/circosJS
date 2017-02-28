@@ -18,31 +18,29 @@ const defaultConf = assign({
     value: 'out',
     iteratee: false,
   },
-  glyph: {
-    color: {
-      value: '#fd6a62',
-      iteratee: true,
-    },
-    fill: {
-      value: true,
-      iteratee: true,
-    },
-    size: {
-      value: 15,
-      iteratee: true,
-    },
-    shape: {
-      value: 'circle',
-      iteratee: true,
-    },
-    strokeColor: {
-      value: '#d3d3d3',
-      iteratee: true,
-    },
-    strokeWidth: {
-      value: 2,
-      iteratee: true,
-    },
+  color: {
+    value: '#fd6a62',
+    iteratee: true,
+  },
+  fill: {
+    value: true,
+    iteratee: false,
+  },
+  size: {
+    value: 15,
+    iteratee: true,
+  },
+  shape: {
+    value: 'circle',
+    iteratee: true,
+  },
+  strokeColor: {
+    value: '#d3d3d3',
+    iteratee: true,
+  },
+  strokeWidth: {
+    value: 2,
+    iteratee: true,
   },
   backgrounds: {
     value: [],
@@ -76,13 +74,13 @@ export default class Scatter extends Track {
     super(instance, conf, defaultConf, data, parsePositionValueData)
   }
 
-  renderDatum(parentElement, conf, layout, utils) {
+  renderDatum(parentElement, conf, layout) {
     const point = parentElement.selectAll('.point')
       .data((d) => {
         d.values.forEach((item, i) => {
           item.symbol = symbol()
-            .type(getSymbol(conf.glyph.shape(item, i)))
-            .size(conf.glyph.size(item, i));
+            .type(getSymbol(conf.shape(item, i)))
+            .size(conf.size(item, i));
         });
         return d.values;
       })
@@ -93,22 +91,22 @@ export default class Scatter extends Track {
       .attr('transform', (d) => {
         return `
           translate(
-            ${utils.x(d, layout, conf)},
-            ${utils.y(d, layout, conf)}
+            ${this.x(d, layout, conf)},
+            ${this.y(d, layout, conf)}
           ) rotate(
-            ${utils.theta(
+            ${this.theta(
               d.position,
               layout.blocks[d.block_id]
             ) * 360 / (2 * Math.PI)}
           )`;
       })
-      .attr('stroke', conf.glyph.strokeColor)
-      .attr('stroke-width', conf.glyph.strokeWidth)
-      .attr('fill', (d, i) => {
-        const fill = conf.glyph.fill(d, i);
-        const color = conf.glyph.color(d, i);
-        return fill ? color : 'none';
-      });
+      .attr('stroke', conf.strokeColor)
+      .attr('stroke-width', conf.strokeWidth)
+      .attr('fill', 'none');
+
+    if (conf.fill)
+      point.attr('fill', conf.color);
+
     return point;
   }
 }

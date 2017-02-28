@@ -28,7 +28,7 @@ export default class Highlight extends Track {
     super(instance, conf, defaultConf, data, parseSpanStringData);
   }
 
-  renderDatum(parentElement, conf, layout, utils) {
+  renderDatum(parentElement, conf, layout) {
     return parentElement.selectAll('tile')
       .data((d) => d.values)
       .enter().append('path')
@@ -36,8 +36,8 @@ export default class Highlight extends Track {
       .attr('d', arc()
         .innerRadius(conf.innerRadius)
         .outerRadius(conf.outerRadius)
-        .startAngle((d, i) => utils.theta(d.start, layout.blocks[d.block_id]))
-        .endAngle((d, i) => utils.theta(d.end, layout.blocks[d.block_id]))
+        .startAngle((d, i) => this.theta(d.start, layout.blocks[d.block_id]))
+        .endAngle((d, i) => this.theta(d.end, layout.blocks[d.block_id]))
       )
       .attr('fill', conf.color)
       .attr('opacity', conf.opacity)

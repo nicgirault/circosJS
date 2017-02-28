@@ -46,14 +46,14 @@ export default class Track {
     if (this.conf.axes.length > 0) {
       this.renderAxes(datumContainer, this.conf, instance._layout, this.data);
     }
-    const selection = this.renderDatum(datumContainer, this.conf, instance._layout, this)
+    const selection = this.renderDatum(datumContainer, this.conf, instance._layout)
     if (this.conf.tooltipContent) {
       registerTooltip(this, instance, selection, this.conf);
     }
-    selection.on('mouseover', (d, i, j) => {
+    selection.on('mouseover', (d, i) => {
       this.dispatch.call('mouseover', this, d);
     });
-    selection.on('mouseout', (d, i, j) => {
+    selection.on('mouseout', (d, i) => {
       this.dispatch.call('mouseout', this, d);
     });
 
