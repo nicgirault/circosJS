@@ -344,6 +344,32 @@ Configuration:
 
 ### Text
 
+<p align="center">
+  <img src="doc/text.png" width="60%" alt="text">
+  <br/>
+  <i><a href="demo/text">source</a></i>
+</p>
+
+```javascript
+myCircos.text('text', data, configuration);
+```
+
+The minimal datum should have `block_id`, `position` and `value` attributes.
+
+Configuration:
+
+```javascript
+{
+  innerRadius: null,
+  outerRadius: null,
+  style: {
+    'font-size': 12,
+    color: 'black',
+  },
+  opacity: 1,
+}
+```
+
 ## Colors
 
 You can specify the color of the track in the track configuration:

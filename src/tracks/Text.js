@@ -9,6 +9,18 @@ const defaultConf = assign({
     value: {},
     iteratee: true,
   },
+  color: {
+    value: 'black',
+    iteratee: true,
+  },
+  axes: {
+    value: [],
+    iteratee: false,
+  },
+  backgrounds: {
+    value: [],
+    iteratee: false,
+  },
 }, common, radial);
 
 export default class Text extends Track {
@@ -18,17 +30,26 @@ export default class Text extends Track {
 
   renderDatum(parentElement, conf, layout) {
     const text = parentElement.selectAll('g')
-      .data((d) => d.values)
+      .data((d) => d.values.map((item) => {
+        item._angle = this.theta(
+          item.position,
+          layout.blocks[item.block_id]
+        ) * 360 / (2 * Math.PI) - 90;
+        item._anchor = item._angle > 90 ? 'end' : 'start';
+        item._rotate = item._angle > 90 ? 180 : 0;
+        return item;
+      }))
       .enter().append('g')
       .append('text')
       .text((d) => d.value)
       .attr('transform', (d) => {
-        const angle = this.theta(
-          d.position,
-          layout.blocks[d.block_id]
-        )*360/(2*Math.PI) - 90;
-        return `rotate(${angle}) translate(${conf.innerRadius}, 0)`;
-      });
+        return `
+          rotate(${d._angle})
+          translate(${conf.innerRadius}, 0)
+          rotate(${d._rotate})
+        `;
+      })
+      .attr('text-anchor', (d) => d._anchor);
     forEach(conf.style, (value, key) => {
       text.style(key, value);
     });

@@ -157,18 +157,11 @@ export function parsePositionTextData(data, layoutSummary) {
   const preParsedData = normalize(data, ['parent_id', 'position', 'value']);
   const filteredData = preParsedData
     .filter((datum, index) =>
-      checkParent(datum[0], index, layoutSummary, 'parent')
+      checkParent(datum.block_id, index, layoutSummary, 'parent')
     )
     .filter((datum, index) =>
-      checkNumber({position: datum[1]}, index)
-    )
-    .map((datum) => {
-      return {
-        block_id: datum[0],
-        position: Math.min(layoutSummary[datum[0]], parseFloat(datum[1])),
-        value: datum[2],
-      };
-    });
+      checkNumber({position: datum.position}, index)
+    );
 
   return buildOutput(filteredData);
 }

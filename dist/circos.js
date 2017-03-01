@@ -10116,6 +10116,18 @@ var Circos =
 	  style: {
 	    value: {},
 	    iteratee: true
+	  },
+	  color: {
+	    value: 'black',
+	    iteratee: true
+	  },
+	  axes: {
+	    value: [],
+	    iteratee: false
+	  },
+	  backgrounds: {
+	    value: [],
+	    iteratee: false
 	  }
 	}, _configs.common, _configs.radial);
 
@@ -10130,14 +10142,22 @@ var Circos =
 
 	  _createClass(Text, [{
 	    key: 'renderDatum',
-	    value: function renderDatum(parentElement, conf, layout, utils) {
+	    value: function renderDatum(parentElement, conf, layout) {
+	      var _this2 = this;
+
 	      var text = parentElement.selectAll('g').data(function (d) {
-	        return d.values;
+	        return d.values.map(function (item) {
+	          item._angle = _this2.theta(item.position, layout.blocks[item.block_id]) * 360 / (2 * Math.PI) - 90;
+	          item._anchor = item._angle > 90 ? 'end' : 'start';
+	          item._rotate = item._angle > 90 ? 180 : 0;
+	          return item;
+	        });
 	      }).enter().append('g').append('text').text(function (d) {
 	        return d.value;
 	      }).attr('transform', function (d) {
-	        var angle = utils.theta(d.position, layout.blocks[d.block_id]) * 360 / (2 * Math.PI) - 90;
-	        return 'rotate(' + angle + ') translate(' + conf.innerRadius + ', 0)';
+	        return '\n          rotate(' + d._angle + ')\n          translate(' + conf.innerRadius + ', 0)\n          rotate(' + d._rotate + ')\n        ';
+	      }).attr('text-anchor', function (d) {
+	        return d._anchor;
 	      });
 	      (0, _forEach2.default)(conf.style, function (value, key) {
 	        text.style(key, value);
@@ -19975,6 +19995,7 @@ var Circos =
 	}
 
 	function parsePositionTextData(data, layoutSummary) {
+	  console.log(data);
 	  // ['parent_id', 'position', 'value']
 	  if (data.length === 0) {
 	    return { data: [], meta: { min: null, max: null } };
@@ -19982,15 +20003,9 @@ var Circos =
 
 	  var preParsedData = normalize(data, ['parent_id', 'position', 'value']);
 	  var filteredData = preParsedData.filter(function (datum, index) {
-	    return checkParent(datum[0], index, layoutSummary, 'parent');
+	    return checkParent(datum.block_id, index, layoutSummary, 'parent');
 	  }).filter(function (datum, index) {
-	    return checkNumber({ position: datum[1] }, index);
-	  }).map(function (datum) {
-	    return {
-	      block_id: datum[0],
-	      position: Math.min(layoutSummary[datum[0]], parseFloat(datum[1])),
-	      value: datum[2]
-	    };
+	    return checkNumber({ position: datum.position }, index);
 	  });
 
 	  return buildOutput(filteredData);
@@ -20610,7 +20625,7 @@ var Circos =
 
 	  _createClass(Histogram, [{
 	    key: 'renderDatum',
-	    value: function renderDatum(parentElement, conf, layout, utils) {
+	    value: function renderDatum(parentElement, conf, layout) {
 	      var _this2 = this;
 
 	      var bin = parentElement.selectAll('.bin').data(function (d) {
@@ -20628,9 +20643,9 @@ var Circos =
 	        }
 	        return conf.outerRadius;
 	      }).startAngle(function (d) {
-	        return utils.theta(d.start, layout.blocks[d.block_id]);
+	        return _this2.theta(d.start, layout.blocks[d.block_id]);
 	      }).endAngle(function (d) {
-	        return utils.theta(d.end, layout.blocks[d.block_id]);
+	        return _this2.theta(d.end, layout.blocks[d.block_id]);
 	      }));
 	      bin.attr('fill', conf.color);
 	      return bin;
@@ -21486,7 +21501,9 @@ var Circos =
 	    }
 	  }, {
 	    key: 'renderDatum',
-	    value: function renderDatum(parentElement, conf, layout, utils) {
+	    value: function renderDatum(parentElement, conf, layout) {
+	      var _this2 = this;
+
 	      var that = this;
 
 	      return parentElement.selectAll('.tile').data(function (d) {
@@ -21495,8 +21512,8 @@ var Circos =
 	          return {
 	            innerRadius: radius[0],
 	            outerRadius: radius[1],
-	            startAngle: utils.theta(datum.start, layout.blocks[datum.block_id]),
-	            endAngle: utils.theta(datum.end, layout.blocks[datum.block_id])
+	            startAngle: _this2.theta(datum.start, layout.blocks[datum.block_id]),
+	            endAngle: _this2.theta(datum.end, layout.blocks[datum.block_id])
 	          };
 	        });
 	      }).enter().append('path').attr('class', 'tile').attr('d', (0, _d3Shape.arc)()).attr('opacity', conf.opacity).attr('stroke-width', conf.strokeWidth).attr('stroke', conf.strokeColor).attr('fill', conf.color);
