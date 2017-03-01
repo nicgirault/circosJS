@@ -121,7 +121,7 @@ export default class Stack extends Track {
     }
   }
 
-  renderDatum(parentElement, conf, layout, utils) {
+  renderDatum(parentElement, conf, layout) {
     const that = this;
 
     return parentElement.selectAll('.tile')
@@ -131,8 +131,8 @@ export default class Stack extends Track {
           return {
             innerRadius: radius[0],
             outerRadius: radius[1],
-            startAngle: utils.theta(datum.start, layout.blocks[datum.block_id]),
-            endAngle: utils.theta(datum.end, layout.blocks[datum.block_id]),
+            startAngle: this.theta(datum.start, layout.blocks[datum.block_id]),
+            endAngle: this.theta(datum.end, layout.blocks[datum.block_id]),
           };
         });
       })

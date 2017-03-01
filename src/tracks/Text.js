@@ -16,14 +16,14 @@ export default class Text extends Track {
     super(instance, conf, defaultConf, data, parsePositionTextData);
   }
 
-  renderDatum(parentElement, conf, layout, utils) {
+  renderDatum(parentElement, conf, layout) {
     const text = parentElement.selectAll('g')
       .data((d) => d.values)
       .enter().append('g')
       .append('text')
       .text((d) => d.value)
       .attr('transform', (d) => {
-        const angle = utils.theta(
+        const angle = this.theta(
           d.position,
           layout.blocks[d.block_id]
         )*360/(2*Math.PI) - 90;

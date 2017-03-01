@@ -25,7 +25,7 @@ export default class Histogram extends Track {
     super(instance, conf, defaultConf, data, parseSpanValueData);
   }
 
-  renderDatum(parentElement, conf, layout, utils) {
+  renderDatum(parentElement, conf, layout) {
     const bin = parentElement.selectAll('.bin')
       .data((d) => d.values)
       .enter().append('path')
@@ -44,8 +44,8 @@ export default class Histogram extends Track {
           }
           return conf.outerRadius;
         })
-        .startAngle((d) => utils.theta(d.start, layout.blocks[d.block_id]))
-        .endAngle((d) => utils.theta(d.end, layout.blocks[d.block_id]))
+        .startAngle((d) => this.theta(d.start, layout.blocks[d.block_id]))
+        .endAngle((d) => this.theta(d.end, layout.blocks[d.block_id]))
       );
     bin.attr('fill', conf.color);
     return bin;
