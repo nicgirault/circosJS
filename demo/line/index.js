@@ -187,9 +187,9 @@ var drawCircos = function(error, GRCh37, cytobands, snp250, snp, snp1m) {
 };
 
 d3.queue()
-  .defer(d3.json, 'GRCh37.json')
-  .defer(d3.csv, 'cytobands.csv')
-  .defer(d3.csv, 'snp.density.250kb.txt')
-  .defer(d3.csv, 'snp.density.txt')
-  .defer(d3.csv, 'snp.density.1mb.txt')
+  .defer(d3.json, '../data/GRCh37.json')
+  .defer(d3.csv, '../data/cytobands.csv')
+  .defer(d3.csv, '../data/snp.density.250kb.txt')
+  .defer(d3.csv, '../data/snp.density.txt')
+  .defer(d3.csv, '../data/snp.density.1mb.txt')
   .await(drawCircos);

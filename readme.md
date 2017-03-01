@@ -310,6 +310,38 @@ Configuration:
 
 ### Scatter
 
+<p align="center">
+  <img src="doc/scatter.png" width="60%" alt="scatter">
+  <br/>
+  <i><a href="demo/line">source</a></i>
+</p>
+
+```javascript
+myCircos.scatter('scatter1', data, configuration);
+```
+
+The minimal datum should have `block_id`, `position` and `value` attributes.
+
+Configuration:
+
+```javascript
+{
+  innerRadius: null,
+  outerRadius: null,
+  min: null,
+  max: null,
+  color: 'd3d3d3',
+  strokeColor: '#d3d3d3',
+  strokeWidth: 1,
+  direction: 'out',
+  fill: true,
+  size: 15,
+  shape: 'circle', // circle, cross, diamond, square, triangle, star, wye
+  opacity: 1,
+  logScale: false,
+}
+```
+
 ### Text
 
 ## Colors
@@ -394,6 +426,10 @@ The default min and max values are computed according to the dataset. You can ov
 ## Radius
 
 < 1, < 10,
+
+## Backgrounds
+
+Si pas de end ou start > max
 
 ## Custom datum formatting
 

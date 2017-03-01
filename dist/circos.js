@@ -10216,7 +10216,7 @@ var Circos =
 	      var track = parentElement.append('g').attr('class', name).attr('z-index', this.conf.zIndex);
 	      var datumContainer = this.renderBlock(track, this.data, instance._layout, this.conf);
 	      if (this.conf.axes.length > 0) {
-	        this.renderAxes(datumContainer, this.conf, instance._layout, this.data);
+	        this.renderAxes(datumContainer, this.conf, instance._layout);
 	      }
 	      var selection = this.renderDatum(datumContainer, this.conf, instance._layout);
 	      if (this.conf.tooltipContent) {
@@ -10244,8 +10244,8 @@ var Circos =
 	        block.selectAll('.background').data(function (d) {
 	          return conf.backgrounds.map(function (background) {
 	            return {
-	              start: background.start,
-	              end: background.end,
+	              start: background.start || conf.cmin,
+	              end: background.end || conf.cmax,
 	              angle: layout.blocks[d.key].end - layout.blocks[d.key].start,
 	              color: background.color,
 	              opacity: background.opacity
@@ -10268,7 +10268,7 @@ var Circos =
 	    }
 	  }, {
 	    key: 'renderAxes',
-	    value: function renderAxes(parentElement, conf, layout, data) {
+	    value: function renderAxes(parentElement, conf, layout) {
 	      var _this3 = this;
 
 	      var axes = (0, _reduce2.default)(conf.axes, function (aggregator, axesGroup) {
@@ -10276,15 +10276,17 @@ var Circos =
 	          aggregator.push({
 	            value: axesGroup.position,
 	            thickness: axesGroup.thickness || 1,
-	            color: axesGroup.color || '#d3d3d3'
+	            color: axesGroup.color || '#d3d3d3',
+	            opacity: axesGroup.opacity || conf.opacity
 	          });
 	        }
 	        if (axesGroup.spacing) {
-	          var builtAxes = (0, _range2.default)(conf.min, conf.max, axesGroup.spacing).map(function (value) {
+	          var builtAxes = (0, _range2.default)(axesGroup.start || conf.cmin, axesGroup.end || conf.cmax, axesGroup.spacing).map(function (value) {
 	            return {
 	              value: value,
 	              thickness: axesGroup.thickness || 1,
-	              color: axesGroup.color || '#d3d3d3'
+	              color: axesGroup.color || '#d3d3d3',
+	              opacity: axesGroup.opacity || conf.opacity
 	            };
 	          });
 	          return aggregator.concat(builtAxes);
@@ -10307,11 +10309,14 @@ var Circos =
 	            value: d.value,
 	            thickness: d.thickness,
 	            color: d.color,
+	            opacity: d.opacity,
 	            block_id: blockData.key,
 	            length: block.end - block.start
 	          };
 	        });
-	      }).enter().append('path').attr('opacity', conf.opacity).attr('class', 'axis').attr('d', axis).attr('stroke-width', function (d) {
+	      }).enter().append('path').attr('opacity', function (d) {
+	        return d.opacity;
+	      }).attr('class', 'axis').attr('d', axis).attr('stroke-width', function (d) {
 	        return d.thickness;
 	      }).attr('stroke', function (d) {
 	        return d.color;
@@ -21260,7 +21265,7 @@ var Circos =
 	  },
 	  shape: {
 	    value: 'circle',
-	    iteratee: true
+	    iteratee: false
 	  },
 	  strokeColor: {
 	    value: '#d3d3d3',
@@ -21313,7 +21318,7 @@ var Circos =
 
 	      var point = parentElement.selectAll('.point').data(function (d) {
 	        d.values.forEach(function (item, i) {
-	          item.symbol = (0, _d3Shape.symbol)().type(getSymbol(conf.shape(item, i))).size(conf.size(item, i));
+	          item.symbol = (0, _d3Shape.symbol)().type(getSymbol(conf.shape)).size(conf.size);
 	        });
 	        return d.values;
 	      }).enter().append('path').attr('class', 'point').attr('opacity', conf.opacity).attr('d', function (d, i, j) {

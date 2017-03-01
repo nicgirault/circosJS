@@ -44,7 +44,7 @@ export default class Track {
       .attr('z-index', this.conf.zIndex);
     const datumContainer = this.renderBlock(track, this.data, instance._layout, this.conf);
     if (this.conf.axes.length > 0) {
-      this.renderAxes(datumContainer, this.conf, instance._layout, this.data);
+      this.renderAxes(datumContainer, this.conf, instance._layout);
     }
     const selection = this.renderDatum(datumContainer, this.conf, instance._layout)
     if (this.conf.tooltipContent) {
@@ -75,8 +75,8 @@ export default class Track {
         .data((d) => {
           return conf.backgrounds.map((background) => {
             return {
-              start: background.start,
-              end: background.end,
+              start: background.start || conf.cmin,
+              end: background.end || conf.cmax,
               angle: layout.blocks[d.key].end - layout.blocks[d.key].start,
               color: background.color,
               opacity: background.opacity,
@@ -106,22 +106,28 @@ export default class Track {
     return block;
   }
 
-  renderAxes(parentElement, conf, layout, data) {
+  renderAxes(parentElement, conf, layout) {
     const axes = reduce(conf.axes, (aggregator, axesGroup) => {
       if (axesGroup.position) {
         aggregator.push({
           value: axesGroup.position,
           thickness: axesGroup.thickness || 1,
           color: axesGroup.color || '#d3d3d3',
+          opacity: axesGroup.opacity || conf.opacity,
         });
       }
       if (axesGroup.spacing) {
-        const builtAxes = range(conf.min, conf.max, axesGroup.spacing)
+        const builtAxes = range(
+          axesGroup.start || conf.cmin,
+          axesGroup.end || conf.cmax,
+          axesGroup.spacing
+        )
           .map((value) => {
             return {
               value: value,
               thickness: axesGroup.thickness || 1,
               color: axesGroup.color || '#d3d3d3',
+              opacity: axesGroup.opacity || conf.opacity,
             };
           });
         return aggregator.concat(builtAxes);
@@ -151,13 +157,14 @@ export default class Track {
             value: d.value,
             thickness: d.thickness,
             color: d.color,
+            opacity: d.opacity,
             block_id: blockData.key,
             length: block.end - block.start,
           };
         });
       })
       .enter().append('path')
-      .attr('opacity', conf.opacity)
+      .attr('opacity', (d) => d.opacity)
       .attr('class', 'axis')
       .attr('d', axis)
       .attr('stroke-width', (d) => d.thickness)

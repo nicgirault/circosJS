@@ -32,7 +32,7 @@ const defaultConf = assign({
   },
   shape: {
     value: 'circle',
-    iteratee: true,
+    iteratee: false,
   },
   strokeColor: {
     value: '#d3d3d3',
@@ -79,8 +79,8 @@ export default class Scatter extends Track {
       .data((d) => {
         d.values.forEach((item, i) => {
           item.symbol = symbol()
-            .type(getSymbol(conf.shape(item, i)))
-            .size(conf.size(item, i));
+            .type(getSymbol(conf.shape))
+            .size(conf.size);
         });
         return d.values;
       })
