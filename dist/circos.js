@@ -4558,8 +4558,8 @@ var Circos =
 	    spacing: 10000000,
 	    labels: true,
 	    labelSpacing: 10,
-	    labelSuffix: 'Mb',
-	    labelDenominator: 1000000,
+	    labelSuffix: '',
+	    labelDenominator: 1,
 	    labelDisplay0: true,
 	    labelSize: 10,
 	    labelColor: '#000',
@@ -13661,6 +13661,7 @@ var Circos =
 	  if (palettes[paletteName]) {
 	    var _ret = function () {
 	      var scale = buildColorScale(palettes[paletteName], min, max, reverse, logScale, logScaleBase);
+	      console.log(scale(2));
 	      return {
 	        v: function v(d) {
 	          return scale(d.value);
@@ -19995,7 +19996,6 @@ var Circos =
 	}
 
 	function parsePositionTextData(data, layoutSummary) {
-	  console.log(data);
 	  // ['parent_id', 'position', 'value']
 	  if (data.length === 0) {
 	    return { data: [], meta: { min: null, max: null } };
@@ -20013,6 +20013,7 @@ var Circos =
 
 	function parseChordData(data, layoutSummary) {
 	  // ['source_id', 'source_start', 'source_end', 'target_id', 'target_start', 'target_end', 'value']
+	  console.log(data);
 	  if (data.length === 0) {
 	    return { data: [], meta: { min: null, max: null } };
 	  }

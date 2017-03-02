@@ -8,6 +8,9 @@
 - [Tracks](#tracks)
   - [Chords](#chords)
   - [Heatmap](#heatmap)
+  - [Line](#line)
+  - [Scatter](#scatter)
+  - [Text](#text)
 
 ## Introduction
 
@@ -157,7 +160,7 @@ Chords tracks connect layout regions.
 <p align="center">
   <img src="doc/chords.png" width="60%" alt="chords">
   <br/>
-  <i>Gene fusions in human karyotype [source](http://cancer.sanger.ac.uk/cosmic/download). [See full example](doc/chords.md)</i>
+  <i>Some gene fusions in human karyotype (<a href="demo/chords">source</a>)</i>
 </p>
 
 Data should looks like this:

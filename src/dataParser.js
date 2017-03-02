@@ -168,6 +168,7 @@ export function parsePositionTextData(data, layoutSummary) {
 
 export function parseChordData(data, layoutSummary) {
   // ['source_id', 'source_start', 'source_end', 'target_id', 'target_start', 'target_end', 'value']
+  console.log(data)
   if (data.length === 0) {
     return {data: [], meta: {min: null, max: null}};
   }
