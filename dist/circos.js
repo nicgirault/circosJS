@@ -13661,7 +13661,6 @@ var Circos =
 	  if (palettes[paletteName]) {
 	    var _ret = function () {
 	      var scale = buildColorScale(palettes[paletteName], min, max, reverse, logScale, logScaleBase);
-	      console.log(scale(2));
 	      return {
 	        v: function v(d) {
 	          return scale(d.value);
@@ -19929,22 +19928,10 @@ var Circos =
 	    return { data: [], meta: { min: null, max: null } };
 	  }
 
-	  var preParsedData = normalize(data, ['parent_id', 'start', 'end', 'value']);
-
-	  var filteredData = preParsedData.filter(function (datum, index) {
-	    return checkParent(datum[0], index, layoutSummary, 'parent');
+	  var filteredData = data.filter(function (datum, index) {
+	    return checkParent(datum.block_id, index, layoutSummary, 'parent');
 	  }).filter(function (datum, index) {
-	    return checkNumber({ start: datum[1], end: datum[2], value: datum[3] }, index);
-	  }).map(function (datum) {
-	    if (datum[1] < 0 || datum[2] > layoutSummary[datum[0]]) {
-	      logger.log(2, 'position', 'position inconsistency', { datum: datum, layoutSummary: layoutSummary });
-	    }
-	    return {
-	      block_id: datum[0],
-	      start: Math.max(0, parseFloat(datum[1])),
-	      end: Math.min(layoutSummary[datum[0]], parseFloat(datum[2])),
-	      value: parseFloat(datum[3]) || 1
-	    };
+	    return checkNumber({ start: datum.start, end: datum.end, value: datum.value }, index);
 	  });
 
 	  return buildOutput(filteredData);
@@ -20648,7 +20635,7 @@ var Circos =
 	      }).endAngle(function (d) {
 	        return _this2.theta(d.end, layout.blocks[d.block_id]);
 	      }));
-	      bin.attr('fill', conf.color);
+	      bin.attr('fill', conf.colorIteratee);
 	      return bin;
 	    }
 	  }]);

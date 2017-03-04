@@ -275,6 +275,40 @@ Configuration:
 
 ### Histogram
 
+<p align="center">
+  <img src="doc/histogram.png" width="60%" alt="histogram">
+  <br/>
+  <i>Genetic abnormalities in human stem cells (<a href="demo/histogram">source</a>)</i>
+</p>
+
+Data should looks like this:
+
+```javascript
+var data = [
+    {
+      block_id: 'january',
+      start: 1,
+      end: 10,
+      value: 5
+    }
+];
+```
+
+The default configuration is:
+
+```javascript
+{
+  color: '#fd6a62',
+  opacity: 0.7,
+  zIndex: 1,
+  tooltipContent: null,
+  min: null,
+  max: null,
+  logScale: false,
+  logScaleBase: Math.E,
+}
+```
+
 ### Line
 
 <p align="center">

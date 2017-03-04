@@ -47,7 +47,7 @@ export default class Histogram extends Track {
         .startAngle((d) => this.theta(d.start, layout.blocks[d.block_id]))
         .endAngle((d) => this.theta(d.end, layout.blocks[d.block_id]))
       );
-    bin.attr('fill', conf.color);
+    bin.attr('fill', conf.colorIteratee);
     return bin;
   }
 }

@@ -98,8 +98,9 @@ export function buildColorIteratee(color, min, max, logScale=false, logScaleBase
     const scale = buildColorScale(
       palettes[paletteName], min, max, reverse, logScale, logScaleBase
     )
-    console.log(scale(2))
-    return (d) => scale(d.value);
+    return (d) => {
+      return scale(d.value)
+    };
   }
   return color;
 };
