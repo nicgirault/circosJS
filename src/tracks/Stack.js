@@ -24,7 +24,7 @@ const defaultConf = assign({
   },
   margin: {
     value: 2,
-    iteratee: true,
+    iteratee: false,
   },
   strokeWidth: {
     value: 1,
@@ -128,12 +128,12 @@ export default class Stack extends Track {
       .data((d) => {
         return d.values.map((datum) => {
           const radius = that.datumRadialPosition(datum);
-          return {
+          return assign(datum, {
             innerRadius: radius[0],
             outerRadius: radius[1],
             startAngle: this.theta(datum.start, layout.blocks[datum.block_id]),
             endAngle: this.theta(datum.end, layout.blocks[datum.block_id]),
-          };
+          });
         });
       })
       .enter().append('path')

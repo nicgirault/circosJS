@@ -66,9 +66,6 @@ export function parseSpanValueData(data, layoutSummary) {
   const filteredData = data
     .filter((datum, index) =>
       checkParent(datum.block_id, index, layoutSummary, 'parent')
-    )
-    .filter((datum, index) =>
-      checkNumber({start: datum.start, end: datum.end, value: datum.value}, index)
     );
 
   return buildOutput(filteredData);

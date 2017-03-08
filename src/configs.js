@@ -65,7 +65,7 @@ const common = {
   },
   tooltipContent: {
     value: null,
-    iteratee: true,
+    iteratee: false,
   },
 };
 

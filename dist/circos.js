@@ -19930,8 +19930,6 @@ var Circos =
 
 	  var filteredData = data.filter(function (datum, index) {
 	    return checkParent(datum.block_id, index, layoutSummary, 'parent');
-	  }).filter(function (datum, index) {
-	    return checkNumber({ start: datum.start, end: datum.end, value: datum.value }, index);
 	  });
 
 	  return buildOutput(filteredData);
@@ -20461,7 +20459,7 @@ var Circos =
 	  },
 	  tooltipContent: {
 	    value: null,
-	    iteratee: true
+	    iteratee: false
 	  }
 	};
 
@@ -21398,7 +21396,7 @@ var Circos =
 	  },
 	  margin: {
 	    value: 2,
-	    iteratee: true
+	    iteratee: false
 	  },
 	  strokeWidth: {
 	    value: 1,
@@ -21497,12 +21495,12 @@ var Circos =
 	      return parentElement.selectAll('.tile').data(function (d) {
 	        return d.values.map(function (datum) {
 	          var radius = that.datumRadialPosition(datum);
-	          return {
+	          return (0, _assign2.default)(datum, {
 	            innerRadius: radius[0],
 	            outerRadius: radius[1],
 	            startAngle: _this2.theta(datum.start, layout.blocks[datum.block_id]),
 	            endAngle: _this2.theta(datum.end, layout.blocks[datum.block_id])
-	          };
+	          });
 	        });
 	      }).enter().append('path').attr('class', 'tile').attr('d', (0, _d3Shape.arc)()).attr('opacity', conf.opacity).attr('stroke-width', conf.strokeWidth).attr('stroke', conf.strokeColor).attr('fill', conf.color);
 	    }
