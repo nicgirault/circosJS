@@ -12,6 +12,7 @@
   - [Histogram](#histogram)
   - [Line](#line)
   - [Scatter](#scatter)
+  - [Stack](#stack)
   - [Text](#text)
 
 ## Introduction
@@ -238,10 +239,6 @@ var data = [
 ]
 ```
 
-### Stack
-
-
-
 ### Highlight
 
 <p align="center">
@@ -378,6 +375,42 @@ Configuration:
   shape: 'circle', // circle, cross, diamond, square, triangle, star, wye
   opacity: 1,
   logScale: false,
+  tooltipContent: null,
+}
+```
+
+### Stack
+
+<p align="center">
+  <img src="doc/stack.png" width="60%" alt="stack">
+  <br/>
+  <i><a href="demo/stack">source</a></i>
+</p>
+
+```javascript
+myCircos.stack('stack', data, configuration);
+```
+
+The minimal datum should have `block_id`, `start` and `end` attributes.
+
+Configuration:
+
+```javascript
+{
+  innerRadius: null,
+  outerRadius: null,
+  min: null,
+  max: null,
+  color: '#fd6a62',
+  strokeColor: '#d3d3d3',
+  strokeWidth: 1,
+  direction: 'out',
+  thickness: 10,
+  radialMargin: 2,
+  margin: 2,
+  opacity: 1,
+  logScale: false,
+  tooltipContent: null,
 }
 ```
 
