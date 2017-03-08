@@ -1,5 +1,5 @@
 import Track from './Track';
-import {parseSpanValueData} from '../dataParser';
+import {parseSpanValueData} from '../data-parser';
 import {arc} from 'd3-shape';
 import assign from 'lodash/assign';
 import forEach from 'lodash/forEach';

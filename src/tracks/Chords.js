@@ -1,5 +1,5 @@
 import Track from './Track';
-import {parseChordData} from '../dataParser';
+import {parseChordData} from '../data-parser';
 import {registerTooltip} from '../behaviors/tooltip';
 import {ribbon} from 'd3-chord';
 import assign from 'lodash/assign';

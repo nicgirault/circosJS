@@ -1,5 +1,5 @@
 import Track from './Track';
-import {parsePositionValueData} from '../dataParser';
+import {parsePositionValueData} from '../data-parser';
 import {registerTooltip} from '../behaviors/tooltip';
 import assign from 'lodash/assign';
 import reduce from 'lodash/reduce';

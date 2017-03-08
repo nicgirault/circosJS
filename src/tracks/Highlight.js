@@ -1,5 +1,5 @@
 import Track from './Track';
-import {parseSpanStringData} from '../dataParser';
+import {parseSpanStringData} from '../data-parser';
 import assign from 'lodash/assign';
 import {radial, common} from '../configs';
 import {arc} from 'd3-shape';

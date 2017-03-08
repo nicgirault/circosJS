@@ -1,4 +1,4 @@
-import { parseSpanValueData } from './dataParser'
+import { parseSpanValueData } from './data-darser'
 import { forEach } from 'lodash'
 import { expect } from 'chai'
 

@@ -1,5 +1,5 @@
 import Track from './Track';
-import {parsePositionValueData} from '../dataParser';
+import {parsePositionValueData} from '../data-parser';
 import assign from 'lodash/assign';
 import {radial, axes, common, values} from '../configs';
 import {
