@@ -8,6 +8,8 @@
 - [Tracks](#tracks)
   - [Chords](#chords)
   - [Heatmap](#heatmap)
+  - [Highlight](#highlight)
+  - [Histogram](#histogram)
   - [Line](#line)
   - [Scatter](#scatter)
   - [Text](#text)
@@ -337,7 +339,7 @@ Configuration:
   direction: 'out',
   fill: false,
   fillColor: '#d3d3d3',
-  maxGap: null, // if the gap between two data points is bigger than this value, the line with be discontinued
+  maxGap: null,
   opacity: 1,
   logScale: false,
 }
