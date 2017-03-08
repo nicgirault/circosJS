@@ -107,22 +107,13 @@ export function parsePositionValueData(data, layoutSummary) {
     return {data: [], meta: {min: null, max: null}};
   }
 
-  const preParsedData = normalize(data, ['parent_id', 'position', 'value']);
-
-  const filteredData = preParsedData
+  const filteredData = data
     .filter((datum, index) =>
       checkParent(datum.block_id, index, layoutSummary, 'parent')
     )
     .filter((datum, index) =>
       checkNumber({position: datum.position, value: datum.value}, index)
-    )
-    .map((datum) => {
-      return {
-        block_id: datum.block_id,
-        position: Math.min(layoutSummary[datum.block_id], parseFloat(datum.position)),
-        value: parseFloat(datum.value) || 1,
-      };
-    });
+    );
 
   return buildOutput(filteredData);
 }
@@ -133,8 +124,7 @@ export function parsePositionTextData(data, layoutSummary) {
     return {data: [], meta: {min: null, max: null}};
   }
 
-  const preParsedData = normalize(data, ['parent_id', 'position', 'value']);
-  const filteredData = preParsedData
+  const filteredData = data
     .filter((datum, index) =>
       checkParent(datum.block_id, index, layoutSummary, 'parent')
     )
@@ -146,53 +136,33 @@ export function parsePositionTextData(data, layoutSummary) {
 }
 
 export function parseChordData(data, layoutSummary) {
-  // ['source_id', 'source_start', 'source_end', 'target_id', 'target_start', 'target_end', 'value']
-  console.log(data)
   if (data.length === 0) {
     return {data: [], meta: {min: null, max: null}};
   }
 
-  const preParsedData = normalize(
-    data,
-    [
-      'sourceId',
-      'sourceStart',
-      'sourceEnd',
-      'targetId',
-      'targetStart',
-      'targetEnd',
-    ]
-  );
-
-  const formatedData = preParsedData
-  .filter((datum, index) =>
-    checkParent(datum[0], index, layoutSummary, 'sourceId')
-  )
-  .filter((datum, index) =>
-    checkParent(datum[3], index, layoutSummary, 'targetId')
-  )
+  const formatedData = data
+  .filter((datum, index) => {
+    if (datum.source) {
+      return checkParent(datum.source.id, index, layoutSummary, 'sourceId');
+    }
+    logger.warn(`No source for data at index ${index}`);
+    return false;
+  })
+  .filter((datum, index) => {
+    if (datum.target) {
+      return checkParent(datum.target.id, index, layoutSummary, 'targetId');
+    }
+    logger.warn(`No target for data at index ${index}`);
+    return false;
+  })
   .filter((datum, index) => checkNumber({
-      sourceStart: datum[1],
-      sourceEnd: datum[2],
-      targetStart: datum[4],
-      targetEnd: datum[5],
-      value: datum[6] || 1,
+      sourceStart: datum.source.start,
+      sourceEnd: datum.source.end,
+      targetStart: datum.target.start,
+      targetEnd: datum.target.end,
+      value: datum.value || 1,
     }, index)
-  ).map((datum) => {
-    return {
-      source: {
-        id: datum[0],
-        start: Math.max(0, parseFloat(datum[1])),
-        end: Math.min(layoutSummary[datum[0]], parseFloat(datum[2])),
-      },
-      target: {
-        id: datum[3],
-        start: Math.max(0, parseFloat(datum[4])),
-        end: Math.min(layoutSummary[datum[3]], parseFloat(datum[5])),
-      },
-      value: parseFloat(datum[6]) || 1,
-    };
-  });
+  );
 
   return {
     data: formatedData,

@@ -20,9 +20,6 @@ var drawCircos = function(error, GRCh37, cytobands, data) {
     height: 1050,
   });
 
-  console.log(GRCh37)
-
-
   cytobands = cytobands.map(function(d) {
     return {
       block_id: d.chrom,
@@ -33,16 +30,19 @@ var drawCircos = function(error, GRCh37, cytobands, data) {
     };
   });
 
-  data = data.map(function(d){
-    return [
-      d.source_id,
-      parseInt(d.source_breakpoint) - 2000000,
-      parseInt(d.source_breakpoint) + 2000000,
-      d.target_id,
-      parseInt(d.target_breakpoint) - 2000000,
-      parseInt(d.target_breakpoint) + 2000000,
-      1
-    ];
+  data = data.map(function(d) {
+    return {
+      source: {
+        id: d.source_id,
+        start: parseInt(d.source_breakpoint) - 2000000,
+        end: parseInt(d.source_breakpoint) + 2000000,
+      },
+      target: {
+        id: d.target_id,
+        start: parseInt(d.target_breakpoint) - 2000000,
+        end: parseInt(d.target_breakpoint) + 2000000,
+      },
+    };
   });
 
   circos

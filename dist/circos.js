@@ -19963,18 +19963,10 @@ var Circos =
 	    return { data: [], meta: { min: null, max: null } };
 	  }
 
-	  var preParsedData = normalize(data, ['parent_id', 'position', 'value']);
-
-	  var filteredData = preParsedData.filter(function (datum, index) {
+	  var filteredData = data.filter(function (datum, index) {
 	    return checkParent(datum.block_id, index, layoutSummary, 'parent');
 	  }).filter(function (datum, index) {
 	    return checkNumber({ position: datum.position, value: datum.value }, index);
-	  }).map(function (datum) {
-	    return {
-	      block_id: datum.block_id,
-	      position: Math.min(layoutSummary[datum.block_id], parseFloat(datum.position)),
-	      value: parseFloat(datum.value) || 1
-	    };
 	  });
 
 	  return buildOutput(filteredData);
@@ -19986,8 +19978,7 @@ var Circos =
 	    return { data: [], meta: { min: null, max: null } };
 	  }
 
-	  var preParsedData = normalize(data, ['parent_id', 'position', 'value']);
-	  var filteredData = preParsedData.filter(function (datum, index) {
+	  var filteredData = data.filter(function (datum, index) {
 	    return checkParent(datum.block_id, index, layoutSummary, 'parent');
 	  }).filter(function (datum, index) {
 	    return checkNumber({ position: datum.position }, index);
@@ -19997,40 +19988,30 @@ var Circos =
 	}
 
 	function parseChordData(data, layoutSummary) {
-	  // ['source_id', 'source_start', 'source_end', 'target_id', 'target_start', 'target_end', 'value']
-	  console.log(data);
 	  if (data.length === 0) {
 	    return { data: [], meta: { min: null, max: null } };
 	  }
 
-	  var preParsedData = normalize(data, ['sourceId', 'sourceStart', 'sourceEnd', 'targetId', 'targetStart', 'targetEnd']);
-
-	  var formatedData = preParsedData.filter(function (datum, index) {
-	    return checkParent(datum[0], index, layoutSummary, 'sourceId');
+	  var formatedData = data.filter(function (datum, index) {
+	    if (datum.source) {
+	      return checkParent(datum.source.id, index, layoutSummary, 'sourceId');
+	    }
+	    logger.warn('No source for data at index ' + index);
+	    return false;
 	  }).filter(function (datum, index) {
-	    return checkParent(datum[3], index, layoutSummary, 'targetId');
+	    if (datum.target) {
+	      return checkParent(datum.target.id, index, layoutSummary, 'targetId');
+	    }
+	    logger.warn('No target for data at index ' + index);
+	    return false;
 	  }).filter(function (datum, index) {
 	    return checkNumber({
-	      sourceStart: datum[1],
-	      sourceEnd: datum[2],
-	      targetStart: datum[4],
-	      targetEnd: datum[5],
-	      value: datum[6] || 1
+	      sourceStart: datum.source.start,
+	      sourceEnd: datum.source.end,
+	      targetStart: datum.target.start,
+	      targetEnd: datum.target.end,
+	      value: datum.value || 1
 	    }, index);
-	  }).map(function (datum) {
-	    return {
-	      source: {
-	        id: datum[0],
-	        start: Math.max(0, parseFloat(datum[1])),
-	        end: Math.min(layoutSummary[datum[0]], parseFloat(datum[2]))
-	      },
-	      target: {
-	        id: datum[3],
-	        start: Math.max(0, parseFloat(datum[4])),
-	        end: Math.min(layoutSummary[datum[3]], parseFloat(datum[5]))
-	      },
-	      value: parseFloat(datum[6]) || 1
-	    };
 	  });
 
 	  return {
