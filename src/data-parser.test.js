@@ -1,4 +1,4 @@
-import { parseSpanValueData } from './data-darser'
+import { parseSpanValueData } from './data-parser'
 import { forEach } from 'lodash'
 import { expect } from 'chai'
 
@@ -9,11 +9,36 @@ describe('dataParser', () => {
       {
         layout: {january: 31, february: 28, march: 31},
         data: [
-          ['january', 1, 2,3],
-          ['january', 1, 31,10],
-          ['february', 1, 28,4],
-          ['march', 1, 2,5],
-          ['march', 1, 2,7],
+          {
+            block_id: 'january',
+            start: 1,
+            end: 2,
+            value: 3,
+          },
+          {
+            block_id: 'january',
+            start: 1,
+            end: 31,
+            value: 10,
+          },
+          {
+            block_id: 'february',
+            start: 1,
+            end: 28,
+            value: 4,
+          },
+          {
+            block_id: 'march',
+            start: 1,
+            end: 2,
+            value: 5,
+          },
+          {
+            block_id: 'march',
+            start: 1,
+            end: 2,
+            value: 7,
+          },
         ],
         expected: {
           data: [

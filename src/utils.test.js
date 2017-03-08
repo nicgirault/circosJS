@@ -113,7 +113,7 @@ describe('utils', () => {
         domain: [0, 8],
         height: 4,
         logScale: false,
-        expected: 5,
+        expected: 4,
       },
       {
         value: 2,
