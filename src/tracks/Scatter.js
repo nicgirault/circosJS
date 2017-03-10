@@ -1,7 +1,7 @@
-import Track from './Track';
-import {parsePositionValueData} from '../data-parser';
-import assign from 'lodash/assign';
-import {radial, axes, common, values} from '../configs';
+import Track from './Track'
+import {parsePositionValueData} from '../data-parser'
+import assign from 'lodash/assign'
+import {radial, axes, common, values} from '../configs'
 import {
   symbol,
   symbolCircle,
@@ -10,79 +10,79 @@ import {
   symbolSquare,
   symbolTriangle,
   symbolStar,
-  symbolWye,
-} from 'd3-shape';
+  symbolWye
+} from 'd3-shape'
 
 const defaultConf = assign({
   direction: {
     value: 'out',
-    iteratee: false,
+    iteratee: false
   },
   color: {
     value: '#fd6a62',
-    iteratee: true,
+    iteratee: true
   },
   fill: {
     value: true,
-    iteratee: false,
+    iteratee: false
   },
   size: {
     value: 15,
-    iteratee: true,
+    iteratee: true
   },
   shape: {
     value: 'circle',
-    iteratee: false,
+    iteratee: false
   },
   strokeColor: {
     value: '#d3d3d3',
-    iteratee: true,
+    iteratee: true
   },
   strokeWidth: {
     value: 2,
-    iteratee: true,
+    iteratee: true
   },
   backgrounds: {
     value: [],
-    iteratee: false,
-  },
-}, axes, radial, common, values);
+    iteratee: false
+  }
+}, axes, radial, common, values)
 
 const getSymbol = (key) => {
   switch (key) {
     case 'circle':
-      return symbolCircle;
+      return symbolCircle
     case 'cross':
-      return symbolCross;
+      return symbolCross
     case 'diamond':
-      return symbolDiamond;
+      return symbolDiamond
     case 'square':
-      return symbolSquare;
+      return symbolSquare
     case 'triangle':
-      return symbolTriangle;
+      return symbolTriangle
     case 'star':
-      return symbolStar;
+      return symbolStar
     case 'wye':
-      return symbolWye;
+      return symbolWye
     default:
-      return symbolCross;
+      return symbolCross
   }
-};
+}
 
 export default class Scatter extends Track {
-  constructor(instance, conf, data) {
+  constructor (instance, conf, data) {
     super(instance, conf, defaultConf, data, parsePositionValueData)
   }
 
-  renderDatum(parentElement, conf, layout) {
+  renderDatum (parentElement, conf, layout) {
     const point = parentElement.selectAll('.point')
       .data((d) => {
         d.values.forEach((item, i) => {
           item.symbol = symbol()
             .type(getSymbol(conf.shape))
-            .size(conf.size);
-        });
-        return d.values;
+            .size(conf.size)
+        })
+        return d.values
       })
       .enter().append('path')
       .attr('class', 'point')
@@ -98,15 +98,14 @@ export default class Scatter extends Track {
               d.position,
               layout.blocks[d.block_id]
             ) * 360 / (2 * Math.PI)}
-          )`;
+          )`
       })
       .attr('stroke', conf.strokeColor)
       .attr('stroke-width', conf.strokeWidth)
-      .attr('fill', 'none');
+      .attr('fill', 'none')
 
-    if (conf.fill)
-      point.attr('fill', conf.color);
+    if (conf.fill) { point.attr('fill', conf.color) }
 
-    return point;
+    return point
   }
 }
