@@ -61,10 +61,10 @@ const palettes = {
   YlOrRd: interpolateYlOrRd
 }
 
-export function buildColorIteratee (
+export function buildColorValue (
   color,
-  min,
-  max,
+  min = null,
+  max = null,
   logScale = false,
   logScaleBase = Math.E
 ) {
@@ -107,7 +107,6 @@ export function buildColorScale (
       return interpolator(scale(t))
     }).domain([0, 1])
   }
-
   return scaleSequential(interpolator)
     .domain(reverse ? [max, min] : [min, max])
 }

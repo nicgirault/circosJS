@@ -5,7 +5,7 @@ import {dispatch} from 'd3-dispatch'
 import {arc} from 'd3-shape'
 import {getConf} from '../config-utils'
 import {buildScale} from '../utils'
-import {buildColorIteratee} from '../colors'
+import {buildColorValue} from '../colors'
 
 /**
  * Abstract class used by all tracks
@@ -16,7 +16,7 @@ export default class Track {
     this.parseData = dataParser
     this.loadData(data, instance)
     this.conf = getConf(conf, defaultConf, this.meta, instance)
-    this.conf.colorIteratee = buildColorIteratee(
+    this.conf.colorIteratee = buildColorValue(
       this.conf.color,
       this.conf.cmin,
       this.conf.cmax,
