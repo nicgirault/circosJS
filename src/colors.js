@@ -84,14 +84,14 @@ export function buildColorValue (
   return color
 }
 
-export function buildColorScale (
+const buildColorScale = (
   interpolator,
   min,
   max,
   reverse = false,
   logScale = false,
   logScaleBase = Math.E
-) {
+) => {
   if (logScale && min * max <= 0) {
     console.warn(`As log(0) = -∞, a log scale domain must be
       strictly-positive or strictly-negative. logscale ignored`
