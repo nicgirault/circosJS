@@ -1,6 +1,6 @@
 var circos = new Circos({
-  container: '#chart',
-});
+  container: '#chart'
+})
 
 var gieStainColor = {
   gpos100: 'rgb(0,0,0)',
@@ -14,42 +14,41 @@ var gieStainColor = {
   gneg: 'rgb(255,255,255)',
   acen: 'rgb(217,47,39)',
   stalk: 'rgb(100,127,164)',
-  select: 'rgb(135,177,255)',
-};
+  select: 'rgb(135,177,255)'
+}
 
-var drawCircos = function(error, GRCh37, cytobands) {
-
-  data = cytobands.map(function(d) {
+var drawCircos = function (error, GRCh37, cytobands) {
+  data = cytobands.map(function (d) {
     return {
       block_id: d.chrom,
       start: parseInt(d.chromStart),
       end: parseInt(d.chromEnd),
-      gieStain: d.gieStain,
-    };
-  });
+      gieStain: d.gieStain
+    }
+  })
 
   circos
     .layout(
       GRCh37,
-      {
-        innerRadius: 200,
-        outerRadius: 250,
-        labels: {display: false},
-        ticks: {display: false},
-      }
+    {
+      innerRadius: 200,
+      outerRadius: 250,
+      labels: {display: false},
+      ticks: {display: false}
+    }
     )
     .highlight('cytobands', data, {
       innerRadius: 200,
       outerRadius: 250,
       opacity: 0.5,
-      color: function(d) {
-        return gieStainColor[d.gieStain];
-      },
+      color: function (d) {
+        return gieStainColor[d.gieStain]
+      }
     })
-    .render();
-};
+    .render()
+}
 
 d3.queue()
   .defer(d3.json, 'GRCh37.json')
   .defer(d3.csv, 'cytobands.csv')
-  .await(drawCircos);
+  .await(drawCircos)

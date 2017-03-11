@@ -1,78 +1,78 @@
 const axes = {
   axes: {
     value: [],
-    iteratee: false,
-  },
-};
+    iteratee: false
+  }
+}
 
 const palette = {
   colorPaletteSize: {
     value: 9,
-    iteratee: false,
+    iteratee: false
   },
   colorPalette: {
     value: 'YlGnBu',
-    iteratee: false,
+    iteratee: false
   },
   usePalette: {
     value: true,
-    iteratee: false,
+    iteratee: false
   },
   colorPaletteReverse: {
     value: true,
-    iteratee: false,
-  },
-};
+    iteratee: false
+  }
+}
 
 const radial = {
   innerRadius: {
     value: 0,
-    iteratee: false,
+    iteratee: false
   },
   outerRadius: {
     value: 0,
-    iteratee: false,
-  },
-};
+    iteratee: false
+  }
+}
 
 const values = {
   min: {
     value: null,
-    iteratee: false,
+    iteratee: false
   },
   max: {
     value: null,
-    iteratee: false,
+    iteratee: false
   },
   logScale: {
     value: false,
-    iteratee: false,
+    iteratee: false
   },
   logScaleBase: {
     value: Math.E,
-    iteratee: false,
-  },
-};
+    iteratee: false
+  }
+}
 
 const common = {
   zIndex: {
     value: false,
-    iteratee: false,
+    iteratee: false
   },
   opacity: {
     value: 1,
-    iteratee: true,
+    iteratee: true
   },
   tooltipContent: {
     value: null,
-    iteratee: false,
-  },
-};
+    iteratee: false
+  }
+}
 
 export {
   axes,
   palette,
   radial,
   values,
-  common,
-};
+  common
+}

@@ -1,8 +1,8 @@
 var circos = new Circos({
   container: '#chart',
   width: 1000,
-  height: 1000,
-});
+  height: 1000
+})
 
 var gieStainColor = {
   gpos100: 'rgb(0,0,0)',
@@ -16,59 +16,58 @@ var gieStainColor = {
   gneg: 'rgb(255,255,255)',
   acen: 'rgb(217,47,39)',
   stalk: 'rgb(100,127,164)',
-  select: 'rgb(135,177,255)',
-};
+  select: 'rgb(135,177,255)'
+}
 
-var drawCircos = function(error, GRCh37, cytobands, segdup) {
-
+var drawCircos = function (error, GRCh37, cytobands, segdup) {
   cytobands = cytobands
-  .filter(function(d) { return d.chrom === 'chr9'; })
-  .map(function(d) {
+  .filter(function (d) { return d.chrom === 'chr9' })
+  .map(function (d) {
     return {
       block_id: d.chrom,
       start: parseInt(d.chromStart),
       end: parseInt(d.chromEnd),
-      gieStain: d.gieStain,
-    };
-  });
+      gieStain: d.gieStain
+    }
+  })
 
-  var start = 39000000;
-  var length = 8000000;
-  data = segdup.filter(function(d){
-    return d.chr === 'chr9' && d.start >= start && d.end <= start + length;
-  }).filter(function(d) {
-    return d.end - d.start > 30000;
-  }).map(function(d) {
-    d.block_id = d.chr;
-    d.start -= start;
-    d.end -= start;
-    return d;
-  });
+  var start = 39000000
+  var length = 8000000
+  data = segdup.filter(function (d) {
+    return d.chr === 'chr9' && d.start >= start && d.end <= start + length
+  }).filter(function (d) {
+    return d.end - d.start > 30000
+  }).map(function (d) {
+    d.block_id = d.chr
+    d.start -= start
+    d.end -= start
+    return d
+  })
 
   circos
     .layout(
-      [{
-        id: 'chr9',
-        len: length,
-        label: 'chr9',
-        color: '#FFCC00',
-      }],
-      {
-        innerRadius: 400,
-        outerRadius: 420,
-        labels: {
-          display: false
-        },
-        ticks: {display: true, labels: false, spacing: 10000},
-      }
+    [{
+      id: 'chr9',
+      len: length,
+      label: 'chr9',
+      color: '#FFCC00'
+    }],
+    {
+      innerRadius: 400,
+      outerRadius: 420,
+      labels: {
+        display: false
+      },
+      ticks: {display: true, labels: false, spacing: 10000}
+    }
     )
     .highlight('cytobands', cytobands, {
       innerRadius: 400,
       outerRadius: 420,
       opacity: 0.8,
-      color: function(d) {
-        return gieStainColor[d.gieStain];
-      },
+      color: function (d) {
+        return gieStainColor[d.gieStain]
+      }
     })
     .stack('stack', data, {
       innerRadius: 300,
@@ -77,28 +76,28 @@ var drawCircos = function(error, GRCh37, cytobands, segdup) {
       margin: 0.01 * length,
       direction: 'out',
       strokeWidth: 0,
-      color: function(d) {
+      color: function (d) {
         if (d.end - d.start > 150000) {
-          return 'red';
+          return 'red'
         } else if (d.end - d.start > 120000) {
-          return '#333';
+          return '#333'
         } else if (d.end - d.start > 90000) {
-          return '#666';
+          return '#666'
         } else if (d.end - d.start > 60000) {
-          return '#999';
+          return '#999'
         } else if (d.end - d.start > 30000) {
-          return '#BBB';
+          return '#BBB'
         }
       },
-      tooltipContent: function(d) {
-        return `${d.block_id}:${d.start}-${d.end}`;
-      },
+      tooltipContent: function (d) {
+        return `${d.block_id}:${d.start}-${d.end}`
+      }
     })
-    .render();
-};
+    .render()
+}
 
 d3.queue()
-  .defer(d3.json, "../data/GRCh37.json")
-  .defer(d3.csv, "../data/cytobands.csv")
-  .defer(d3.csv, "../data/segdup.csv")
-  .await(drawCircos);
+  .defer(d3.json, '../data/GRCh37.json')
+  .defer(d3.csv, '../data/cytobands.csv')
+  .defer(d3.csv, '../data/segdup.csv')
+  .await(drawCircos)

@@ -3,7 +3,6 @@ import { forEach } from 'lodash'
 import { expect } from 'chai'
 
 describe('dataParser', () => {
-
   describe('parseSpanValueData', () => {
     const cases = [
       {
@@ -13,32 +12,32 @@ describe('dataParser', () => {
             block_id: 'january',
             start: 1,
             end: 2,
-            value: 3,
+            value: 3
           },
           {
             block_id: 'january',
             start: 1,
             end: 31,
-            value: 10,
+            value: 10
           },
           {
             block_id: 'february',
             start: 1,
             end: 28,
-            value: 4,
+            value: 4
           },
           {
             block_id: 'march',
             start: 1,
             end: 2,
-            value: 5,
+            value: 5
           },
           {
             block_id: 'march',
             start: 1,
             end: 2,
-            value: 7,
-          },
+            value: 7
+          }
         ],
         expected: {
           data: [
@@ -46,26 +45,26 @@ describe('dataParser', () => {
               key: 'january',
               values: [
                 {block_id: 'january', start: 1, end: 2, value: 3},
-                {block_id: 'january', start: 1, end: 31, value: 10},
+                {block_id: 'january', start: 1, end: 31, value: 10}
               ]
             },
             {
               key: 'february',
               values: [
-                {block_id: 'february', start: 1, end: 28, value: 4},
+                {block_id: 'february', start: 1, end: 28, value: 4}
               ]
             },
             {
               key: 'march',
               values: [
                 {block_id: 'march', start: 1, end: 2, value: 5},
-                {block_id: 'march', start: 1, end: 2, value: 7},
+                {block_id: 'march', start: 1, end: 2, value: 7}
               ]
             }
           ],
           meta: {
             min: 3,
-            max: 10,
+            max: 10
           }
         }
       },
@@ -76,10 +75,10 @@ describe('dataParser', () => {
           data: [],
           meta: {
             min: null,
-            max: null,
-          },
+            max: null
+          }
         }
-      },
+      }
     ]
 
     forEach(cases, (dataset) => {

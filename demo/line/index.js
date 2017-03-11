@@ -1,8 +1,8 @@
 var circos = new Circos({
   container: '#chart',
   width: 1000,
-  height: 1000,
-});
+  height: 1000
+})
 
 var gieStainColor = {
   gpos100: 'rgb(0,0,0)',
@@ -16,65 +16,64 @@ var gieStainColor = {
   gneg: 'rgb(255,255,255)',
   acen: 'rgb(217,47,39)',
   stalk: 'rgb(100,127,164)',
-  select: 'rgb(135,177,255)',
-};
+  select: 'rgb(135,177,255)'
+}
 
-var drawCircos = function(error, GRCh37, cytobands, snp250, snp, snp1m) {
-
-  cytobands = cytobands.map(function(d) {
+var drawCircos = function (error, GRCh37, cytobands, snp250, snp, snp1m) {
+  cytobands = cytobands.map(function (d) {
     return {
       block_id: d.chrom,
       start: parseInt(d.chromStart),
       end: parseInt(d.chromEnd),
       gieStain: d.gieStain,
-      name: d.name,
-    };
-  });
+      name: d.name
+    }
+  })
 
-  snp250 = snp250.map(function(d) {
+  snp250 = snp250.map(function (d) {
     return {
       block_id: d.chromosome,
       position: (parseInt(d.start) + parseInt(d.end)) / 2,
-      value: d.value,
-    };
-  });
+      value: d.value
+    }
+  })
 
-  snp = snp.map(function(d) {
+  snp = snp.map(function (d) {
     return {
       block_id: d.chromosome,
       position: (parseInt(d.start) + parseInt(d.end)) / 2,
-      value: d.value,
-    };
-  });
+      value: d.value
+    }
+  })
 
-  snp1m = snp1m.map(function(d) {
+  snp1m = snp1m.map(function (d) {
     return {
       block_id: d.chromosome,
       position: (parseInt(d.start) + parseInt(d.end)) / 2,
-      value: d.value,
-    };
-  });
+      value: d.value
+    }
+  })
 
   circos
     .layout(
       GRCh37,
-      {
-        innerRadius: 400,
-        outerRadius: 420,
-        labels: {display: false},
-        ticks: {display: false},
-      }
+    {
+      innerRadius: 400,
+      outerRadius: 420,
+      labels: {display: false},
+      ticks: {display: false}
+    }
     )
     .highlight('cytobands', cytobands, {
       innerRadius: 400,
       outerRadius: 420,
       opacity: 0.3,
-      color: function(d) {
-        return gieStainColor[d.gieStain];
+      color: function (d) {
+        return gieStainColor[d.gieStain]
       },
-      tooltipContent: function(d) {
-        return d.name;
-      },
+      tooltipContent: function (d) {
+        return d.name
+      }
     })
     .line('snp-250', snp250, {
       innerRadius: 0.5,
@@ -87,24 +86,24 @@ var drawCircos = function(error, GRCh37, cytobands, snp250, snp, snp1m) {
         {
           spacing: 0.001,
           thickness: 1,
-          color: '#666666',
-        },
+          color: '#666666'
+        }
       ],
       backgrounds: [
         {
           start: 0,
           end: 0.002,
           color: '#f44336',
-          opacity: 0.5,
+          opacity: 0.5
         },
         {
           start: 0.006,
           end: 0.015,
           color: '#4caf50',
-          opacity: 0.5,
-        },
+          opacity: 0.5
+        }
       ],
-      tooltipContent: null,
+      tooltipContent: null
     })
     .scatter('snp-250-tooltip', snp250, {
       innerRadius: 0.5,
@@ -113,9 +112,9 @@ var drawCircos = function(error, GRCh37, cytobands, snp250, snp, snp1m) {
       max: 0.015,
       fill: false,
       strokeWidth: 0,
-      tooltipContent: function(d, i) {
-        return `${d.block_id}:${Math.round(d.position)} ➤ ${d.value}`;
-      },
+      tooltipContent: function (d, i) {
+        return `${d.block_id}:${Math.round(d.position)} ➤ ${d.value}`
+      }
     })
     .line('snp', snp, {
       innerRadius: 1.01,
@@ -127,14 +126,14 @@ var drawCircos = function(error, GRCh37, cytobands, snp250, snp, snp1m) {
       axes: [
         {
           position: 0.002,
-          color: '#f44336',
+          color: '#f44336'
         },
         {
           position: 0.006,
-          color: '#4caf50',
-        },
+          color: '#4caf50'
+        }
       ],
-      tooltipContent: null,
+      tooltipContent: null
     })
     .line('snp1m', snp1m, {
       innerRadius: 1.01,
@@ -143,7 +142,7 @@ var drawCircos = function(error, GRCh37, cytobands, snp250, snp, snp1m) {
       min: 0,
       max: 0.015,
       color: '#f44336',
-      tooltipContent: null,
+      tooltipContent: null
     })
     .line('snp-in', snp, {
       innerRadius: 0.85,
@@ -156,22 +155,22 @@ var drawCircos = function(error, GRCh37, cytobands, snp250, snp, snp1m) {
       axes: [
         {
           position: 0.01,
-          color: '#4caf50',
+          color: '#4caf50'
         },
         {
           position: 0.008,
-          color: '#4caf50',
+          color: '#4caf50'
         },
         {
           position: 0.006,
-          color: '#4caf50',
+          color: '#4caf50'
         },
         {
           position: 0.002,
-          color: '#f44336',
-        },
+          color: '#f44336'
+        }
       ],
-      tooltipContent: null,
+      tooltipContent: null
     })
     .line('snp1m-in', snp1m, {
       innerRadius: 0.85,
@@ -181,10 +180,10 @@ var drawCircos = function(error, GRCh37, cytobands, snp250, snp, snp1m) {
       min: 0,
       max: 0.015,
       color: '#f44336',
-      tooltipContent: null,
+      tooltipContent: null
     })
-    .render();
-};
+    .render()
+}
 
 d3.queue()
   .defer(d3.json, '../data/GRCh37.json')
@@ -192,4 +191,4 @@ d3.queue()
   .defer(d3.csv, '../data/snp.density.250kb.txt')
   .defer(d3.csv, '../data/snp.density.txt')
   .defer(d3.csv, '../data/snp.density.1mb.txt')
-  .await(drawCircos);
+  .await(drawCircos)
