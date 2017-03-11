@@ -20,7 +20,15 @@ var gieStainColor = {
 }
 
 var drawCircos = function (error, GRCh37, cytobands, snp250, snp, snp1m) {
-  cytobands = cytobands.map(function (d) {
+  GRCh37 = GRCh37.filter(function (d) {
+    return d.id === 'chr1' || d.id === 'chr2' || d.id === 'chr3'
+  })
+
+  cytobands = cytobands
+  .filter(function (d) {
+    return d.chrom === 'chr1' || d.chrom === 'chr2' || d.chrom === 'chr3'
+  })
+  .map(function (d) {
     return {
       block_id: d.chrom,
       start: parseInt(d.chromStart),

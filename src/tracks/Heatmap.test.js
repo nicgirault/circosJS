@@ -23,7 +23,12 @@ describe('Heatmap', () => {
         {block_id: 'chr1', start: 1000001, end: 2000000, value: 2},
         {block_id: 'chr2', start: 0, end: 1000000, value: 3},
         {block_id: 'chr2', start: 1000001, end: 2000000, value: 4}
-      ])
+      ],
+      {
+        color: 'Spectral',
+        opacity: 0.8
+      }
+    )
     .render()
 
     const expectedColors = [
@@ -38,6 +43,7 @@ describe('Heatmap', () => {
     forEach(tiles.nodes(), (tileNode, i) => {
       const tile = select(tileNode)
       expect(tile.attr('fill')).to.equal(expectedColors[i])
+      expect(tile.attr('opacity')).to.equal('0.8')
     })
   })
 })
