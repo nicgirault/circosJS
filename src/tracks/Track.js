@@ -1,6 +1,4 @@
 import {registerTooltip} from '../behaviors/tooltip'
-import range from 'lodash/range'
-import reduce from 'lodash/reduce'
 import {dispatch} from 'd3-dispatch'
 import {arc} from 'd3-shape'
 import {getConf} from '../config-utils'
@@ -45,7 +43,7 @@ export default class Track {
       .attr('z-index', this.conf.zIndex)
     const datumContainer = this.renderBlock(track, this.data, instance._layout, this.conf)
     if (this.conf.axes && this.conf.axes.length > 0) {
-      this.renderAxes(datumContainer, this.conf, instance._layout)
+      renderAxes(datumContainer, this.conf, instance._layout, this.scale)
     }
     const selection = this.renderDatum(datumContainer, this.conf, instance._layout)
     if (this.conf.tooltipContent) {
@@ -105,71 +103,6 @@ export default class Track {
     }
 
     return block
-  }
-
-  renderAxes (parentElement, conf, layout) {
-    const axes = reduce(conf.axes, (aggregator, axesGroup) => {
-      if (axesGroup.position) {
-        aggregator.push({
-          value: axesGroup.position,
-          thickness: axesGroup.thickness || 1,
-          color: axesGroup.color || '#d3d3d3',
-          opacity: axesGroup.opacity || conf.opacity
-        })
-      }
-      if (axesGroup.spacing) {
-        const builtAxes = range(
-          axesGroup.start || conf.cmin,
-          axesGroup.end || conf.cmax,
-          axesGroup.spacing
-        )
-          .map((value) => {
-            return {
-              value: value,
-              thickness: axesGroup.thickness || 1,
-              color: axesGroup.color || '#d3d3d3',
-              opacity: axesGroup.opacity || conf.opacity
-            }
-          })
-        return aggregator.concat(builtAxes)
-      }
-      return aggregator
-    }, [])
-
-    const axis = arc()
-      .innerRadius((d) => {
-        return conf.direction === 'in'
-          ? conf.outerRadius - this.scale(d.value)
-          : conf.innerRadius + this.scale(d.value)
-      })
-      .outerRadius((d) => {
-        return conf.direction === 'in'
-          ? conf.outerRadius - this.scale(d.value)
-          : conf.innerRadius + this.scale(d.value)
-      })
-      .startAngle(0)
-      .endAngle((d) => d.length)
-
-    return parentElement.selectAll('.axis')
-      .data((blockData) => {
-        const block = layout.blocks[blockData.key]
-        return axes.map((d) => {
-          return {
-            value: d.value,
-            thickness: d.thickness,
-            color: d.color,
-            opacity: d.opacity,
-            block_id: blockData.key,
-            length: block.end - block.start
-          }
-        })
-      })
-      .enter().append('path')
-      .attr('opacity', (d) => d.opacity)
-      .attr('class', 'axis')
-      .attr('d', axis)
-      .attr('stroke-width', (d) => d.thickness)
-      .attr('stroke', (d) => d.color)
   }
 
   theta (position, block) {

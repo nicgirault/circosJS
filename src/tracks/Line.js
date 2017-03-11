@@ -90,24 +90,26 @@ export default class Line extends Track {
       }
     }
 
-    const selection = parentElement.selectAll('.line')
-      .data((d) => conf.maxGap ? splitByGap(d.values, conf.maxGap) : [d.values])
-      .enter().append('g')
-      .attr('class', 'line')
+    const selection = parentElement
+      .selectAll('.line')
+        .data((d) => conf.maxGap ? splitByGap(d.values, conf.maxGap) : [d.values])
+      .enter()
+      .append('g')
+        .attr('class', 'line')
       .append('path')
-      .datum((d) => {
-        return d.map((datum) => {
-          const height = this.scale(datum.value)
-          return assign(datum, {
-            angle: this.theta(datum.position, layout.blocks[datum.block_id])
-          }, buildRadius(height))
+        .datum((d) => {
+          return d.map((datum) => {
+            const height = this.scale(datum.value)
+            return assign(datum, {
+              angle: this.theta(datum.position, layout.blocks[datum.block_id])
+            }, buildRadius(height))
+          })
         })
-      })
-      .attr('d', generator)
-      .attr('opacity', conf.opacity)
-      .attr('stroke-width', conf.thickness)
-      .attr('stroke', conf.colorValue)
-      .attr('fill', 'none')
+        .attr('d', generator)
+        .attr('opacity', conf.opacity)
+        .attr('stroke-width', conf.thickness)
+        .attr('stroke', conf.colorValue)
+        .attr('fill', 'none')
 
     if (conf.fill) { selection.attr('fill', conf.fillColor) }
 
