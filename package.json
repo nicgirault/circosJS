@@ -36,6 +36,7 @@
     "mocha": "~2.5.3",
     "mocha-lcov-reporter": "^1.2.0",
     "sinon": "~1.17.4",
+    "sinon-chai": "^2.8.0",
     "standard": "^9.0.1",
     "style-loader": "^0.13.1",
     "webpack": "^1.14.0"

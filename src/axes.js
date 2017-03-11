@@ -1,9 +1,14 @@
 import range from 'lodash/range'
 import reduce from 'lodash/reduce'
 import {arc} from 'd3-shape'
+import logger from './logger'
 
-const buildAxesData = (conf) => {
+const _buildAxesData = (conf) => {
   return reduce(conf.axes, (aggregator, axesGroup) => {
+    if (!axesGroup.position && !axesGroup.spacing) {
+      logger.warn('Skipping axe group with no position and spacing defined')
+      return aggregator
+    }
     if (axesGroup.position) {
       aggregator.push({
         value: axesGroup.position,
@@ -31,9 +36,10 @@ const buildAxesData = (conf) => {
     return aggregator
   }, [])
 }
+exports._buildAxesData = _buildAxesData
 
 export const renderAxes = (parentElement, conf, layout, scale) => {
-  const axes = buildAxesData(conf)
+  const axes = _buildAxesData(conf)
 
   const axis = arc()
     .innerRadius((d) => {
