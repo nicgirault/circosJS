@@ -39,7 +39,7 @@ export default class Highlight extends Track {
         .startAngle((d, i) => this.theta(d.start, layout.blocks[d.block_id]))
         .endAngle((d, i) => this.theta(d.end, layout.blocks[d.block_id]))
       )
-      .attr('fill', conf.color)
+      .attr('fill', conf.colorValue)
       .attr('opacity', conf.opacity)
       .attr('stroke-width', conf.strokeWidth)
       .attr('stroke', conf.strokeColor)

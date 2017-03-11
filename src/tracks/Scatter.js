@@ -104,7 +104,7 @@ export default class Scatter extends Track {
       .attr('stroke-width', conf.strokeWidth)
       .attr('fill', 'none')
 
-    if (conf.fill) { point.attr('fill', conf.color) }
+    if (conf.fill) { point.attr('fill', conf.colorValue) }
 
     return point
   }

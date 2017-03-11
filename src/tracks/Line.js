@@ -106,7 +106,7 @@ export default class Line extends Track {
       .attr('d', generator)
       .attr('opacity', conf.opacity)
       .attr('stroke-width', conf.thickness)
-      .attr('stroke', conf.color)
+      .attr('stroke', conf.colorValue)
       .attr('fill', 'none')
 
     if (conf.fill) { selection.attr('fill', conf.fillColor) }

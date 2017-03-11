@@ -52,7 +52,7 @@ export default class Chords extends Track {
         that.dispatch.call('mouseout', this, d)
       )
 
-    link.attr('fill', conf.colorIteratee)
+    link.attr('fill', conf.colorValue)
 
     return link
   }

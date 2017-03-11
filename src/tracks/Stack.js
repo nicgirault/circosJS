@@ -142,6 +142,6 @@ export default class Stack extends Track {
       .attr('opacity', conf.opacity)
       .attr('stroke-width', conf.strokeWidth)
       .attr('stroke', conf.strokeColor)
-      .attr('fill', conf.color)
+      .attr('fill', conf.colorValue)
   }
 }

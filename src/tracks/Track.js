@@ -16,7 +16,7 @@ export default class Track {
     this.parseData = dataParser
     this.loadData(data, instance)
     this.conf = getConf(conf, defaultConf, this.meta, instance)
-    this.conf.colorIteratee = buildColorValue(
+    this.conf.colorValue = buildColorValue(
       this.conf.color,
       this.conf.cmin,
       this.conf.cmax,
@@ -44,7 +44,7 @@ export default class Track {
       .attr('class', name)
       .attr('z-index', this.conf.zIndex)
     const datumContainer = this.renderBlock(track, this.data, instance._layout, this.conf)
-    if (this.conf.axes.length > 0) {
+    if (this.conf.axes && this.conf.axes.length > 0) {
       this.renderAxes(datumContainer, this.conf, instance._layout)
     }
     const selection = this.renderDatum(datumContainer, this.conf, instance._layout)

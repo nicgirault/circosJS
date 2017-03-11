@@ -1,11 +1,11 @@
 {
   "name": "circosJS",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A d3js library to build circos graphs",
   "main": "app.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha --compilers js:babel-register  --reporter spec src/**/*.test.js",
-    "test:tdd": "NODE_ENV=test mocha --compilers js:babel-register --reporter nyan --watch src/**/*.test.js",
+    "test": "NODE_ENV=test mocha --compilers js:babel-register  --require ignore-styles --reporter spec src/**/*.test.js src/*.test.js",
+    "test:tdd": "NODE_ENV=test mocha --compilers js:babel-register --require ignore-styles --reporter nyan --watch src/*.test.js src/**/*.test.js",
     "coveralls": "CIRCOSJS_COVERAGE=1 mocha test --reporter mocha-lcov-reporter src/**/*.test.js | ./node_modules/coveralls/bin/coveralls.js",
     "start": "webpack --watch",
     "build": "NODE_ENV=prod webpack --optimize-minimize --optimize-dedupe"
@@ -32,6 +32,7 @@
     "coffee-script": "~1.8.0",
     "coveralls": "^2.11.16",
     "css-loader": "^0.26.1",
+    "ignore-styles": "^5.0.1",
     "mocha": "~2.5.3",
     "mocha-lcov-reporter": "^1.2.0",
     "sinon": "~1.17.4",

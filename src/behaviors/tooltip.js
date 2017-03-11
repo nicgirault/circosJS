@@ -1,5 +1,6 @@
 import {select, event} from 'd3-selection'
 import 'd3-transition'
+
 import './tooltip.css'
 
 export function registerTooltip (track, instance, element, trackParams) {
