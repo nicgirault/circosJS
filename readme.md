@@ -569,7 +569,17 @@ You can either define single axis by defining a `position` attribute with a valu
 </p>
 
 
-Or define a range of axes with a `spacing` attribute and optionnally a `start` and `end` attributes.
+Or define a range of axes with a `spacing` attribute and optionnally a `start` and `end` attributes:
+
+```javascript
+{
+  axes: [
+    {
+      spacing: 2
+    }
+  ]
+}
+```
 
 <p align="center">
   <img src="doc/axes-2.png" width="60%" alt="axes-2">
@@ -613,6 +623,8 @@ Here is an advanced example:
   <br/>
   <i><a href="demo/axes">source</a></i>
 </p>
+
+The values that you set for `position`, `spacing`, `start` and `end` are in the unit of the track values.
 
 ## Radius
 
