@@ -14,6 +14,8 @@
   - [Scatter](#scatter)
   - [Stack](#stack)
   - [Text](#text)
+- [Colors](#colors)
+- [Axes](#axes)
 
 ## Introduction
 
@@ -519,7 +521,98 @@ The default min and max values are computed according to the dataset. You can ov
 
 ## Axes
 
+To render axes on a track, you can specify an `axes` attribute in the configuration. By default, the value of this attribute is an empty array:
 
+```javascript
+{
+  axes: []
+}
+```
+
+You can add items to this array to render an axis or a group of axes. You can give axes a `color` (default: '#d3d3d3'), `thickness` (default: 1) and `opacity` (default: track opacity):
+
+```javascript
+{
+  axes: [
+    {
+      color: 'black',
+      thickness: 2, // in pixel
+      opacity: 0.3 // between 0 and 1
+    }
+  ]
+}
+```
+
+Then you have to specify where to place the axes.
+
+You can either define single axis by defining a `position` attribute with a value between the min and max value of the track:
+
+```javascript
+{
+  axes: [
+    {
+      color: 'red',
+      position: 4
+    },
+    {
+      color: 'green',
+      position: 15
+    }
+  ]
+}
+```
+
+<p align="center">
+  <img src="doc/axes-1.png" width="60%" alt="axes-1">
+  <br/>
+  <i><a href="demo/axes">source</a></i>
+</p>
+
+
+Or define a range of axes with a `spacing` attribute and optionnally a `start` and `end` attributes.
+
+<p align="center">
+  <img src="doc/axes-2.png" width="60%" alt="axes-2">
+  <br/>
+  <i><a href="demo/axes">source</a></i>
+</p>
+
+Here is an advanced example:
+
+```javascript
+{
+  axes: [
+    {
+      color: 'red',
+      spacing: 2,
+      end: 4
+    },
+    {
+      color: 'green',
+      spacing: 2,
+      start: 16
+    },
+    {
+      spacing: 2,
+      start: 4,
+      end: 16,
+      thickness: 2
+    },
+    {
+      spacing: 1,
+      start: 4,
+      end: 16,
+      thickness: 1
+    }
+  ]
+}
+```
+
+<p align="center">
+  <img src="doc/axes-3.png" width="60%" alt="axes-3">
+  <br/>
+  <i><a href="demo/axes">source</a></i>
+</p>
 
 ## Radius
 
