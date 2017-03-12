@@ -586,9 +586,12 @@ The list of palette names are:
 You can specify a function that compute the color code given the track data and the datum index. For example:
 
 ```javascript
-function(datum, index) {
-  return datum.value < 5 ? 'red' : 'green'
+{
+  color: function(datum, index) {
+    return datum.value < 5 ? 'red' : 'green'
+  }
 }
+
 ```
 
 ### axes
