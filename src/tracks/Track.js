@@ -4,6 +4,7 @@ import {arc} from 'd3-shape'
 import {getConf} from '../config-utils'
 import {buildScale} from '../utils'
 import {buildColorValue} from '../colors'
+import {renderAxes} from '../axes'
 
 /**
  * Abstract class used by all tracks

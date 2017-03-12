@@ -16,10 +16,6 @@ const defaultConf = assign({
   strokeWidth: {
     value: 0,
     iteratee: true
-  },
-  axes: {
-    value: [],
-    iteratee: false
   }
 }, radial, common)
 
