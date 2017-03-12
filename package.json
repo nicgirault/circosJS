@@ -2,7 +2,7 @@
   "name": "circosJS",
   "version": "2.0.1",
   "description": "A d3js library to build circos graphs",
-  "main": "app.js",
+  "main": "dist/circos.min.js",
   "scripts": {
     "test": "NODE_ENV=test mocha --compilers js:babel-register  --require ignore-styles --reporter spec src/**/*.test.js src/*.test.js",
     "test:tdd": "NODE_ENV=test mocha --compilers js:babel-register --require ignore-styles --reporter nyan --watch src/*.test.js src/**/*.test.js",
