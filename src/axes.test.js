@@ -1,11 +1,12 @@
 import { describe, it } from 'mocha'
-import { expect, use } from 'chai'
+import chai from 'chai'
 import { spy } from 'sinon'
 import sinonChai from 'sinon-chai'
 import forEach from 'lodash/forEach'
 import { _buildAxesData } from './axes'
 
-use(sinonChai)
+const expect = chai.expect
+chai.use(sinonChai)
 
 describe('Axes', () => {
   it('should log an warning if no position and spacing are defined', () => {

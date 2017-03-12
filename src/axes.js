@@ -3,6 +3,15 @@ import reduce from 'lodash/reduce'
 import {arc} from 'd3-shape'
 import logger from './logger'
 
+const _buildAxisDta = (value, axesGroup, conf) => {
+  return {
+    value: value,
+    thickness: axesGroup.thickness || 1,
+    color: axesGroup.color || '#d3d3d3',
+    opacity: axesGroup.opacity || conf.opacity
+  }
+}
+
 const _buildAxesData = (conf) => {
   return reduce(conf.axes, (aggregator, axesGroup) => {
     if (!axesGroup.position && !axesGroup.spacing) {
@@ -10,12 +19,7 @@ const _buildAxesData = (conf) => {
       return aggregator
     }
     if (axesGroup.position) {
-      aggregator.push({
-        value: axesGroup.position,
-        thickness: axesGroup.thickness || 1,
-        color: axesGroup.color || '#d3d3d3',
-        opacity: axesGroup.opacity || conf.opacity
-      })
+      aggregator.push(_buildAxisDta(axesGroup.position, axesGroup, conf))
     }
     if (axesGroup.spacing) {
       const builtAxes = range(
@@ -24,12 +28,7 @@ const _buildAxesData = (conf) => {
         axesGroup.spacing
       )
         .map((value) => {
-          return {
-            value: value,
-            thickness: axesGroup.thickness || 1,
-            color: axesGroup.color || '#d3d3d3',
-            opacity: axesGroup.opacity || conf.opacity
-          }
+          return _buildAxisDta(value, axesGroup, conf)
         })
       return aggregator.concat(builtAxes)
     }
