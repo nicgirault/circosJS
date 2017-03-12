@@ -14,8 +14,13 @@
   - [Scatter](#scatter)
   - [Stack](#stack)
   - [Text](#text)
-- [Colors](#colors)
-- [Axes](#axes)
+- [Configuration Attributes](#configurationAttributes)
+  - [innerRadius](#innerRadiusOuterRadius)
+  - [outerRadius](#innerRadiusOuterRadius)
+  - [min](#minmax)
+  - [max](#minmax)
+  - [color](#color)
+  - [axes](#axes)
 
 ## Introduction
 
@@ -152,7 +157,7 @@ myCircos.trackType('track-id', data, configuration);
 **Note**: The track name is used as a HTML class name so here are the format limitations.
 
 * Must be unique.
-* Should be slug style for simplicity, consistency and compatibility. Example: `heatmap-1`
+* Should be slug style for simplicity, consistency and compatibility. Example: `my-heatmap`
 * Lowercase, a-z, can contain digits, 0-9, can contain dash or dot but not start/end with them.
 * Consecutive dashes or dots not allowed.
 * 50 characters or less.
@@ -295,20 +300,18 @@ var data = [
 ];
 ```
 
-The default configuration is:
-
-```javascript
-{
-  color: '#fd6a62',
-  opacity: 0.7,
-  zIndex: 1,
-  tooltipContent: null,
-  min: null,
-  max: null,
-  logScale: false,
-  logScaleBase: Math.E,
-}
-```
+The available configuration fields are:
+- [innerRadius](#innerRadiusOuterRadius)
+- [outerRadius](#innerRadiusOuterRadius)
+- [color](#color)
+- [opacity](#opacity)
+- [zIndex](#zIndex)
+- [tooltipContent](#tooltipContent)
+- [min](#minmax)
+- [max](#minmax)
+- [logScale](#logScale)
+- [logScaleBase](#logScaleBase)
+- [axes](#axes)
 
 ### Line
 
@@ -324,25 +327,23 @@ myCircos.line('line1', data, configuration);
 
 The minimal datum should have `block_id`, `position` and `value` attributes.
 
-Configuration:
-
-```javascript
-{
-  innerRadius: null,
-  outerRadius: null,
-  min: null,
-  max: null,
-  color: 'd3d3d3',
-  strokeColor: null,
-  strokeWidth: 0,
-  direction: 'out',
-  fill: false,
-  fillColor: '#d3d3d3',
-  maxGap: null,
-  opacity: 1,
-  logScale: false,
-}
-```
+The available configuration fields are:
+- [innerRadius](#innerRadiusOuterRadius)
+- [outerRadius](#innerRadiusOuterRadius)
+- [color](#color)
+- [strokeColor](#strokeColor)
+- [strokeWidth](#strokeWidth)
+- [direction](#direction)
+- [fill](#fill)
+- [maxGap](#maxGap)
+- [opacity](#opacity)
+- [zIndex](#zIndex)
+- [min](#minmax)
+- [max](#minmax)
+- [logScale](#logScale)
+- [logScaleBase](#logScaleBase)
+- [axes](#axes)
+- [backgrounds](#backgrounds)
 
 **Note**: The tooltip option is not available for line track. To display a tooltip, you should superimpose an invisble `scatter` track (`fill: false` and `strokeWidth: 0`) and set a tooltip for this track.
 
@@ -360,26 +361,24 @@ myCircos.scatter('scatter1', data, configuration);
 
 The minimal datum should have `block_id`, `position` and `value` attributes.
 
-Configuration:
-
-```javascript
-{
-  innerRadius: null,
-  outerRadius: null,
-  min: null,
-  max: null,
-  color: 'd3d3d3',
-  strokeColor: '#d3d3d3',
-  strokeWidth: 1,
-  direction: 'out',
-  fill: true,
-  size: 15,
-  shape: 'circle', // circle, cross, diamond, square, triangle, star, wye
-  opacity: 1,
-  logScale: false,
-  tooltipContent: null,
-}
-```
+The available configuration fields are:
+- [innerRadius](#innerRadiusOuterRadius)
+- [outerRadius](#innerRadiusOuterRadius)
+- [color](#color)
+- [strokeColor](#strokeColor)
+- [strokeWidth](#strokeWidth)
+- [direction](#direction)
+- [fill](#fill)
+- [size](#size)
+- [shape](#shape)
+- [opacity](#opacity)
+- [zIndex](#zIndex)
+- [min](#minmax)
+- [max](#minmax)
+- [logScale](#logScale)
+- [logScaleBase](#logScaleBase)
+- [axes](#axes)
+- [backgrounds](#backgrounds)
 
 ### Stack
 
@@ -444,21 +443,88 @@ Configuration:
 }
 ```
 
-## Colors
+## Configuration Attributes
 
-You can specify the color of the track in the track configuration:
+### backgrounds
+
+You can add a list of backgrounds:
 
 ```javascript
 {
-  color: '#d3d3d3'
+  backgrounds: [
+    {
+      start: 0.006,
+      color: '#4caf50',
+      opacity: 0.1
+    },
+    {
+      start: 0.002,
+      end: 0.006,
+      color: '#d3d3d3',
+      opacity: 0.1
+    },
+    {
+      end: 0.002,
+      color: '#f44336',
+      opacity: 0.1
+    }
+  ]
 }
 ```
 
-You can specify:
+The `start` and `end` fields are interpreted as values on the same scale than the track values.
+- If `start` is not specified, default is the `min` value of the track.
+- If `end` is not specified, default is the `max` value of the track.
 
-- any css color code e.g `#d3d3d3`, `blue`, `rgb(0, 0, 0)`
-- a palette name from the list below (it comes from [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic)). In this case the color will be computed dynamically according to the datum value. If you prefix the palette name with a `-` (e.g `-BrBG`), the palette will be reversed.
-- a function with this signature: `function(datum, index) { return colorCode}`
+You can also specify a `color` and an `opacity`.
+
+### innerRadius/outerRadius
+
+For the layout, the innerRadius and outerRadius values are always interpreted as a number of pixel.
+
+For tracks:
+
+If innerRadius and outerRadius are between `0` and `1`, the value is interpreted as a fraction of the innerRadius of the layout.
+
+eg:
+```
+{
+  innerRadius: 0.5,
+  outerRadius: 0.8
+}
+```
+
+If innerRadius and outerRadius are between `1` and `10`, the value is interpreted as a fraction of the outerRadius of the layout.
+
+eg:
+```
+{
+  innerRadius: 1,
+  outerRadius: 1.2
+}
+```
+
+Otherwise it is interpreted as a number of pixels.
+
+### min/max
+
+The default min and max values are computed according to the dataset. You can override these values by specifying a `min` or `max` attribute in the configuration.
+
+### color
+
+The color attribute can be either:
+
+#### CSS color code
+
+e.g `#d3d3d3`, `blue`, `rgb(0, 0, 0)`
+
+#### Palette name from [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic)
+
+The color will be computed dynamically according to the track data `value` field.
+
+If you prefix the palette name with a `-` (e.g `-BrBG`), the palette will be reversed.
+
+The list of palette names are:
 
 **BrBG**:
 <img src="doc/palettes/BrBG.png" width="100%" height="10">
@@ -515,13 +581,19 @@ You can specify:
 **YlOrRd**:
 <img src="doc/palettes/YlOrRd.png" width="100%" height="10">
 
-## Min/Max
+#### Custom function
 
-The default min and max values are computed according to the dataset. You can override these values by specifying a `min` or `max` attribute in the configuration.
+You can specify a function that compute the color code given the track data and the datum index. For example:
 
-## Axes
+```javascript
+function(datum, index) {
+  return datum.value < 5 ? 'red' : 'green'
+}
+```
 
-To render axes on a track, you can specify an `axes` attribute in the configuration. By default, the value of this attribute is an empty array:
+### axes
+
+The default value is an empty array:
 
 ```javascript
 {
@@ -543,9 +615,9 @@ You can add items to this array to render an axis or a group of axes. You can gi
 }
 ```
 
-Then you have to specify where to place the axes.
+Then you should specify where to place the axes.
 
-You can either define single axis by defining a `position` attribute with a value between the min and max value of the track:
+You can either define a single axis by defining a `position` attribute with a value between the min and max value of the track:
 
 ```javascript
 {
@@ -626,15 +698,36 @@ Here is an advanced example:
 
 The values that you set for `position`, `spacing`, `start` and `end` are in the unit of the track values.
 
-## Radius
+### direction
 
-< 1, < 10,
+It should be either `in` or `out`. Default is `out`. For stack you can also use `center`.
 
-## Backgrounds
+### fill
 
-Si pas de end ou start > max
+`true` or `false`.
 
-## Custom datum formatting
+### logScale
+
+`true` or `false`. Default is `false`.
+
+### logScaleBase
+
+The log base if logScale is `true`. Default is `Math.E`.
+
+### shape
+
+It should be one of:
+  - `circle`
+  - `cross`
+  - `diamond`
+  - `square`
+  - `triangle`
+  - `star`
+  - `wye`
+
+### zIndex
+
+This should be an integer. The higher it is the more above the track will appear.
 
 ## Contact
 
