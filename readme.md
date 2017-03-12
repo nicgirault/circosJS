@@ -42,7 +42,7 @@ You should consider using Circos to show:
 If you don't know what is yarn or npm you can skip this step and get started with [this canvas](doc/canvas.html). Otherwise:
 
 ```
-yarn add circosjs
+yarn add circos
 ```
 
 ## Layout
