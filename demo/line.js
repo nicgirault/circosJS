@@ -1,7 +1,8 @@
-var circos = new Circos({
-  container: '#chart',
-  width: 1000,
-  height: 1000
+var width = document.getElementsByClassName('mdl-card__supporting-text')[0].offsetWidth
+var circosLine = new Circos({
+  container: '#lineChart',
+  width: width,
+  height: width
 })
 
 var gieStainColor = {
@@ -62,19 +63,19 @@ var drawCircos = function (error, GRCh37, cytobands, snp250, snp, snp1m) {
     }
   })
 
-  circos
+  circosLine
     .layout(
       GRCh37,
     {
-      innerRadius: 400,
-      outerRadius: 420,
+      innerRadius: width/2 - 100,
+      outerRadius: width/2 - 80,
       labels: {display: false},
       ticks: {display: false}
     }
     )
     .highlight('cytobands', cytobands, {
-      innerRadius: 400,
-      outerRadius: 420,
+      innerRadius: width/2 - 100,
+      outerRadius: width/2 - 80,
       opacity: 0.3,
       color: function (d) {
         return gieStainColor[d.gieStain]
@@ -194,9 +195,9 @@ var drawCircos = function (error, GRCh37, cytobands, snp250, snp, snp1m) {
 }
 
 d3.queue()
-  .defer(d3.json, '../data/GRCh37.json')
-  .defer(d3.csv, '../data/cytobands.csv')
-  .defer(d3.csv, '../data/snp.density.250kb.txt')
-  .defer(d3.csv, '../data/snp.density.txt')
-  .defer(d3.csv, '../data/snp.density.1mb.txt')
+  .defer(d3.json, './data/GRCh37.json')
+  .defer(d3.csv, './data/cytobands.csv')
+  .defer(d3.csv, './data/snp.density.250kb.txt')
+  .defer(d3.csv, './data/snp.density.txt')
+  .defer(d3.csv, './data/snp.density.1mb.txt')
   .await(drawCircos)

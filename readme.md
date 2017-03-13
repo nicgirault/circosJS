@@ -170,7 +170,7 @@ Chords tracks connect layout regions.
 <p align="center">
   <img src="doc/chords.png" width="60%" alt="chords">
   <br/>
-  <i>Some gene fusions in human karyotype (<a href="demo/chords">source</a>)</i>
+  <i>Some gene fusions in human karyotype (<a href="demo/chords.js">source</a>)</i>
 </p>
 
 Data should looks like this:
@@ -251,7 +251,7 @@ var data = [
 <p align="center">
   <img src="doc/highlight.png" width="60%" alt="highlight">
   <br/>
-  <i>Human karyotype with cytobands highlighted (<a href="demo/highlight">source</a>)</i>
+  <i>Human karyotype with cytobands highlighted (<a href="demo/highlight.js">source</a>)</i>
 </p>
 
 To add a highlight to your circos instance:
@@ -284,7 +284,7 @@ Configuration:
 <p align="center">
   <img src="doc/histogram.png" width="60%" alt="histogram">
   <br/>
-  <i>Genetic abnormalities in human stem cells (<a href="demo/histogram">source</a>)</i>
+  <i>Genetic abnormalities in human stem cells (<a href="demo/histogram.js">source</a>)</i>
 </p>
 
 Data should looks like this:
@@ -318,7 +318,7 @@ The available configuration fields are:
 <p align="center">
   <img src="doc/line.png" width="60%" alt="line">
   <br/>
-  <i>Some single nucleotide polymorphism on chromosomes 1, 2 and 3 (<a href="demo/line">source</a>)</i>
+  <i>Some single nucleotide polymorphism on chromosomes 1, 2 and 3 (<a href="demo/line.js">source</a>)</i>
 </p>
 
 ```javascript
@@ -352,7 +352,7 @@ The available configuration fields are:
 <p align="center">
   <img src="doc/scatter.png" width="60%" alt="scatter">
   <br/>
-  <i><a href="demo/line">source</a></i>
+  <i><a href="demo/line.js">source</a></i>
 </p>
 
 ```javascript
@@ -385,7 +385,7 @@ The available configuration fields are:
 <p align="center">
   <img src="doc/stack.png" width="60%" alt="stack">
   <br/>
-  <i><a href="demo/stack">source</a></i>
+  <i><a href="demo/stack.js">source</a></i>
 </p>
 
 ```javascript
@@ -420,7 +420,7 @@ Configuration:
 <p align="center">
   <img src="doc/text.png" width="60%" alt="text">
   <br/>
-  <i><a href="demo/text">source</a></i>
+  <i><a href="demo/text.js">source</a></i>
 </p>
 
 ```javascript

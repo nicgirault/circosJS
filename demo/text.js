@@ -1,7 +1,8 @@
-var circos = new Circos({
-  container: '#chart',
-  width: 1000,
-  height: 1000
+var width = document.getElementsByClassName('mdl-card__supporting-text')[0].offsetWidth
+var circosText = new Circos({
+  container: '#textChart',
+  width: width,
+  height: width
 })
 
 var gieStainColor = {
@@ -30,19 +31,19 @@ var drawCircos = function (error, GRCh37, cytobands) {
     }
   })
 
-  circos
+  circosText
     .layout(
       [GRCh37[0]],
     {
-      innerRadius: 300,
-      outerRadius: 320,
+      innerRadius: width / 2 - 100,
+      outerRadius: width / 2 - 80,
       labels: {display: false},
       ticks: {display: false}
     }
     )
     .highlight('cytobands', cytobands, {
-      innerRadius: 300,
-      outerRadius: 320,
+      innerRadius: width / 2 - 100,
+      outerRadius: width / 2 - 80,
       opacity: 0.7,
       color: function (d) {
         return gieStainColor[d.gieStain]
@@ -56,8 +57,8 @@ var drawCircos = function (error, GRCh37, cytobands) {
       d.value = d.name
       return d
     }), {
-      innerRadius: 330,
-      outerRadius: 400,
+      innerRadius: 1.02,
+      outerRadius: 1.3,
       style: {
         'font-size': 12
       },
@@ -69,6 +70,6 @@ var drawCircos = function (error, GRCh37, cytobands) {
 }
 
 d3.queue()
-  .defer(d3.json, '../data/GRCh37.json')
-  .defer(d3.csv, '../data/cytobands.csv')
+  .defer(d3.json, './data/GRCh37.json')
+  .defer(d3.csv, './data/cytobands.csv')
   .await(drawCircos)

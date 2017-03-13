@@ -49,10 +49,11 @@ var buildData = function (rawData1, rawData2, karyotype) {
 }
 
 var drawCircos = function (error, GRCh37, cytobands, es, ips) {
+  var width = document.getElementsByClassName('mdl-card__supporting-text')[0].offsetWidth
   var circos = new Circos({
-    container: '#chart',
-    width: 1000,
-    height: 1050
+    container: '#histogramChart',
+    width: width,
+    height: width
   })
 
   cytobands = cytobands.map(function (d) {
@@ -69,8 +70,8 @@ var drawCircos = function (error, GRCh37, cytobands, es, ips) {
     .layout(
       GRCh37,
     {
-      innerRadius: 250,
-      outerRadius: 280,
+      innerRadius: width / 2 - 150,
+      outerRadius: width / 2 - 120,
       labels: {
         display: false
       },
@@ -81,8 +82,8 @@ var drawCircos = function (error, GRCh37, cytobands, es, ips) {
     }
     )
     .highlight('cytobands', cytobands, {
-      innerRadius: 250,
-      outerRadius: 280,
+      innerRadius: width / 2 - 150,
+      outerRadius: width / 2 - 120,
       opacity: 0.6,
       color: function (d) {
         return gieStainColor[d.gieStain]
@@ -92,16 +93,16 @@ var drawCircos = function (error, GRCh37, cytobands, es, ips) {
       }
     })
     .histogram('es', buildData(es, ips, GRCh37), {
-      innerRadius: 282,
-      outerRadius: 430,
+      innerRadius: 1.01,
+      outerRadius: 1.4,
       color: 'OrRd'
     })
     .render()
 }
 
 d3.queue()
-  .defer(d3.json, '../data/GRCh37.json')
-  .defer(d3.csv, '../data/cytobands.csv')
-  .defer(d3.csv, '../data/es.csv')
-  .defer(d3.csv, '../data/ips.csv')
+  .defer(d3.json, './data/GRCh37.json')
+  .defer(d3.csv, './data/cytobands.csv')
+  .defer(d3.csv, './data/es.csv')
+  .defer(d3.csv, './data/ips.csv')
   .await(drawCircos)

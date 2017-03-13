@@ -1,7 +1,8 @@
-var circos = new Circos({
-  container: '#chart',
-  width: 1000,
-  height: 1050
+var width = document.getElementsByClassName('mdl-card__supporting-text')[0].offsetWidth
+var circosScatter = new Circos({
+  container: '#scatterChart',
+  width: width,
+  height: width
 })
 
 var gieStainColor = {
@@ -20,7 +21,15 @@ var gieStainColor = {
 }
 
 var drawCircos = function (error, GRCh37, cytobands, snp250, snp, snp1m) {
-  cytobands = cytobands.map(function (d) {
+  GRCh37 = GRCh37.filter(function (d) {
+    return d.id === 'chr1' || d.id === 'chr2' || d.id === 'chr3'
+  })
+
+  cytobands = cytobands
+  .filter(function (d) {
+    return d.chrom === 'chr1' || d.chrom === 'chr2' || d.chrom === 'chr3'
+  })
+  .map(function (d) {
     return {
       block_id: d.chrom,
       start: parseInt(d.chromStart),
@@ -54,14 +63,14 @@ var drawCircos = function (error, GRCh37, cytobands, snp250, snp, snp1m) {
     }
   })
 
-  circos
+  circosScatter
     .layout(
       GRCh37,
     {
-      innerRadius: 400,
-      outerRadius: 420,
+      innerRadius: width/2 - 150,
+      outerRadius: width/2 - 130,
       ticks: {
-        display: true,
+        display: false,
         spacing: 1000000,
         labelSuffix: ''
       },
@@ -70,13 +79,13 @@ var drawCircos = function (error, GRCh37, cytobands, snp250, snp, snp1m) {
         display: true,
         size: 14,
         color: '#000',
-        radialOffset: 110
+        radialOffset: 30
       }
     }
     )
     .highlight('cytobands', cytobands, {
-      innerRadius: 400,
-      outerRadius: 420,
+      innerRadius: width/2 - 150,
+      outerRadius: width/2 - 130,
       opacity: 0.8,
       color: function (d) {
         return gieStainColor[d.gieStain]
@@ -261,9 +270,9 @@ var drawCircos = function (error, GRCh37, cytobands, snp250, snp, snp1m) {
 }
 
 d3.queue()
-  .defer(d3.json, '../data/GRCh37.json')
-  .defer(d3.csv, '../data/cytobands.csv')
-  .defer(d3.csv, '../data/snp.density.250kb.txt')
-  .defer(d3.csv, '../data/snp.density.txt')
-  .defer(d3.csv, '../data/snp.density.1mb.txt')
+  .defer(d3.json, './data/GRCh37.json')
+  .defer(d3.csv, './data/cytobands.csv')
+  .defer(d3.csv, './data/snp.density.250kb.txt')
+  .defer(d3.csv, './data/snp.density.txt')
+  .defer(d3.csv, './data/snp.density.1mb.txt')
   .await(drawCircos)
