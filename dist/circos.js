@@ -103,6 +103,8 @@ var Circos =
 
 	var _Stack2 = _interopRequireDefault(_Stack);
 
+	var _clipboard = __webpack_require__(308);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -123,6 +125,7 @@ var Circos =
 	    this.conf = (0, _defaultsDeep2.default)(conf, defaultConf);
 	    this.svg = (0, _d3Selection.select)(this.conf.container).append('svg');
 	    this.tip = (0, _d3Selection.select)(this.conf.container).append('div').attr('class', 'tooltip').style('opacity', 0);
+	    this.clipboard = (0, _clipboard.initClipboard)(this.conf.container);
 	  }
 
 	  _createClass(Core, [{
@@ -10126,10 +10129,6 @@ var Circos =
 	    value: 'black',
 	    iteratee: true
 	  },
-	  axes: {
-	    value: [],
-	    iteratee: false
-	  },
 	  backgrounds: {
 	    value: [],
 	    iteratee: false
@@ -10194,6 +10193,8 @@ var Circos =
 
 	var _d3Shape = __webpack_require__(188);
 
+	var _d3Selection = __webpack_require__(108);
+
 	var _configUtils = __webpack_require__(204);
 
 	var _utils = __webpack_require__(206);
@@ -10243,6 +10244,9 @@ var Circos =
 	      }
 	      selection.on('mouseover', function (d, i) {
 	        _this.dispatch.call('mouseover', _this, d);
+	        if (_this.conf.tooltipContent) {
+	          instance.clipboard.attr('value', _this.conf.tooltipContent(d));
+	        }
 	      });
 	      selection.on('mouseout', function (d, i) {
 	        _this.dispatch.call('mouseout', _this, d);
@@ -20755,20 +20759,20 @@ var Circos =
 	    }
 	  }, {
 	    key: 'renderChords',
-	    value: function renderChords(parentElement, name, conf, data, layout, getCoordinates) {
+	    value: function renderChords(parentElement, name, conf, data, instance, getCoordinates) {
 	      var _this2 = this;
 
 	      var track = parentElement.append('g');
 
-	      var that = this;
 	      var link = track.selectAll('.chord').data(data).enter().append('path').attr('class', 'chord').attr('d', (0, _d3Chord.ribbon)().source(function (d) {
-	        return getCoordinates(d.source, layout);
+	        return getCoordinates(d.source, instance._layout);
 	      }).target(function (d) {
-	        return getCoordinates(d.target, layout);
+	        return getCoordinates(d.target, instance._layout);
 	      })).attr('opacity', conf.opacity).on('mouseover', function (d) {
-	        return that.dispatch.call('mouseover', _this2, d);
+	        _this2.dispatch.call('mouseover', _this2, d);
+	        instance.clipboard.attr('value', conf.tooltipContent(d));
 	      }).on('mouseout', function (d) {
-	        return that.dispatch.call('mouseout', _this2, d);
+	        return _this2.dispatch.call('mouseout', _this2, d);
 	      });
 
 	      link.attr('fill', conf.colorValue);
@@ -20782,7 +20786,7 @@ var Circos =
 
 	      var track = parentElement.append('g').attr('class', name).attr('z-index', this.conf.zIndex);
 
-	      var selection = this.renderChords(track, name, this.conf, this.data, instance._layout, this.getCoordinates);
+	      var selection = this.renderChords(track, name, this.conf, this.data, instance, this.getCoordinates);
 	      if (this.conf.tooltipContent) {
 	        (0, _tooltip.registerTooltip)(this, instance, selection, this.conf);
 	      }
@@ -21559,6 +21563,655 @@ var Circos =
 	}(_Track3.default);
 
 	exports.default = Stack;
+
+/***/ },
+/* 304 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(setImmediate) {//  Import support https://stackoverflow.com/questions/13673346/supporting-both-commonjs-and-amd
+	(function(name, definition) {
+	    if (true) { module.exports = definition(); }
+	    else if (typeof define === "function" && typeof define.amd === "object") { define(definition); }
+	    else { this[name] = definition(); }
+	}("clipboard", function() {
+	  if (typeof document === 'undefined' || !document.addEventListener) {
+	    return null;
+	  }
+
+	  var clipboard = {};
+
+	  clipboard.copy = (function() {
+	    var _intercept = false;
+	    var _data = null; // Map from data type (e.g. "text/html") to value.
+	    var _bogusSelection = false;
+
+	    function cleanup() {
+	      _intercept = false;
+	      _data = null;
+	      if (_bogusSelection) {
+	        window.getSelection().removeAllRanges();
+	      }
+	      _bogusSelection = false;
+	    }
+
+	    document.addEventListener("copy", function(e) {
+	      if (_intercept) {
+	        for (var key in _data) {
+	          e.clipboardData.setData(key, _data[key]);
+	        }
+	        e.preventDefault();
+	      }
+	    });
+
+	    // Workaround for Safari: https://bugs.webkit.org/show_bug.cgi?id=156529
+	    function bogusSelect() {
+	      var sel = document.getSelection();
+	      // If "nothing" is selected...
+	      if (!document.queryCommandEnabled("copy") && sel.isCollapsed) {
+	        // ... temporarily select the entire body.
+	        //
+	        // We select the entire body because:
+	        // - it's guaranteed to exist,
+	        // - it works (unlike, say, document.head, or phantom element that is
+	        //   not inserted into the DOM),
+	        // - it doesn't seem to flicker (due to the synchronous copy event), and
+	        // - it avoids modifying the DOM (can trigger mutation observers).
+	        //
+	        // Because we can't do proper feature detection (we already checked
+	        // document.queryCommandEnabled("copy") , which actually gives a false
+	        // negative for Blink when nothing is selected) and UA sniffing is not
+	        // reliable (a lot of UA strings contain "Safari"), this will also
+	        // happen for some browsers other than Safari. :-()
+	        var range = document.createRange();
+	        range.selectNodeContents(document.body);
+	        sel.removeAllRanges();
+	        sel.addRange(range);
+	        _bogusSelection = true;
+	      }
+	    };
+
+	    return function(data) {
+	      return new Promise(function(resolve, reject) {
+	        _intercept = true;
+	        if (typeof data === "string") {
+	          _data = {"text/plain": data};
+	        } else if (data instanceof Node) {
+	          _data = {"text/html": new XMLSerializer().serializeToString(data)};
+	        } else {
+	          _data = data;
+	        }
+
+	        function triggerCopy(tryBogusSelect) {
+	          try {
+	            if (document.execCommand("copy")) {
+	              // document.execCommand is synchronous: http://www.w3.org/TR/2015/WD-clipboard-apis-20150421/#integration-with-rich-text-editing-apis
+	              // So we can call resolve() back here.
+	              cleanup();
+	              resolve();
+	            }
+	            else {
+	              if (!tryBogusSelect) {
+	                bogusSelect();
+	                triggerCopy(true);
+	              } else {
+	                throw new Error("Unable to copy. Perhaps it's not available in your browser?");
+	              }
+	            }
+	          } catch (e) {
+	            cleanup();
+	            reject(e);
+	          }
+	        }
+	        triggerCopy(false);
+
+	      });
+	    };
+	  })();
+
+	  clipboard.paste = (function() {
+	    var _intercept = false;
+	    var _resolve;
+	    var _dataType;
+
+	    document.addEventListener("paste", function(e) {
+	      if (_intercept) {
+	        _intercept = false;
+	        e.preventDefault();
+	        var resolve = _resolve;
+	        _resolve = null;
+	        resolve(e.clipboardData.getData(_dataType));
+	      }
+	    });
+
+	    return function(dataType) {
+	      return new Promise(function(resolve, reject) {
+	        _intercept = true;
+	        _resolve = resolve;
+	        _dataType = dataType || "text/plain";
+	        try {
+	          if (!document.execCommand("paste")) {
+	            _intercept = false;
+	            reject(new Error("Unable to paste. Pasting only works in Internet Explorer at the moment."));
+	          }
+	        } catch (e) {
+	          _intercept = false;
+	          reject(new Error(e));
+	        }
+	      });
+	    };
+	  })();
+
+	  // Handle IE behaviour.
+	  if (typeof ClipboardEvent === "undefined" &&
+	      typeof window.clipboardData !== "undefined" &&
+	      typeof window.clipboardData.setData !== "undefined") {
+
+	    /*! promise-polyfill 2.0.1 */
+	    (function(a){function b(a,b){return function(){a.apply(b,arguments)}}function c(a){if("object"!=typeof this)throw new TypeError("Promises must be constructed via new");if("function"!=typeof a)throw new TypeError("not a function");this._state=null,this._value=null,this._deferreds=[],i(a,b(e,this),b(f,this))}function d(a){var b=this;return null===this._state?void this._deferreds.push(a):void j(function(){var c=b._state?a.onFulfilled:a.onRejected;if(null===c)return void(b._state?a.resolve:a.reject)(b._value);var d;try{d=c(b._value)}catch(e){return void a.reject(e)}a.resolve(d)})}function e(a){try{if(a===this)throw new TypeError("A promise cannot be resolved with itself.");if(a&&("object"==typeof a||"function"==typeof a)){var c=a.then;if("function"==typeof c)return void i(b(c,a),b(e,this),b(f,this))}this._state=!0,this._value=a,g.call(this)}catch(d){f.call(this,d)}}function f(a){this._state=!1,this._value=a,g.call(this)}function g(){for(var a=0,b=this._deferreds.length;b>a;a++)d.call(this,this._deferreds[a]);this._deferreds=null}function h(a,b,c,d){this.onFulfilled="function"==typeof a?a:null,this.onRejected="function"==typeof b?b:null,this.resolve=c,this.reject=d}function i(a,b,c){var d=!1;try{a(function(a){d||(d=!0,b(a))},function(a){d||(d=!0,c(a))})}catch(e){if(d)return;d=!0,c(e)}}var j=c.immediateFn||"function"==typeof setImmediate&&setImmediate||function(a){setTimeout(a,1)},k=Array.isArray||function(a){return"[object Array]"===Object.prototype.toString.call(a)};c.prototype["catch"]=function(a){return this.then(null,a)},c.prototype.then=function(a,b){var e=this;return new c(function(c,f){d.call(e,new h(a,b,c,f))})},c.all=function(){var a=Array.prototype.slice.call(1===arguments.length&&k(arguments[0])?arguments[0]:arguments);return new c(function(b,c){function d(f,g){try{if(g&&("object"==typeof g||"function"==typeof g)){var h=g.then;if("function"==typeof h)return void h.call(g,function(a){d(f,a)},c)}a[f]=g,0===--e&&b(a)}catch(i){c(i)}}if(0===a.length)return b([]);for(var e=a.length,f=0;f<a.length;f++)d(f,a[f])})},c.resolve=function(a){return a&&"object"==typeof a&&a.constructor===c?a:new c(function(b){b(a)})},c.reject=function(a){return new c(function(b,c){c(a)})},c.race=function(a){return new c(function(b,c){for(var d=0,e=a.length;e>d;d++)a[d].then(b,c)})},"undefined"!=typeof module&&module.exports?module.exports=c:a.Promise||(a.Promise=c)})(this);
+
+	    clipboard.copy = function(data) {
+	      return new Promise(function(resolve, reject) {
+	        // IE supports string and URL types: https://msdn.microsoft.com/en-us/library/ms536744(v=vs.85).aspx
+	        // We only support the string type for now.
+	        if (typeof data !== "string" && !("text/plain" in data)) {
+	          throw new Error("You must provide a text/plain type.");
+	        }
+
+	        var strData = (typeof data === "string" ? data : data["text/plain"]);
+	        var copySucceeded = window.clipboardData.setData("Text", strData);
+	        if (copySucceeded) {
+	          resolve();
+	        } else {
+	          reject(new Error("Copying was rejected."));
+	        }
+	      });
+	    };
+
+	    clipboard.paste = function() {
+	      return new Promise(function(resolve, reject) {
+	        var strData = window.clipboardData.getData("Text");
+	        if (strData) {
+	          resolve(strData);
+	        } else {
+	          // The user rejected the paste request.
+	          reject(new Error("Pasting was rejected."));
+	        }
+	      });
+	    };
+	  }
+
+	  return clipboard;
+	}));
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(305).setImmediate))
+
+/***/ },
+/* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var apply = Function.prototype.apply;
+
+	// DOM APIs, for completeness
+
+	exports.setTimeout = function() {
+	  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+	};
+	exports.setInterval = function() {
+	  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+	};
+	exports.clearTimeout =
+	exports.clearInterval = function(timeout) {
+	  if (timeout) {
+	    timeout.close();
+	  }
+	};
+
+	function Timeout(id, clearFn) {
+	  this._id = id;
+	  this._clearFn = clearFn;
+	}
+	Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+	Timeout.prototype.close = function() {
+	  this._clearFn.call(window, this._id);
+	};
+
+	// Does not start the time, just sets up the members needed.
+	exports.enroll = function(item, msecs) {
+	  clearTimeout(item._idleTimeoutId);
+	  item._idleTimeout = msecs;
+	};
+
+	exports.unenroll = function(item) {
+	  clearTimeout(item._idleTimeoutId);
+	  item._idleTimeout = -1;
+	};
+
+	exports._unrefActive = exports.active = function(item) {
+	  clearTimeout(item._idleTimeoutId);
+
+	  var msecs = item._idleTimeout;
+	  if (msecs >= 0) {
+	    item._idleTimeoutId = setTimeout(function onTimeout() {
+	      if (item._onTimeout)
+	        item._onTimeout();
+	    }, msecs);
+	  }
+	};
+
+	// setimmediate attaches itself to the global object
+	__webpack_require__(306);
+	exports.setImmediate = setImmediate;
+	exports.clearImmediate = clearImmediate;
+
+
+/***/ },
+/* 306 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
+	    "use strict";
+
+	    if (global.setImmediate) {
+	        return;
+	    }
+
+	    var nextHandle = 1; // Spec says greater than zero
+	    var tasksByHandle = {};
+	    var currentlyRunningATask = false;
+	    var doc = global.document;
+	    var registerImmediate;
+
+	    function setImmediate(callback) {
+	      // Callback can either be a function or a string
+	      if (typeof callback !== "function") {
+	        callback = new Function("" + callback);
+	      }
+	      // Copy function arguments
+	      var args = new Array(arguments.length - 1);
+	      for (var i = 0; i < args.length; i++) {
+	          args[i] = arguments[i + 1];
+	      }
+	      // Store and register the task
+	      var task = { callback: callback, args: args };
+	      tasksByHandle[nextHandle] = task;
+	      registerImmediate(nextHandle);
+	      return nextHandle++;
+	    }
+
+	    function clearImmediate(handle) {
+	        delete tasksByHandle[handle];
+	    }
+
+	    function run(task) {
+	        var callback = task.callback;
+	        var args = task.args;
+	        switch (args.length) {
+	        case 0:
+	            callback();
+	            break;
+	        case 1:
+	            callback(args[0]);
+	            break;
+	        case 2:
+	            callback(args[0], args[1]);
+	            break;
+	        case 3:
+	            callback(args[0], args[1], args[2]);
+	            break;
+	        default:
+	            callback.apply(undefined, args);
+	            break;
+	        }
+	    }
+
+	    function runIfPresent(handle) {
+	        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
+	        // So if we're currently running a task, we'll need to delay this invocation.
+	        if (currentlyRunningATask) {
+	            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
+	            // "too much recursion" error.
+	            setTimeout(runIfPresent, 0, handle);
+	        } else {
+	            var task = tasksByHandle[handle];
+	            if (task) {
+	                currentlyRunningATask = true;
+	                try {
+	                    run(task);
+	                } finally {
+	                    clearImmediate(handle);
+	                    currentlyRunningATask = false;
+	                }
+	            }
+	        }
+	    }
+
+	    function installNextTickImplementation() {
+	        registerImmediate = function(handle) {
+	            process.nextTick(function () { runIfPresent(handle); });
+	        };
+	    }
+
+	    function canUsePostMessage() {
+	        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
+	        // where `global.postMessage` means something completely different and can't be used for this purpose.
+	        if (global.postMessage && !global.importScripts) {
+	            var postMessageIsAsynchronous = true;
+	            var oldOnMessage = global.onmessage;
+	            global.onmessage = function() {
+	                postMessageIsAsynchronous = false;
+	            };
+	            global.postMessage("", "*");
+	            global.onmessage = oldOnMessage;
+	            return postMessageIsAsynchronous;
+	        }
+	    }
+
+	    function installPostMessageImplementation() {
+	        // Installs an event handler on `global` for the `message` event: see
+	        // * https://developer.mozilla.org/en/DOM/window.postMessage
+	        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
+
+	        var messagePrefix = "setImmediate$" + Math.random() + "$";
+	        var onGlobalMessage = function(event) {
+	            if (event.source === global &&
+	                typeof event.data === "string" &&
+	                event.data.indexOf(messagePrefix) === 0) {
+	                runIfPresent(+event.data.slice(messagePrefix.length));
+	            }
+	        };
+
+	        if (global.addEventListener) {
+	            global.addEventListener("message", onGlobalMessage, false);
+	        } else {
+	            global.attachEvent("onmessage", onGlobalMessage);
+	        }
+
+	        registerImmediate = function(handle) {
+	            global.postMessage(messagePrefix + handle, "*");
+	        };
+	    }
+
+	    function installMessageChannelImplementation() {
+	        var channel = new MessageChannel();
+	        channel.port1.onmessage = function(event) {
+	            var handle = event.data;
+	            runIfPresent(handle);
+	        };
+
+	        registerImmediate = function(handle) {
+	            channel.port2.postMessage(handle);
+	        };
+	    }
+
+	    function installReadyStateChangeImplementation() {
+	        var html = doc.documentElement;
+	        registerImmediate = function(handle) {
+	            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+	            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+	            var script = doc.createElement("script");
+	            script.onreadystatechange = function () {
+	                runIfPresent(handle);
+	                script.onreadystatechange = null;
+	                html.removeChild(script);
+	                script = null;
+	            };
+	            html.appendChild(script);
+	        };
+	    }
+
+	    function installSetTimeoutImplementation() {
+	        registerImmediate = function(handle) {
+	            setTimeout(runIfPresent, 0, handle);
+	        };
+	    }
+
+	    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
+	    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
+	    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
+
+	    // Don't get fooled by e.g. browserify environments.
+	    if ({}.toString.call(global.process) === "[object process]") {
+	        // For Node.js before 0.9
+	        installNextTickImplementation();
+
+	    } else if (canUsePostMessage()) {
+	        // For non-IE10 modern browsers
+	        installPostMessageImplementation();
+
+	    } else if (global.MessageChannel) {
+	        // For web workers, where supported
+	        installMessageChannelImplementation();
+
+	    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
+	        // For IE 6–8
+	        installReadyStateChangeImplementation();
+
+	    } else {
+	        // For older browsers
+	        installSetTimeoutImplementation();
+	    }
+
+	    attachTo.setImmediate = setImmediate;
+	    attachTo.clearImmediate = clearImmediate;
+	}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
+
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(307)))
+
+/***/ },
+/* 307 */
+/***/ function(module, exports) {
+
+	// shim for using process in browser
+	var process = module.exports = {};
+
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
+	(function () {
+	    try {
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
+	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
+	    }
+	    try {
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
+	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
+	    }
+	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+
+
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+
+
+
+	}
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+
+	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = runTimeout(cleanUpNextTick);
+	    draining = true;
+
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    runClearTimeout(timeout);
+	}
+
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        runTimeout(drainQueue);
+	    }
+	};
+
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
+
+/***/ },
+/* 308 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.initClipboard = undefined;
+
+	var _clipboardJs = __webpack_require__(304);
+
+	var _clipboardJs2 = _interopRequireDefault(_clipboardJs);
+
+	var _d3Selection = __webpack_require__(108);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var initClipboard = exports.initClipboard = function initClipboard(container) {
+	  var input = (0, _d3Selection.select)(container).append('input').attr('class', 'circos-clipboard').attr('type', 'hidden');
+
+	  (0, _d3Selection.select)('body').on('keydown', function () {
+	    if (event.ctrlKey && event.code === 'KeyC') {
+	      _clipboardJs2.default.copy(input.attr('value'));
+	    }
+	  });
+	  return input;
+	};
 
 /***/ }
 /******/ ]);

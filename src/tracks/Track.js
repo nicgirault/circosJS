@@ -1,6 +1,7 @@
 import {registerTooltip} from '../behaviors/tooltip'
 import {dispatch} from 'd3-dispatch'
 import {arc} from 'd3-shape'
+import {select} from 'd3-selection'
 import {getConf} from '../config-utils'
 import {buildScale} from '../utils'
 import {buildColorValue} from '../colors'
@@ -52,6 +53,9 @@ export default class Track {
     }
     selection.on('mouseover', (d, i) => {
       this.dispatch.call('mouseover', this, d)
+      if (this.conf.tooltipContent) {
+        instance.clipboard.attr('value', this.conf.tooltipContent(d))
+      }
     })
     selection.on('mouseout', (d, i) => {
       this.dispatch.call('mouseout', this, d)

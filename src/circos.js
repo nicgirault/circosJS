@@ -12,6 +12,7 @@ import Heatmap from './tracks/Heatmap'
 import Line from './tracks/Line'
 import Scatter from './tracks/Scatter'
 import Stack from './tracks/Stack'
+import {initClipboard} from './clipboard'
 
 const defaultConf = {
   width: 700,
@@ -29,6 +30,7 @@ class Core {
     this.tip = select(this.conf.container).append('div')
       .attr('class', 'tooltip')
       .style('opacity', 0)
+    this.clipboard = initClipboard(this.conf.container)
   }
 
   removeTracks (trackIds) {

@@ -1,6 +1,6 @@
 {
   "name": "circos",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A d3js library to build circos graphs",
   "main": "dist/circos.min.js",
   "scripts": {
@@ -37,16 +37,17 @@
     "mocha-lcov-reporter": "^1.2.0",
     "sinon": "~1.17.4",
     "sinon-chai": "^2.8.0",
+    "jsdom": "^9.11.0",
+    "babel-register": "^6.23.0",
+    "mocha-jsdom": "^1.1.0",
     "standard": "^9.0.1",
     "style-loader": "^0.13.1",
     "webpack": "^1.14.0"
   },
   "dependencies": {
-    "babel-register": "^6.23.0",
+    "clipboard-js": "^0.3.3",
     "d3": "^4.4.4",
     "d3-scale-chromatic": "^1.1.0",
-    "jsdom": "^9.11.0",
-    "lodash": "^4.17.3",
-    "mocha-jsdom": "^1.1.0"
+    "lodash": "^4.17.3"
   }
 }

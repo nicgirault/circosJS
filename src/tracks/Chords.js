@@ -31,25 +31,25 @@ export default class Chords extends Track {
     }
   }
 
-  renderChords (parentElement, name, conf, data, layout, getCoordinates) {
+  renderChords (parentElement, name, conf, data, instance, getCoordinates) {
     const track = parentElement.append('g')
 
-    const that = this
     const link = track
       .selectAll('.chord')
       .data(data)
       .enter().append('path')
       .attr('class', 'chord')
       .attr('d', ribbon()
-        .source((d) => getCoordinates(d.source, layout))
-        .target((d) => getCoordinates(d.target, layout))
+        .source((d) => getCoordinates(d.source, instance._layout))
+        .target((d) => getCoordinates(d.target, instance._layout))
       )
       .attr('opacity', conf.opacity)
-      .on('mouseover', (d) =>
-        that.dispatch.call('mouseover', this, d)
-      )
+      .on('mouseover', (d) => {
+        this.dispatch.call('mouseover', this, d)
+        instance.clipboard.attr('value', conf.tooltipContent(d))
+      })
       .on('mouseout', (d) =>
-        that.dispatch.call('mouseout', this, d)
+        this.dispatch.call('mouseout', this, d)
       )
 
     link.attr('fill', conf.colorValue)
@@ -69,7 +69,7 @@ export default class Chords extends Track {
       name,
       this.conf,
       this.data,
-      instance._layout,
+      instance,
       this.getCoordinates
     )
     if (this.conf.tooltipContent) {

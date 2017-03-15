@@ -704,6 +704,21 @@ Here is an advanced example:
 
 The values that you set for `position`, `spacing`, `start` and `end` are in the unit of the track values.
 
+### tooltipContent
+
+A function that receive the datum and the index as a value and return a string displayed in the tooltip (HTML is accepted):
+
+```javascript
+{
+  tooltipContent: function (datum, index) {
+    return `<h5>${datum.block_id}:${datum.start}-${datum.end} ➤ ${datum.value}</h5> <i>(CTRL+C to copy to clipboard)</i>`
+  }
+}
+```
+
+Then when you mouseover the datum, a tooltip will be displayed.
+Note that you can use the keyboard shortcut CTRL+C to copy the content to clipboard.
+
 ### showAxesTooltip
 
 Show or not a tooltip with the value of the axis. Default is `true`.

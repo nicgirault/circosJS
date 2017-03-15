@@ -80,7 +80,7 @@ var drawCircos = function (error, GRCh37, cytobands, data) {
       opacity: 0.7,
       color: '#ff5722',
       tooltipContent: function (d) {
-        return d.source.id + ' ➤ ' + d.target.id + ': ' + d.value
+        return '<h3>' + d.source.id + ' ➤ ' + d.target.id + ': ' + d.value + '</h3><i>(CTRL+C to copy to clipboard)</i>'
       }
     }
     )
