@@ -23,6 +23,7 @@ Demo: [nicgirault.github.io/circosJS/demo](https://nicgirault.github.io/circosJS
   - [max](#minmax)
   - [color](#color)
   - [axes](#axes)
+  - [showAxesTooltip](#showAxesTooltip)
 
 ## Introduction
 
@@ -702,6 +703,10 @@ Here is an advanced example:
 </p>
 
 The values that you set for `position`, `spacing`, `start` and `end` are in the unit of the track values.
+
+### showAxesTooltip
+
+Show or not a tooltip with the value of the axis. Default is `true`.
 
 ### direction
 

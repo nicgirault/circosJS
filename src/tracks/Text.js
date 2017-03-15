@@ -13,10 +13,6 @@ const defaultConf = assign({
     value: 'black',
     iteratee: true
   },
-  axes: {
-    value: [],
-    iteratee: false
-  },
   backgrounds: {
     value: [],
     iteratee: false
