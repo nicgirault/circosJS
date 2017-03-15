@@ -2,6 +2,10 @@ const axes = {
   axes: {
     value: [],
     iteratee: false
+  },
+  showAxesTooltip: {
+    value: true,
+    iteratee: false
   }
 }
 

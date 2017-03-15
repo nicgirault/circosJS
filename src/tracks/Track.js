@@ -44,7 +44,7 @@ export default class Track {
       .attr('z-index', this.conf.zIndex)
     const datumContainer = this.renderBlock(track, this.data, instance._layout, this.conf)
     if (this.conf.axes && this.conf.axes.length > 0) {
-      renderAxes(datumContainer, this.conf, instance._layout, this.scale)
+      renderAxes(datumContainer, this.conf, instance, this.scale)
     }
     const selection = this.renderDatum(datumContainer, this.conf, instance._layout)
     if (this.conf.tooltipContent) {

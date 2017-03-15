@@ -1,6 +1,5 @@
 import Track from './Track'
 import {parsePositionValueData} from '../data-parser'
-import {registerTooltip} from '../behaviors/tooltip'
 import assign from 'lodash/assign'
 import reduce from 'lodash/reduce'
 import sortBy from 'lodash/sortBy'
@@ -35,12 +34,8 @@ const defaultConf = assign({
   backgrounds: {
     value: [],
     iteratee: false
-  },
-  axes: {
-    value: [],
-    iteratee: false
   }
-}, radial, common, values)
+}, axes, radial, common, values)
 
 const splitByGap = (points, maxGap) => {
   return reduce(sortBy(points, 'position'), (aggregator, datum) => {

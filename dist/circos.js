@@ -122,6 +122,7 @@ var Circos =
 	    this._layout = null;
 	    this.conf = (0, _defaultsDeep2.default)(conf, defaultConf);
 	    this.svg = (0, _d3Selection.select)(this.conf.container).append('svg');
+	    this.tip = (0, _d3Selection.select)(this.conf.container).append('div').attr('class', 'tooltip').style('opacity', 0);
 	  }
 
 	  _createClass(Core, [{
@@ -10234,7 +10235,7 @@ var Circos =
 	      var track = parentElement.append('g').attr('class', name).attr('z-index', this.conf.zIndex);
 	      var datumContainer = this.renderBlock(track, this.data, instance._layout, this.conf);
 	      if (this.conf.axes && this.conf.axes.length > 0) {
-	        (0, _axes.renderAxes)(datumContainer, this.conf, instance._layout, this.scale);
+	        (0, _axes.renderAxes)(datumContainer, this.conf, instance, this.scale);
 	      }
 	      var selection = this.renderDatum(datumContainer, this.conf, instance._layout);
 	      if (this.conf.tooltipContent) {
@@ -10332,14 +10333,12 @@ var Circos =
 	__webpack_require__(200);
 
 	function registerTooltip(track, instance, element, trackParams) {
-	  track.tip = (0, _d3Selection.select)(instance.conf.container).append('div').attr('class', 'tooltip').style('opacity', 0);
-
 	  track.dispatch.on('mouseover', function (d) {
-	    track.tip.html(trackParams.tooltipContent(d)).transition().style('opacity', 0.9).style('left', _d3Selection.event.pageX + 'px').style('top', _d3Selection.event.pageY - 28 + 'px');
+	    instance.tip.html(trackParams.tooltipContent(d)).transition().style('opacity', 0.9).style('left', _d3Selection.event.pageX + 'px').style('top', _d3Selection.event.pageY - 28 + 'px');
 	  });
 
 	  track.dispatch.on('mouseout', function (d) {
-	    track.tip.transition().duration(500).style('opacity', 0);
+	    instance.tip.transition().duration(500).style('opacity', 0);
 	  });
 	}
 
@@ -19722,7 +19721,7 @@ var Circos =
 	};
 	exports._buildAxesData = _buildAxesData;
 
-	var renderAxes = exports.renderAxes = function renderAxes(parentElement, conf, layout, scale) {
+	var renderAxes = exports.renderAxes = function renderAxes(parentElement, conf, instance, scale) {
 	  var axes = _buildAxesData(conf);
 
 	  var axis = (0, _d3Shape.arc)().innerRadius(function (d) {
@@ -19733,8 +19732,8 @@ var Circos =
 	    return d.length;
 	  });
 
-	  return parentElement.selectAll('.axis').data(function (blockData) {
-	    var block = layout.blocks[blockData.key];
+	  var selection = parentElement.selectAll('.axis').data(function (blockData) {
+	    var block = instance._layout.blocks[blockData.key];
 	    return axes.map(function (d) {
 	      return {
 	        value: d.value,
@@ -19752,6 +19751,17 @@ var Circos =
 	  }).attr('stroke', function (d) {
 	    return d.color;
 	  });
+
+	  if (conf.showAxesTooltip) {
+	    selection.on('mouseover', function (d, i) {
+	      instance.tip.html(d.value).transition().style('opacity', 0.9).style('left', event.pageX + 'px').style('top', event.pageY - 28 + 'px');
+	    });
+	    selection.on('mouseout', function (d, i) {
+	      instance.tip.transition().duration(500).style('opacity', 0);
+	    });
+	  }
+
+	  return selection;
 	};
 
 /***/ },
@@ -20431,6 +20441,10 @@ var Circos =
 	  axes: {
 	    value: [],
 	    iteratee: false
+	  },
+	  showAxesTooltip: {
+	    value: true,
+	    iteratee: false
 	  }
 	};
 
@@ -21109,8 +21123,6 @@ var Circos =
 
 	var _dataParser = __webpack_require__(286);
 
-	var _tooltip = __webpack_require__(193);
-
 	var _assign = __webpack_require__(205);
 
 	var _assign2 = _interopRequireDefault(_assign);
@@ -21163,12 +21175,8 @@ var Circos =
 	  backgrounds: {
 	    value: [],
 	    iteratee: false
-	  },
-	  axes: {
-	    value: [],
-	    iteratee: false
 	  }
-	}, _configs.radial, _configs.common, _configs.values);
+	}, _configs.axes, _configs.radial, _configs.common, _configs.values);
 
 	var splitByGap = function splitByGap(points, maxGap) {
 	  return (0, _reduce2.default)((0, _sortBy2.default)(points, 'position'), function (aggregator, datum) {

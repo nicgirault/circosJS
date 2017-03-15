@@ -4,12 +4,8 @@ import 'd3-transition'
 import './tooltip.css'
 
 export function registerTooltip (track, instance, element, trackParams) {
-  track.tip = select(instance.conf.container).append('div')
-    .attr('class', 'tooltip')
-    .style('opacity', 0)
-
   track.dispatch.on('mouseover', (d) => {
-    track.tip
+    instance.tip
       .html(trackParams.tooltipContent(d))
       .transition()
       .style('opacity', 0.9)
@@ -18,7 +14,7 @@ export function registerTooltip (track, instance, element, trackParams) {
   })
 
   track.dispatch.on('mouseout', (d) => {
-    track.tip
+    instance.tip
       .transition()
       .duration(500)
       .style('opacity', 0)

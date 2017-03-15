@@ -26,6 +26,9 @@ class Core {
     this._layout = null
     this.conf = defaultsDeep(conf, defaultConf)
     this.svg = select(this.conf.container).append('svg')
+    this.tip = select(this.conf.container).append('div')
+      .attr('class', 'tooltip')
+      .style('opacity', 0)
   }
 
   removeTracks (trackIds) {

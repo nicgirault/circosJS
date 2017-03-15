@@ -37,7 +37,7 @@ const _buildAxesData = (conf) => {
 }
 exports._buildAxesData = _buildAxesData
 
-export const renderAxes = (parentElement, conf, layout, scale) => {
+export const renderAxes = (parentElement, conf, instance, scale) => {
   const axes = _buildAxesData(conf)
 
   const axis = arc()
@@ -54,10 +54,10 @@ export const renderAxes = (parentElement, conf, layout, scale) => {
     .startAngle(0)
     .endAngle((d) => d.length)
 
-  return parentElement
+  const selection = parentElement
     .selectAll('.axis')
       .data((blockData) => {
-        const block = layout.blocks[blockData.key]
+        const block = instance._layout.blocks[blockData.key]
         return axes.map((d) => {
           return {
             value: d.value,
@@ -76,4 +76,23 @@ export const renderAxes = (parentElement, conf, layout, scale) => {
       .attr('d', axis)
       .attr('stroke-width', (d) => d.thickness)
       .attr('stroke', (d) => d.color)
+
+  if (conf.showAxesTooltip) {
+    selection.on('mouseover', (d, i) => {
+      instance.tip
+        .html(d.value)
+        .transition()
+        .style('opacity', 0.9)
+        .style('left', (event.pageX) + 'px')
+        .style('top', (event.pageY - 28) + 'px')
+    })
+    selection.on('mouseout', (d, i) => {
+      instance.tip
+        .transition()
+        .duration(500)
+        .style('opacity', 0)
+    })
+  }
+
+  return selection
 }
