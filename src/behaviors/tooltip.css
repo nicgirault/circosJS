@@ -1,4 +1,4 @@
-div.tooltip {
+div.circos-tooltip {
   position: absolute;
   text-align: center;
   padding: 5px 10px;
@@ -6,4 +6,5 @@ div.tooltip {
   color: white;
   border: 0px;
   pointer-events: none;
+  z-index: 1000;
 }

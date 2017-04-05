@@ -1,6 +1,6 @@
 import forEach from 'lodash/forEach'
 import sortBy from 'lodash/sortBy'
-import renderLayout from './render-layout'
+import renderLayout from './layout/render'
 
 export default function render (ids = [], removeTracks, circos) {
   const renderAll = ids.length === 0

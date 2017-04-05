@@ -61,49 +61,53 @@ var Circos =
 
 	var _isArray2 = _interopRequireDefault(_isArray);
 
+	var _map = __webpack_require__(295);
+
+	var _map2 = _interopRequireDefault(_map);
+
 	var _d3Selection = __webpack_require__(108);
 
-	var _layout = __webpack_require__(109);
+	var _index = __webpack_require__(109);
 
-	var _layout2 = _interopRequireDefault(_layout);
+	var _index2 = _interopRequireDefault(_index);
 
-	var _render2 = __webpack_require__(178);
+	var _render2 = __webpack_require__(179);
 
 	var _render3 = _interopRequireDefault(_render2);
 
-	var _Text = __webpack_require__(191);
+	var _Text = __webpack_require__(192);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Highlight = __webpack_require__(296);
+	var _Highlight = __webpack_require__(297);
 
 	var _Highlight2 = _interopRequireDefault(_Highlight);
 
-	var _Histogram = __webpack_require__(297);
+	var _Histogram = __webpack_require__(298);
 
 	var _Histogram2 = _interopRequireDefault(_Histogram);
 
-	var _Chords = __webpack_require__(298);
+	var _Chords = __webpack_require__(299);
 
 	var _Chords2 = _interopRequireDefault(_Chords);
 
-	var _Heatmap = __webpack_require__(300);
+	var _Heatmap = __webpack_require__(301);
 
 	var _Heatmap2 = _interopRequireDefault(_Heatmap);
 
-	var _Line = __webpack_require__(301);
+	var _Line = __webpack_require__(302);
 
 	var _Line2 = _interopRequireDefault(_Line);
 
-	var _Scatter = __webpack_require__(302);
+	var _Scatter = __webpack_require__(303);
 
 	var _Scatter2 = _interopRequireDefault(_Scatter);
 
-	var _Stack = __webpack_require__(303);
+	var _Stack = __webpack_require__(304);
 
 	var _Stack2 = _interopRequireDefault(_Stack);
 
-	var _clipboard = __webpack_require__(308);
+	var _clipboard = __webpack_require__(305);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -123,8 +127,14 @@ var Circos =
 	    this.tracks = {};
 	    this._layout = null;
 	    this.conf = (0, _defaultsDeep2.default)(conf, defaultConf);
-	    this.svg = (0, _d3Selection.select)(this.conf.container).append('svg');
-	    this.tip = (0, _d3Selection.select)(this.conf.container).append('div').attr('class', 'tooltip').style('opacity', 0);
+	    var container = (0, _d3Selection.select)(this.conf.container).append('div').style('position', 'relative');
+	    this.svg = container.append('svg');
+	    if ((0, _d3Selection.select)('body').select('.circos-tooltip').empty()) {
+	      this.tip = (0, _d3Selection.select)('body').append('div').attr('class', 'circos-tooltip').style('opacity', 0);
+	    } else {
+	      this.tip = (0, _d3Selection.select)('body').select('.circos-tooltip');
+	    }
+
 	    this.clipboard = (0, _clipboard.initClipboard)(this.conf.container);
 	  }
 
@@ -134,7 +144,7 @@ var Circos =
 	      var _this = this;
 
 	      if (typeof trackIds === 'undefined') {
-	        map(this.tracks, function (track, id) {
+	        (0, _map2.default)(this.tracks, function (track, id) {
 	          _this.svg.select('.' + id).remove();
 	        });
 	        this.tracks = {};
@@ -143,7 +153,7 @@ var Circos =
 	        delete this.tracks[trackIds];
 	      } else if ((0, _isArray2.default)(trackIds)) {
 	        (0, _forEach2.default)(trackIds, function (trackId) {
-	          svg.select('.' + trackId).remove();
+	          this.svg.select('.' + trackId).remove();
 	          delete this.tracks[trackId];
 	        });
 	      } else {
@@ -155,7 +165,7 @@ var Circos =
 	  }, {
 	    key: 'layout',
 	    value: function layout(data, conf) {
-	      this._layout = new _layout2.default(conf, data);
+	      this._layout = new _index2.default(conf, data);
 	      return this;
 	    }
 	  }, {
@@ -4538,46 +4548,15 @@ var Circos =
 
 	var _forEach2 = _interopRequireDefault(_forEach);
 
+	var _conf = __webpack_require__(178);
+
+	var _conf2 = _interopRequireDefault(_conf);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var logger = console;
-	var defaultConf = {
-	  innerRadius: 250,
-	  outerRadius: 300,
-	  cornerRadius: 0,
-	  gap: 0.04, // in radian
-	  opacity: 1,
-	  labels: {
-	    position: 'center',
-	    display: true,
-	    size: 14,
-	    color: '#000',
-	    radialOffset: 20
-	  },
-	  ticks: {
-	    display: true,
-	    color: 'grey',
-	    spacing: 10000000,
-	    labels: true,
-	    labelSpacing: 10,
-	    labelSuffix: '',
-	    labelDenominator: 1,
-	    labelDisplay0: true,
-	    labelSize: 10,
-	    labelColor: '#000',
-	    labelFont: 'default',
-	    majorSpacing: 5,
-	    size: {
-	      minor: 2,
-	      major: 5
-	    }
-	  },
-	  onClick: null,
-	  onMouseOver: null,
-	  zIndex: 100
-	};
 
 	var Layout = function () {
 	  function Layout(conf, data) {
@@ -4589,7 +4568,7 @@ var Circos =
 	      logger.log(2, 'no layout data', '');
 	    }
 
-	    this.conf = (0, _defaultsDeep2.default)(conf, (0, _cloneDeep2.default)(defaultConf));
+	    this.conf = (0, _defaultsDeep2.default)(conf, (0, _cloneDeep2.default)(_conf2.default));
 	    this.data = data;
 	    var agg = (0, _reduce2.default)(data, function (aggregator, block) {
 	      block.offset = aggregator.offset;
@@ -7149,6 +7128,51 @@ var Circos =
 
 /***/ },
 /* 178 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = {
+	  innerRadius: 250,
+	  outerRadius: 300,
+	  cornerRadius: 0,
+	  gap: 0.04, // in radian
+	  opacity: 1,
+	  labels: {
+	    position: 'center',
+	    display: true,
+	    size: 14,
+	    color: '#000',
+	    radialOffset: 20
+	  },
+	  ticks: {
+	    display: true,
+	    color: 'grey',
+	    spacing: 10000000,
+	    labels: true,
+	    labelSpacing: 10,
+	    labelSuffix: '',
+	    labelDenominator: 1,
+	    labelDisplay0: true,
+	    labelSize: 10,
+	    labelColor: '#000',
+	    labelFont: 'default',
+	    majorSpacing: 5,
+	    size: {
+	      minor: 2,
+	      major: 5
+	    }
+	  },
+	  onClick: null,
+	  onMouseOver: null,
+	  zIndex: 100
+	};
+
+/***/ },
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7162,13 +7186,13 @@ var Circos =
 
 	var _forEach2 = _interopRequireDefault(_forEach);
 
-	var _sortBy = __webpack_require__(179);
+	var _sortBy = __webpack_require__(180);
 
 	var _sortBy2 = _interopRequireDefault(_sortBy);
 
-	var _renderLayout = __webpack_require__(187);
+	var _render = __webpack_require__(188);
 
-	var _renderLayout2 = _interopRequireDefault(_renderLayout);
+	var _render2 = _interopRequireDefault(_render);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7198,7 +7222,7 @@ var Circos =
 	    }
 	  });
 	  if (renderAll || 'layout' in ids) {
-	    (0, _renderLayout2.default)(translated, circos);
+	    (0, _render2.default)(translated, circos);
 	  }
 
 	  // re-order tracks and layout according to z-index
@@ -7215,11 +7239,11 @@ var Circos =
 	}
 
 /***/ },
-/* 179 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFlatten = __webpack_require__(180),
-	    baseOrderBy = __webpack_require__(182),
+	var baseFlatten = __webpack_require__(181),
+	    baseOrderBy = __webpack_require__(183),
 	    baseRest = __webpack_require__(3),
 	    isIterateeCall = __webpack_require__(98);
 
@@ -7269,11 +7293,11 @@ var Circos =
 
 
 /***/ },
-/* 180 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayPush = __webpack_require__(120),
-	    isFlattenable = __webpack_require__(181);
+	    isFlattenable = __webpack_require__(182);
 
 	/**
 	 * The base implementation of `_.flatten` with support for restricting flattening.
@@ -7313,7 +7337,7 @@ var Circos =
 
 
 /***/ },
-/* 181 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(14),
@@ -7339,15 +7363,15 @@ var Circos =
 
 
 /***/ },
-/* 182 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayMap = __webpack_require__(169),
 	    baseIteratee = __webpack_require__(142),
-	    baseMap = __webpack_require__(183),
-	    baseSortBy = __webpack_require__(184),
+	    baseMap = __webpack_require__(184),
+	    baseSortBy = __webpack_require__(185),
 	    baseUnary = __webpack_require__(85),
-	    compareMultiple = __webpack_require__(185),
+	    compareMultiple = __webpack_require__(186),
 	    identity = __webpack_require__(4);
 
 	/**
@@ -7379,7 +7403,7 @@ var Circos =
 
 
 /***/ },
-/* 183 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseEach = __webpack_require__(101),
@@ -7407,7 +7431,7 @@ var Circos =
 
 
 /***/ },
-/* 184 */
+/* 185 */
 /***/ function(module, exports) {
 
 	/**
@@ -7434,10 +7458,10 @@ var Circos =
 
 
 /***/ },
-/* 185 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var compareAscending = __webpack_require__(186);
+	var compareAscending = __webpack_require__(187);
 
 	/**
 	 * Used by `_.orderBy` to compare multiple properties of a value to another
@@ -7484,7 +7508,7 @@ var Circos =
 
 
 /***/ },
-/* 186 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isSymbol = __webpack_require__(163);
@@ -7531,7 +7555,7 @@ var Circos =
 
 
 /***/ },
-/* 187 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7541,9 +7565,9 @@ var Circos =
 	});
 	exports.default = renderLayout;
 
-	var _d3Shape = __webpack_require__(188);
+	var _d3Shape = __webpack_require__(189);
 
-	var _d3Array = __webpack_require__(190);
+	var _d3Array = __webpack_require__(191);
 
 	function renderLayoutLabels(conf, block) {
 	  var radius = conf.innerRadius + conf.labels.radialOffset;
@@ -7645,12 +7669,12 @@ var Circos =
 	}
 
 /***/ },
-/* 188 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-shape/ Version 1.0.4. Copyright 2016 Mike Bostock.
 	(function (global, factory) {
-	   true ? factory(exports, __webpack_require__(189)) :
+	   true ? factory(exports, __webpack_require__(190)) :
 	  typeof define === 'function' && define.amd ? define(['exports', 'd3-path'], factory) :
 	  (factory((global.d3 = global.d3 || {}),global.d3));
 	}(this, (function (exports,d3Path) { 'use strict';
@@ -9469,7 +9493,7 @@ var Circos =
 
 
 /***/ },
-/* 189 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-path/ Version 1.0.3. Copyright 2016 Mike Bostock.
@@ -9614,7 +9638,7 @@ var Circos =
 
 
 /***/ },
-/* 190 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-array/ Version 1.0.2. Copyright 2016 Mike Bostock.
@@ -10085,7 +10109,7 @@ var Circos =
 
 
 /***/ },
-/* 191 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10096,21 +10120,21 @@ var Circos =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Track2 = __webpack_require__(192);
+	var _Track2 = __webpack_require__(193);
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(286);
+	var _dataParser = __webpack_require__(287);
 
 	var _forEach = __webpack_require__(99);
 
 	var _forEach2 = _interopRequireDefault(_forEach);
 
-	var _assign = __webpack_require__(205);
+	var _assign = __webpack_require__(206);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _configs = __webpack_require__(295);
+	var _configs = __webpack_require__(296);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10176,7 +10200,7 @@ var Circos =
 	exports.default = Text;
 
 /***/ },
-/* 192 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10187,21 +10211,21 @@ var Circos =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _tooltip = __webpack_require__(193);
+	var _tooltip = __webpack_require__(194);
 
-	var _d3Dispatch = __webpack_require__(195);
+	var _d3Dispatch = __webpack_require__(196);
 
-	var _d3Shape = __webpack_require__(188);
+	var _d3Shape = __webpack_require__(189);
 
 	var _d3Selection = __webpack_require__(108);
 
-	var _configUtils = __webpack_require__(204);
+	var _configUtils = __webpack_require__(205);
 
-	var _utils = __webpack_require__(206);
+	var _utils = __webpack_require__(207);
 
-	var _colors = __webpack_require__(279);
+	var _colors = __webpack_require__(280);
 
-	var _axes = __webpack_require__(281);
+	var _axes = __webpack_require__(282);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -10320,7 +10344,7 @@ var Circos =
 	exports.default = Track;
 
 /***/ },
-/* 193 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10332,12 +10356,28 @@ var Circos =
 
 	var _d3Selection = __webpack_require__(108);
 
-	__webpack_require__(194);
+	__webpack_require__(195);
 
-	__webpack_require__(200);
+	__webpack_require__(201);
+
+	var cumulativeOffset = function cumulativeOffset(element) {
+	  var top = 0;
+	  var left = 0;
+	  do {
+	    top += element.offsetTop || 0;
+	    left += element.offsetLeft || 0;
+	    element = element.offsetParent;
+	  } while (element);
+
+	  return {
+	    top: top,
+	    left: left
+	  };
+	};
 
 	function registerTooltip(track, instance, element, trackParams) {
 	  track.dispatch.on('mouseover', function (d) {
+	    var offset = cumulativeOffset(document.querySelector(instance.conf.container));
 	    instance.tip.html(trackParams.tooltipContent(d)).transition().style('opacity', 0.9).style('left', _d3Selection.event.pageX + 'px').style('top', _d3Selection.event.pageY - 28 + 'px');
 	  });
 
@@ -10347,12 +10387,12 @@ var Circos =
 	}
 
 /***/ },
-/* 194 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-transition/ Version 1.0.3. Copyright 2016 Mike Bostock.
 	(function (global, factory) {
-	   true ? factory(exports, __webpack_require__(108), __webpack_require__(195), __webpack_require__(196), __webpack_require__(197), __webpack_require__(198), __webpack_require__(199)) :
+	   true ? factory(exports, __webpack_require__(108), __webpack_require__(196), __webpack_require__(197), __webpack_require__(198), __webpack_require__(199), __webpack_require__(200)) :
 	  typeof define === 'function' && define.amd ? define(['exports', 'd3-selection', 'd3-dispatch', 'd3-timer', 'd3-interpolate', 'd3-color', 'd3-ease'], factory) :
 	  (factory((global.d3 = global.d3 || {}),global.d3,global.d3,global.d3,global.d3,global.d3,global.d3));
 	}(this, (function (exports,d3Selection,d3Dispatch,d3Timer,d3Interpolate,d3Color,d3Ease) { 'use strict';
@@ -11142,7 +11182,7 @@ var Circos =
 
 
 /***/ },
-/* 195 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-dispatch/ Version 1.0.2. Copyright 2016 Mike Bostock.
@@ -11243,7 +11283,7 @@ var Circos =
 
 
 /***/ },
-/* 196 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-timer/ Version 1.0.4. Copyright 2017 Mike Bostock.
@@ -11398,12 +11438,12 @@ var Circos =
 
 
 /***/ },
-/* 197 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-interpolate/ Version 1.1.3. Copyright 2017 Mike Bostock.
 	(function (global, factory) {
-	   true ? factory(exports, __webpack_require__(198)) :
+	   true ? factory(exports, __webpack_require__(199)) :
 	  typeof define === 'function' && define.amd ? define(['exports', 'd3-color'], factory) :
 	  (factory((global.d3 = global.d3 || {}),global.d3));
 	}(this, (function (exports,d3Color) { 'use strict';
@@ -11949,7 +11989,7 @@ var Circos =
 
 
 /***/ },
-/* 198 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-color/ Version 1.0.2. Copyright 2016 Mike Bostock.
@@ -12478,7 +12518,7 @@ var Circos =
 
 
 /***/ },
-/* 199 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-ease/ Version 1.0.2. Copyright 2016 Mike Bostock.
@@ -12743,16 +12783,16 @@ var Circos =
 
 
 /***/ },
-/* 200 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(201);
+	var content = __webpack_require__(202);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(203)(content, {});
+	var update = __webpack_require__(204)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -12769,21 +12809,21 @@ var Circos =
 	}
 
 /***/ },
-/* 201 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(202)();
+	exports = module.exports = __webpack_require__(203)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "div.tooltip {\n  position: absolute;\n  text-align: center;\n  padding: 5px 10px;\n  background: #111111;\n  color: white;\n  border: 0px;\n  pointer-events: none;\n}\n", ""]);
+	exports.push([module.id, "div.circos-tooltip {\n  position: absolute;\n  text-align: center;\n  padding: 5px 10px;\n  background: #111111;\n  color: white;\n  border: 0px;\n  pointer-events: none;\n  z-index: 1000;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 202 */
+/* 203 */
 /***/ function(module, exports) {
 
 	/*
@@ -12839,7 +12879,7 @@ var Circos =
 
 
 /***/ },
-/* 203 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -13091,7 +13131,7 @@ var Circos =
 
 
 /***/ },
-/* 204 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13113,11 +13153,11 @@ var Circos =
 
 	var _isFunction2 = _interopRequireDefault(_isFunction);
 
-	var _assign = __webpack_require__(205);
+	var _assign = __webpack_require__(206);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _utils = __webpack_require__(206);
+	var _utils = __webpack_require__(207);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13189,7 +13229,7 @@ var Circos =
 	exports.getConf = getConf;
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var assignValue = __webpack_require__(89),
@@ -13253,7 +13293,7 @@ var Circos =
 
 
 /***/ },
-/* 206 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13265,31 +13305,31 @@ var Circos =
 	exports.computeMinMax = computeMinMax;
 	exports.buildScale = buildScale;
 
-	var _sortBy = __webpack_require__(207);
+	var _sortBy = __webpack_require__(208);
 
 	var _sortBy2 = _interopRequireDefault(_sortBy);
 
-	var _flow = __webpack_require__(260);
+	var _flow = __webpack_require__(261);
 
 	var _flow2 = _interopRequireDefault(_flow);
 
-	var _concat = __webpack_require__(263);
+	var _concat = __webpack_require__(264);
 
 	var _concat2 = _interopRequireDefault(_concat);
 
-	var _filter = __webpack_require__(265);
+	var _filter = __webpack_require__(266);
 
 	var _filter2 = _interopRequireDefault(_filter);
 
-	var _first = __webpack_require__(268);
+	var _first = __webpack_require__(269);
 
 	var _first2 = _interopRequireDefault(_first);
 
-	var _reverse = __webpack_require__(272);
+	var _reverse = __webpack_require__(273);
 
 	var _reverse2 = _interopRequireDefault(_reverse);
 
-	var _d3Scale = __webpack_require__(274);
+	var _d3Scale = __webpack_require__(275);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13323,22 +13363,22 @@ var Circos =
 	}
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var convert = __webpack_require__(208),
-	    func = convert('sortBy', __webpack_require__(179));
+	var convert = __webpack_require__(209),
+	    func = convert('sortBy', __webpack_require__(180));
 
-	func.placeholder = __webpack_require__(211);
+	func.placeholder = __webpack_require__(212);
 	module.exports = func;
 
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseConvert = __webpack_require__(209),
-	    util = __webpack_require__(212);
+	var baseConvert = __webpack_require__(210),
+	    util = __webpack_require__(213);
 
 	/**
 	 * Converts `func` of `name` to an immutable auto-curried iteratee-first data-last
@@ -13358,11 +13398,11 @@ var Circos =
 
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var mapping = __webpack_require__(210),
-	    fallbackHolder = __webpack_require__(211);
+	var mapping = __webpack_require__(211),
+	    fallbackHolder = __webpack_require__(212);
 
 	/** Built-in value reference. */
 	var push = Array.prototype.push;
@@ -13932,7 +13972,7 @@ var Circos =
 
 
 /***/ },
-/* 210 */
+/* 211 */
 /***/ function(module, exports) {
 
 	/** Used to map aliases to their real names. */
@@ -14306,7 +14346,7 @@ var Circos =
 
 
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports) {
 
 	/**
@@ -14318,30 +14358,30 @@ var Circos =
 
 
 /***/ },
-/* 212 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  'ary': __webpack_require__(213),
+	  'ary': __webpack_require__(214),
 	  'assign': __webpack_require__(112),
-	  'clone': __webpack_require__(253),
-	  'curry': __webpack_require__(254),
+	  'clone': __webpack_require__(254),
+	  'curry': __webpack_require__(255),
 	  'forEach': __webpack_require__(100),
 	  'isArray': __webpack_require__(76),
 	  'isFunction': __webpack_require__(12),
-	  'iteratee': __webpack_require__(255),
+	  'iteratee': __webpack_require__(256),
 	  'keys': __webpack_require__(104),
-	  'rearg': __webpack_require__(256),
-	  'toInteger': __webpack_require__(250),
-	  'toPath': __webpack_require__(259)
+	  'rearg': __webpack_require__(257),
+	  'toInteger': __webpack_require__(251),
+	  'toPath': __webpack_require__(260)
 	};
 
 
 /***/ },
-/* 213 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createWrap = __webpack_require__(214);
+	var createWrap = __webpack_require__(215);
 
 	/** Used to compose bitmasks for function metadata. */
 	var WRAP_ARY_FLAG = 128;
@@ -14373,19 +14413,19 @@ var Circos =
 
 
 /***/ },
-/* 214 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseSetData = __webpack_require__(215),
-	    createBind = __webpack_require__(217),
-	    createCurry = __webpack_require__(219),
-	    createHybrid = __webpack_require__(220),
-	    createPartial = __webpack_require__(248),
-	    getData = __webpack_require__(228),
-	    mergeData = __webpack_require__(249),
-	    setData = __webpack_require__(235),
-	    setWrapToString = __webpack_require__(236),
-	    toInteger = __webpack_require__(250);
+	var baseSetData = __webpack_require__(216),
+	    createBind = __webpack_require__(218),
+	    createCurry = __webpack_require__(220),
+	    createHybrid = __webpack_require__(221),
+	    createPartial = __webpack_require__(249),
+	    getData = __webpack_require__(229),
+	    mergeData = __webpack_require__(250),
+	    setData = __webpack_require__(236),
+	    setWrapToString = __webpack_require__(237),
+	    toInteger = __webpack_require__(251);
 
 	/** Error message constants. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -14485,11 +14525,11 @@ var Circos =
 
 
 /***/ },
-/* 215 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var identity = __webpack_require__(4),
-	    metaMap = __webpack_require__(216);
+	    metaMap = __webpack_require__(217);
 
 	/**
 	 * The base implementation of `setData` without support for hot loop shorting.
@@ -14508,7 +14548,7 @@ var Circos =
 
 
 /***/ },
-/* 216 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var WeakMap = __webpack_require__(128);
@@ -14520,10 +14560,10 @@ var Circos =
 
 
 /***/ },
-/* 217 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createCtor = __webpack_require__(218),
+	var createCtor = __webpack_require__(219),
 	    root = __webpack_require__(15);
 
 	/** Used to compose bitmasks for function metadata. */
@@ -14554,7 +14594,7 @@ var Circos =
 
 
 /***/ },
-/* 218 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseCreate = __webpack_require__(69),
@@ -14597,15 +14637,15 @@ var Circos =
 
 
 /***/ },
-/* 219 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var apply = __webpack_require__(2),
-	    createCtor = __webpack_require__(218),
-	    createHybrid = __webpack_require__(220),
-	    createRecurry = __webpack_require__(224),
-	    getHolder = __webpack_require__(245),
-	    replaceHolders = __webpack_require__(247),
+	    createCtor = __webpack_require__(219),
+	    createHybrid = __webpack_require__(221),
+	    createRecurry = __webpack_require__(225),
+	    getHolder = __webpack_require__(246),
+	    replaceHolders = __webpack_require__(248),
 	    root = __webpack_require__(15);
 
 	/**
@@ -14649,17 +14689,17 @@ var Circos =
 
 
 /***/ },
-/* 220 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var composeArgs = __webpack_require__(221),
-	    composeArgsRight = __webpack_require__(222),
-	    countHolders = __webpack_require__(223),
-	    createCtor = __webpack_require__(218),
-	    createRecurry = __webpack_require__(224),
-	    getHolder = __webpack_require__(245),
-	    reorder = __webpack_require__(246),
-	    replaceHolders = __webpack_require__(247),
+	var composeArgs = __webpack_require__(222),
+	    composeArgsRight = __webpack_require__(223),
+	    countHolders = __webpack_require__(224),
+	    createCtor = __webpack_require__(219),
+	    createRecurry = __webpack_require__(225),
+	    getHolder = __webpack_require__(246),
+	    reorder = __webpack_require__(247),
+	    replaceHolders = __webpack_require__(248),
 	    root = __webpack_require__(15);
 
 	/** Used to compose bitmasks for function metadata. */
@@ -14747,7 +14787,7 @@ var Circos =
 
 
 /***/ },
-/* 221 */
+/* 222 */
 /***/ function(module, exports) {
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
@@ -14792,7 +14832,7 @@ var Circos =
 
 
 /***/ },
-/* 222 */
+/* 223 */
 /***/ function(module, exports) {
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
@@ -14839,7 +14879,7 @@ var Circos =
 
 
 /***/ },
-/* 223 */
+/* 224 */
 /***/ function(module, exports) {
 
 	/**
@@ -14866,12 +14906,12 @@ var Circos =
 
 
 /***/ },
-/* 224 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isLaziable = __webpack_require__(225),
-	    setData = __webpack_require__(235),
-	    setWrapToString = __webpack_require__(236);
+	var isLaziable = __webpack_require__(226),
+	    setData = __webpack_require__(236),
+	    setWrapToString = __webpack_require__(237);
 
 	/** Used to compose bitmasks for function metadata. */
 	var WRAP_BIND_FLAG = 1,
@@ -14928,13 +14968,13 @@ var Circos =
 
 
 /***/ },
-/* 225 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var LazyWrapper = __webpack_require__(226),
-	    getData = __webpack_require__(228),
-	    getFuncName = __webpack_require__(230),
-	    lodash = __webpack_require__(232);
+	var LazyWrapper = __webpack_require__(227),
+	    getData = __webpack_require__(229),
+	    getFuncName = __webpack_require__(231),
+	    lodash = __webpack_require__(233);
 
 	/**
 	 * Checks if `func` has a lazy counterpart.
@@ -14962,11 +15002,11 @@ var Circos =
 
 
 /***/ },
-/* 226 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseCreate = __webpack_require__(69),
-	    baseLodash = __webpack_require__(227);
+	    baseLodash = __webpack_require__(228);
 
 	/** Used as references for the maximum length and index of an array. */
 	var MAX_ARRAY_LENGTH = 4294967295;
@@ -14996,7 +15036,7 @@ var Circos =
 
 
 /***/ },
-/* 227 */
+/* 228 */
 /***/ function(module, exports) {
 
 	/**
@@ -15012,11 +15052,11 @@ var Circos =
 
 
 /***/ },
-/* 228 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var metaMap = __webpack_require__(216),
-	    noop = __webpack_require__(229);
+	var metaMap = __webpack_require__(217),
+	    noop = __webpack_require__(230);
 
 	/**
 	 * Gets metadata for `func`.
@@ -15033,7 +15073,7 @@ var Circos =
 
 
 /***/ },
-/* 229 */
+/* 230 */
 /***/ function(module, exports) {
 
 	/**
@@ -15056,10 +15096,10 @@ var Circos =
 
 
 /***/ },
-/* 230 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var realNames = __webpack_require__(231);
+	var realNames = __webpack_require__(232);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -15093,7 +15133,7 @@ var Circos =
 
 
 /***/ },
-/* 231 */
+/* 232 */
 /***/ function(module, exports) {
 
 	/** Used to lookup unminified function names. */
@@ -15103,15 +15143,15 @@ var Circos =
 
 
 /***/ },
-/* 232 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var LazyWrapper = __webpack_require__(226),
-	    LodashWrapper = __webpack_require__(233),
-	    baseLodash = __webpack_require__(227),
+	var LazyWrapper = __webpack_require__(227),
+	    LodashWrapper = __webpack_require__(234),
+	    baseLodash = __webpack_require__(228),
 	    isArray = __webpack_require__(76),
 	    isObjectLike = __webpack_require__(75),
-	    wrapperClone = __webpack_require__(234);
+	    wrapperClone = __webpack_require__(235);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -15256,11 +15296,11 @@ var Circos =
 
 
 /***/ },
-/* 233 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseCreate = __webpack_require__(69),
-	    baseLodash = __webpack_require__(227);
+	    baseLodash = __webpack_require__(228);
 
 	/**
 	 * The base constructor for creating `lodash` wrapper objects.
@@ -15284,11 +15324,11 @@ var Circos =
 
 
 /***/ },
-/* 234 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var LazyWrapper = __webpack_require__(226),
-	    LodashWrapper = __webpack_require__(233),
+	var LazyWrapper = __webpack_require__(227),
+	    LodashWrapper = __webpack_require__(234),
 	    copyArray = __webpack_require__(67);
 
 	/**
@@ -15313,10 +15353,10 @@ var Circos =
 
 
 /***/ },
-/* 235 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseSetData = __webpack_require__(215),
+	var baseSetData = __webpack_require__(216),
 	    shortOut = __webpack_require__(24);
 
 	/**
@@ -15339,13 +15379,13 @@ var Circos =
 
 
 /***/ },
-/* 236 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getWrapDetails = __webpack_require__(237),
-	    insertWrapDetails = __webpack_require__(238),
+	var getWrapDetails = __webpack_require__(238),
+	    insertWrapDetails = __webpack_require__(239),
 	    setToString = __webpack_require__(6),
-	    updateWrapDetails = __webpack_require__(239);
+	    updateWrapDetails = __webpack_require__(240);
 
 	/**
 	 * Sets the `toString` method of `wrapper` to mimic the source of `reference`
@@ -15366,7 +15406,7 @@ var Circos =
 
 
 /***/ },
-/* 237 */
+/* 238 */
 /***/ function(module, exports) {
 
 	/** Used to match wrap detail comments. */
@@ -15389,7 +15429,7 @@ var Circos =
 
 
 /***/ },
-/* 238 */
+/* 239 */
 /***/ function(module, exports) {
 
 	/** Used to match wrap detail comments. */
@@ -15418,11 +15458,11 @@ var Circos =
 
 
 /***/ },
-/* 239 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayEach = __webpack_require__(100),
-	    arrayIncludes = __webpack_require__(240);
+	    arrayIncludes = __webpack_require__(241);
 
 	/** Used to compose bitmasks for function metadata. */
 	var WRAP_BIND_FLAG = 1,
@@ -15470,10 +15510,10 @@ var Circos =
 
 
 /***/ },
-/* 240 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIndexOf = __webpack_require__(241);
+	var baseIndexOf = __webpack_require__(242);
 
 	/**
 	 * A specialized version of `_.includes` for arrays without support for
@@ -15493,12 +15533,12 @@ var Circos =
 
 
 /***/ },
-/* 241 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFindIndex = __webpack_require__(242),
-	    baseIsNaN = __webpack_require__(243),
-	    strictIndexOf = __webpack_require__(244);
+	var baseFindIndex = __webpack_require__(243),
+	    baseIsNaN = __webpack_require__(244),
+	    strictIndexOf = __webpack_require__(245);
 
 	/**
 	 * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
@@ -15519,7 +15559,7 @@ var Circos =
 
 
 /***/ },
-/* 242 */
+/* 243 */
 /***/ function(module, exports) {
 
 	/**
@@ -15549,7 +15589,7 @@ var Circos =
 
 
 /***/ },
-/* 243 */
+/* 244 */
 /***/ function(module, exports) {
 
 	/**
@@ -15567,7 +15607,7 @@ var Circos =
 
 
 /***/ },
-/* 244 */
+/* 245 */
 /***/ function(module, exports) {
 
 	/**
@@ -15596,7 +15636,7 @@ var Circos =
 
 
 /***/ },
-/* 245 */
+/* 246 */
 /***/ function(module, exports) {
 
 	/**
@@ -15615,7 +15655,7 @@ var Circos =
 
 
 /***/ },
-/* 246 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var copyArray = __webpack_require__(67),
@@ -15650,7 +15690,7 @@ var Circos =
 
 
 /***/ },
-/* 247 */
+/* 248 */
 /***/ function(module, exports) {
 
 	/** Used as the internal argument placeholder. */
@@ -15685,11 +15725,11 @@ var Circos =
 
 
 /***/ },
-/* 248 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var apply = __webpack_require__(2),
-	    createCtor = __webpack_require__(218),
+	    createCtor = __webpack_require__(219),
 	    root = __webpack_require__(15);
 
 	/** Used to compose bitmasks for function metadata. */
@@ -15734,12 +15774,12 @@ var Circos =
 
 
 /***/ },
-/* 249 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var composeArgs = __webpack_require__(221),
-	    composeArgsRight = __webpack_require__(222),
-	    replaceHolders = __webpack_require__(247);
+	var composeArgs = __webpack_require__(222),
+	    composeArgsRight = __webpack_require__(223),
+	    replaceHolders = __webpack_require__(248);
 
 	/** Used as the internal argument placeholder. */
 	var PLACEHOLDER = '__lodash_placeholder__';
@@ -15830,10 +15870,10 @@ var Circos =
 
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var toFinite = __webpack_require__(251);
+	var toFinite = __webpack_require__(252);
 
 	/**
 	 * Converts `value` to an integer.
@@ -15872,10 +15912,10 @@ var Circos =
 
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var toNumber = __webpack_require__(252);
+	var toNumber = __webpack_require__(253);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0,
@@ -15920,7 +15960,7 @@ var Circos =
 
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObject = __webpack_require__(19),
@@ -15992,7 +16032,7 @@ var Circos =
 
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseClone = __webpack_require__(111);
@@ -16034,10 +16074,10 @@ var Circos =
 
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createWrap = __webpack_require__(214);
+	var createWrap = __webpack_require__(215);
 
 	/** Used to compose bitmasks for function metadata. */
 	var WRAP_CURRY_FLAG = 8;
@@ -16097,7 +16137,7 @@ var Circos =
 
 
 /***/ },
-/* 255 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseClone = __webpack_require__(111),
@@ -16156,11 +16196,11 @@ var Circos =
 
 
 /***/ },
-/* 256 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createWrap = __webpack_require__(214),
-	    flatRest = __webpack_require__(257);
+	var createWrap = __webpack_require__(215),
+	    flatRest = __webpack_require__(258);
 
 	/** Used to compose bitmasks for function metadata. */
 	var WRAP_REARG_FLAG = 256;
@@ -16195,10 +16235,10 @@ var Circos =
 
 
 /***/ },
-/* 257 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var flatten = __webpack_require__(258),
+	var flatten = __webpack_require__(259),
 	    overRest = __webpack_require__(5),
 	    setToString = __webpack_require__(6);
 
@@ -16217,10 +16257,10 @@ var Circos =
 
 
 /***/ },
-/* 258 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFlatten = __webpack_require__(180);
+	var baseFlatten = __webpack_require__(181);
 
 	/**
 	 * Flattens `array` a single level deep.
@@ -16245,7 +16285,7 @@ var Circos =
 
 
 /***/ },
-/* 259 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayMap = __webpack_require__(169),
@@ -16284,21 +16324,21 @@ var Circos =
 
 
 /***/ },
-/* 260 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var convert = __webpack_require__(208),
-	    func = convert('flow', __webpack_require__(261));
+	var convert = __webpack_require__(209),
+	    func = convert('flow', __webpack_require__(262));
 
-	func.placeholder = __webpack_require__(211);
+	func.placeholder = __webpack_require__(212);
 	module.exports = func;
 
 
 /***/ },
-/* 261 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createFlow = __webpack_require__(262);
+	var createFlow = __webpack_require__(263);
 
 	/**
 	 * Creates a function that returns the result of invoking the given functions
@@ -16328,15 +16368,15 @@ var Circos =
 
 
 /***/ },
-/* 262 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var LodashWrapper = __webpack_require__(233),
-	    flatRest = __webpack_require__(257),
-	    getData = __webpack_require__(228),
-	    getFuncName = __webpack_require__(230),
+	var LodashWrapper = __webpack_require__(234),
+	    flatRest = __webpack_require__(258),
+	    getData = __webpack_require__(229),
+	    getFuncName = __webpack_require__(231),
 	    isArray = __webpack_require__(76),
-	    isLaziable = __webpack_require__(225);
+	    isLaziable = __webpack_require__(226);
 
 	/** Error message constants. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -16412,22 +16452,22 @@ var Circos =
 
 
 /***/ },
-/* 263 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var convert = __webpack_require__(208),
-	    func = convert('concat', __webpack_require__(264));
+	var convert = __webpack_require__(209),
+	    func = convert('concat', __webpack_require__(265));
 
-	func.placeholder = __webpack_require__(211);
+	func.placeholder = __webpack_require__(212);
 	module.exports = func;
 
 
 /***/ },
-/* 264 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayPush = __webpack_require__(120),
-	    baseFlatten = __webpack_require__(180),
+	    baseFlatten = __webpack_require__(181),
 	    copyArray = __webpack_require__(67),
 	    isArray = __webpack_require__(76);
 
@@ -16472,22 +16512,22 @@ var Circos =
 
 
 /***/ },
-/* 265 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var convert = __webpack_require__(208),
-	    func = convert('filter', __webpack_require__(266));
+	var convert = __webpack_require__(209),
+	    func = convert('filter', __webpack_require__(267));
 
-	func.placeholder = __webpack_require__(211);
+	func.placeholder = __webpack_require__(212);
 	module.exports = func;
 
 
 /***/ },
-/* 266 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayFilter = __webpack_require__(116),
-	    baseFilter = __webpack_require__(267),
+	    baseFilter = __webpack_require__(268),
 	    baseIteratee = __webpack_require__(142),
 	    isArray = __webpack_require__(76);
 
@@ -16537,7 +16577,7 @@ var Circos =
 
 
 /***/ },
-/* 267 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseEach = __webpack_require__(101);
@@ -16564,25 +16604,25 @@ var Circos =
 
 
 /***/ },
-/* 268 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(269);
-
-
-/***/ },
 /* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var convert = __webpack_require__(208),
-	    func = convert('head', __webpack_require__(270), __webpack_require__(271));
-
-	func.placeholder = __webpack_require__(211);
-	module.exports = func;
+	module.exports = __webpack_require__(270);
 
 
 /***/ },
 /* 270 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var convert = __webpack_require__(209),
+	    func = convert('head', __webpack_require__(271), __webpack_require__(272));
+
+	func.placeholder = __webpack_require__(212);
+	module.exports = func;
+
+
+/***/ },
+/* 271 */
 /***/ function(module, exports) {
 
 	/**
@@ -16611,7 +16651,7 @@ var Circos =
 
 
 /***/ },
-/* 271 */
+/* 272 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -16624,18 +16664,18 @@ var Circos =
 
 
 /***/ },
-/* 272 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var convert = __webpack_require__(208),
-	    func = convert('reverse', __webpack_require__(273));
+	var convert = __webpack_require__(209),
+	    func = convert('reverse', __webpack_require__(274));
 
-	func.placeholder = __webpack_require__(211);
+	func.placeholder = __webpack_require__(212);
 	module.exports = func;
 
 
 /***/ },
-/* 273 */
+/* 274 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -16675,12 +16715,12 @@ var Circos =
 
 
 /***/ },
-/* 274 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-scale/ Version 1.0.4. Copyright 2016 Mike Bostock.
 	(function (global, factory) {
-	   true ? factory(exports, __webpack_require__(190), __webpack_require__(275), __webpack_require__(197), __webpack_require__(276), __webpack_require__(277), __webpack_require__(278), __webpack_require__(198)) :
+	   true ? factory(exports, __webpack_require__(191), __webpack_require__(276), __webpack_require__(198), __webpack_require__(277), __webpack_require__(278), __webpack_require__(279), __webpack_require__(199)) :
 	  typeof define === 'function' && define.amd ? define(['exports', 'd3-array', 'd3-collection', 'd3-interpolate', 'd3-format', 'd3-time', 'd3-time-format', 'd3-color'], factory) :
 	  (factory((global.d3 = global.d3 || {}),global.d3,global.d3,global.d3,global.d3,global.d3,global.d3,global.d3));
 	}(this, (function (exports,d3Array,d3Collection,d3Interpolate,d3Format,d3Time,d3TimeFormat,d3Color) { 'use strict';
@@ -17584,7 +17624,7 @@ var Circos =
 
 
 /***/ },
-/* 275 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-collection/ Version 1.0.2. Copyright 2016 Mike Bostock.
@@ -17807,7 +17847,7 @@ var Circos =
 
 
 /***/ },
-/* 276 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-format/ Version 1.0.2. Copyright 2016 Mike Bostock.
@@ -18141,7 +18181,7 @@ var Circos =
 	}));
 
 /***/ },
-/* 277 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-time/ Version 1.0.4. Copyright 2016 Mike Bostock.
@@ -18525,12 +18565,12 @@ var Circos =
 
 
 /***/ },
-/* 278 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-time-format/ Version 2.0.3. Copyright 2016 Mike Bostock.
 	(function (global, factory) {
-	   true ? factory(exports, __webpack_require__(277)) :
+	   true ? factory(exports, __webpack_require__(278)) :
 	  typeof define === 'function' && define.amd ? define(['exports', 'd3-time'], factory) :
 	  (factory((global.d3 = global.d3 || {}),global.d3));
 	}(this, (function (exports,d3Time) { 'use strict';
@@ -19119,7 +19159,7 @@ var Circos =
 
 
 /***/ },
-/* 279 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19136,9 +19176,9 @@ var Circos =
 
 	var _isFunction2 = _interopRequireDefault(_isFunction);
 
-	var _d3Scale = __webpack_require__(274);
+	var _d3Scale = __webpack_require__(275);
 
-	var _d3ScaleChromatic = __webpack_require__(280);
+	var _d3ScaleChromatic = __webpack_require__(281);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -19223,12 +19263,12 @@ var Circos =
 	};
 
 /***/ },
-/* 280 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-scale-chromatic/ Version 1.1.1. Copyright 2017 Mike Bostock.
 	(function (global, factory) {
-		 true ? factory(exports, __webpack_require__(197)) :
+		 true ? factory(exports, __webpack_require__(198)) :
 		typeof define === 'function' && define.amd ? define(['exports', 'd3-interpolate'], factory) :
 		(factory((global.d3 = global.d3 || {}),global.d3));
 	}(this, (function (exports,d3Interpolate) { 'use strict';
@@ -19670,7 +19710,7 @@ var Circos =
 
 
 /***/ },
-/* 281 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19680,7 +19720,7 @@ var Circos =
 	});
 	exports.renderAxes = undefined;
 
-	var _range = __webpack_require__(282);
+	var _range = __webpack_require__(283);
 
 	var _range2 = _interopRequireDefault(_range);
 
@@ -19688,9 +19728,9 @@ var Circos =
 
 	var _reduce2 = _interopRequireDefault(_reduce);
 
-	var _d3Shape = __webpack_require__(188);
+	var _d3Shape = __webpack_require__(189);
 
-	var _logger = __webpack_require__(285);
+	var _logger = __webpack_require__(286);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -19769,10 +19809,10 @@ var Circos =
 	};
 
 /***/ },
-/* 282 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createRange = __webpack_require__(283);
+	var createRange = __webpack_require__(284);
 
 	/**
 	 * Creates an array of numbers (positive and/or negative) progressing from
@@ -19821,12 +19861,12 @@ var Circos =
 
 
 /***/ },
-/* 283 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseRange = __webpack_require__(284),
+	var baseRange = __webpack_require__(285),
 	    isIterateeCall = __webpack_require__(98),
-	    toFinite = __webpack_require__(251);
+	    toFinite = __webpack_require__(252);
 
 	/**
 	 * Creates a `_.range` or `_.rangeRight` function.
@@ -19857,7 +19897,7 @@ var Circos =
 
 
 /***/ },
-/* 284 */
+/* 285 */
 /***/ function(module, exports) {
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
@@ -19891,7 +19931,7 @@ var Circos =
 
 
 /***/ },
-/* 285 */
+/* 286 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -19902,7 +19942,7 @@ var Circos =
 	exports.default = console;
 
 /***/ },
-/* 286 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19920,21 +19960,21 @@ var Circos =
 
 	var _keys2 = _interopRequireDefault(_keys);
 
-	var _includes = __webpack_require__(287);
+	var _includes = __webpack_require__(288);
 
 	var _includes2 = _interopRequireDefault(_includes);
 
-	var _every = __webpack_require__(291);
+	var _every = __webpack_require__(292);
 
 	var _every2 = _interopRequireDefault(_every);
 
-	var _map = __webpack_require__(294);
+	var _map = __webpack_require__(295);
 
 	var _map2 = _interopRequireDefault(_map);
 
-	var _d3Collection = __webpack_require__(275);
+	var _d3Collection = __webpack_require__(276);
 
-	var _d3Array = __webpack_require__(190);
+	var _d3Array = __webpack_require__(191);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20096,14 +20136,14 @@ var Circos =
 	}
 
 /***/ },
-/* 287 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIndexOf = __webpack_require__(241),
+	var baseIndexOf = __webpack_require__(242),
 	    isArrayLike = __webpack_require__(78),
-	    isString = __webpack_require__(288),
-	    toInteger = __webpack_require__(250),
-	    values = __webpack_require__(289);
+	    isString = __webpack_require__(289),
+	    toInteger = __webpack_require__(251),
+	    values = __webpack_require__(290);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -20155,7 +20195,7 @@ var Circos =
 
 
 /***/ },
-/* 288 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(13),
@@ -20191,10 +20231,10 @@ var Circos =
 
 
 /***/ },
-/* 289 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseValues = __webpack_require__(290),
+	var baseValues = __webpack_require__(291),
 	    keys = __webpack_require__(103);
 
 	/**
@@ -20231,7 +20271,7 @@ var Circos =
 
 
 /***/ },
-/* 290 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayMap = __webpack_require__(169);
@@ -20256,11 +20296,11 @@ var Circos =
 
 
 /***/ },
-/* 291 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayEvery = __webpack_require__(292),
-	    baseEvery = __webpack_require__(293),
+	var arrayEvery = __webpack_require__(293),
+	    baseEvery = __webpack_require__(294),
 	    baseIteratee = __webpack_require__(142),
 	    isArray = __webpack_require__(76),
 	    isIterateeCall = __webpack_require__(98);
@@ -20318,7 +20358,7 @@ var Circos =
 
 
 /***/ },
-/* 292 */
+/* 293 */
 /***/ function(module, exports) {
 
 	/**
@@ -20347,7 +20387,7 @@ var Circos =
 
 
 /***/ },
-/* 293 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseEach = __webpack_require__(101);
@@ -20374,12 +20414,12 @@ var Circos =
 
 
 /***/ },
-/* 294 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayMap = __webpack_require__(169),
 	    baseIteratee = __webpack_require__(142),
-	    baseMap = __webpack_require__(183),
+	    baseMap = __webpack_require__(184),
 	    isArray = __webpack_require__(76);
 
 	/**
@@ -20433,7 +20473,7 @@ var Circos =
 
 
 /***/ },
-/* 295 */
+/* 296 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -20523,7 +20563,7 @@ var Circos =
 	exports.common = common;
 
 /***/ },
-/* 296 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20534,19 +20574,19 @@ var Circos =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Track2 = __webpack_require__(192);
+	var _Track2 = __webpack_require__(193);
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(286);
+	var _dataParser = __webpack_require__(287);
 
-	var _assign = __webpack_require__(205);
+	var _assign = __webpack_require__(206);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _configs = __webpack_require__(295);
+	var _configs = __webpack_require__(296);
 
-	var _d3Shape = __webpack_require__(188);
+	var _d3Shape = __webpack_require__(189);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20601,7 +20641,7 @@ var Circos =
 	exports.default = Highlight;
 
 /***/ },
-/* 297 */
+/* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20612,19 +20652,19 @@ var Circos =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Track2 = __webpack_require__(192);
+	var _Track2 = __webpack_require__(193);
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(286);
+	var _dataParser = __webpack_require__(287);
 
-	var _d3Shape = __webpack_require__(188);
+	var _d3Shape = __webpack_require__(189);
 
-	var _assign = __webpack_require__(205);
+	var _assign = __webpack_require__(206);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _configs = __webpack_require__(295);
+	var _configs = __webpack_require__(296);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20693,7 +20733,7 @@ var Circos =
 	exports.default = Histogram;
 
 /***/ },
-/* 298 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20704,21 +20744,21 @@ var Circos =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Track2 = __webpack_require__(192);
+	var _Track2 = __webpack_require__(193);
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(286);
+	var _dataParser = __webpack_require__(287);
 
-	var _tooltip = __webpack_require__(193);
+	var _tooltip = __webpack_require__(194);
 
-	var _d3Chord = __webpack_require__(299);
+	var _d3Chord = __webpack_require__(300);
 
-	var _assign = __webpack_require__(205);
+	var _assign = __webpack_require__(206);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _configs = __webpack_require__(295);
+	var _configs = __webpack_require__(296);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20800,12 +20840,12 @@ var Circos =
 	exports.default = Chords;
 
 /***/ },
-/* 299 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-chord/ Version 1.0.3. Copyright 2016 Mike Bostock.
 	(function (global, factory) {
-	   true ? factory(exports, __webpack_require__(190), __webpack_require__(189)) :
+	   true ? factory(exports, __webpack_require__(191), __webpack_require__(190)) :
 	  typeof define === 'function' && define.amd ? define(['exports', 'd3-array', 'd3-path'], factory) :
 	  (factory((global.d3 = global.d3 || {}),global.d3,global.d3));
 	}(this, (function (exports,d3Array,d3Path) { 'use strict';
@@ -21036,7 +21076,7 @@ var Circos =
 
 
 /***/ },
-/* 300 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21047,19 +21087,19 @@ var Circos =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Track2 = __webpack_require__(192);
+	var _Track2 = __webpack_require__(193);
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(286);
+	var _dataParser = __webpack_require__(287);
 
-	var _d3Shape = __webpack_require__(188);
+	var _d3Shape = __webpack_require__(189);
 
-	var _assign = __webpack_require__(205);
+	var _assign = __webpack_require__(206);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _configs = __webpack_require__(295);
+	var _configs = __webpack_require__(296);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21110,7 +21150,7 @@ var Circos =
 	exports.default = Heatmap;
 
 /***/ },
-/* 301 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21121,13 +21161,13 @@ var Circos =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Track2 = __webpack_require__(192);
+	var _Track2 = __webpack_require__(193);
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(286);
+	var _dataParser = __webpack_require__(287);
 
-	var _assign = __webpack_require__(205);
+	var _assign = __webpack_require__(206);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -21135,13 +21175,13 @@ var Circos =
 
 	var _reduce2 = _interopRequireDefault(_reduce);
 
-	var _sortBy = __webpack_require__(179);
+	var _sortBy = __webpack_require__(180);
 
 	var _sortBy2 = _interopRequireDefault(_sortBy);
 
-	var _configs = __webpack_require__(295);
+	var _configs = __webpack_require__(296);
 
-	var _d3Shape = __webpack_require__(188);
+	var _d3Shape = __webpack_require__(189);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21265,7 +21305,7 @@ var Circos =
 	exports.default = Line;
 
 /***/ },
-/* 302 */
+/* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21276,19 +21316,19 @@ var Circos =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Track2 = __webpack_require__(192);
+	var _Track2 = __webpack_require__(193);
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(286);
+	var _dataParser = __webpack_require__(287);
 
-	var _assign = __webpack_require__(205);
+	var _assign = __webpack_require__(206);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _configs = __webpack_require__(295);
+	var _configs = __webpack_require__(296);
 
-	var _d3Shape = __webpack_require__(188);
+	var _d3Shape = __webpack_require__(189);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21393,7 +21433,7 @@ var Circos =
 	exports.default = Scatter;
 
 /***/ },
-/* 303 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21404,15 +21444,15 @@ var Circos =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Track2 = __webpack_require__(192);
+	var _Track2 = __webpack_require__(193);
 
 	var _Track3 = _interopRequireDefault(_Track2);
 
-	var _dataParser = __webpack_require__(286);
+	var _dataParser = __webpack_require__(287);
 
-	var _d3Shape = __webpack_require__(188);
+	var _d3Shape = __webpack_require__(189);
 
-	var _assign = __webpack_require__(205);
+	var _assign = __webpack_require__(206);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -21420,7 +21460,7 @@ var Circos =
 
 	var _forEach2 = _interopRequireDefault(_forEach);
 
-	var _configs = __webpack_require__(295);
+	var _configs = __webpack_require__(296);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21565,7 +21605,37 @@ var Circos =
 	exports.default = Stack;
 
 /***/ },
-/* 304 */
+/* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.initClipboard = undefined;
+
+	var _clipboardJs = __webpack_require__(306);
+
+	var _clipboardJs2 = _interopRequireDefault(_clipboardJs);
+
+	var _d3Selection = __webpack_require__(108);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var initClipboard = exports.initClipboard = function initClipboard(container) {
+	  var input = (0, _d3Selection.select)(container).append('input').attr('class', 'circos-clipboard').attr('type', 'hidden');
+
+	  (0, _d3Selection.select)('body').on('keydown', function () {
+	    if (event.ctrlKey && event.code === 'KeyC') {
+	      _clipboardJs2.default.copy(input.attr('value'));
+	    }
+	  });
+	  return input;
+	};
+
+/***/ },
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate) {//  Import support https://stackoverflow.com/questions/13673346/supporting-both-commonjs-and-amd
@@ -21743,10 +21813,10 @@ var Circos =
 	  return clipboard;
 	}));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(305).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(307).setImmediate))
 
 /***/ },
-/* 305 */
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var apply = Function.prototype.apply;
@@ -21799,13 +21869,13 @@ var Circos =
 	};
 
 	// setimmediate attaches itself to the global object
-	__webpack_require__(306);
+	__webpack_require__(308);
 	exports.setImmediate = setImmediate;
 	exports.clearImmediate = clearImmediate;
 
 
 /***/ },
-/* 306 */
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -21995,10 +22065,10 @@ var Circos =
 	    attachTo.clearImmediate = clearImmediate;
 	}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(307)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(309)))
 
 /***/ },
-/* 307 */
+/* 309 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -22182,36 +22252,6 @@ var Circos =
 	};
 	process.umask = function() { return 0; };
 
-
-/***/ },
-/* 308 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.initClipboard = undefined;
-
-	var _clipboardJs = __webpack_require__(304);
-
-	var _clipboardJs2 = _interopRequireDefault(_clipboardJs);
-
-	var _d3Selection = __webpack_require__(108);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var initClipboard = exports.initClipboard = function initClipboard(container) {
-	  var input = (0, _d3Selection.select)(container).append('input').attr('class', 'circos-clipboard').attr('type', 'hidden');
-
-	  (0, _d3Selection.select)('body').on('keydown', function () {
-	    if (event.ctrlKey && event.code === 'KeyC') {
-	      _clipboardJs2.default.copy(input.attr('value'));
-	    }
-	  });
-	  return input;
-	};
 
 /***/ }
 /******/ ]);

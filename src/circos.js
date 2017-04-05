@@ -1,8 +1,9 @@
 import defaultsDeep from 'lodash/defaultsDeep'
 import forEach from 'lodash/forEach'
 import isArray from 'lodash/isArray'
+import map from 'lodash/map'
 import {select} from 'd3-selection'
-import Layout from './layout'
+import Layout from './layout/index'
 import render from './render'
 import Text from './tracks/Text'
 import Highlight from './tracks/Highlight'
@@ -26,10 +27,17 @@ class Core {
     this.tracks = {}
     this._layout = null
     this.conf = defaultsDeep(conf, defaultConf)
-    this.svg = select(this.conf.container).append('svg')
-    this.tip = select(this.conf.container).append('div')
-      .attr('class', 'tooltip')
+    const container = select(this.conf.container).append('div')
+      .style('position', 'relative')
+    this.svg = container.append('svg')
+    if (select('body').select('.circos-tooltip').empty()) {
+      this.tip = select('body').append('div')
+      .attr('class', 'circos-tooltip')
       .style('opacity', 0)
+    } else {
+      this.tip = select('body').select('.circos-tooltip')
+    }
+
     this.clipboard = initClipboard(this.conf.container)
   }
 
@@ -44,7 +52,7 @@ class Core {
       delete this.tracks[trackIds]
     } else if (isArray(trackIds)) {
       forEach(trackIds, function (trackId) {
-        svg.select('.' + trackId).remove()
+        this.svg.select('.' + trackId).remove()
         delete this.tracks[trackId]
       })
     } else {
