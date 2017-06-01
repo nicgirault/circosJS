@@ -441,8 +441,8 @@ Configuration:
   style: {
     'font-size': 12,
     fill: 'black',
+    opacity: 1,
   },
-  opacity: 1,
 }
 ```
 
