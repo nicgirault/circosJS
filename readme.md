@@ -440,9 +440,9 @@ Configuration:
   outerRadius: null,
   style: {
     'font-size': 12,
-    color: 'black',
+    fill: 'black',
+    opacity: 1,
   },
-  opacity: 1,
 }
 ```
 
