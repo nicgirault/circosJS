@@ -3,31 +3,53 @@ import {parseChordData} from '../data-parser'
 import {registerTooltip} from '../behaviors/tooltip'
 import {ribbon} from 'd3-chord'
 import assign from 'lodash/assign'
+import isFunction from 'lodash/isFunction'
+
 import {common, values} from '../configs'
 
 const defaultConf = assign({
   color: {
     value: '#fd6a62',
     iteratee: true
+  },
+  radius: {
+    value: null,
+    iteratee: false
   }
 }, common, values)
+
+const normalizeRadius = (radius, layoutRadius) => {
+  if (radius >= 1) return radius
+  return radius * layoutRadius
+}
 
 export default class Chords extends Track {
   constructor (instance, conf, data) {
     super(instance, conf, defaultConf, data, parseChordData)
   }
 
-  getCoordinates (d, layout) {
+  getCoordinates (d, layout, conf, datum) {
     const block = layout.blocks[d.id]
     const startAngle = block.start + d.start /
       block.len * (block.end - block.start)
     const endAngle = block.start + d.end /
       block.len * (block.end - block.start)
 
+    let radius
+    if (isFunction(conf.radius)) {
+      radius = normalizeRadius(conf.radius(datum), layout.conf.innerRadius)
+    } else if (conf.radius) {
+      radius = normalizeRadius(conf.radius, layout.conf.innerRadius)
+    }
+
+    if (!radius) {
+      radius = layout.conf.innerRadius
+    }
+
     return {
-      radius: layout.conf.innerRadius,
-      startAngle: startAngle,
-      endAngle: endAngle
+      radius,
+      startAngle,
+      endAngle
     }
   }
 
@@ -40,8 +62,8 @@ export default class Chords extends Track {
       .enter().append('path')
       .attr('class', 'chord')
       .attr('d', ribbon()
-        .source((d) => getCoordinates(d.source, instance._layout))
-        .target((d) => getCoordinates(d.target, instance._layout))
+        .source((d) => getCoordinates(d.source, instance._layout, this.conf, d))
+        .target((d) => getCoordinates(d.target, instance._layout, this.conf, d))
       )
       .attr('opacity', conf.opacity)
       .on('mouseover', (d) => {

@@ -188,20 +188,16 @@ var data = [
 
 Optionally each datum can define a seventh element which can be used to be interpreted as a `value` to draw colored ribbons with palettes or a color function.
 
-The default configuration is:
-
-```javascript
-{
-  color: '#fd6a62',
-  opacity: 0.7,
-  zIndex: 1,
-  tooltipContent: null,
-  min: null,
-  max: null,
-  logScale: false,
-  logScaleBase: Math.E,
-}
-```
+The available configuration fields are:
+- [color](#color)
+- [opacity](#opacity)
+- [zIndex](#zIndex)
+- [tooltipContent](#tooltipContent)
+- [min](#minmax)
+- [max](#minmax)
+- [radius](#radius)
+- [logScale](#logScale)
+- [logScaleBase](#logScaleBase)
 
 ### Heatmap
 
@@ -738,6 +734,44 @@ It should be either `in` or `out`. Default is `out`. For stack you can also use 
 ### logScaleBase
 
 The log base if logScale is `true`. Default is `Math.E`.
+
+### radius
+
+In the chords configuration you can specify a radius parameter. Default is `null`.
+
+Examples:
+
+```javascript
+// when there is no value, default is null:
+// the radius will be the one of the innerRadius of the layout
+{}
+
+// when the value is a number greater than 1, it is interpreted as
+// a number of pixel from the center
+{
+  radius: 200
+}
+
+// when the value is a number lower than 1, it is interpreted as
+// a fraction of the layout inner radius
+{
+  radius: 0.8
+}
+
+// you can also specify a function that return a number that
+// will be interpreted as explained above. The function takes
+// a datum as parameter
+{
+  radius: function (d) {
+    if (d.source.id === 'chr1') {
+      return 0.8
+    }
+    if (d.source.id === 'chr2') {
+      return 0.7
+    }
+  }
+}
+```
 
 ### shape
 

@@ -76,6 +76,13 @@ var drawCircos = function (error, GRCh37, cytobands, data) {
       'l1',
       data,
     {
+      radius: function (d) {
+        if (d.source.id === 'chr1') {
+          return 0.5
+        } else {
+          return null
+        }
+      },
       logScale: false,
       opacity: 0.7,
       color: '#ff5722',
