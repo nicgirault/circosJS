@@ -12,7 +12,7 @@ const _buildAxisData = (value, axesGroup, conf) => {
   }
 }
 
-const _buildAxesData = (conf) => {
+export const _buildAxesData = (conf) => {
   return reduce(conf.axes, (aggregator, axesGroup) => {
     if (!axesGroup.position && !axesGroup.spacing) {
       logger.warn('Skipping axe group with no position and spacing defined')
