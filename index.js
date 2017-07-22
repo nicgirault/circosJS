@@ -1,1 +1,1 @@
-module.exports = require('./dist/circos');
+module.exports = require('./dist/circos.es6');

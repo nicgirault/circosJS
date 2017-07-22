@@ -1,12 +1,15 @@
 const path = require('path')
 
+const filename = process.env.NODE_ENV === 'prod'
+  ? 'circos.min.js' : 'circos.js'
+
 module.exports = {
   entry: './src/circos.js',
   output: {
     path: __dirname + '/dist',
-    filename: 'circos.es6.js',
-    libraryTarget: 'umd',
-    umdNamedDefine: true
+    filename: filename,
+    library: 'Circos',
+    libraryTarget: 'var'
   },
   module: {
     loaders: [

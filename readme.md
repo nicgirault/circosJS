@@ -42,10 +42,10 @@ You should consider using Circos to show:
 
 ## Installation
 
-If you don't know what is yarn or npm you can skip this step and get started with [this canvas](doc/canvas.html). Otherwise:
+If you don't know what is npm you can skip this step and get started with [this canvas](doc/canvas.html). Otherwise:
 
 ```
-yarn add circos
+npm install --save circos
 ```
 
 ## Layout

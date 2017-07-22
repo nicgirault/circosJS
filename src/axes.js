@@ -3,7 +3,7 @@ import reduce from 'lodash/reduce'
 import {arc} from 'd3-shape'
 import logger from './logger'
 
-const _buildAxisDta = (value, axesGroup, conf) => {
+const _buildAxisData = (value, axesGroup, conf) => {
   return {
     value: value,
     thickness: axesGroup.thickness || 1,
@@ -19,7 +19,7 @@ const _buildAxesData = (conf) => {
       return aggregator
     }
     if (axesGroup.position) {
-      aggregator.push(_buildAxisDta(axesGroup.position, axesGroup, conf))
+      aggregator.push(_buildAxisData(axesGroup.position, axesGroup, conf))
     }
     if (axesGroup.spacing) {
       const builtAxes = range(
@@ -28,14 +28,13 @@ const _buildAxesData = (conf) => {
         axesGroup.spacing
       )
         .map((value) => {
-          return _buildAxisDta(value, axesGroup, conf)
+          return _buildAxisData(value, axesGroup, conf)
         })
       return aggregator.concat(builtAxes)
     }
     return aggregator
   }, [])
 }
-exports._buildAxesData = _buildAxesData
 
 export const renderAxes = (parentElement, conf, instance, scale) => {
   const axes = _buildAxesData(conf)
