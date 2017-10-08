@@ -43,7 +43,12 @@ function drawCircos(error, months, electricalConsumption, daysOff) {
         innerRadius: 0.8,
         outerRadius: 0.98,
         logScale: false,
-        color: 'YlOrRd'
+        color: 'YlOrRd',
+        events: {
+          'mouseover.demo': function (d, i, nodes, event) {
+            console.log(d, i, nodes, event)
+          }
+        }
       })
       .heatmap('days-off', daysOff, {
         innerRadius: 0.7,

@@ -70,6 +70,10 @@ const common = {
   tooltipContent: {
     value: null,
     iteratee: false
+  },
+  events: {
+    value: {},
+    iteratee: false
   }
 }
 

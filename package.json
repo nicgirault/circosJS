@@ -1,6 +1,6 @@
 {
   "name": "circos",
-  "version": "2.0.7",
+  "version": "2.1.0",
   "description": "A d3js library to build circos graphs",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "test:tdd": "NODE_ENV=test mocha --compilers js:babel-register --require ignore-styles --reporter nyan --watch src/*.test.js src/**/*.test.js",
     "coveralls": "CIRCOSJS_COVERAGE=1 mocha test --reporter mocha-lcov-reporter src/**/*.test.js | ./node_modules/coveralls/bin/coveralls.js",
     "start": "webpack --watch",
-    "build": "NODE_ENV=prod webpack --config webpack.config.lib.js --optimize-minimize && webpack --config webpack.config.js"
+    "build": "NODE_ENV=prod webpack --config webpack.config.lib.js --optimize-minimize && webpack --config webpack.config.lib.js --optimize-minimize && webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",

@@ -103,7 +103,7 @@ var configuration = {
       major: 5,
     }
   },
-  clickCallback: null
+  events: {}
 }
 ```
 
@@ -212,6 +212,7 @@ Optionally each datum can define a `value` attribute to draw colored ribbons wit
 
 The available configuration fields are:
 - [color](#color)
+- [events](#events)
 - [opacity](#opacity)
 - [zIndex](#zIndex)
 - [tooltipContent](#tooltipContent)
@@ -246,6 +247,7 @@ Configuration:
   color: 'YlGnBu',
   logScale: false,
   tooltipContent: null,
+  events: {}
 }
 ```
 
@@ -299,6 +301,7 @@ Configuration:
   opacity: 1,
   logScale: false,
   tooltipContent: null,
+  events: {}
 }
 ```
 
@@ -335,6 +338,7 @@ The available configuration fields are:
 - [logScale](#logScale)
 - [logScaleBase](#logScaleBase)
 - [axes](#axes)
+- [events](#events)
 
 ### Line
 
@@ -368,6 +372,7 @@ The available configuration fields are:
 - [logScaleBase](#logScaleBase)
 - [axes](#axes)
 - [backgrounds](#backgrounds)
+- [events](#events)
 
 **Note**: The tooltip option is not available for line track. To display a tooltip, you should superimpose an invisble `scatter` track (`fill: false` and `strokeWidth: 0`) and set a tooltip for this track.
 
@@ -403,6 +408,7 @@ The available configuration fields are:
 - [logScaleBase](#logScaleBase)
 - [axes](#axes)
 - [backgrounds](#backgrounds)
+- [events](#events)
 
 ### Stack
 
@@ -436,6 +442,7 @@ Configuration:
   opacity: 1,
   logScale: false,
   tooltipContent: null,
+  events: {}
 }
 ```
 
@@ -464,6 +471,7 @@ Configuration:
     fill: 'black',
     opacity: 1,
   },
+  events: {}
 }
 ```
 
@@ -501,6 +509,22 @@ The `start` and `end` fields are interpreted as values on the same scale than th
 - If `end` is not specified, default is the `max` value of the track.
 
 You can also specify a `color` and an `opacity`.
+
+### events
+
+All tracks and the layout configurations can receive an events attribute. This attribute must be an object where keys are event names and values are event callbacks. For example:
+
+```javascript
+{
+  events: {
+    'click.alert': function (datum, index, nodes, event) {
+      window.alert(datum)
+    }
+  }
+}
+```
+
+The documentation about d3 events is [here](https://github.com/d3/d3-selection/blob/master/README.md#selection_on). You can add all events described in this documentation. I recommend using event namespaces (`click.alert` instead of `click`) to avoid possible conflicts with internal circosjs events.
 
 ### innerRadius/outerRadius
 

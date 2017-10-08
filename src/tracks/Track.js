@@ -1,7 +1,7 @@
 import {registerTooltip} from '../behaviors/tooltip'
 import {dispatch} from 'd3-dispatch'
 import {arc} from 'd3-shape'
-import {select} from 'd3-selection'
+import {select, event} from 'd3-selection'
 import {getConf} from '../config-utils'
 import {buildScale} from '../utils'
 import {buildColorValue} from '../colors'
@@ -59,6 +59,11 @@ export default class Track {
     })
     selection.on('mouseout', (d, i) => {
       this.dispatch.call('mouseout', this, d)
+    })
+
+    Object.keys(this.conf.events).forEach((eventName) => {
+      const conf = this.conf
+      selection.on(eventName, function (d, i, nodes) { conf.events[eventName](d, i, nodes, event) })
     })
 
     return this

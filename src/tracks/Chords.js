@@ -4,6 +4,7 @@ import {registerTooltip} from '../behaviors/tooltip'
 import {ribbon} from 'd3-chord'
 import assign from 'lodash/assign'
 import isFunction from 'lodash/isFunction'
+import {event} from 'd3-selection'
 
 import {common, values} from '../configs'
 
@@ -73,6 +74,10 @@ export default class Chords extends Track {
       .on('mouseout', (d) =>
         this.dispatch.call('mouseout', this, d)
       )
+
+    Object.keys(conf.events).forEach((eventName) => {
+      link.on(eventName, function (d, i, nodes) { conf.events[eventName](d, i, nodes, event) })
+    })
 
     link.attr('fill', conf.colorValue)
 

@@ -58,6 +58,11 @@ var drawCircos = function (error, GRCh37, cytobands, data) {
       ticks: {
         display: true,
         labelDenominator: 1000000
+      },
+      events: {
+        'click.demo': function (d, i, nodes, event) {
+          console.log('clicked on layout block', d, event)
+        }
       }
     }
     )
@@ -88,6 +93,11 @@ var drawCircos = function (error, GRCh37, cytobands, data) {
       color: '#ff5722',
       tooltipContent: function (d) {
         return '<h3>' + d.source.id + ' ➤ ' + d.target.id + ': ' + d.value + '</h3><i>(CTRL+C to copy to clipboard)</i>'
+      },
+      events: {
+        'mouseover.demo': function (d, i, nodes, event) {
+          console.log(d, i, nodes, event.pageX)
+        }
       }
     }
     )

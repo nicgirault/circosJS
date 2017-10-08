@@ -31,5 +31,6 @@ export default {
   },
   onClick: null,
   onMouseOver: null,
+  events: {},
   zIndex: 100
 }

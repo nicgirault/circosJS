@@ -1,5 +1,6 @@
 import {arc} from 'd3-shape'
 import {range} from 'd3-array'
+import {event} from 'd3-selection'
 
 function renderLayoutLabels (conf, block) {
   const radius = conf.innerRadius + conf.labels.radialOffset
@@ -105,6 +106,10 @@ export default function renderLayout (parentElement, instance) {
     .append('g')
     .attr('class', (d) => d.id)
     .attr('opacity', conf.opacity)
+
+  Object.keys(conf.events).forEach((eventName) => {
+    block.on(eventName, function (d, i, nodes) { conf.events[eventName](d, i, nodes, event) })
+  })
 
   const entry = arc()
     .innerRadius(conf.innerRadius)
