@@ -334,6 +334,7 @@ The available configuration fields are:
 - [strokeWidth](#strokeWidth)
 - [direction](#direction)
 - [fill](#fill)
+- [fillColor](#fillColor)
 - [maxGap](#maxGap)
 - [opacity](#opacity)
 - [zIndex](#zIndex)
@@ -726,6 +727,10 @@ It should be either `in` or `out`. Default is `out`. For stack you can also use 
 ### fill
 
 `true` or `false`.
+
+### fillColor
+
+A color such as `#d3d3d3`, `red`, `rgb(112, 255, 1)`.
 
 ### logScale
 
