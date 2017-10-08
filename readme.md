@@ -180,13 +180,35 @@ Data should looks like this:
 
 ```javascript
 var data = [
-    // sourceId, sourceStart, sourceEnd, targetId, targetStart, targetEnd
-    ['january', 1, 12, 'april', 18, 20],
-    ['february', 20, 28, 'december', 1, 13],
+  [
+    source: {
+      id: 'january',
+      start: 1,
+      end: 12
+    },
+    target: {
+      id: 'april',
+      start: 18,
+      end: 20
+    }
+  ],
+  [
+    source: {
+      id: 'february',
+      start: 20,
+      end: 28
+    },
+    target: {
+      id: 'december',
+      start: 1,
+      end: 13
+    }
+  ],
+  ...
 ];
 ```
 
-Optionally each datum can define a seventh element which can be used to be interpreted as a `value` to draw colored ribbons with palettes or a color function.
+Optionally each datum can define a `value` attribute to draw colored ribbons with palettes or a color function.
 
 The available configuration fields are:
 - [color](#color)
@@ -231,17 +253,19 @@ Data format:
 
 ```javascript
 var data = [
-    // each datum should be
-    // layout_block_id, start, end, value
-    ['january', 0, 1, 1368001],
-    ['january', 1, 2, 1458583],
-    ['january', 2, 3, 1481633],
-    ['january', 3, 4, 1408424]
-    ...
-    ['february', 0, 1, 1577419],
-    ['february', 1, 2, 1509311],
-    ['february', 2, 3, 1688266],
-    ...
+  {
+    block_id: 'january',
+    start: 0,
+    end: 1,
+    value: 1368001
+  },
+  {
+    block_id: 'january',
+    start: 1,
+    end: 2,
+    value: 1458583
+  },
+  ...
 ]
 ```
 
@@ -324,7 +348,7 @@ The available configuration fields are:
 myCircos.line('line1', data, configuration);
 ```
 
-The minimal datum should have `block_id`, `position` and `value` attributes.
+The minimal datum should have `block_id`, `position` and `value` attributes (see above tracks for more details).
 
 The available configuration fields are:
 - [innerRadius](#innerRadiusOuterRadius)
@@ -359,7 +383,7 @@ The available configuration fields are:
 myCircos.scatter('scatter1', data, configuration);
 ```
 
-The minimal datum should have `block_id`, `position` and `value` attributes.
+The minimal datum should have `block_id`, `position` and `value` attributes (see above tracks for more details).
 
 The available configuration fields are:
 - [innerRadius](#innerRadiusOuterRadius)
@@ -392,7 +416,7 @@ The available configuration fields are:
 myCircos.stack('stack', data, configuration);
 ```
 
-The minimal datum should have `block_id`, `start` and `end` attributes.
+The minimal datum should have `block_id`, `start` and `end` attributes (see above tracks for more details).
 
 Configuration:
 
@@ -427,7 +451,7 @@ Configuration:
 myCircos.text('text', data, configuration);
 ```
 
-The minimal datum should have `block_id`, `position` and `value` attributes.
+The minimal datum should have `block_id`, `position` and `value` attributes (see above tracks for more details).
 
 Configuration:
 
