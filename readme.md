@@ -180,7 +180,7 @@ Data should looks like this:
 
 ```javascript
 var data = [
-  [
+  {
     source: {
       id: 'january',
       start: 1,
@@ -191,8 +191,8 @@ var data = [
       start: 18,
       end: 20
     }
-  ],
-  [
+  },
+  {
     source: {
       id: 'february',
       start: 20,
@@ -203,7 +203,7 @@ var data = [
       start: 1,
       end: 13
     }
-  ],
+  },
   ...
 ];
 ```
