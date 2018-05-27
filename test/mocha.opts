@@ -1,2 +1,1 @@
---compilers mocha --compilers coffee:coffee-script/register
---require coffee-coverage/register --reporter html-cov
+--compilers mocha --reporter html-cov
