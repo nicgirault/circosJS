@@ -1,6 +1,6 @@
 {
   "name": "circos",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "A d3js library to build circos graphs",
   "main": "index.js",
   "scripts": {
@@ -22,32 +22,30 @@
   "homepage": "https://github.com/nicgirault/circosJS",
   "devDependencies": {
     "babel": "^6.5.2",
-    "babel-core": "^6.21.0",
-    "babel-loader": "^6.2.10",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
     "babel-plugin-transform-es2015-modules-umd": "^6.18.0",
     "babel-polyfill": "^6.20.0",
     "babel-preset-es2015": "^6.18.0",
     "babel-register": "^6.23.0",
-    "chai": "~1.10.0",
-    "coffee-coverage": "~0.4.5",
-    "coffee-script": "~1.8.0",
-    "coveralls": "^2.11.16",
-    "css-loader": "^0.26.1",
+    "chai": "~4.1.2",
+    "coveralls": "^3.0.1",
+    "css-loader": "^0.28.11",
     "ignore-styles": "^5.0.1",
-    "jsdom": "^9.11.0",
-    "mocha": "~2.5.3",
+    "jsdom": "9",
+    "mocha": "~5.2.0",
     "mocha-jsdom": "^1.1.0",
     "mocha-lcov-reporter": "^1.2.0",
-    "sinon": "~1.17.4",
-    "sinon-chai": "^2.8.0",
-    "standard": "^9.0.1",
-    "style-loader": "^0.13.1",
+    "sinon": "~5.0.10",
+    "sinon-chai": "^3.1.0",
+    "standard": "^11.0.1",
+    "style-loader": "^0.21.0",
     "webpack": "^3.3.0"
   },
   "dependencies": {
-    "clipboard-js": "^0.3.3",
+    "clipboard-js": "^0.3.6",
     "d3": "^4.4.4",
-    "d3-scale-chromatic": "^1.1.0",
-    "lodash": "^4.17.3"
+    "d3-scale-chromatic": "^1.3.0",
+    "lodash": "^4.17.10"
   }
 }
