@@ -46,6 +46,6 @@
     "clipboard-js": "^0.3.6",
     "d3": "^4.4.4",
     "d3-scale-chromatic": "^1.3.0",
-    "lodash": "^4.17.10"
+    "lodash": "^4.17.12"
   }
 }
