@@ -9,12 +9,13 @@
 <html>
 
   <head>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.js'></script>
     <script src='https://cdn.rawgit.com/nicgirault/circosJS/v2/dist/circos.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/d3-queue/3.0.3/d3-queue.js'></script>
   </head>
 
   <body>
-    <svg id='chart'></svg>
+    <div id='chart'></div>
 
     <script>
       var circos = new Circos({
@@ -22,29 +23,33 @@
       });
       var drawCircos = function(error, GRCh37, rawData) {
 
-        data = rawData.map(function(d){
-          return [
-            d.source_id,
-            parseInt(d.source_breakpoint) - 2000000,
-            parseInt(d.source_breakpoint) + 2000000,
-            d.target_id,
-            parseInt(d.target_breakpoint) - 2000000,
-            parseInt(d.target_breakpoint) + 2000000,
-          ];
-        });
+      var data = rawData.map(function(d){
+            return {
+              source: {
+                id: d.source_id,
+                start: parseInt(d.source_breakpoint) - 2000000,
+                end: parseInt(d.source_breakpoint) + 2000000,
+              },
+              target: {
+                id: d.target_id,
+                start: parseInt(d.target_breakpoint) - 2000000,
+                end: parseInt(d.target_breakpoint) + 2000000,
+              }
+            };
+          });
 
         circos
           .layout(
+            GRCh37,
             {
               ticks: {display: true},
-            },
-            GRCh37
+            }
           )
-          .chord('gene-fusion', {color: '#fd6a62'}, data)
+          .chords('gene-fusion', data, {color: '#fd6a62'})
           .render();
       };
 
-      queue()
+      d3.queue()
         .defer(d3.json, "GRCh37.json")
         .defer(d3.csv, "fusion-genes.csv")
         .await(drawCircos);
