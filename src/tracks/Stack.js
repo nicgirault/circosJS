@@ -95,7 +95,8 @@ export default class Stack extends Track {
     if (this.conf.direction === 'in') {
       return [
         Math.max(this.conf.outerRadius - radialEnd, this.conf.innerRadius),
-        this.conf.outerRadius - radialStart
+        Math.max(this.conf.outerRadius - radialStart,this.conf.innerRadius)
+     
       ]
     }
 
