@@ -1,0 +1,119 @@
+var width = document.getElementsByClassName('mdl-card__supporting-text')[0].offsetWidth
+var circosTextChords = new Circos({
+  container: '#textChordsChart',
+  width: width,
+  height: width
+})
+
+var gieStainColor = {
+  gpos100: 'rgb(0,0,0)',
+  gpos: 'rgb(0,0,0)',
+  gpos75: 'rgb(130,130,130)',
+  gpos66: 'rgb(160,160,160)',
+  gpos50: 'rgb(200,200,200)',
+  gpos33: 'rgb(210,210,210)',
+  gpos25: 'rgb(200,200,200)',
+  gvar: 'rgb(220,220,220)',
+  gneg: 'rgb(255,255,255)',
+  acen: 'rgb(217,47,39)',
+  stalk: 'rgb(100,127,164)',
+  select: 'rgb(135,177,255)'
+}
+
+var drawCircos = function (error, GRCh37, cytobands, data) {
+  cytobands = cytobands.map(function (d) {
+    return {
+      block_id: d.chrom,
+      start: parseInt(d.chromStart),
+      end: parseInt(d.chromEnd),
+      gieStain: d.gieStain,
+      name: d.name
+    }
+  })
+
+  data = data.map(function (d) {
+    return {
+      source: {
+        id: d.source_id,
+        start: parseInt(d.source_breakpoint) - 2000000,
+        end: parseInt(d.source_breakpoint) + 2000000
+      },
+      target: {
+        id: d.target_id,
+        start: parseInt(d.target_breakpoint) - 2000000,
+        end: parseInt(d.target_breakpoint) + 2000000
+      }
+    }
+  })
+
+  circosTextChords
+    .layout(
+      GRCh37,
+    {
+      innerRadius: width / 2 - 80,
+      outerRadius: width / 2 - 40,
+      labels: {display: false},
+      ticks: {display: false},
+      events: {
+        'click.demo': function (d, i, nodes, event) {
+          console.log('clicked on layout block', d, event)
+        }
+      }
+    }
+    )
+    .highlight('cytobands', cytobands, {
+      innerRadius: width / 2 - 80,
+      outerRadius: width / 2 - 40,
+      opacity: 0.3,
+      color: function (d) {
+        return gieStainColor[d.gieStain]
+      },
+      tooltipContent: function (d) {
+        return d.name
+      }
+    })
+    .chords('l2c', data, {
+      radius: function (d) {
+        if (d.source.id === 'chr1') {
+          return 0.5
+        } else {
+          return null
+        }
+      },
+      logScale: false,
+      opacity: 0.7,
+      color: '#ff5722',
+      tooltipContent: function (d) {
+        return '<h3>' + d.source.id + ' ➤ ' + d.target.id + ': ' + d.value + '</h3><i>(CTRL+C to copy to clipboard)</i>'
+      },
+      events: {
+        'mouseover.demo': function (d, i, nodes, event) {
+          console.log(d, i, nodes, event.pageX)
+        }
+      }
+    })
+    .text('grclabels', GRCh37.map(function (d) {
+      d.block_id = d.id
+      d.position = (d.len) / 2
+      d.start = d.position - 100
+      d.end = d.position + 100
+      d.value = d.label
+      return d
+    }), {
+      innerRadius: 1.02,
+      outerRadius: 1.3,
+      style: {
+        'font-size': 12
+      },
+      color: function (d) {
+        return d.color
+      }
+    })
+    .render()
+}
+
+d3.queue()
+  .defer(d3.json, './data/GRCh37.json')
+  .defer(d3.csv, './data/cytobands.csv')
+  .defer(d3.csv, './data/fusion-genes.csv')
+  .await(drawCircos)
