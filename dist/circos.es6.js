@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
+		define("Circos", [], factory);
+	else if(typeof exports === 'object')
+		exports["Circos"] = factory();
+	else
+		root["Circos"] = factory();
 })(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -16863,11 +16863,17 @@ var Text = function (_Track) {
   }
 
   _createClass(Text, [{
+<<<<<<< HEAD
     key: 'theta2',
     value: function theta2(position, block) {
       // return position / block.len * (block.end - block.start)
       var mid = position / block.len * (block.end - block.start);
       return mid;
+=======
+    key: 'angle',
+    value: function angle(position, block) {
+      return 0.5 * (block.end + block.start);
+>>>>>>> c717d237df045c8e213ab5366fa392a9bf0f0ee6
     }
   }, {
     key: 'renderDatum',
@@ -16876,7 +16882,12 @@ var Text = function (_Track) {
 
       var text = parentElement.selectAll('g').data(function (d) {
         return d.values.map(function (item) {
+<<<<<<< HEAD
           item._angle = _this2.theta2(item.position, layout.blocks[item.block_id]) * 360 / (2 * Math.PI) - 90;
+=======
+          item._angleOffset = _this2.theta(item.position, layout.blocks[item.block_id]) * 360 / (2 * Math.PI) - 90;
+          item._angle = _this2.angle(item.position, layout.blocks[item.block_id]) * 360 / (2 * Math.PI) - 90;
+>>>>>>> c717d237df045c8e213ab5366fa392a9bf0f0ee6
           item._anchor = item._angle > 90 ? 'end' : 'start';
           console.log('position', item.position);
           console.log('layout', layout.blocks[item.block_id]);
@@ -16887,7 +16898,13 @@ var Text = function (_Track) {
       }).enter().append('g').append('text').text(function (d) {
         return d.value;
       }).attr('transform', function (d) {
-        return '\n          rotate(' + d._angle + ')\n          translate(' + conf.innerRadius + ', 0)\n          rotate(' + d._rotate + ')\n        ';
+        /*
+         The first rotation is almost exactly -90. This is because the layouts are rotated -90 as well (in layout/render.js) and we need to match up.
+         Then we push out away from the center
+         Then flip the label if needed.
+         Note that without any of this the labels are still arranged radially.
+        */
+        return '\n          rotate(' + d._angleOffset + ')\n          translate(' + conf.innerRadius + ', 0)\n          rotate(' + d._rotate + ')\n        ';
       }).attr('text-anchor', function (d) {
         return d._anchor;
       });
