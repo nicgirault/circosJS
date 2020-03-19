@@ -24,14 +24,23 @@ export default class Text extends Track {
     super(instance, conf, defaultConf, data, parsePositionTextData)
   }
 
+  theta2 (position, block) {
+    // return position / block.len * (block.end - block.start)
+    const mid = position / block.len * (block.end - block.start);
+    return mid
+  }
+
   renderDatum (parentElement, conf, layout) {
     const text = parentElement.selectAll('g')
       .data((d) => d.values.map((item) => {
-        item._angle = this.theta(
+        item._angle = this.theta2(
           item.position,
           layout.blocks[item.block_id]
         ) * 360 / (2 * Math.PI) - 90
         item._anchor = item._angle > 90 ? 'end' : 'start'
+        console.log('position', item.position);
+        console.log('layout', layout.blocks[item.block_id]);
+        console.log('angle', item._angle);
         item._rotate = item._angle > 90 ? 180 : 0
         return item
       }))
