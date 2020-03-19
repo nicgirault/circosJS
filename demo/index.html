@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="//code.getmdl.io/1.3.0/material.deep_purple-pink.min.css">
     <link rel="stylesheet" href="styles.css">
 
-    <script src='../dist/circos.min.js'></script>
+    <script src='../dist/circos.es6.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/d3-queue/3.0.3/d3-queue.js'></script>
   </head>
@@ -49,6 +49,7 @@
           <a href="#scatter" class="mdl-layout__tab">Scatter</a>
           <a href="#stack" class="mdl-layout__tab">Stack</a>
           <a href="#text" class="mdl-layout__tab">Text</a>
+          <a href="#textChords" class="mdl-layout__tab">Text/Chords</a>
         </div>
       </header>
       <main class="mdl-layout__content">
@@ -117,6 +118,19 @@
             </div>
           </section>
         </div>
+        <div class="mdl-layout__tab-panel" id="textChords">
+          <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+              <div class="mdl-card__supporting-text">
+                <h4>Text/Chords</h4>
+                <div id='textChordsChart'></div>
+              </div>
+              <div class="mdl-card__actions">
+                <a href="#" class="mdl-button">Read the documentation</a>
+              </div>
+            </div>
+          </section>
+        </div>
         <div class="mdl-layout__tab-panel" id="highlight">
           <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
             <div class="mdl-card mdl-cell mdl-cell--12-col">
@@ -163,7 +177,8 @@
     <script src='./line.js'></script>
     <script src='./scatter.js'></script>
     <script src='./stack.js'></script>
-    <script src='./text.js'></script> -->
+    <script src='./text.js'></script>
+    <script src='./text_chords.js'></script>
     <script src='./highlight.js'></script>
     <script src='./heatmap.js'></script>
     <script src='./histogram.js'></script>
