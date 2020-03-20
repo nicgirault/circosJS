@@ -10354,7 +10354,7 @@ var Core = function () {
     var container = (0, _d3Selection.select)(this.conf.container).append('div').style('position', 'relative');
     this.svg = container.append('svg');
     if ((0, _d3Selection.select)('body').select('.circos-tooltip').empty()) {
-      this.tip = (0, _d3Selection.select)('body').append('div').attr('class', 'circos-tooltip').style('opacity', 0);
+      this.tip = (0, _d3Selection.select)('#circos-wrapper').append('div').attr('class', 'circos-tooltip').style('opacity', 0);
     } else {
       this.tip = (0, _d3Selection.select)('body').select('.circos-tooltip');
     }
@@ -16863,17 +16863,9 @@ var Text = function (_Track) {
   }
 
   _createClass(Text, [{
-<<<<<<< HEAD
-    key: 'theta2',
-    value: function theta2(position, block) {
-      // return position / block.len * (block.end - block.start)
-      var mid = position / block.len * (block.end - block.start);
-      return mid;
-=======
     key: 'angle',
     value: function angle(position, block) {
       return 0.5 * (block.end + block.start);
->>>>>>> c717d237df045c8e213ab5366fa392a9bf0f0ee6
     }
   }, {
     key: 'renderDatum',
@@ -16882,16 +16874,9 @@ var Text = function (_Track) {
 
       var text = parentElement.selectAll('g').data(function (d) {
         return d.values.map(function (item) {
-<<<<<<< HEAD
-          item._angle = _this2.theta2(item.position, layout.blocks[item.block_id]) * 360 / (2 * Math.PI) - 90;
-=======
           item._angleOffset = _this2.theta(item.position, layout.blocks[item.block_id]) * 360 / (2 * Math.PI) - 90;
           item._angle = _this2.angle(item.position, layout.blocks[item.block_id]) * 360 / (2 * Math.PI) - 90;
->>>>>>> c717d237df045c8e213ab5366fa392a9bf0f0ee6
           item._anchor = item._angle > 90 ? 'end' : 'start';
-          console.log('position', item.position);
-          console.log('layout', layout.blocks[item.block_id]);
-          console.log('angle', item._angle);
           item._rotate = item._angle > 90 ? 180 : 0;
           return item;
         });

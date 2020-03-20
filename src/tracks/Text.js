@@ -39,9 +39,6 @@ export default class Text extends Track {
           item.position,
           layout.blocks[item.block_id])* 360 / (2 * Math.PI) - 90
         item._anchor = item._angle > 90 ? 'end' : 'start'
-        console.log('position', item.position);
-        console.log('layout', layout.blocks[item.block_id]);
-        console.log('angle', item._angle);
         item._rotate = item._angle > 90 ? 180 : 0
         return item
       }))
