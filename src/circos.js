@@ -31,7 +31,7 @@ class Core {
       .style('position', 'relative')
     this.svg = container.append('svg')
     if (select('body').select('.circos-tooltip').empty()) {
-      this.tip = select('#circos-wrapper').append('div')
+      this.tip = select('#content-container').append('div')
       .attr('class', 'circos-tooltip')
       .style('opacity', 0)
     } else {

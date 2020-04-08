@@ -10354,7 +10354,7 @@ var Core = function () {
     var container = (0, _d3Selection.select)(this.conf.container).append('div').style('position', 'relative');
     this.svg = container.append('svg');
     if ((0, _d3Selection.select)('body').select('.circos-tooltip').empty()) {
-      this.tip = (0, _d3Selection.select)('#circos-wrapper').append('div').attr('class', 'circos-tooltip').style('opacity', 0);
+      this.tip = (0, _d3Selection.select)('#content-container').append('div').attr('class', 'circos-tooltip').style('opacity', 0);
     } else {
       this.tip = (0, _d3Selection.select)('body').select('.circos-tooltip');
     }
