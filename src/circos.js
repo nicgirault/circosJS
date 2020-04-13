@@ -30,12 +30,13 @@ class Core {
     const container = select(this.conf.container).append('div')
       .style('position', 'relative')
     this.svg = container.append('svg')
-    if (select('body').select('.circos-tooltip').empty()) {
-      this.tip = select('#content-container').append('div')
+    const topContainer = select(this.conf.container)
+    if (topContainer.select('.circos-tooltip').empty()) {
+      this.tip = topContainer.append('div')
       .attr('class', 'circos-tooltip')
       .style('opacity', 0)
     } else {
-      this.tip = select('body').select('.circos-tooltip')
+      this.tip = topContainer.select('.circos-tooltip')
     }
 
     this.clipboard = initClipboard(this.conf.container)

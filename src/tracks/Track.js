@@ -1,4 +1,5 @@
 import {registerTooltip} from '../behaviors/tooltip'
+import {registerHighlight} from '../behaviors/highlight'
 import {dispatch} from 'd3-dispatch'
 import {arc} from 'd3-shape'
 import {select, event} from 'd3-selection'
@@ -42,6 +43,7 @@ export default class Track {
     parentElement.select('.' + name).remove()
     const track = parentElement.append('g')
       .attr('class', name)
+      .attr('data-name', name)
       .attr('z-index', this.conf.zIndex)
     const datumContainer = this.renderBlock(track, this.data, instance._layout, this.conf)
     if (this.conf.axes && this.conf.axes.length > 0) {
@@ -51,6 +53,7 @@ export default class Track {
     if (this.conf.tooltipContent) {
       registerTooltip(this, instance, selection, this.conf)
     }
+    registerHighlight(this, instance, selection, this.conf)
     selection.on('mouseover', (d, i) => {
       this.dispatch.call('mouseover', this, d)
       if (this.conf.tooltipContent) {

@@ -1,6 +1,7 @@
 import Track from './Track'
 import {parseChordData} from '../data-parser'
 import {registerTooltip} from '../behaviors/tooltip'
+import {registerHighlight} from '../behaviors/highlight'
 import {ribbon} from 'd3-chord'
 import assign from 'lodash/assign'
 import isFunction from 'lodash/isFunction'
@@ -61,11 +62,15 @@ export default class Chords extends Track {
       .selectAll('.chord')
       .data(data)
       .enter().append('path')
-      .attr('class', 'chord')
-      .attr('d', ribbon()
+          .attr('class', 'chord')
+          .attr('data-source', (d) => d.source.id)
+          .attr('data-target', (d) => d.target.id)
+          .attr('d', ribbon()
         .source((d) => getCoordinates(d.source, instance._layout, this.conf, d))
         .target((d) => getCoordinates(d.target, instance._layout, this.conf, d))
-      )
+           )
+
+
       .attr('opacity', conf.opacity)
       .on('mouseover', (d) => {
         this.dispatch.call('mouseover', this, d)
@@ -102,6 +107,7 @@ export default class Chords extends Track {
     if (this.conf.tooltipContent) {
       registerTooltip(this, instance, selection, this.conf)
     }
+    registerHighlight(this, instance, selection, this.conf)
     return this
   }
 }

@@ -4,7 +4,7 @@ import 'd3-transition'
 import './tooltip.css'
 
 export function registerTooltip (track, instance, element, trackParams) {
-  track.dispatch.on('mouseover', (d) => {
+  track.dispatch.on('mouseover.tooltip', (d) => {
     instance.tip
       .html(trackParams.tooltipContent(d))
       .transition()
@@ -13,7 +13,7 @@ export function registerTooltip (track, instance, element, trackParams) {
       .style('top', (event.pageY - 28) + 'px')
   })
 
-  track.dispatch.on('mouseout', (d) => {
+  track.dispatch.on('mouseout.tooltip', (d) => {
     instance.tip
       .transition()
       .duration(500)
