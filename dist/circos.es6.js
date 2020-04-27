@@ -8355,36 +8355,47 @@ var _d3Selection = __webpack_require__(3);
 
 __webpack_require__(194);
 
-//import './tooltip.css'
-
 function registerHighlight(track, instance, element, trackParams) {
-  //console.log("registering highlight for " + track.conf.color)
   track.dispatch.on('mouseover.highlight', function (d) {
     instance.svg.selectAll("path.chord").attr("opacity", 0.1);
+    instance.svg.selectAll("g.cs-layout").selectAll("g").attr("opacity", 0.1);
+
     if (d.source) {
+      // User has moused over a chord
       instance.svg.selectAll("path.chord[data-source='" + d.source.id + "'][data-target='" + d.target.id + "']").attr("opacity", 0.7);
-      instance.svg.selectAll("path.chord").sort(function (a, b) {
-        // select the parent and sort the paths
-        if (a.source.id == d.source.id && a.target.id == d.target.id) {
-          return 1;
-        } else return -1;
-      });
+
+      instance.svg.selectAll("g.cs-layout").selectAll("g." + d.source.id).attr("opacity", 1);
+      instance.svg.selectAll("g.cs-layout").selectAll("g." + d.target.id).attr("opacity", 1);
+
+      /*instance.svg.selectAll("path.chord").sort(
+        // Order this chord last so it appears on top
+        function (a, b) {
+          if (a.source.id == d.source.id && a.target.id == d.target.id){
+            return 1
+          }
+          else return -1
+        })*/
     }
     if (d.block_id) {
       // For layout arcs, highlight all incoming or outgoing chords
       instance.svg.selectAll("path.chord[data-source='" + d.block_id + "']").attr("opacity", 0.7);
       instance.svg.selectAll("path.chord[data-target='" + d.block_id + "']").attr("opacity", 0.7);
-      instance.svg.selectAll("path.chord").sort(function (a, b) {
-        // select the parent and sort the paths
-        if (a.source.id == d.block_id || a.target.id == d.block_id) {
-          return -1;
-        } else return -1;
-      });
+      // blocks
+      instance.svg.selectAll("g.cs-layout").selectAll("g." + d.block_id).attr("opacity", 1);
+      /*instance.svg.selectAll("path.chord").sort(
+        // Put these chords on top
+        function (a, b) {
+          if (a.source.id == d.block_id || a.target.id == d.block_id){
+            return 1
+          }
+          else return -1
+        })*/
     }
   });
 
   track.dispatch.on('mouseout.highlight', function (d) {
     instance.svg.selectAll("path.chord").attr("opacity", 0.7);
+    instance.svg.selectAll("g.cs-layout").selectAll("g").attr("opacity", 1);
   });
 }
 
