@@ -32,7 +32,7 @@
     "coveralls": "^3.0.1",
     "css-loader": "^0.28.11",
     "ignore-styles": "^5.0.1",
-    "jsdom": "9",
+    "jsdom": "16",
     "mocha": "~5.2.0",
     "mocha-jsdom": "^1.1.0",
     "mocha-lcov-reporter": "^1.2.0",
