@@ -5,6 +5,7 @@ module.exports = {
   output: {
     path: __dirname + '/dist',
     filename: 'circos.es6.js',
+    library: 'Circos',
     libraryTarget: 'umd',
     umdNamedDefine: true
   },

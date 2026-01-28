@@ -2,7 +2,7 @@ import keys from 'lodash/keys'
 import includes from 'lodash/includes'
 import every from 'lodash/every'
 import map from 'lodash/map'
-import {nest} from 'd3-collection'
+import groupBy from 'lodash/groupBy'
 import {min, max} from 'd3-array'
 
 const logger = console
@@ -48,8 +48,12 @@ function normalize (data, idKeys) {
 }
 
 function buildOutput (data) {
+  // Group data by block_id (replaces deprecated d3-collection nest)
+  const grouped = groupBy(data, 'block_id')
+  const entries = keys(grouped).map(key => ({key, values: grouped[key]}))
+
   return {
-    data: nest().key((datum) => datum.block_id).entries(data),
+    data: entries,
     meta: {
       min: min(data, (d) => d.value),
       max: max(data, (d) => d.value)

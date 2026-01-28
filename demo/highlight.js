@@ -1,3 +1,4 @@
+(function() {
 var width = document.getElementsByClassName('mdl-card__supporting-text')[0].offsetWidth
 var circosHighlight = new Circos({
   container: '#highlightChart',
@@ -51,7 +52,13 @@ var drawCircos = function (error, GRCh37, cytobands) {
     .render()
 }
 
-d3.queue()
-  .defer(d3.json, './data/GRCh37.json')
-  .defer(d3.csv, './data/cytobands.csv')
-  .await(drawCircos)
+// D3 v7: Use Promise.all instead of deprecated d3.queue
+Promise.all([
+  d3.json('./data/GRCh37.json'),
+  d3.csv('./data/cytobands.csv')
+]).then(function([GRCh37, cytobands]) {
+  drawCircos(null, GRCh37, cytobands)
+}).catch(function(error) {
+  console.error('Error loading data:', error)
+})
+})();

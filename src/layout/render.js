@@ -1,6 +1,6 @@
 import {arc} from 'd3-shape'
 import {range} from 'd3-array'
-import {event} from 'd3-selection'
+// Note: In D3 v6+, event is passed as first argument to handlers, not imported
 
 function renderLayoutLabels (conf, block) {
   const radius = conf.innerRadius + conf.labels.radialOffset
@@ -108,7 +108,8 @@ export default function renderLayout (parentElement, instance) {
     .attr('opacity', conf.opacity)
 
   Object.keys(conf.events).forEach((eventName) => {
-    block.on(eventName, function (d, i, nodes) { conf.events[eventName](d, i, nodes, event) })
+    // D3 v6+: event is first argument, datum is second
+    block.on(eventName, function (event, d) { conf.events[eventName](d, event) })
   })
 
   const entry = arc()

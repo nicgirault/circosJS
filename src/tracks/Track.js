@@ -1,7 +1,8 @@
 import {registerTooltip} from '../behaviors/tooltip'
 import {dispatch} from 'd3-dispatch'
 import {arc} from 'd3-shape'
-import {select, event} from 'd3-selection'
+import {select} from 'd3-selection'
+// Note: In D3 v6+, event is passed as first argument to handlers
 import {getConf} from '../config-utils'
 import {buildScale} from '../utils'
 import {buildColorValue} from '../colors'
@@ -51,19 +52,20 @@ export default class Track {
     if (this.conf.tooltipContent) {
       registerTooltip(this, instance, selection, this.conf)
     }
-    selection.on('mouseover', (d, i) => {
-      this.dispatch.call('mouseover', this, d)
+    // D3 v6+: event is first argument, datum is second
+    selection.on('mouseover', (event, d) => {
+      this.dispatch.call('mouseover', this, d, event)
       if (this.conf.tooltipContent) {
         instance.clipboard.attr('value', this.conf.tooltipContent(d))
       }
     })
-    selection.on('mouseout', (d, i) => {
+    selection.on('mouseout', (event, d) => {
       this.dispatch.call('mouseout', this, d)
     })
 
     Object.keys(this.conf.events).forEach((eventName) => {
       const conf = this.conf
-      selection.on(eventName, function (d, i, nodes) { conf.events[eventName](d, i, nodes, event) })
+      selection.on(eventName, function (event, d) { conf.events[eventName](d, event) })
     })
 
     return this
