@@ -1,3 +1,4 @@
+(function() {
 var gieStainColor = {
   gpos100: 'rgb(0,0,0)',
   gpos: 'rgb(0,0,0)',
@@ -13,11 +14,23 @@ var gieStainColor = {
   select: 'rgb(135,177,255)'
 }
 
+// Group data by chromosome (replaces deprecated d3-collection nest)
+function groupByChr(data) {
+  var grouped = {}
+  data.forEach(function (d) {
+    if (!grouped[d.chr]) grouped[d.chr] = []
+    grouped[d.chr].push(d)
+  })
+  return Object.keys(grouped).map(function (key) {
+    return { key: key, values: grouped[key] }
+  })
+}
+
 var buildData = function (rawData1, rawData2, karyotype) {
   var binLength = 10000000
   var data = []
-  var rawDataByChr1 = d3.nest().key(function (d) { return d.chr }).entries(rawData1)
-  var rawDataByChr2 = d3.nest().key(function (d) { return d.chr }).entries(rawData2)
+  var rawDataByChr1 = groupByChr(rawData1)
+  var rawDataByChr2 = groupByChr(rawData2)
   karyotype.forEach(function (chr) {
     var raw1 = rawDataByChr1.filter(function (d) { return d.key === chr.id })[0].values
     var raw2 = rawDataByChr2.filter(function (d) { return d.key === chr.id })[0].values
@@ -100,9 +113,15 @@ var drawCircos = function (error, GRCh37, cytobands, es, ips) {
     .render()
 }
 
-d3.queue()
-  .defer(d3.json, './data/GRCh37.json')
-  .defer(d3.csv, './data/cytobands.csv')
-  .defer(d3.csv, './data/es.csv')
-  .defer(d3.csv, './data/ips.csv')
-  .await(drawCircos)
+// D3 v7: Use Promise.all instead of deprecated d3.queue
+Promise.all([
+  d3.json('./data/GRCh37.json'),
+  d3.csv('./data/cytobands.csv'),
+  d3.csv('./data/es.csv'),
+  d3.csv('./data/ips.csv')
+]).then(function([GRCh37, cytobands, es, ips]) {
+  drawCircos(null, GRCh37, cytobands, es, ips)
+}).catch(function(error) {
+  console.error('Error loading data:', error)
+})
+})();

@@ -1,4 +1,4 @@
-
+(function() {
 function drawCircos(error, months, electricalConsumption, daysOff) {
   var width = document.getElementsByClassName('mdl-card__supporting-text')[0].offsetWidth
   var circosHeatmap = new Circos({
@@ -59,8 +59,14 @@ function drawCircos(error, months, electricalConsumption, daysOff) {
       .render()
 }
 
-d3.queue()
-  .defer(d3.json, './data/months.json')
-  .defer(d3.csv, './data/electrical-consumption.csv')
-  .defer(d3.csv, './data/days-off.csv')
-  .await(drawCircos)
+// D3 v7: Use Promise.all instead of deprecated d3.queue
+Promise.all([
+  d3.json('./data/months.json'),
+  d3.csv('./data/electrical-consumption.csv'),
+  d3.csv('./data/days-off.csv')
+]).then(function([months, electricalConsumption, daysOff]) {
+  drawCircos(null, months, electricalConsumption, daysOff)
+}).catch(function(error) {
+  console.error('Error loading data:', error)
+})
+})();

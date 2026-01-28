@@ -1,10 +1,11 @@
-import {select, event} from 'd3-selection'
+import {select} from 'd3-selection'
 import 'd3-transition'
 
 import './tooltip.css'
 
+// D3 v6+: event is now passed through dispatch call, not imported
 export function registerTooltip (track, instance, element, trackParams) {
-  track.dispatch.on('mouseover', (d) => {
+  track.dispatch.on('mouseover', (d, event) => {
     instance.tip
       .html(trackParams.tooltipContent(d))
       .transition()

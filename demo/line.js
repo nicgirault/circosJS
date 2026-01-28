@@ -1,3 +1,4 @@
+(function() {
 var width = document.getElementsByClassName('mdl-card__supporting-text')[0].offsetWidth
 var circosLine = new Circos({
   container: '#lineChart',
@@ -194,10 +195,16 @@ var drawCircos = function (error, GRCh37, cytobands, snp250, snp, snp1m) {
     .render()
 }
 
-d3.queue()
-  .defer(d3.json, './data/GRCh37.json')
-  .defer(d3.csv, './data/cytobands.csv')
-  .defer(d3.csv, './data/snp.density.250kb.txt')
-  .defer(d3.csv, './data/snp.density.txt')
-  .defer(d3.csv, './data/snp.density.1mb.txt')
-  .await(drawCircos)
+// D3 v7: Use Promise.all instead of deprecated d3.queue
+Promise.all([
+  d3.json('./data/GRCh37.json'),
+  d3.csv('./data/cytobands.csv'),
+  d3.csv('./data/snp.density.250kb.txt'),
+  d3.csv('./data/snp.density.txt'),
+  d3.csv('./data/snp.density.1mb.txt')
+]).then(function([GRCh37, cytobands, snp250, snp, snp1m]) {
+  drawCircos(null, GRCh37, cytobands, snp250, snp, snp1m)
+}).catch(function(error) {
+  console.error('Error loading data:', error)
+})
+})();

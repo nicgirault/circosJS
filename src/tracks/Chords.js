@@ -4,7 +4,7 @@ import {registerTooltip} from '../behaviors/tooltip'
 import {ribbon} from 'd3-chord'
 import assign from 'lodash/assign'
 import isFunction from 'lodash/isFunction'
-import {event} from 'd3-selection'
+// Note: In D3 v6+, event is passed as first argument to handlers
 
 import {common, values} from '../configs'
 
@@ -67,16 +67,17 @@ export default class Chords extends Track {
         .target((d) => getCoordinates(d.target, instance._layout, this.conf, d))
       )
       .attr('opacity', conf.opacity)
-      .on('mouseover', (d) => {
-        this.dispatch.call('mouseover', this, d)
+      // D3 v6+: event is first argument, datum is second
+      .on('mouseover', (event, d) => {
+        this.dispatch.call('mouseover', this, d, event)
         instance.clipboard.attr('value', conf.tooltipContent(d))
       })
-      .on('mouseout', (d) =>
+      .on('mouseout', (event, d) =>
         this.dispatch.call('mouseout', this, d)
       )
 
     Object.keys(conf.events).forEach((eventName) => {
-      link.on(eventName, function (d, i, nodes) { conf.events[eventName](d, i, nodes, event) })
+      link.on(eventName, function (event, d) { conf.events[eventName](d, event) })
     })
 
     link.attr('fill', conf.colorValue)
